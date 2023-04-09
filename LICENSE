@@ -186,7 +186,7 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+   Copyright Monwoo 2023
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -199,3 +199,14 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+   
+   Some files are OPEN parts of confidential and privately licensed starters by Monwoo like :
+   - apps/web/mws-svelte-wp-display-0.0.5/*
+   It's some OPEN code we provide for private starters summary and
+   will not run fully without all private file,
+   but it can be used as inspiration for any type of Apache-2.0 usage.
+  
+   Confidential files will be send to you if you use one of our licenses.
+   
+   Otherwise, enjoy all other free Apache-2.0 parts of this repository.
+ 
