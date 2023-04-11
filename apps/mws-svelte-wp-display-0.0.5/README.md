@@ -3,6 +3,9 @@
 <img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Copyright © MONWOO 2023**, all rights reserved.](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/)
 
 FR : [moonkiosk.monwoo.com/produit/mws-svelte-wp-display/](https://moonkiosk.monwoo.com/produit/mws-svelte-wp-display/)
+
+Démo : [mws.monwoo.com/demos/svelte-wp-display](https://mws.monwoo.com/demos/svelte-wp-display)
+
 ## LICENSE terms
 
 Thoses source codes are part of researches and developments done by Miguel Monwoo.
@@ -13,7 +16,7 @@ Please respect professional secrecy by not disclosing thoses source codes withou
 
 Following your purchase on [moonkiosk.monwoo.com](https://moonkiosk.monwoo.com), a use for one domain name is granted to you.
 
-Unlike the source code, you may distribute the compiled production version as you wish, for private or commercial use, as long as the sources remain confidential with attribution to Miguel Monwoo as 'participant' at minimum.
+Unlike the source code, you may distribute the production build as you wish, for private or commercial use, as long as the sources remain confidential with attribution to Miguel Monwoo as 'participant' at minimum.
 
 This private license does not allow you to share the provided sources outside of the developments necessary for a single domain name indicated during your purchase.
 
@@ -330,3 +333,42 @@ to work nicely in first load of pre-rendered html.
     <p class="p-1">src/routes/(core)/mws/</p>
 </div>
 ```
+## User paths
+
+### 01-A - Build from fresh server source if available
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/01-path-blog-update/2023-04-11_18.42.14.png" alt="" width="320"/>
+
+### 01-B - Show updated values from final build preview
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/01-path-blog-update/2023-04-11_18.43.58.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/01-path-blog-update/2023-04-11_18.45.12.png" alt="" width="320"/>
+
+<div style="page-break-before: always;"></div>
+
+### 01-C - Edit data from backend to update frontend pre-rendered build
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/01-path-blog-update/2023-04-11_18.46.15.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/01-path-blog-update/2023-04-11_18.46.27.png" alt="" width="320"/>
+
+### 02 - Edit translations
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/02-path-edit-translations/2023-04-11_21.53.48.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/02-path-edit-translations/2023-04-11_21.55.49.png" alt="" width="320"/>
+
+### 03 - Use production website offline
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/03-path-offline-prod/2023-04-11_18.47.41.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/03-path-offline-prod/2023-04-11_18.47.49.png" alt="" width="320"/>
+
+### 04 - Use source developpement offline
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/04-path-offline-dev/2023-04-11_18.38.26.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/04-path-offline-dev/2023-04-11_18.38.49.png" alt="" width="320"/>
+
+### 05 - Keep unitest coverage at 100% of all rendered pages (Developper(s) point of view)
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/05-tests-unit-coverage/2023-04-11_10.19.44.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/05-tests-unit-coverage/2023-04-11_10.22.05.png" alt="" width="320"/>
+
+### 06 - Use functional tests closest to the production target (Dev team point of view)
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/06-tests-functional/2023-04-11_22.14.06.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/06-tests-functional/2023-04-11_22.16.09.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/06-tests-functional/2023-04-11_22.16.54.png" alt="" width="320"/>
+
+### 07 - Use end to end tests for business values (Client point of view)
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/07-tests-end-to-end/2023-04-11_22.21.21.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/07-tests-end-to-end/2023-04-11_22.22.52.png" alt="" width="320"/>
