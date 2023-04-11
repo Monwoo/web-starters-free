@@ -117,7 +117,9 @@ ln -s "$PWD/build" /Applications/MAMP/htdocs/demos/svelte-wp-display
 
 
 # If you use GIT, save multi-branche logs :
-git log --branches --tags --remotes --full-history --date-order --format='%ai;%f;%an;<%ae>;%h' > git-logs.csv
+git log --branches --tags --remotes --full-history --date-order \   
+--format='%ai;%f;%h' > git-logs.csv
+
 ```
 <div style="page-break-before: always;"></div>
 
