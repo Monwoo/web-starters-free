@@ -1,4 +1,4 @@
-# <img src="static/wp-display/favicomatic/favicon-128.png" alt="" width="51"/>  MWS [Svelte-WP-display] v-0.0.5
+# <img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/favicomatic/favicon-128.png" alt="" width="51"/>  MWS [Svelte-WP-display] v-0.0.5
 
 <img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Copyright © MONWOO 2023**, all rights reserved.](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/)
 
@@ -126,7 +126,7 @@ git log --branches --tags --remotes --full-history --date-order \
 ## Add some unit tests
 
 Starting from version 0.0.5, we ensure 100% coverage per release builds :
-<img src="static/wp-display/screenshots/tests-unit-coverage/Capture d’écran 2023-04-11 à 10.19.44.png" alt="" width="512"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/tests-unit-coverage/Capture%20d%E2%80%99%C3%A9cran%202023-04-11%20%C3%A0%2010.19.44.png" alt="" width="512"/>
 
 ```bash
 ############################
