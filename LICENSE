@@ -201,10 +201,10 @@
    limitations under the License.
    
    Some files are OPEN parts of confidential and privately licensed starters by Monwoo like :
-   - apps/web/mws-svelte-wp-display-0.0.5/*
+   - apps/mws-svelte-wp-display-0.0.5/*
    It's some OPEN code we provide for private starters summary and
-   will not run fully without all private file,
-   but it can be used as inspiration for any type of Apache-2.0 usage.
+   it will not fully run without all private file behind private license,
+   but it can be used as inspiration for any type of Apache-2.0 projects.
   
    Confidential files will be send to you if you use one of our licenses.
    
