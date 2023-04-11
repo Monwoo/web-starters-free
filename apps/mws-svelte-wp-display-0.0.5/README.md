@@ -126,7 +126,7 @@ git log --branches --tags --remotes --full-history --date-order \
 ## Add some unit tests
 
 Starting from version 0.0.5, we ensure 100% coverage per release builds :
-<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/tests-unit-coverage/Capture%20d%E2%80%99%C3%A9cran%202023-04-11%20%C3%A0%2010.19.44.png" alt="" width="512"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/tests-unit-coverage/2023-04-11_10.19.44.png" alt="" width="512"/>
 
 ```bash
 ############################
