@@ -1,4 +1,9 @@
-# Turborepo starter
+# Monwoo Web Starter (MWS) Open source Apache-2.0 (Free)
+<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Copyright © MONWOO 2023**, all rights reserved.](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/)
+
+Will contain multiple free webstarters (ready to use) and some parts of opened confidential starter (Optional full code under private license per domains, or for confidential knowledge with no rights to duplicate without appropriate notice or license)
+
+# BASED on : Turborepo starter
 
 This is an official pnpm starter turborepo.
 
