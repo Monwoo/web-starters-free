@@ -3,7 +3,7 @@
 -------- EN --------
 --------------------
 
-License terms:
+License terms for mws-svelte-wp-display:
 
 These source codes are part of the research and development results of Miguel Monwoo.
 
@@ -27,15 +27,15 @@ You can also use this starter as a confidential educational purpose without righ
 
 Contact us if you plan to buy huge amount of licenses : service@monwoo.com.
 
-Opened files of this starter can used under Apache-2.0 lisence if present under :
+Opened files of this starter can be used under Apache-2.0 lisence if present under :
 https://github.com/MonwooServices/monwoo-web-starters-free
 More specifically under :
-https://github.com/MonwooServices/monwoo-web-starters-free/blob/main/apps/web/mws-svelte-wp-display-0.0.5/
+https://github.com/MonwooServices/monwoo-web-starters-free/blob/main/apps
 
 --------------------
 -------- FR --------
 --------------------
-Conditions de licence :
+Conditions de licence pour mws-svelte-wp-display :
 
 Ces codes sources font partie des résultats de recherches et développements de Miguel Monwoo.
 
@@ -62,4 +62,4 @@ Contactez-nous si vous envisagez d'acheter un grand nombre de licences : service
 Les fichiers ouverts de ce starter peuvent être utilisés sous licence Apache-2.0 s'ils sont présents sous :
 https://github.com/MonwooServices/monwoo-web-starters-free
 Plus précisément sous :
-https://github.com/MonwooServices/monwoo-web-starters-free/blob/main/apps/web/mws-svelte-wp-display-0.0.5/
+https://github.com/MonwooServices/monwoo-web-starters-free/blob/main/apps/
