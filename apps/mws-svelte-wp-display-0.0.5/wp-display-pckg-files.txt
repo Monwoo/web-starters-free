@@ -387,6 +387,7 @@
 ./svelte-frontend/static/wp-display/screenshots/05-tests-unit-coverage
 ./svelte-frontend/static/wp-display/screenshots/05-tests-unit-coverage/2023-04-11_10.19.44.png
 ./svelte-frontend/static/wp-display/screenshots/05-tests-unit-coverage/2023-04-11_10.22.05.png
+./svelte-frontend/static/wp-display/screenshots/05-tests-unit-coverage/2023-04-12_15.51.24.png
 ./svelte-frontend/static/wp-display/screenshots/06-tests-functional
 ./svelte-frontend/static/wp-display/screenshots/06-tests-functional/2023-04-11_22.14.06.png
 ./svelte-frontend/static/wp-display/screenshots/06-tests-functional/2023-04-11_22.16.09.png

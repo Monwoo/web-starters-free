@@ -18,7 +18,7 @@ Following your purchase on [moonkiosk.monwoo.com](https://moonkiosk.monwoo.com),
 
 Unlike the source code, you may distribute the production build as you wish, for private or commercial use, as long as the sources remain confidential with attribution to Miguel Monwoo as 'participant' at minimum.
 
-This private license does not allow you to share the provided sources outside of the developments necessary for a single domain name indicated during your purchase.
+This private license disallow usage of the provided sources outside of the confidential developments necessary for a single domain name indicated during your purchase.
 
 For a completely free license, you can use our custom development services by paying for our time spent creating a new personalized starter for your aims at the price rates in effect on [moonkiosk.monwoo.com](https://moonkiosk.monwoo.com) (or via service@monwoo.com).
 
@@ -133,9 +133,6 @@ Starting from version 0.0.5, we ensure 100% coverage per release builds :
 
 ```bash
 ############################
-# Our test organisation advice :
-# => always create a specific test file for testing...
-#
 # Unit testings will focus on small parts of code
 
 # Create a file in 'src' folder with '.test.ts' extension
@@ -198,8 +195,9 @@ npm run test:coverage:watch src/components/wp-display/ui/CarousselWithGsap.test.
 
 ```bash
 ############################
-# We used to test technico-functionnal features with thoses tests
-# As for unit testes, English is the common language for thoses.
+# Test technico-functionnal features with thoses tests.
+# It reflect all past and forseen functionalities found by the dev team.
+# As for unit tests, English is the common language for thoses.
 # 
 # Get inspiration from existing tests inside 'tests/functional' :
 find ./tests/functional -type f  -name '*.test.ts' \
@@ -241,7 +239,7 @@ PWDEBUG=1 npm run test:functional:mamp tests/functional/wp-display/service-worke
 
 ```bash
 ############################
-# We used to test commercial-functionnal features with thoses tests
+# Test commercial features with thoses tests
 #
 # We use codeception to write tests in our CLIENT'S language
 # So we review the business functionality with the CLIENT'S language
@@ -276,11 +274,10 @@ npx codeceptjs def -c codecept.conf.cjs
 alias code="/Applications/Visual Studio Code.app/Contents/MacOS/Electron"
 
 # If you get error :
-#   [svelte-i18n]
-#   Cannot format a message without first setting the initial locale.
+#   "Cannot format a message without first setting the initial locale."
 # => MEANS you did update the 'locale' from locale.set() with null value
 # OR that import initI18n from '@app/services/init-i18n';
-# initI18n(); is missing BEFOR translation try....
+# initI18n(); is missing BEFORE translation try....
 
 # list locales files :
 ls src/locales
@@ -363,11 +360,14 @@ to work nicely in first load of pre-rendered html.
 ### 05 - Keep unitest coverage at 100% of all rendered pages (Developper(s) point of view)
 <img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/05-tests-unit-coverage/2023-04-11_10.19.44.png" alt="" width="320"/>
 <img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/05-tests-unit-coverage/2023-04-11_10.22.05.png" alt="" width="320"/>
+<img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/05-tests-unit-coverage/2023-04-12_15.51.24.png" alt="" width="320"/>
 
 ### 06 - Use functional tests closest to the production target (Dev team point of view)
 <img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/06-tests-functional/2023-04-11_22.14.06.png" alt="" width="320"/>
 <img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/06-tests-functional/2023-04-11_22.16.09.png" alt="" width="320"/>
 <img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/06-tests-functional/2023-04-11_22.16.54.png" alt="" width="320"/>
+
+<div style="page-break-before: always;"></div>
 
 ### 07 - Use end to end tests for business values (Client point of view)
 <img src="https://mws.monwoo.com/demos/svelte-wp-display/wp-display/screenshots/07-tests-end-to-end/2023-04-11_22.21.21.png" alt="" width="320"/>
