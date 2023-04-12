@@ -31,8 +31,8 @@ You can also use this starter for confidential educational purpose with no right
 Contact us if you plan to buy a huge amount of licenses : service@monwoo.com.
 
 Opened files for this starter can be used under Apache-2.0 lisence if present under :
-- [github.com/MonwooServices/monwoo-web-starters-free](https://github.com/MonwooServices/monwoo-web-starters-free)
-- [github.com/MonwooServices/monwoo-web-starters-free/blob/main/apps](https://github.com/MonwooServices/monwoo-web-starters-free/blob/main/apps)
+- [github.com/Monwoo/web-starters-free](https://github.com/Monwoo/web-starters-free)
+- [github.com/Monwoo/web-starters-free/blob/main/apps](https://github.com/Monwoo/web-starters-free/blob/main/apps)
 
 To support and/or help us open more software, send a subvention with :
 - [www.monwoo.com/don](https://www.monwoo.com/don)
