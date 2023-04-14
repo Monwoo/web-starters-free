@@ -46,9 +46,9 @@ const baseURL = "http://localhost:4173";
 const config: PlaywrightTestConfig = {
 	// TIPS : Run with default preview server :
 	webServer: {
-		command: 'npm run preview',
-		// command: 'VITE_MWS_BASE_HREF="" npm run preview',
-		// command: 'VITE_MWS_BASE_HREF="" npm run build && VITE_MWS_BASE_HREF="" npm run preview',
+		command: 'pnpm run preview',
+		// command: 'VITE_MWS_BASE_HREF="" pnpm run preview',
+		// command: 'VITE_MWS_BASE_HREF="" pnpm run build && VITE_MWS_BASE_HREF="" pnpm run preview',
 		port: 4173,
 		// timeout: 60000 * 5, // 5 minutes timeout for server builds (this one is for all)
 		// timeout: 3000, // 3sec, SEO Limit before bad user interaction... well, dev server is NOT prod server...

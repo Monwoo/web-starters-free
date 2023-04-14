@@ -49,7 +49,7 @@ node -v
 node mws-install.mjs wp-display --with-deps
 
 # run coverage, functional and end to end tests
-npm run test
+pnpm run test
 
 # YATA, YOUR PRODUCTION BUILD is in ./build folder.
 # Indeed, e2e tests did build it with your local .env
@@ -60,7 +60,7 @@ code .env
 # Then we advice you to re-do the full tests
 # But if you are in a hurry, sure of what you do,
 # simply launch the build :
-npm run build
+pnpm run build
 ```
 
 ## Installations and builds
@@ -74,19 +74,19 @@ node -v
 node mws-install.mjs wp-display --with-deps
 
 # generate smui styles (optionnal, do on each SMUI or SCSS theme changes)
-npm run prepare
+pnpm run prepare
 
 # test in dev
-npm run dev
+pnpm run dev
 
 # launching unit tests any time you like and before each commit.
 # do branch if want to commit faling code 
 # instead of the starter production branches...
-npm run test:unit
+pnpm run test:unit
 
 # Run coverage tests with web live reports
 # of unit tests launched in watch mode ;)
-npm run test:coverage:watch -- --ui
+pnpm run test:coverage:watch -- --ui
 ```
 
 <div style="page-break-before: always;"></div>
@@ -96,19 +96,19 @@ npm run test:coverage:watch -- --ui
 open coverage/index.html
 
 # Run functional tests
-npm run test:functional
+pnpm run test:functional
 
 # Run end to end tests
-npm run test:e2e
+pnpm run test:e2e
 
 # run coverage, functional and end to end tests
-npm run test
+pnpm run test
 # build for production
 rm -rf .svelte-kit
-npm run build
+pnpm run build
 
 # Testing the build with local server :
-npm run preview
+pnpm run preview
 
 # Testing the build with MAMP (configured with self signed SSL) :
 mkdir /Applications/MAMP/htdocs/demos
@@ -183,10 +183,10 @@ find . -type f  -name '*.test.ts' -o \
 ```bash
 # We use vitest to launch and show coverage reports
 # Use the watch mode if you're in building phase :
-npm run test:unit:watch
+pnpm run test:unit:watch
 # Watch mode for coverage score :
-npm run test:coverage:watch
-npm run test:coverage:watch src/components/wp-display/ui/CarousselWithGsap.test.ts
+pnpm run test:coverage:watch
+pnpm run test:coverage:watch src/components/wp-display/ui/CarousselWithGsap.test.ts
 ```
 
 <div style="page-break-before: always;"></div>
@@ -216,7 +216,7 @@ test:functional -- tests/functional/core/theme-storage.test.ts
 npx playwright install
 
 # Debug functional tests :
-PWDEBUG=1 npm run test:functional tests/functional/wp-display/service-worker.test.ts
+PWDEBUG=1 pnpm run test:functional tests/functional/wp-display/service-worker.test.ts
 
 # link build to MAMP :
 mkdir /Applications/MAMP/htdocs/demos
@@ -224,7 +224,7 @@ ln -s "$PWD/build" /Applications/MAMP/htdocs/demos/svelte-wp-display
 ls /Applications/MAMP/htdocs/demos/svelte-wp-display
 
 # Debug functional with MAMP SSL build :
-PWDEBUG=1 npm run test:functional:mamp tests/functional/wp-display/service-worker.test.ts
+PWDEBUG=1 pnpm run test:functional:mamp tests/functional/wp-display/service-worker.test.ts
 
 # Run chrome for service worker debugs with chrome :
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
@@ -282,9 +282,11 @@ alias code="/Applications/Visual Studio Code.app/Contents/MacOS/Electron"
 # list locales files :
 ls src/locales
 
-# if no file, mws-install did fail (run on `npm install`).
+# if no file, mws-install did fail (run on `pnpm install`).
 # Sources are in : src/mws-configs/wp-display/locales/
 
+# TIPS : USE npm instead of pnpm for LOCAL FOLDER installation,
+# to avoid the command from the root workspace
 # To load our starter configs to your app, run :
 npm run mws:install:wp-display
 

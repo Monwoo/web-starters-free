@@ -129,7 +129,7 @@ export class Logger {
         let index = (caller_line?.indexOf("at ")) || -1;
         index = index >= 0 ? index : 0;
         let line = caller_line?.slice(index + 2, caller_line.length) || "";
-        line = line.split('/svelte-frontend/')[1] ?? line;
+        line = line.split('/apps/')[1] ?? line;
         let firstArg = args.shift();
         if (appEnv.browser) {
             this.self.showDomains && csl.log(`%c${domainPrompt}`, `color:${color}`);
