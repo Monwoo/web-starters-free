@@ -118,10 +118,21 @@ ln -s "$PWD/build" /Applications/MAMP/htdocs/demos/svelte-wp-display
  --unsafely-treat-insecure-origin-as-secure=https://localhost \
  https://localhost/demos/svelte-wp-display
 
-
 # If you use GIT, save multi-branche logs :
-git log --branches --tags --remotes --full-history --date-order \
---format='%ai,%f,%h' > git-logs.csv
+git log --branches --tags --remotes --full-history --date-order \   
+--format='%ai;%f;%h' > git-logs.csv
+
+# If you have global turbo from npm, remove it :
+npm r -g turbo
+
+# Setup you global pnpm bin repo folder :
+pnpm setup
+source ~/.zshrc
+# If you use turbo repo, install it globally with 'pnpm'
+pnpm install turbo --global
+pnpm install # run it in your turbo repo root folder
+
+turbo --version # will run with turbo version from local node_modules
 
 ```
 <div style="page-break-before: always;"></div>
