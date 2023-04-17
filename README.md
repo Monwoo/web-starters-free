@@ -1,5 +1,5 @@
 # Monwoo Web Starter (MWS) Open source Apache-2.0 (Free)
-<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Copyright © MONWOO 2023**, all rights reserved.](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/)
+<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Copyright © MONWOO 2023**, all rights reserved.](https://moonkiosk.monwoo.com/en/categorie-produit/produced-solutions/mws_en/)
 
 Will contain multiple free webstarters (ready to use) and some parts of opened confidential starter (Optional full code under private license per domains, or for confidential knowledge with no rights to duplicate without appropriate notice or license)
 
@@ -11,13 +11,28 @@ This is an official pnpm starter turborepo.
 
 This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
 
+## Create a new Svelte turbo repo :
+
+Run the following command:
+
+```sh
+npx create-turbo@latest -e with-svelte
+```
+
 ### Apps and Packages
+
+- `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential)
 
 - `next-js-docs`: a [Next.js](https://nextjs.org/) app
 - `next-js-web`: another [Next.js](https://nextjs.org/) app
 - `next-js-ui`: a stub React component library shared by both `next-js-web` and `next-js-docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `eslint-config-next-js`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
+
+- `svelte-docs`: a [svelte-kit](https://kit.svelte.dev/) app
+- `svelte-web`: another [svelte-kit](https://kit.svelte.dev/) app
+- `svelte-ui`: a stub Svelte component library shared by both `web` and `docs` applications
+- `eslint-config-svelte`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`)
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
