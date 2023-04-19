@@ -1,3 +1,4 @@
 module.exports = {
-  extends: ['custom']
+  root: true,
+  extends: ['eslint-config-svelte']
 };

@@ -7,8 +7,8 @@
   "svelte": "index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "prettier --check --ignore-path=../../.prettierignore . && eslint \".\"",
-    "format": "prettier --write --ignore-path=../../.prettierignore ."
+    "lint": "prettier --check --ignore-path=../../packages/eslint-config-svelte/.prettierignore --config=../../packages/eslint-config-svelte/.prettierrc . && eslint \".\"",
+    "format": "prettier --write --ignore-path=../../packages/eslint-config-svelte/.prettierignore --config=../../packages/eslint-config-svelte/.prettierrc ."
   },
   "devDependencies": {
     "eslint-config-svelte": "workspace:*",
