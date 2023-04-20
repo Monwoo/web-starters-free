@@ -11,12 +11,13 @@ Will contain multiple free webstarters (ready to use) and some parts of opened c
 - `next-js-web`: another [Next.js](https://nextjs.org/) app
 - `next-js-ui`: a stub React component library shared by both `next-js-web` and `next-js-docs` applications
 - `next-js-eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-next-js` for config compatibility purpose.
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `next-js-tsconfig`: `tsconfig.json`s used throughout the monorepo `next-js` apps and packages
 
 - `svelte-docs`: a [svelte-kit](https://kit.svelte.dev/) app
 - `svelte-web`: another [svelte-kit](https://kit.svelte.dev/) app
 - `svelte-ui`: a stub Svelte component library shared by both `web` and `docs` applications
 - `svelte-eslint-config`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-svelte` for config compatibility purpose.
+- `svelte-tsconfig`: `tsconfig.json`s used throughout the monorepo `svelte` apps and packages
 
 ### Build
 
