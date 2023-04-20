@@ -3,9 +3,55 @@
 
 Will contain multiple free webstarters (ready to use) and some parts of opened confidential starter (Optional full code under private license per domains, or for confidential knowledge with no rights to duplicate without appropriate notice or license)
 
+## Apps and Packages
+
+- `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential)
+
+- `next-js-docs`: a [Next.js](https://nextjs.org/) app
+- `next-js-web`: another [Next.js](https://nextjs.org/) app
+- `next-js-ui`: a stub React component library shared by both `next-js-web` and `next-js-docs` applications
+- `next-js-eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-next-js` for config compatibility purpose.
+- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+
+- `svelte-docs`: a [svelte-kit](https://kit.svelte.dev/) app
+- `svelte-web`: another [svelte-kit](https://kit.svelte.dev/) app
+- `svelte-ui`: a stub Svelte component library shared by both `web` and `docs` applications
+- `svelte-eslint-config`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-svelte` for config compatibility purpose.
+
+### Build
+
+```bash
+# install :
+pnpm install
+
+# launch turbo for dev :
+turbo dev
+
+# launch turbo to build all apps
+# and packages (if build script inside package.json) :
+turbo build
+
+# Check lint rules for all apps and packages :
+turbo lint
+
+# Format :
+
+# TIPS : use versioning, push to have clean repo,
+#        then format and check new possible changes
+
+# Sync versioning
+git add -A && git commit -m "[MWS] <pending modifications details>"
+git push
+# Format all apps and packages
+turbo format
+# Check and review changes before next commit :
+git diff
+
+```
+
 # BASED on : Turborepo starter
 
-This is an official pnpm starter turborepo.
+This starter come from an official pnpm starter turborepo.
 
 ## What's inside?
 
@@ -18,23 +64,6 @@ Run the following command:
 ```sh
 npx create-turbo@latest -e with-svelte
 ```
-
-### Apps and Packages
-
-- `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential)
-
-- `next-js-docs`: a [Next.js](https://nextjs.org/) app
-- `next-js-web`: another [Next.js](https://nextjs.org/) app
-- `next-js-ui`: a stub React component library shared by both `next-js-web` and `next-js-docs` applications
-- `eslint-config-next-js`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
-
-- `svelte-docs`: a [svelte-kit](https://kit.svelte.dev/) app
-- `svelte-web`: another [svelte-kit](https://kit.svelte.dev/) app
-- `svelte-ui`: a stub Svelte component library shared by both `web` and `docs` applications
-- `eslint-config-svelte`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`)
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Utilities
 
