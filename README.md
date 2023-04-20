@@ -15,7 +15,7 @@ Will contain multiple free webstarters (ready to use) and some parts of opened c
 
 - `svelte-docs`: a [svelte-kit](https://kit.svelte.dev/) app
 - `svelte-web`: another [svelte-kit](https://kit.svelte.dev/) app
-- `svelte-ui`: a stub Svelte component library shared by both `web` and `docs` applications
+- `svelte-ui`: a stub Svelte component library shared by both `svelte-web` and `svelte-docs` applications
 - `svelte-eslint-config`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-svelte` for config compatibility purpose.
 - `svelte-tsconfig`: `tsconfig.json` used throughout the monorepo `svelte` apps and packages
 
