@@ -5,8 +5,8 @@ importers:
   .:
     specifiers:
       eslint-config-next-js: workspace:*
-      prettier: latest
-      turbo: latest
+      prettier: ^2.8.7
+      turbo: 1.9.3
     devDependencies:
       eslint-config-next-js: link:packages/eslint-config-next-js
       prettier: 2.8.7

@@ -1,3 +1,12 @@
+# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+
+# Biblio :
+# https://turbo.build/repo/docs
+# https://turbo.build/repo/docs/getting-started/create-new
+# https://turbo.build/pack/docs/roadmap#svelte
+# https://vercel.com/templates/svelte/turborepo-sveltekit-starter
+# https://dev.to/_gdelgado/pitfalls-when-adding-turborepo-to-your-project-4cel
+
 packages:
   - "apps/*"
   - "packages/*"
