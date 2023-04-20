@@ -13,7 +13,7 @@
     "format": "turbo format"
   },
   "devDependencies": {
-    "next-js-eslint-config": "workspace:*",
+    "eslint-config-next-js": "workspace:*",
     "prettier": "^2.8.7",
     "turbo": "1.9.3"
   },

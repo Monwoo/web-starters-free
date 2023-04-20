@@ -4,11 +4,11 @@ importers:
 
   .:
     specifiers:
-      next-js-eslint-config: workspace:*
+      eslint-config-next-js: workspace:*
       prettier: ^2.8.7
       turbo: 1.9.3
     devDependencies:
-      next-js-eslint-config: link:packages/next-js-eslint-config
+      eslint-config-next-js: link:packages/next-js-eslint-config
       prettier: 2.8.7
       turbo: 1.9.3
 
@@ -19,8 +19,8 @@ importers:
       '@types/react': ^18.0.22
       '@types/react-dom': ^18.0.7
       eslint: 7.32.0
+      eslint-config-next-js: workspace:*
       next: ^13.1.1
-      next-js-eslint-config: workspace:*
       next-js-tsconfig: workspace:*
       next-js-ui: workspace:*
       react: 18.2.0
@@ -37,7 +37,7 @@ importers:
       '@types/react': 18.0.37
       '@types/react-dom': 18.0.11
       eslint: 7.32.0
-      next-js-eslint-config: link:../../packages/next-js-eslint-config
+      eslint-config-next-js: link:../../packages/next-js-eslint-config
       next-js-tsconfig: link:../../packages/next-js-tsconfig
       typescript: 4.9.5
 
@@ -48,8 +48,8 @@ importers:
       '@types/react': ^18.0.22
       '@types/react-dom': ^18.0.7
       eslint: 7.32.0
+      eslint-config-next-js: workspace:*
       next: ^13.1.1
-      next-js-eslint-config: workspace:*
       next-js-tsconfig: workspace:*
       next-js-ui: workspace:*
       react: 18.2.0
@@ -66,7 +66,7 @@ importers:
       '@types/react': 18.0.37
       '@types/react-dom': 18.0.11
       eslint: 7.32.0
-      next-js-eslint-config: link:../../packages/next-js-eslint-config
+      eslint-config-next-js: link:../../packages/next-js-eslint-config
       next-js-tsconfig: link:../../packages/next-js-tsconfig
       typescript: 4.9.5
 
@@ -76,10 +76,10 @@ importers:
       '@sveltejs/adapter-auto': latest
       '@sveltejs/kit': latest
       '@types/sass': ^1.45.0
+      eslint-config-svelte: workspace:*
       sass: ^1.62.0
       svelte: ^3.44.0
       svelte-check: ^3.2.0
-      svelte-eslint-config: workspace:*
       svelte-preprocess: ^5.0.3
       svelte-ui: workspace:*
       tslib: ^2.3.1
@@ -92,10 +92,10 @@ importers:
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.15.7
       '@sveltejs/kit': 1.15.7_svelte@3.58.0+vite@4.3.0
       '@types/sass': 1.45.0
+      eslint-config-svelte: link:../../packages/svelte-eslint-config
       sass: 1.62.0
       svelte: 3.58.0
       svelte-check: 3.2.0_sass@1.62.0+svelte@3.58.0
-      svelte-eslint-config: link:../../packages/svelte-eslint-config
       svelte-preprocess: 5.0.3_zcwn6jy5gv4steepup5bhm2izy
       tslib: 2.5.0
       typescript: 4.9.5
@@ -105,9 +105,9 @@ importers:
     specifiers:
       '@sveltejs/adapter-auto': latest
       '@sveltejs/kit': latest
+      eslint-config-svelte: workspace:*
       svelte: ^3.44.0
       svelte-check: ^3.2.0
-      svelte-eslint-config: workspace:*
       svelte-preprocess: ^5.0.3
       svelte-ui: workspace:*
       tslib: ^2.3.1
@@ -118,9 +118,9 @@ importers:
     devDependencies:
       '@sveltejs/adapter-auto': 2.0.0_@sveltejs+kit@1.15.7
       '@sveltejs/kit': 1.15.7_svelte@3.58.0+vite@4.3.0
+      eslint-config-svelte: link:../../packages/svelte-eslint-config
       svelte: 3.58.0
       svelte-check: 3.2.0_svelte@3.58.0
-      svelte-eslint-config: link:../../packages/svelte-eslint-config
       svelte-preprocess: 5.0.3_aswnnyxiuwffgztcffmr7c7eny
       tslib: 2.5.0
       typescript: 4.9.5
@@ -151,7 +151,7 @@ importers:
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
       eslint: ^7.32.0
-      next-js-eslint-config: workspace:*
+      eslint-config-next-js: workspace:*
       next-js-tsconfig: workspace:*
       react: ^18.2.0
       typescript: ^4.5.2
@@ -159,7 +159,7 @@ importers:
       '@types/react': 18.0.37
       '@types/react-dom': 18.0.11
       eslint: 7.32.0
-      next-js-eslint-config: link:../next-js-eslint-config
+      eslint-config-next-js: link:../next-js-eslint-config
       next-js-tsconfig: link:../next-js-tsconfig
       react: 18.2.0
       typescript: 4.9.5
@@ -187,11 +187,11 @@ importers:
 
   packages/svelte-ui:
     specifiers:
+      eslint-config-svelte: workspace:*
       svelte: ^3.9.2
-      svelte-eslint-config: workspace:*
     devDependencies:
+      eslint-config-svelte: link:../svelte-eslint-config
       svelte: 3.58.0
-      svelte-eslint-config: link:../svelte-eslint-config
 
 packages:
 
