@@ -34,8 +34,9 @@ Opened files for this starter can be used under Apache-2.0 lisence if present un
 - [github.com/Monwoo/web-starters-free](https://github.com/Monwoo/web-starters-free)
 - [github.com/Monwoo/web-starters-free/blob/main/apps](https://github.com/Monwoo/web-starters-free/blob/main/apps)
 
-To support and/or help us open more software, send a subvention with :
-- [www.monwoo.com/don](https://www.monwoo.com/don)
+**Supports :**
+- You can use regular features of : [github.com/Monwoo/web-starters-free/labels/mws-svelte-wp-display](https://github.com/Monwoo/web-starters-free/labels/mws-svelte-wp-display)
+- To help us open more software, send a subvention : [www.monwoo.com/don](https://www.monwoo.com/don)
 
 <div style="page-break-before: always;"></div>
 
