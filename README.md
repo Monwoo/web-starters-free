@@ -19,6 +19,13 @@ Will contain multiple free webstarters (ready to use) and some parts of opened c
 - `svelte-eslint-config`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-svelte` for config compatibility purpose.
 - `svelte-tsconfig`: `tsconfig.json` used throughout the monorepo `svelte` apps and packages
 
+### Supports
+
+- You can use regular features of : https://github.com/Monwoo/web-starters-free/issues
+
+To support us and/or help us open more software, send a subvention with :
+- [www.monwoo.com/don](https://www.monwoo.com/don)
+
 ### Build
 
 ```bash
