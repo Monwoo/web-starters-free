@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ['eslint-config-svelte']
+  extends: ['svelte-eslint-config']
 };

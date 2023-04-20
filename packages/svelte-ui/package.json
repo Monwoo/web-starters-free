@@ -7,11 +7,11 @@
   "svelte": "index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "prettier --check --ignore-path=../../packages/eslint-config-svelte/.prettierignore --config=../../packages/eslint-config-svelte/.prettierrc . && eslint \".\"",
-    "format": "prettier --write --ignore-path=../../packages/eslint-config-svelte/.prettierignore --config=../../packages/eslint-config-svelte/.prettierrc ."
+    "lint": "prettier --check --ignore-path=../../packages/svelte-eslint-config/.prettierignore --config=../../packages/svelte-eslint-config/.prettierrc . && eslint \".\"",
+    "format": "prettier --write --ignore-path=../../packages/svelte-eslint-config/.prettierignore --config=../../packages/svelte-eslint-config/.prettierrc ."
   },
   "devDependencies": {
-    "eslint-config-svelte": "workspace:*",
+    "svelte-eslint-config": "workspace:*",
     "svelte": "^3.9.2"
   }
 }

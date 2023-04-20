@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
-    "eslint-config-next-js": "workspace:*",
+    "next-js-eslint-config": "workspace:*",
     "eslint": "7.32.0",
     "next-js-tsconfig": "workspace:*",
     "@types/node": "^17.0.12",

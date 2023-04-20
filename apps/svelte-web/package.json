@@ -8,8 +8,8 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --check --ignore-path=../../packages/eslint-config-svelte/.prettierignore --config=../../packages/eslint-config-svelte/.prettierrc . && eslint \"src\"",
-    "format": "prettier --write --ignore-path=../../packages/eslint-config-svelte/.prettierignore --config=../../packages/eslint-config-svelte/.prettierrc ."
+    "lint": "prettier --check --ignore-path=../../packages/svelte-eslint-config/.prettierignore --config=../../packages/svelte-eslint-config/.prettierrc . && eslint \"src\"",
+    "format": "prettier --write --ignore-path=../../packages/svelte-eslint-config/.prettierignore --config=../../packages/svelte-eslint-config/.prettierrc ."
   },
   "dependencies": {
     "svelte-ui": "workspace:*"
@@ -17,7 +17,7 @@
   "devDependencies": {
     "@sveltejs/adapter-auto": "latest",
     "@sveltejs/kit": "latest",
-    "eslint-config-svelte": "workspace:*",
+    "svelte-eslint-config": "workspace:*",
     "svelte": "^3.44.0",
     "svelte-check": "^3.2.0",
     "svelte-preprocess": "^5.0.3",

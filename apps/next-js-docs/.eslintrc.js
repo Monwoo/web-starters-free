@@ -1,4 +1,4 @@
 module.exports = {
   root: true,
-  extends: ["eslint-config-next-js"],
+  extends: ["next-js-eslint-config"],
 };
