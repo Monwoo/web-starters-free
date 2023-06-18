@@ -26,7 +26,7 @@ Will contain multiple free webstarters (ready to use) and some parts of opened c
 
 ### Supports
 
-- You can use regular features of : https://github.com/Monwoo/web-starters-free/issues
+- You can use regular features of : [github.com/Monwoo/web-starters-free/issues](https://github.com/Monwoo/web-starters-free/issues)
 
 To support us and/or help us open more software, send a subvention with :
 - [www.monwoo.com/don](https://www.monwoo.com/don)
