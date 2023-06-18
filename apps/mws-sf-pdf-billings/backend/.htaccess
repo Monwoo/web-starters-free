@@ -1,0 +1,17 @@
+# https://unix.stackexchange.com/questions/220558/deny-access-to-subfolder-and-file-with-htaccess
+# <IfModule mod_rewrite.c>
+#   RewriteEngine on
+#   RewriteRule ^(public|var/log) - [F]
+# </IfModule>
+
+# https://unix.stackexchange.com/questions/220558/deny-access-to-subfolder-and-file-with-htaccess
+
+# https://stackoverflow.com/questions/17611770/deny-from-all-in-subdirectory-htaccess-not-overriding-file-rules-in-root-htacces
+# Deny access to everything by default
+Order Deny,Allow
+deny from all
+
+# Allow access to html files
+<Files public>
+    allow from all
+</Files>
