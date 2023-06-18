@@ -5,14 +5,19 @@ Will contain multiple free webstarters (ready to use) and some parts of opened c
 
 ## Apps and Packages
 
-- `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential)
+### Monwoo Web Starters
+- `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential. Need paid licence to be fully integrated)
+- `mws-sf-pdf-billings`: Open Source Apache-2.0 PDF Billings Server in Symfony 5
 
+
+### Next JS example
 - `next-js-docs`: a [Next.js](https://nextjs.org/) app
 - `next-js-web`: another [Next.js](https://nextjs.org/) app
 - `next-js-ui`: a stub React component library shared by both `next-js-web` and `next-js-docs` applications
 - `next-js-eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-next-js` for config compatibility purpose.
 - `next-js-tsconfig`: `tsconfig.json` used throughout the monorepo `next-js` apps and packages
 
+### Svelte example
 - `svelte-docs`: a [svelte-kit](https://kit.svelte.dev/) app
 - `svelte-web`: another [svelte-kit](https://kit.svelte.dev/) app
 - `svelte-ui`: a stub Svelte component library shared by both `svelte-web` and `svelte-docs` applications
