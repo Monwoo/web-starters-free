@@ -1,6 +1,6 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
-	<style>
+<style>
 {{pdfCssStyles}}</style>
 
 {# 
@@ -16,17 +16,27 @@ text-decoration
 width
 height
 text-align
+
+
+	text-align: center; =>  work in style= attr ONLY...
+
 #}
+
+{# DEBUGS colors : #}
 	<style>
-.header {
+/* .header {
 	background-color: #FF0000;
 }
 .business-logo {
 	background-color: #00FF00;
 }
+.quotation-title {
+	background-color: #AA0000;
+}
 .client-logo {
 	background-color: #0000FF;
-}
+} */
+
 </style>
 
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
@@ -44,15 +54,15 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{% set businessLogo = 'file://' ~ kernelRootDir ~ '/var/LogoMonwoo2023.jpeg' %}
 	{# // TODO: empirique way, go check pdf default mesure unit... #}
 	{% set fullWidth = 503 %}
-		<table class="header" style="padding: 0px;"> <tr>
-			<td class="business-logo" style="width:{{ 0.4 * fullWidth }};">
-				<img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
+		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
+			<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
+				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}" />
 			</td>
-			<td class="quotation-title" style="width:{{ 0.2 * fullWidth }};">
-				Devis n°
+			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;">
+				Devis n°{{billingConfig.quotationNumber}}
 			</td>
-			<td class="client-logo" style="width:{{ 0.4 * fullWidth }};">
-				<img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
+			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
+				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}" />
 			</td>
 		</tr>
 	</table>
