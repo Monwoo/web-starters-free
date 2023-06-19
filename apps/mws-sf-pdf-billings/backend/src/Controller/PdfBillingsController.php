@@ -66,6 +66,7 @@ class PdfBillingsController extends AbstractController
     #[Route('/view', name: 'app_pdf_billings_view')]
     public function view(
         // EngineInterface $tplEngine,
+        string $projectDir,
         BillingConfigRepository $bConfigRepository,
     ) : Response {
         // Missing deps injections in new version ?
@@ -94,6 +95,7 @@ class PdfBillingsController extends AbstractController
         // Set some content to print
         $html = $twig->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
             'bConfig' => $bConfig,
+            '_BASE_PATH' => $projectDir . "/public",
         ]);
 
         $pdf->AddPage();

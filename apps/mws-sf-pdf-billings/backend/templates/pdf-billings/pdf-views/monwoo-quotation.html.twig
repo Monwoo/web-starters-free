@@ -1,11 +1,728 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
-
+{# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
+<style>
+  {{ file_get_contents(_BASE_PATH.'pdf-views/sheet.css') }}
+</style>
 {{bConfig.clientName}}
-// Welcome to mws-sf-pdf-billings
-
-{#
-<h1>Welcome to <a href="http://www.tcpdf.org" style="text-decoration:none;background-color:#CC0000;color:black;">&nbsp;<span style="color:black;">TC</span><span style="color:white;">PDF</span>&nbsp;</a>!</h1>
-<i>This is the first example of TCPDF library.</i>
-<p>This text is printed using the <i>writeHTMLCell()</i> method but you can also use: <i>Multicell(), writeHTML(), Write(), Cell() and Text()</i>.</p>
-<p>Please check the source code documentation and other examples for further information.</p>
-<p style="color:#CC0000;">TO IMPROVE AND EXPAND TCPDF I NEED YOUR SUPPORT, PLEASE <a href="http://sourceforge.net/donate/index.php?group_id=128076">MAKE A DONATION!</a></p> #}
+<table class="waffle" cellspacing="0" cellpadding="0">
+	<thead>
+		<tr>
+			<th class="row-header freezebar-origin-ltr"></th>
+			<th id="1776022525C0" style="width:24px;" class="column-headers-background">A</th>
+			<th id="1776022525C1" style="width:132px;" class="column-headers-background">B</th>
+			<th id="1776022525C2" style="width:192px;" class="column-headers-background">C</th>
+			<th id="1776022525C3" style="width:162px;" class="column-headers-background">D</th>
+			<th id="1776022525C4" style="width:162px;" class="column-headers-background">E</th>
+			<th id="1776022525C5" style="width:132px;" class="column-headers-background">F</th>
+			<th id="1776022525C6" style="width:162px;" class="column-headers-background">G</th>
+			<th id="1776022525C7" style="width:162px;" class="column-headers-background">H</th>
+			<th id="1776022525C8" style="width:192px;" class="column-headers-background">I</th>
+			<th id="1776022525C9" style="width:24px;" class="column-headers-background">J</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr style="height: 20px">
+			<th id="1776022525R0" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">1</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s1" dir="ltr" colspan="2" rowspan="4">
+				<div style="width:325px;height:127px;"><img src="https://lh3.googleusercontent.com/docsubipk/AIRpy9PYqz2kMZd1RlCXYBviyGdcIe4QzO8IfHkjmteS5S3lqltopOlTCcLj0WBMT5XPpeukkWzky08I0hanRpE5TCRF1XBU68axZqpweg2vjuU5gqo=s325-w325-h127" style="width:inherit;height:inherit;object-fit:scale-down;object-position:center center;"></div>
+			</td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s3" dir="ltr"></td>
+			<td class="s1" dir="ltr" colspan="2" rowspan="4"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R1" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">2</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s5" dir="ltr" colspan="4" rowspan="2">Devis n° 2023-06-19-D-M00</td>
+			<td class="s4" dir="ltr"></td>
+		</tr>
+		<tr style="height: 64px">
+			<th id="1776022525R2" style="height: 64px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 64px">3</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R3" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">4</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s3" dir="ltr"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 52px">
+			<th id="1776022525R4" style="height: 52px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 52px">5</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s7" dir="ltr" colspan="3">M. Miguel Monwoo A.K.A. M. Moreau<br>via ajustement des bénéfices non commerciaux<br>liées à SARL Kodiom</td>
+			<td class="s8" dir="ltr" colspan="5">_____________________________</td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R5" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">6</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" dir="ltr" colspan="3">SIRET 530 496 868 00015 via 530 435 882 00010</td>
+			<td class="s11" dir="ltr" colspan="5">_____________________________</td>
+			<td class="s9" dir="ltr"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R6" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">7</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" dir="ltr" colspan="3">Régime Micro-B.N.C.</td>
+			<td class="s11" dir="ltr" colspan="5">__________________________</td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R7" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">8</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" dir="ltr" colspan="3">service@monwoo.com</td>
+			<td class="s11" dir="ltr" colspan="5">Email : _________________________________________________</td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R8" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">9</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" dir="ltr" colspan="3">Tel : (+33) 7 51 33 58 20</td>
+			<td class="s11" dir="ltr" colspan="5">Tel : _________________________________</td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R9" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">10</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" dir="ltr" colspan="3">21 rue de Fécamp chez Kodiom et Monwoo</td>
+			<td class="s11" dir="ltr" colspan="5">_____________________________</td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R10" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">11</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" dir="ltr" colspan="3">75 012 Paris</td>
+			<td class="s11" dir="ltr" colspan="5">_____________________________</td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R11" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">12</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" dir="ltr" colspan="3">
+				<a target="_blank" href="http://www.monwoo.com">www.monwoo.com</a>
+			</td>
+			<td class="s11" dir="ltr" colspan="5"></td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 22px">
+			<th id="1776022525R12" style="height: 22px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 22px">13</div>
+			</th>
+			<td class="s12"></td>
+			<td class="s13"></td>
+			<td class="s14" dir="ltr" colspan="6">Nous vous remercions de votre confiance.</td>
+			<td class="s13"></td>
+			<td class="s15"></td>
+		</tr>
+		<tr style="height: 13px">
+			<th id="1776022525R13" style="height: 13px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 13px">14</div>
+			</th>
+			<td class="s16"></td>
+			<td class="s17"></td>
+			<td class="s18" dir="ltr"></td>
+			<td class="s18" dir="ltr">2023-06-19-D-M00</td>
+			<td class="s18" dir="ltr"></td>
+			<td class="s18" dir="ltr"></td>
+			<td class="s18" dir="ltr"></td>
+			<td class="s18" dir="ltr"></td>
+			<td class="s17"></td>
+			<td class="s19"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R14" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">15</div>
+			</th>
+			<td class="s20"></td>
+			<td class="s21" dir="ltr" colspan="4">Devis fait le :
+			</td>
+			<td class="s22" dir="ltr" colspan="4">19/06/2023</td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R15" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">16</div>
+			</th>
+			<td class="s20"></td>
+			<td class="s23" dir="ltr" colspan="4">Valable jusqu'au :
+			</td>
+			<td class="s24" dir="ltr" colspan="4">03/07/2023</td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 43px">
+			<th id="1776022525R16" style="height: 43px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 43px">17</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s25" dir="ltr">Objet :</td>
+			<td class="s26" dir="ltr" colspan="6">390 € : Licence pour mws-svelte-wp-display et 3 itérations de mise en oeuvres Svelte</td>
+			<td class="s10"></td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 60px">
+			<th id="1776022525R17" style="height: 60px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 60px">18</div>
+			</th>
+			<td class="s12"></td>
+			<td class="s27" colspan="8">- code starter MWS Svelte-wp-display transmis par Git et/ou email. [promo 30€]<br>- 3 itérations incluant 6 heures de conseils et ajustements Svelte. [ 360€]</td>
+			<td class="s28" dir="ltr"></td>
+		</tr>
+		<tr style="height: 100px">
+			<th id="1776022525R18" style="height: 100px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 100px">19</div>
+			</th>
+			<td class="s12"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s28" dir="ltr"></td>
+		</tr>
+		<tr style="height: 171px">
+			<th id="1776022525R19" style="height: 171px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 171px">20</div>
+			</th>
+			<td class="s12"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s27"></td>
+			<td class="s28" dir="ltr"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R20" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">21</div>
+			</th>
+			<td class="s20"></td>
+			<td class="s29" colspan="2">Désignation</td>
+			<td class="s29" dir="ltr">Quantité</td>
+			<td class="s29" dir="ltr">P.U. H.T.</td>
+			<td class="s30" dir="ltr">Taux de T.V.A.</td>
+			<td class="s29" dir="ltr">% de remise</td>
+			<td class="s29" dir="ltr">Prix H.T.</td>
+			<td class="s31" dir="ltr">Prix T.T.C.</td>
+			<td class="s32" dir="ltr">break</td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R21" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">22</div>
+			</th>
+			<td class="s33 softmerge">
+				<div class="softmerge-inner" style="width:21px;left:-1px">2023-mws-Svelte-WP-display</div>
+			</td>
+			<td class="s34" dir="ltr" colspan="2">40€ : Licence nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.<br></td>
+			<td class="s35">1,00</td>
+			<td class="s36" dir="ltr">40,00 €</td>
+			<td class="s36" dir="ltr">0,00%</td>
+			<td class="s37" dir="ltr">25%</td>
+			<td class="s38">30,00 €</td>
+			<td class="s38">30,00 €</td>
+			<td class="s39" dir="ltr">1</td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R22" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">23</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s40" dir="ltr"></td>
+			<td class="s40" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s42"></td>
+			<td class="s43" dir="ltr"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R23" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">24</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s44" dir="ltr" colspan="7">Détail de licence :</td>
+			<td class="s45"></td>
+			<td class="s39" dir="ltr"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R24" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">25</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s46" dir="ltr" colspan="2">Monwoo Web Starters<br>[ Svelte-WP-display ]</td>
+			<td class="s47" dir="ltr" colspan="5">- Merci d'indiquer le nom de domaine de destination, mail de livraison et/ou les accès git à utiliser.<br>- Le code de production généré est utilisable librement (avec crédit de participation pour 'Monwoo')<br>- Le code source est CONFIDENTIEL et vous est confié pour un usage de développement limité à la production nécessaire pour 1 nom de domaine.<br>- Certaines parties sont utilisables librement (Licence Apache-2.0) si également disponible sur :
+				<br>https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-svelte-wp-display-0.0.5</td>
+			<td class="s48 softmerge">
+				<div class="softmerge-inner" style="width:362px;left:-173px">bcc-guide-UtilisationStarterMonwooMWS</div>
+			</td>
+			<td class="s49" dir="ltr"></td>
+		</tr>
+		<tr style="height: 450px">
+			<th id="1776022525R25" style="height: 450px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 450px">26</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s50" dir="ltr"></td>
+			<td class="s50" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s51"></td>
+			<td class="s39" dir="ltr"></td>
+		</tr>
+		<tr style="height: 213px">
+			<th id="1776022525R26" style="height: 213px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 213px">27</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s50" dir="ltr"></td>
+			<td class="s50" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s51"></td>
+			<td class="s39" dir="ltr"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R30" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">31</div>
+			</th>
+			<td class="s20"></td>
+			<td class="s52" colspan="2">Désignation</td>
+			<td class="s30" dir="ltr">Quantité</td>
+			<td class="s30" dir="ltr">P.U. H.T.</td>
+			<td class="s30" dir="ltr">Taux de T.V.A.</td>
+			<td class="s30" dir="ltr">% de remise</td>
+			<td class="s30" dir="ltr">Prix H.T.</td>
+			<td class="s53" dir="ltr">Prix T.T.C.</td>
+			<td class="s32" dir="ltr">break</td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R31" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">32</div>
+			</th>
+			<td class="s33 softmerge">
+				<div class="softmerge-inner" style="width:21px;left:-1px">2023-mk-expertise-svelte-half-hour</div>
+			</td>
+			<td class="s34" dir="ltr" colspan="2">30€ : 30 minutes d’expertise Frontend UI Svelte de votre site web en télétravail</td>
+			<td class="s38" dir="ltr">12,00</td>
+			<td class="s36" dir="ltr">30,00 €</td>
+			<td class="s36" dir="ltr">0,00%</td>
+			<td class="s37" dir="ltr">0%</td>
+			<td class="s38" dir="ltr">360,00 €</td>
+			<td class="s38">360,00 €</td>
+			<td class="s39" dir="ltr">2</td>
+		</tr>
+		<tr style="height: 8px">
+			<th id="1776022525R32" style="height: 8px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 8px">33</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s40" dir="ltr"></td>
+			<td class="s40" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s41" dir="ltr"></td>
+			<td class="s42"></td>
+			<td class="s43" dir="ltr">1</td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R33" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">34</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s44" dir="ltr" colspan="7">Objectif(s) de la prestation :</td>
+			<td class="s45"></td>
+			<td class="s39" dir="ltr"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R34" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">35</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s46" dir="ltr" colspan="2">Dev Svelte<br>[ 6 heures ]</td>
+			<td class="s47" dir="ltr" colspan="5">Mise en oeuvre dirigée du starter https://mws.monwoo.com/demos/svelte-wp-display/ par sessions de 20 minutes en visioconférence ou travaux distanciels.<br><br>Etape 1 : https://mws.monwoo.com/demos/svelte-wp-display/fr/mws/wp-display/identite-visuelle/<br>ou adaptation de type : https://www.conceptz-crewz.com/guide pour une première proposition.<br><br>Etape 2 : Ajustements des composant et propositions via des librairies incluses pour une deux!ème livraison.<br><br>Etape 3 : Ajustements, finitions et/ou tests pour une livraison finale.</td>
+			<td class="s48 softmerge">
+				<div class="softmerge-inner" style="width:280px;left:-91px">bcc-guide-MiseEnOeuvreRapide</div>
+			</td>
+			<td class="s49" dir="ltr"></td>
+		</tr>
+		<tr style="height: 5px">
+			<th id="1776022525R35" style="height: 5px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 5px">36</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s50" dir="ltr"></td>
+			<td class="s50" dir="ltr"></td>
+			<td class="s54" dir="ltr"></td>
+			<td class="s54" dir="ltr"></td>
+			<td class="s54" dir="ltr"></td>
+			<td class="s54" dir="ltr"></td>
+			<td class="s47" dir="ltr"></td>
+			<td class="s51"></td>
+			<td class="s39" dir="ltr"></td>
+		</tr>
+		<tr style="height: 11px">
+			<th id="1776022525R63" style="height: 11px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 11px">64</div>
+			</th>
+			<td class="s55"></td>
+			<td class="s56"></td>
+			<td class="s56"></td>
+			<td class="s57"></td>
+			<td class="s57"></td>
+			<td class="s57"></td>
+			<td class="s57"></td>
+			<td class="s57"></td>
+			<td class="s57"></td>
+			<td class="s58" dir="ltr"></td>
+		</tr>
+		<tr style="height: 10px">
+			<th id="1776022525R64" style="height: 10px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 10px">65</div>
+			</th>
+			<td class="s55"></td>
+			<td class="s59" colspan="8">
+				<div style="width:1303px;height:10px;"><img src="https://lh3.googleusercontent.com/docs/ADP-6oHqXwQ1Fm67bJkmVS4q-gSVdl1FNJUAhu1ayL_TNfScAxrqtAkT_9M-xkhkm9ABUaf1lvCIIZONtLkhwfEU0zJW-3PJdcYxDFb67pIoV5X16uYabvQDUAOqciKlC86l_yIMNi5dEdBR6RZs0K1PP_SWP5InFjwfepQ1MRCK7GiKFzbol2BVSC1AwquYtrLFOELiO-hJ6DZwDBl55poPyuwHFDpP5zW-2M5peh_MCkj0RQFNfSKHytb2w8aYsjtaUXua_lV17JJUWw4rHNAdyBnLybMCJw7tfGaHAufO8ylKxu6F2f4ojHO4wnm1xToP3c4yEdt_KzNS6CZDITXGFH3KGAup8TP8eHzMFENPDXjPhVIumLZgcjPXIc0bDzjx90sxsYL3-GeUYYyaTsZOXXb6DjB-3earuaL4e00tUYt_O8ni7W81xx1U7Jrg0sJATe-NVnUU6vajbBO5iCpVjSCiO4C5IjPtLlwRZdhgY1zHUZUQiM2SsPV56GsbxnQ8JNQUzbyOKl1bk6YPtrdgJX4weu-HOymzE1htweobT2TFeUbpf3od94nz6ZFLvm5B5nLz4WN3Qb1ZcVpY7uNDwrnPBrVXEL0n2PZ7E_I1OcMbibeuE3wp-do1-T6E9CPmwS0hW2up-2rzV7F_ds18vj5ZperHusaobJT_30VCYqobdZ48IyQ9O-bJ5D10mxT545WMjBFDE4jvs-6iqioiiYEDXVknSS0gm52qflhCTL9OWv_JPl4wISU5Oii969SZrPmvAwRRjPcp11JNvnff3D4_KKRMBurFmV9A5xfJHh5Rnn8AV_dR-PcsEk1rBUOpkahRcGgUNPS_YyCYLFPvX2RsXid6VrzsGvcfqkLnjPvUW69EG_LFlQI26uVvrydai2Fm2ZE6IJ6GMoM2ITYlTtjw8aKQn17f9WgWQBYxPzFTA0zfTwtFEalhpyekVw36uqagT6V8BotIju5NivJ1tWxkpM7NMNztHK15o9p4ozxlCq7AHxqkWf_fKTXhHnW0dY21EsMc4xCFUENjVnqZQKC6YAlw63Lj5JzSxQy-SK_NczhgDdBYrHKKqsk=w1303-h10" style="width:inherit;height:inherit;object-fit:scale-down;object-position:center bottom;"></div>
+			</td>
+			<td class="s58" dir="ltr">end</td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R65" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">66</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s60" dir="ltr"></td>
+			<td class="s60"></td>
+			<td class="s60"></td>
+			<td class="s60"></td>
+			<td class="s60"></td>
+			<td class="s60"></td>
+			<td class="s61"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R66" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">67</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s62" dir="ltr" colspan="2"></td>
+			<td class="s63" dir="ltr" colspan="2">Total H.T. :</td>
+			<td class="s2"></td>
+			<td class="s63"></td>
+			<td class="s63">390,00 €</td>
+			<td class="s2"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R68" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">69</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10" colspan="2"></td>
+			<td class="s11" dir="ltr" colspan="2">Montant T.V.A. :</td>
+			<td class="s64"></td>
+			<td class="s65"></td>
+			<td class="s65">0,00 €</td>
+			<td class="s10"></td>
+			<td class="s9"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R69" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">70</div>
+			</th>
+			<td class="s66"></td>
+			<td class="s67" colspan="2"></td>
+			<td class="s25" dir="ltr" colspan="2">Total T.T.C. :</td>
+			<td class="s67"></td>
+			<td class="s25"></td>
+			<td class="s25">390,00 €</td>
+			<td class="s67"></td>
+			<td class="s68"></td>
+		</tr>
+		<tr style="height: 12px">
+			<th id="1776022525R70" style="height: 12px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 12px">71</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s69"></td>
+			<td class="s2"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R71" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">72</div>
+			</th>
+			<td class="s6"></td>
+			<td class="s10"></td>
+			<td class="s10"></td>
+			<td class="s70"></td>
+			<td class="s71" dir="ltr">%</td>
+			<td class="s71" dir="ltr">H.T.</td>
+			<td class="s71" dir="ltr">T.V.A.</td>
+			<td class="s71" dir="ltr">T.T.C.</td>
+			<td class="s56" dir="ltr"></td>
+			<td class="s72" dir="ltr"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R72" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">73</div>
+			</th>
+			<td class="s73"></td>
+			<td class="s74" dir="ltr" colspan="3">Déjà payé :</td>
+			<td class="s75">0,00%</td>
+			<td class="s75">0,00 €</td>
+			<td class="s75">0,00 €</td>
+			<td class="s76" dir="ltr">0,00 €</td>
+			<td class="s77" dir="ltr"></td>
+			<td class="s78" dir="ltr"></td>
+		</tr>
+		<tr style="height: 12px">
+			<th id="1776022525R77" style="height: 12px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 12px">78</div>
+			</th>
+			<td class="s0"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s2"></td>
+			<td class="s69"></td>
+			<td class="s69"></td>
+			<td class="s69"></td>
+			<td class="s69"></td>
+			<td class="s2"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 41px">
+			<th id="1776022525R78" style="height: 41px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 41px">79</div>
+			</th>
+			<td class="s66"></td>
+			<td class="s67"></td>
+			<td class="s67"></td>
+			<td class="s79"></td>
+			<td class="s23" dir="ltr" colspan="2">Total Net :
+			</td>
+			<td class="s80" dir="ltr" colspan="2">390,00 €</td>
+			<td class="s67"></td>
+			<td class="s66"></td>
+		</tr>
+		<tr style="height: 12px">
+			<th id="1776022525R79" style="height: 12px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 12px">80</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s82"></td>
+			<td class="s82"></td>
+			<td class="s82"></td>
+			<td class="s82"></td>
+			<td class="s82"></td>
+			<td class="s82"></td>
+			<td class="s82"></td>
+			<td class="s82"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 47px">
+			<th id="1776022525R80" style="height: 47px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 47px">81</div>
+			</th>
+			<td class="s83"></td>
+			<td class="s84" dir="ltr" colspan="8">Dans l'attente de votre retour.</td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 56px">
+			<th id="1776022525R81" style="height: 56px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 56px">82</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s85"></td>
+			<td class="s85"></td>
+			<td class="s85"></td>
+			<td class="s85"></td>
+			<td class="s86" dir="ltr" colspan="4">Merci et à bientôt.</td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 56px">
+			<th id="1776022525R82" style="height: 56px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 56px">83</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s87" dir="ltr" colspan="8">La signature du présent devis ou un paiement de l'acompte avec la référence au devis entraîne l'acceptation sans réserve des conditions générales de vente figurant en annexe</td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R83" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">84</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s88" dir="ltr" colspan="2">Fait en _ _ _ exemplaires.</td>
+			<td class="s89" dir="ltr" colspan="6">Datez et paraphez chaques pages. Cachet mention "Bon pour accord", cachet de l'entreprise et signature(s) :</td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 6px">
+			<th id="1776022525R84" style="height: 6px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 6px">85</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s90" dir="ltr"></td>
+			<td class="s90" dir="ltr"></td>
+			<td class="s90" dir="ltr"></td>
+			<td class="s60" dir="ltr" colspan="3"></td>
+			<td class="s90" dir="ltr"></td>
+			<td class="s85"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R85" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">86</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s10" dir="ltr" colspan="4">Signature(s) ou cachet(s) de validation Monwoo :</td>
+			<td class="s91" dir="ltr" colspan="4">Signé le :  _  _ /  _  _  /  _  _  _  _  à :  _  _  _  _  _  _  _  _  _  _  _</td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 9px">
+			<th id="1776022525R86" style="height: 9px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 9px">87</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s10" dir="ltr"></td>
+			<td class="s10" dir="ltr"></td>
+			<td class="s10" dir="ltr"></td>
+			<td class="s10" dir="ltr"></td>
+			<td class="s10" dir="ltr"></td>
+			<td class="s69"></td>
+			<td class="s92" dir="ltr"></td>
+			<td class="s82"></td>
+			<td class="s93"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R87" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">88</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s94" dir="ltr" colspan="2" rowspan="6">
+				<div style="width:325px;height:154px;"><img src="https://lh3.googleusercontent.com/docs/ADP-6oEHdkU92oxb94OgdAySR6oFNZu_g2taMf8OQF0-8FTmiyKRQR1cZKG6-L_Kkzi_ZKhA981SMmjmjBES-XYTlhbl3KoV0NOlFIWW1qJ6Gfdq9hGtcGdGfiia-VXpp73LEBsr1-QwkvM9aB582iFiMUGUaI5k5gKGCxYIBONQcl5YmInqfoepDyFNqQYbqA2mvJP3xxpI52fIpa5fIcqqrBThS_uBxMHUm1TR2tj3XxbAwt-QSnSfBqpXtyc2zhvlYytTiFvPfK6mp7gHM5x4ajxjsei64-aj1UhEJxJuGQqGsqcQ1n95SE1q1jn455Sq4ibngtxLpuxTMi0v_cBdmK9w7b0xcObjoegBhVdKdTUSoEXc_ly6qAu-liBPKYBcfDoyYAZzLZfSMh7jSjAYHwrgbmysL9_gp3CcjZ2wqZxO8uGK2guOX0HOI7u_v5ZmvuIeQ4aX1DhXkZnPVXooLEjLSIonMXPpDi-u5_8VmRiH8kdKjQAGkdBIfYm6yqqxfptkWtPsGFnLZZPq5Mh3s8YPq_Vau2MkpurvPym9im80KsUo6jeAB9WNpTHmoSVJLZ95YVMcrY3sRV2cLpOMY0iWldUOjskxkepQXXvKHcu_n_lw-ScdgX0jIRPhZ5GJC3JQvjHE1jW_Q_ANRALbMLpiokP5PT84GFULfbUtQX_aeTk007fJ9sJCshvoIDwcezFC3gTbRRyVA9wCjqqrBOog1K07PGHA-Aewkf2KExkDYlDt4a4ZHDSE-rqn3wYHBOQCGwUV3xuEEBnWzZH8aG2vccH8Py1tD6SScXhABfQMJ4_Kr0_sM3hQQ2dzCJGYl54mvgtpTFV7bAubGMBd1KZv5XskZ6b2o26pm5WdcYlpS6PooU51cOXzhA47OIESeceZLOmbpzzf6076QAexSNabAOdO6jD14Ev8FkpdWL0wO2gfYkDx-dppXbUkDuOd6DxXZkXMIvgwtpWmSvc5bqjjgUU1EvSbE9SUWaJzMmcepXXjDlZ6LnHYHetZhnfetxxKuesHWTy6sOlCr4FTMoJmc84vaF6EP4JI2RlvTXGuk6h3MsvNb2y2sb4=w325-h154" style="width:inherit;height:inherit;object-fit:scale-down;object-position:left top;"></div>
+			</td>
+			<td class="s95" dir="ltr" colspan="2" rowspan="6"></td>
+			<td class="s70" dir="ltr"></td>
+			<td class="s96" colspan="3" rowspan="6"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R88" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">89</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s70" dir="ltr"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R89" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">90</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s70" dir="ltr"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R90" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">91</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s70" dir="ltr"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R91" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">92</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s70" dir="ltr"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 49px">
+			<th id="1776022525R92" style="height: 49px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 49px">93</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s70" dir="ltr"></td>
+			<td class="s4"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R93" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">94</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s97" dir="ltr"></td>
+			<td class="s97" dir="ltr"></td>
+			<td class="s97" dir="ltr"></td>
+			<td class="s97" dir="ltr"></td>
+			<td class="s0"></td>
+			<td class="s0"></td>
+			<td class="s97" dir="ltr"></td>
+			<td class="s81"></td>
+			<td class="s93"></td>
+		</tr>
+		<tr style="height: 20px">
+			<th id="1776022525R94" style="height: 20px;" class="row-headers-background">
+				<div class="row-header-wrapper" style="line-height: 20px">95</div>
+			</th>
+			<td class="s81"></td>
+			<td class="s98" dir="ltr" colspan="8">Conformément à l’article L.441-6 du code de commerce, des pénalités de retard, au taux annuel de 20 % et une indemnité de 40€ sont dues à défaut de règlement le jour suivant la date de paiement figurant sur la facture.<br>Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers.<br>TVA non applicable, art. 293B du C.G.I. et art. 22 de la loi finances pour 2018.<br><br><span style="font-weight:bold;">For foreign user, please ensure a professional translation from French before signing.</span>
+			</td>
+			<td class="s4"></td>
+		</tr>
+	</tbody>
+</table>
