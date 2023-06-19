@@ -49,7 +49,9 @@ class PdfBillingsController extends AbstractController
             // $bConfig->setComputedValue(...);
             $em->persist($bConfig);
             $em->flush();
-            return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
+
+            // TIPS : un-comment below if you want to redirect to full PDF view at form submit
+            // return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
         }
 
         // return $this->render('pdf-billings/index.html.twig', [
@@ -61,7 +63,10 @@ class PdfBillingsController extends AbstractController
     }
 
     #[Route('/view', name: 'app_pdf_billings_view')]
-    public function view() : Response {
+    public function view(
+        BillingConfigRepository $bConfigRepository,
+    ) : Response {
+        $bConfig = $bConfigRepository->findOneBy([]);
         $pdf = $this->tcpdf->create();
 
         $pdf->setFooterData(array(0,64,0), array(0,64,128));
@@ -80,6 +85,7 @@ class PdfBillingsController extends AbstractController
 
         // Set some content to print
         $html = <<<EOD
+        {$bConfig->getClientName()}
         // Welcome to mws-sf-pdf-billings
         // EOD;
         <h1>Welcome to <a href="http://www.tcpdf.org" style="text-decoration:none;background-color:#CC0000;color:black;">&nbsp;<span style="color:black;">TC</span><span style="color:white;">PDF</span>&nbsp;</a>!</h1>
