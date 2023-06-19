@@ -4,6 +4,32 @@
   {{ pdfCssStyles }}
 </style>
 
+{# 
+https://stackoverflow.com/questions/31451779/tcpdf-adding-a-background-to-a-table-cell-or-div-that-shows-on-pdf
+Currently, only the following CSS attributes are supported:
+
+font-family
+font-weight
+font-style
+color
+background-color
+text-decoration
+width
+height
+text-align
+#}
+<style>
+  .header {
+    background-color: #FF0000;
+  }
+  .business-logo {
+    background-color: #00FF00;
+  }
+  .client-logo {
+    background-color: #0000FF;
+  }
+</style>
+
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
 https://stackoverflow.com/questions/19002634/how-to-use-external-css-in-tcpdf-pdf-generation
 https://stackoverflow.com/questions/11395171/why-does-tcpdf-ignore-my-inline-css
@@ -13,34 +39,32 @@ table {
 } 
 
 TCPDF has a very limited CSS support. It doesn't support all attributes.
-Currently, only the following CSS attributes are supported:
-
-font-family
-font-size
-font-weight
-font-style
-color
-background-color
-text-decoration
-width
-height
-text-align
-
 #}
 
 {% if billingConfig %}
-  <table style="padding: 5px;">
-    <tr>
-      <td>
-        {{billingConfig.clientName}}
-      </td>
-    </tr>
-    <tr>
-      <td>
-        {{billingConfig.clientSlug}}
-      </td>
-    </tr>
-  </table>
+  {% set businessLogo = 'file://' ~ kernelRootDir ~ '/var/LogoMonwoo2023.jpeg' %}
+  {# // TODO: empirique way, go check pdf default mesure unit... #}
+  {% set fullWidth = 503 %}
+
+  <div class="header" style="width:200px; height:400px;">
+    <div class="business-logo" style="width:{{ 0.4 * fullWidth }};">
+      <img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
+    </div>
+    <div class="quotation-title" style="width:{{ 0.2 * fullWidth }};">
+    Devis n°
+    </div>
+    <div class="client-logo" style="width:{{ 0.4 * fullWidth }};">
+      <img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
+    </div>
+  </div>
+  <div class="contacts" style="background: #00F0F0">
+    {% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
+        'app': app, 'billingConfig': billingConfig
+    } %}
+    {% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
+        'app': app, 'billingConfig': billingConfig
+    } %}
+  </div>
 {% else %}
   Please, submit previous form to update this PDF.
 {% endif %}

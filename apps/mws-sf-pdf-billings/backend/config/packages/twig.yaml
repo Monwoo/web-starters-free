@@ -1,6 +1,8 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
-
+    # https://stackoverflow.com/questions/28872529/get-kernel-root-dir-in-twig-template-with-symfony-2
+    globals:
+        kernelRootDir: "%kernel.project_dir%"
 when@test:
     twig:
         strict_variables: true

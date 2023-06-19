@@ -93,6 +93,7 @@ Learn more about the power of pdf billings:
 - [Using simple TCPDF](https://tcpdf.org/examples/example_001/)
 - [Using advanced TCPDF](https://tcpdf.org/examples/example_052/)
 - [SF Form types](https://symfony.com/doc/current/form/create_custom_field_type.html)
+- [Free PDF Document Importer](https://www.setasign.com/products/fpdi/about/)
 
 ## Supports
 

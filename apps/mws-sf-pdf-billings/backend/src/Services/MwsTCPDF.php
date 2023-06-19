@@ -19,6 +19,8 @@ class MwsTCPDF extends TCPDF
     // $this->mwsFontname = TCPDF_FONTS::addTTFfont('ressources/fonts/arial-cufonfonts-com/arialceb.ttf', 'TrueTypeUnicode', '', 32);
     // $this->setFont('arialceb', '', 14, '', false);
 
+		// apps/mws-sf-pdf-billings/backend/vendor/tecnickcom/tcpdf/tcpdf.php:2981
+		$this->setAllowLocalFiles(true);
     $this->setHeaderMargin(-2);
   }
 

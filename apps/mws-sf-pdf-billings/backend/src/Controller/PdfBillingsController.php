@@ -123,6 +123,12 @@ class PdfBillingsController extends AbstractController
         // set text shadow effect
         $pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>0.7, 'blend_mode'=>'Normal'));
 
+        // https://github.com/tecnickcom/TCPDF/blob/main/examples/example_009.php
+        // $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        // // set JPEG quality
+        // $pdf->setJPEGQuality(75);
+        // $pdf->Image('images/image_demo.jpg', 15, 140, 75, 113, 'JPG', 'http://www.tcpdf.org', '', true, 150, '', false, false, 1, false, false, false);
+
         // 🇺🇸🇺🇸 Header arrangements
         $PDF_HEADER_LOGO = null; // "logo.png";//any image file. check correct path.
         $PDF_HEADER_LOGO_WIDTH = 0; // "20";
