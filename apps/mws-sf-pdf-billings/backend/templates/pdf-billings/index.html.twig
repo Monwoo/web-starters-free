@@ -1,9 +1,27 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-input{
+            width:100%;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 
-// TODO form input
+{{ form_start(form) }}
+  <div class="row "> {# ========================== COMMERCIAL et CREATOR et CLIENT =============================#}
+      <div class="">
+          {{ form_label(form.clientName) }}
+          {{ form_widget(form.clientName) }}
+          {{ form_errors(form.clientName) }}
+      </div>
+  </div>
+  <input type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}">
+{{ form_end(form) }}
 
 // TODO PDF Live preview on inputs changes
 

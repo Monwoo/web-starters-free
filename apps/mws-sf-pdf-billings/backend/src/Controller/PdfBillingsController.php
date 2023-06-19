@@ -3,11 +3,17 @@
 
 namespace App\Controller;
 
+use App\Entity\BillingConfig;
+use App\Form\BillingConfigType;
+use App\Repository\BillingConfigRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Qipsius\TCPDFBundle\Controller\TCPDFController;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class PdfBillingsController extends AbstractController
 {
@@ -19,11 +25,38 @@ class PdfBillingsController extends AbstractController
     }
 
     #[Route('/', name: 'app_pdf_billings')]
-    public function index(): Response
+    public function index(
+        Request $request,
+        EntityManagerInterface $em,
+        BillingConfigRepository $bConfigRepository,
+    ): Response
     {
+        // $clientId = $request->get('clientId');
 
-        return $this->render('pdf-billings/index.html.twig', [
-            'title' => 'Capacités'
+        $bConfig = $bConfigRepository->findOneBy([]) ?? new BillingConfig();
+        $csrfToken = $request->request->get('_token');
+
+        if ($csrfToken && !$this->isCsrfTokenValid('pdf-billings', $csrfToken)) {
+            return $this->json([ 
+                'error' => 'Wrong initial call!',
+            ]);    
+        }
+
+        $form = $this->createForm(BillingConfigType::class, $bConfig);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $bConfig->setComputedValue(...);
+            $em->persist($bConfig);
+            $em->flush();
+            return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
+        }
+
+        // return $this->render('pdf-billings/index.html.twig', [
+        return $this->renderForm('pdf-billings/index.html.twig', [
+            'bConfig' => $bConfig,
+            'form' => $form,
+            'title' => 'MWS SF PDF Billings - Index'
         ]);
     }
 

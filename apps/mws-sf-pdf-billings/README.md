@@ -46,19 +46,24 @@ open http://localhost:8000
 
 ```bash
 # usefull :
+php bin/console debug:form
+# Generate some formType based on entity model :
+php bin/console make:form BillingConfig
+
 # add users
 php bin/console make:user
 # list of available make commandes
 symfony console list make
 
+# other tools for models :
+php bin/console make:entity BillingConfig
+php bin/console make:entity --regenerate
+php bin/console make:entity --help
 # If you change your model,
 # you need to generate the associated migrations :
 php bin/console make:migration
 php bin/console doctrine:migrations:migrate
-# other tools for models :
-php bin/console make:entity
-php bin/console make:entity --regenerate
-php bin/console make:entity --help
+
 # add a new controller
 php bin/console make:controller PdfBillings
 
@@ -85,6 +90,7 @@ Learn more about the power of pdf billings:
 - [PHP PDF Library](https://github.com/tecnickcom/TCPDF)
 - [Using simple TCPDF](https://tcpdf.org/examples/example_001/)
 - [Using advanced TCPDF](https://tcpdf.org/examples/example_052/)
+- [SF Form types](https://symfony.com/doc/current/form/create_custom_field_type.html)
 
 ## Supports
 
