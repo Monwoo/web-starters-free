@@ -13,6 +13,8 @@ class BillingConfigType extends AbstractType
     {
         $builder
             ->add('clientName')
+            ->add('quotationNumber')
+            ->add('clientSlug')
         ;
     }
 

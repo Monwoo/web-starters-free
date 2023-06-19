@@ -13,8 +13,14 @@ class BillingConfig
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $clientName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $quotationNumber = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $clientSlug = null;
 
     public function getId(): ?int
     {
@@ -29,6 +35,30 @@ class BillingConfig
     public function setClientName(string $clientName): static
     {
         $this->clientName = $clientName;
+
+        return $this;
+    }
+
+    public function getQuotationNumber(): ?string
+    {
+        return $this->quotationNumber;
+    }
+
+    public function setQuotationNumber(?string $quotationNumber): static
+    {
+        $this->quotationNumber = $quotationNumber;
+
+        return $this;
+    }
+
+    public function getClientSlug(): ?string
+    {
+        return $this->clientSlug;
+    }
+
+    public function setClientSlug(string $clientSlug): static
+    {
+        $this->clientSlug = $clientSlug;
 
         return $this;
     }

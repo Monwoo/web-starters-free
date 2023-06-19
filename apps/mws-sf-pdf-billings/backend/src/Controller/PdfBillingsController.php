@@ -4,7 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\BillingConfig;
-use App\Form\BillingConfigType;
+use App\Form\BillingConfigSubmitableType;
 use App\Repository\BillingConfigRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Qipsius\TCPDFBundle\Controller\TCPDFController;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 
 class PdfBillingsController extends AbstractController
@@ -29,20 +30,41 @@ class PdfBillingsController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         BillingConfigRepository $bConfigRepository,
+        LoggerInterface $logger,
     ): Response
     {
         // $clientId = $request->get('clientId');
 
-        $bConfig = $bConfigRepository->findOneBy([]) ?? new BillingConfig();
+        // https://symfony.com/doc/current/form/data_mappers.html
+        // https://symfony.com/doc/current/form/use_empty_data.html
+        // https://symfony.com/doc/current/form/direct_submit.html
+        $bConfigFactory = function () {
+            $bConfig = new BillingConfig();
+            // Default empty client, to let space for end client fill all his fields
+            $bConfig->setClientSlug('--');
+            return $bConfig;
+        };
+
+        $bConfig = $bConfigRepository->findOneBy([]) ?? $bConfigFactory();
+        // var_dump($bConfig);exit;
+        // $logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+
         $csrfToken = $request->request->get('_token');
 
         if ($csrfToken && !$this->isCsrfTokenValid('pdf-billings', $csrfToken)) {
+            $logger->error('WRONG CSRF token', [
+                'token' => $csrfToken,
+            ] );
+
             return $this->json([ 
                 'error' => 'Wrong initial call!',
             ]);    
         }
-
-        $form = $this->createForm(BillingConfigType::class, $bConfig);
+        // https://symfony.com/doc/current/reference/forms/types/submit.html
+        // https://symfony.com/doc/current/forms.html
+        // https://symfony.com/doc/current/form/create_form_type_extension.html
+        $form = $this->createForm(BillingConfigSubmitableType::class, $bConfig);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -95,7 +117,7 @@ class PdfBillingsController extends AbstractController
         // Set some content to print
         $html = $twig->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
             'billingConfig' => $bConfig,
-            'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/sheet.css'),
+            'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
         ]);
 
         $pdf->AddPage();

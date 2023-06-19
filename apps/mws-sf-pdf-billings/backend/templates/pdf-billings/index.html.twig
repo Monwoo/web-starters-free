@@ -2,45 +2,44 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .form-input{
-            width:100%;
-        }
-    </style>
+	{{ parent() }}
+	<style>
+		.form-input {
+			width: 100%;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
 
-{{ form_start(form) }}
-  <div class="">
-      <div class="">
-          {{ form_label(form.clientName) }}
-          {{ form_widget(form.clientName) }}
-          {{ form_errors(form.clientName) }}
-      </div>
-  </div>
-  <input type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}">
-{{ form_end(form) }}
+	{{ form_start(form) }}
+	<div class="">
+		<div class="">
+			{{ form_label(form.clientName) }}
+			{{ form_widget(form.clientName) }}
+			{{ form_errors(form.clientName) }}
+		</div>
+	</div>
+	<input
+	type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}">
+	{# TIPS : {{ form_rest(form) }}
+	     with {{ form_end(form, {'render_rest': false}) }}
+	     to move the forme rest somewhere else
+	#}
+	{{ form_end(form) }}
 
-// TODO PDF Live preview on inputs changes
+	// TODO PDF Live preview on inputs changes
+	
+	// TODO Prefill with POST data and preview pre-filled PDF...
+	
+	libs/pdfjs-3.7.107-dist/web/viewer.html
 
-// TODO Prefill with POST data and preview pre-filled PDF...
+	{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
+	{# Native way : #}
+<embed src="{{ path('app_pdf_billings_view') }}" style="width:100%; min-height:700px;" type="application/pdf"> {# TIPS : Need pdf.js integrated library : #}
+	{# <iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
 
-libs/pdfjs-3.7.107-dist/web/viewer.html
-
-{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
-{# Native way : #}
-<embed
-src="{{ path('app_pdf_billings_view') }}"
-style="width:100%; min-height:700px;"
-type="application/pdf"
->
-
-{# TIPS : Need pdf.js integrated library : #}
-{# <iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
-
-{# TIPS : Need to BE online to be valide for gview ? #}
-{# <iframe src="https://docs.google.com/gview?url={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
+	{# TIPS : Need to BE online to be valide for gview ? #}
+	{# <iframe src="https://docs.google.com/gview?url={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
 
 {% endblock %}

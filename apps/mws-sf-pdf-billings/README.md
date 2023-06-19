@@ -57,6 +57,8 @@ symfony console list make
 
 # other tools for models :
 php bin/console make:entity BillingConfig
+rm src/Form/BillingConfigType.php
+php bin/console make:form BillingConfigType BillingConfig
 php bin/console make:entity --regenerate
 php bin/console make:entity --help
 # If you change your model,
