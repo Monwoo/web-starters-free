@@ -41,6 +41,8 @@ class PdfBillingsController extends AbstractController
         $bConfigFactory = function () {
             $bConfig = new BillingConfig();
             // Default empty client, to let space for end client fill all his fields
+             // TODO : Setting 'null' from form give error : Expected argument of type "string", "null" given at property path "clientName"...
+            $bConfig->setClientName('______________________________');
             $bConfig->setClientSlug('--');
             return $bConfig;
         };
@@ -110,7 +112,9 @@ class PdfBillingsController extends AbstractController
         $pdf->SetKeywords('Monwoo, PWA, Svelte, PHP, Symfony');
 
         $pdf->setFontSubsetting(true);
-        $pdf->SetFont('dejavusans', '', 14, '', true);
+        // $pdf->SetFont('dejavusans', '', 14, '', true);
+        // $pdf->SetFont('roboto', '', 14, '', true);
+
         // set text shadow effect
         $pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>1, 'blend_mode'=>'Normal'));
 
@@ -120,7 +124,24 @@ class PdfBillingsController extends AbstractController
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
         ]);
 
+        $PDF_HEADER_LOGO = null; // "logo.png";//any image file. check correct path.
+        $PDF_HEADER_LOGO_WIDTH = 0; // "20";
+        $PDF_HEADER_TITLE = "Monwoo"
+        . "                                                                             "
+        . "             Devis n°" . $bConfig->getQuotationNumber();
+        // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
+        // . "E abc@gmail.com\n"
+        // . "www.abc.com";
+        $PDF_HEADER_STRING = "";// "Devis n°" . $bConfig->getQuotationNumber();
+        $pdf->SetHeaderData($PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE, $PDF_HEADER_STRING);
+
         $pdf->AddPage();
+        // https://stackoverflow.com/questions/14495688/how-to-put-html-data-into-header-of-tcpdf
+        // $pdf->writeHTMLCell( // NOP, DO not go OVER header barre...
+        //     $w = 0, $h = 0, $x = -1, $y = '',
+        //     $leftHeader, $border = 0, $ln = 1, $fill = 0,
+        //     $reseth = true, $align = 'top', $autopadding = true);
+
         // Print text using writeHTMLCell()
         // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
         $pdf->writeHTML($html, true, false, true, false, '');

@@ -32,7 +32,7 @@ class BillingConfig
         return $this->clientName;
     }
 
-    public function setClientName(string $clientName): static
+    public function setClientName(?string $clientName): static
     {
         $this->clientName = $clientName;
 
