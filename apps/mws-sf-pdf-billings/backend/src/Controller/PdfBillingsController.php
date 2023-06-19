@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\BillingConfig;
 use App\Form\BillingConfigSubmitableType;
 use App\Repository\BillingConfigRepository;
+use App\Services\MwsTCPDF;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,7 @@ class PdfBillingsController extends AbstractController
     public function __construct(TCPDFController $tcpdf) 
     {
         $this->tcpdf = $tcpdf;
+        $this->tcpdf->setClassName(MwsTCPDF::class);
     }
 
     #[Route('/', name: 'app_pdf_billings')]
@@ -102,40 +104,57 @@ class PdfBillingsController extends AbstractController
         $bConfig = $bConfigRepository->findOneBy([]);
         $pdf = $this->tcpdf->create();
 
-        $pdf->setFooterData(array(0,64,0), array(0,64,128));
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
+        // 🇺🇸🇺🇸 SEO
         $pdf->SetAuthor('Miguel Monwoo (service@monwoo.com)');
         $pdf->SetTitle('Devis 000');
         $pdf->SetSubject('Devis Monwoo');
         $pdf->SetKeywords('Monwoo, PWA, Svelte, PHP, Symfony');
 
+        // 🇺🇸🇺🇸 Global page container
+        // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        // https://stackoverflow.com/questions/5503969/tcpdf-how-to-adjust-height-of-header
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP-17, PDF_MARGIN_RIGHT);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM-15);
+
         $pdf->setFontSubsetting(true);
         // $pdf->SetFont('dejavusans', '', 14, '', true);
         // $pdf->SetFont('roboto', '', 14, '', true);
-
         // set text shadow effect
-        $pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>1, 'blend_mode'=>'Normal'));
+        $pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>0.7, 'blend_mode'=>'Normal'));
 
+        // 🇺🇸🇺🇸 Header arrangements
+        $PDF_HEADER_LOGO = null; // "logo.png";//any image file. check correct path.
+        $PDF_HEADER_LOGO_WIDTH = 0; // "20";
+        $PDF_HEADER_TITLE = null;
+        $PDF_HEADER_STRING = "Monwoo"
+        . "                                                                             "
+        . "                             Devis n°" . $bConfig->getQuotationNumber();
+        // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
+        // . "E abc@gmail.com\n"
+        // . "www.abc.com";
+        // $PDF_HEADER_STRING = "";// "Devis n°" . $bConfig->getQuotationNumber();
+        $pdf->SetHeaderData(
+            $PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE, $PDF_HEADER_STRING,
+            [0,0,0], [200,200,200]
+        );
+        // https://stackoverflow.com/questions/25934841/tcpdf-how-to-set-top-margin-in-header
+        // $margin = $pdf->getMargins();
+        // $pdf->SetY($margin['top']);
+
+
+        // 🇺🇸🇺🇸 Footer arrangements
+        $pdf->setFooterData(array(0,64,0), array(0,64,128));
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+        // 🇺🇸🇺🇸 BODY arrangements
+        $pdf->AddPage();
         // Set some content to print
         $html = $twig->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
             'billingConfig' => $bConfig,
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
         ]);
 
-        $PDF_HEADER_LOGO = null; // "logo.png";//any image file. check correct path.
-        $PDF_HEADER_LOGO_WIDTH = 0; // "20";
-        $PDF_HEADER_TITLE = "Monwoo"
-        . "                                                                             "
-        . "             Devis n°" . $bConfig->getQuotationNumber();
-        // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
-        // . "E abc@gmail.com\n"
-        // . "www.abc.com";
-        $PDF_HEADER_STRING = "";// "Devis n°" . $bConfig->getQuotationNumber();
-        $pdf->SetHeaderData($PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE, $PDF_HEADER_STRING);
-
-        $pdf->AddPage();
         // https://stackoverflow.com/questions/14495688/how-to-put-html-data-into-header-of-tcpdf
         // $pdf->writeHTMLCell( // NOP, DO not go OVER header barre...
         //     $w = 0, $h = 0, $x = -1, $y = '',
