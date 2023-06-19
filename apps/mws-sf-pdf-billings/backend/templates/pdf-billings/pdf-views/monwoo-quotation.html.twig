@@ -1,8 +1,7 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
-<style>
-  {{ pdfCssStyles }}
-</style>
+	<style>
+{{pdfCssStyles}}</style>
 
 {# 
 https://stackoverflow.com/questions/31451779/tcpdf-adding-a-background-to-a-table-cell-or-div-that-shows-on-pdf
@@ -18,16 +17,16 @@ width
 height
 text-align
 #}
-<style>
-  .header {
-    background-color: #FF0000;
-  }
-  .business-logo {
-    background-color: #00FF00;
-  }
-  .client-logo {
-    background-color: #0000FF;
-  }
+	<style>
+.header {
+	background-color: #FF0000;
+}
+.business-logo {
+	background-color: #00FF00;
+}
+.client-logo {
+	background-color: #0000FF;
+}
 </style>
 
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
@@ -41,30 +40,30 @@ table {
 TCPDF has a very limited CSS support. It doesn't support all attributes.
 #}
 
-{% if billingConfig %}
-  {% set businessLogo = 'file://' ~ kernelRootDir ~ '/var/LogoMonwoo2023.jpeg' %}
-  {# // TODO: empirique way, go check pdf default mesure unit... #}
-  {% set fullWidth = 503 %}
-
-  <div class="header" style="width:200px; height:400px;">
-    <div class="business-logo" style="width:{{ 0.4 * fullWidth }};">
-      <img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
-    </div>
-    <div class="quotation-title" style="width:{{ 0.2 * fullWidth }};">
-    Devis n°
-    </div>
-    <div class="client-logo" style="width:{{ 0.4 * fullWidth }};">
-      <img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
-    </div>
-  </div>
-  <div class="contacts" style="background: #00F0F0">
-    {% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
+	{% if billingConfig %}
+	{% set businessLogo = 'file://' ~ kernelRootDir ~ '/var/LogoMonwoo2023.jpeg' %}
+	{# // TODO: empirique way, go check pdf default mesure unit... #}
+	{% set fullWidth = 503 %}
+		<table class="header" style="padding: 0px;"> <tr>
+			<td class="business-logo" style="width:{{ 0.4 * fullWidth }};">
+				<img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
+			</td>
+			<td class="quotation-title" style="width:{{ 0.2 * fullWidth }};">
+				Devis n°
+			</td>
+			<td class="client-logo" style="width:{{ 0.4 * fullWidth }};">
+				<img class="w3-hover-opacity" style="width:{{ 0.3 * fullWidth }};" src="{{ businessLogo }}">
+			</td>
+		</tr>
+	</table>
+	<div class="contacts" style="background: #00F0F0">
+		{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
         'app': app, 'billingConfig': billingConfig
     } %}
-    {% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
+		{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
         'app': app, 'billingConfig': billingConfig
     } %}
-  </div>
+	</div>
 {% else %}
-  Please, submit previous form to update this PDF.
+	Please, submit previous form to update this PDF.
 {% endif %}
