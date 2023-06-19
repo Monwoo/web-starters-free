@@ -22,6 +22,20 @@ class MwsTCPDF extends TCPDF
 		// apps/mws-sf-pdf-billings/backend/vendor/tecnickcom/tcpdf/tcpdf.php:2981
 		$this->setAllowLocalFiles(true);
     $this->setHeaderMargin(-2);
+
+		// https://stackoverflow.com/questions/64388631/tcpdf-getting-spacing-issue-with-writehtml
+		// https://tcpdf.org/docs/srcdoc/TCPDF/classes-TCPDF/#method_setHtmlVSpace
+		$tagvs = [
+			'div' => [
+					0 => ['h' => 0, 'n' => 0],
+					1 => ['h' => 0, 'n' => 0]
+			],
+			'p' => [
+					0 => ['h' => 0, 'n' => 0],
+					1 => ['h' => 0, 'n' => 0]
+			]
+		];
+		$this->setHtmlVSpace($tagvs);
   }
 
   public function Header()

@@ -166,6 +166,7 @@ class PdfBillingsController extends AbstractController
         //     $w = 0, $h = 0, $x = -1, $y = '',
         //     $leftHeader, $border = 0, $ln = 1, $fill = 0,
         //     $reseth = true, $align = 'top', $autopadding = true);
+        $pdf->setTextShadow(array('enabled'=>false));
 
         // Print text using writeHTMLCell()
         // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);

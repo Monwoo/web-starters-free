@@ -36,7 +36,15 @@ text-align
 .client-logo {
 	background-color: #0000FF;
 } */
-
+.contacts .business {
+	background-color: #0FF00F;
+}
+.empty-space {
+	background-color: #00808F;
+}
+.contacts .client {
+	background-color: #F0F00F;
+}
 </style>
 
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
@@ -53,12 +61,13 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{% if billingConfig %}
 	{% set businessLogo = 'file://' ~ kernelRootDir ~ '/var/LogoMonwoo2023.jpeg' %}
 	{# // TODO: empirique way, go check pdf default mesure unit... #}
-	{% set fullWidth = 503 %}
+	{% set fullWidth = 510 %}
 		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
 			<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}" />
 			</td>
-			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;">
+			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
+      font-weight:bold;color:#005B98;font-size:14pt;">
 				Devis n°{{billingConfig.quotationNumber}}
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -66,14 +75,20 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			</td>
 		</tr>
 	</table>
-	<div class="contacts" style="background: #00F0F0">
-		{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
-        'app': app, 'billingConfig': billingConfig
-    } %}
-		{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
-        'app': app, 'billingConfig': billingConfig
-    } %}
-	</div>
+  <table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;"> <tr>
+			<td class="business" style="width:{{ 0.4 * fullWidth }};">
+        {% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
+            'app': app, 'billingConfig': billingConfig
+        } %}
+			</td>
+			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};"></td>
+			<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
+        {% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
+            'app': app, 'billingConfig': billingConfig
+        } %}
+			</td>
+		</tr>
+	</table>
 {% else %}
 	Please, submit previous form to update this PDF.
 {% endif %}
