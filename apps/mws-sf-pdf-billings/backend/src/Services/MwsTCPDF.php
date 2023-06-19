@@ -16,7 +16,7 @@ class MwsTCPDF extends TCPDF
     parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
     // K_PATH_FONTS constant ? Below will not work :
-    // $this->mwsFontname = TCPDF_FONTS::addTTFfont('src/ressources/fonts/arial-cufonfonts-com/arialceb.ttf', 'TrueTypeUnicode', '', 32);
+    // $this->mwsFontname = TCPDF_FONTS::addTTFfont('ressources/fonts/arial-cufonfonts-com/arialceb.ttf', 'TrueTypeUnicode', '', 32);
     // $this->setFont('arialceb', '', 14, '', false);
 
     $this->setHeaderMargin(-2);
