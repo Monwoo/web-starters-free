@@ -1,9 +1,9 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
 <style>
-  {{ file_get_contents(_BASE_PATH.'pdf-views/sheet.css') }}
+  {{ pdfCssStyles }}
 </style>
-{{bConfig.clientName}}
+{{billingConfig.clientName}}
 <table class="waffle" cellspacing="0" cellpadding="0">
 	<thead>
 		<tr>

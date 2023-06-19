@@ -94,13 +94,14 @@ class PdfBillingsController extends AbstractController
 
         // Set some content to print
         $html = $twig->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
-            'bConfig' => $bConfig,
-            '_BASE_PATH' => $projectDir . "/public",
+            'billingConfig' => $bConfig,
+            'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/sheet.css'),
         ]);
 
         $pdf->AddPage();
         // Print text using writeHTMLCell()
-        $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
+        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
+        $pdf->writeHTML($html, true, false, true, false, '');
 
         $pdf->lastPage();
         $response = new Response($pdf->Output('MonwooQuotation_000.pdf'));
