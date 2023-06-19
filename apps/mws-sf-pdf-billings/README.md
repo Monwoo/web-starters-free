@@ -82,8 +82,9 @@ Learn more about the power of pdf billings:
 - [Décret n° 2023-377 du 16 mai 2023 - PDF signing requirements for big FR buisiness](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000047558499)
 - [Building an SPA (SF doc)](https://symfony.com/doc/current/the-fast-track/en/27-spa.html)
 - [QipsiusTCPDFBundle (SF bundle for PDF)](https://github.com/Qipsius/QipsiusTCPDFBundle)
-- [Using advanced TCPDF](https://tcpdf.org/examples/example_052/)
 - [PHP PDF Library](https://github.com/tecnickcom/TCPDF)
+- [Using simple TCPDF](https://tcpdf.org/examples/example_001/)
+- [Using advanced TCPDF](https://tcpdf.org/examples/example_052/)
 
 ## Supports
 

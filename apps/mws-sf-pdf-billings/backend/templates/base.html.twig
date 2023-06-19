@@ -1,0 +1,47 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set route = app.request.attributes.get('_route') %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"  content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {%  if title is defined %}
+            {% block title %}{{ title }}{% endblock %}
+        {% endif %}
+    </title>
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+
+<body>
+
+<div class="page-flex">
+    {# {% block navbar %}
+        {% include 'navigation/menu.html.twig' with {
+            'route': route, 'app': app
+        } %}
+    {% endblock %} #}
+
+    {% block body %}{% endblock %}
+
+    {% if app.request.attributes.get('_route') != 'app_login' %}
+    <footer class="footer">
+       <p>2023 © Monwoo</p>
+    </footer>
+    {% endif %}
+</div>
+
+{% block javascript %}
+    <script>
+        window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
+    </script>
+
+    {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}
+        <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
+    {% endif %}
+{% endblock %}
+</body>
+
+</html>
