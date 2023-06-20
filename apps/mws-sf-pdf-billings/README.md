@@ -57,8 +57,12 @@ symfony console list make
 
 # other tools for models :
 php bin/console make:entity BillingConfig
+
 rm src/Form/BillingConfigType.php
+mv src/Form/_BillingConfigSubmitableType.php src/Form/BillingConfigSubmitableType.php
 php bin/console make:form BillingConfigType BillingConfig
+mv src/Form/BillingConfigSubmitableType.php src/Form/_BillingConfigSubmitableType.php 
+
 php bin/console make:entity --regenerate
 php bin/console make:entity --help
 # If you change your model,
@@ -80,6 +84,38 @@ curl -X POST -H "Content-Type: application/json" \
     -d '{"username": "test", "password": "123"}' \
     http://127.0.0.1:8000/api/login_check
 
+# Load some client (if exist) :
+open http://localhost:8000/?billing_config_submitable[clientSlug]=newClient
+
+# Create empty quotation for new client slug if do not exist 
+# (WRONG CSRF, but will create client with empty value if don't exist)
+curl -X POST -d "billing_config_submitable[clientSlug]=test2" \
+http://127.0.0.1:8000/
+
+# Create or update quotation for new client slug (WRONG CSRF)
+curl -X POST -H "application/x-www-form-urlencoded" \
+-d "billing_config_submitable[clientSlug]=test3" \
+-d "billing_config_submitable[clientName]=ClientTestedName" \
+http://127.0.0.1:8000/
+
+# Create or update quotation for new client slug (WRONG CSRF)
+curl -F billing_config_submitable[clientSlug]=test3 \
+-F billing_config_submitable[clientName]=ClientTestedName \
+http://127.0.0.1:8000/
+
+# HANDELING Csrf with curl :
+rm cookies.txt
+InSrc=$(curl -c cookies.txt -b cookies.txt http://127.0.0.1:8000/ \
+2>/dev/null | tr '\n' ' ')
+TokenSep='billing_config_submitable[_token]" value="'
+HalfPart=$(echo "${InSrc//$TokenSep/$\n}" | tail -n 1)
+CSRF=$(echo "${HalfPart//\"/$\n}" | head -n 1)
+
+curl -c cookies.txt -b cookies.txt -F "billing_config_submitable[clientSlug]=test3" \
+-F "billing_config_submitable[_token]=$CSRF" \
+-F "billing_config_submitable[clientName]=ClientTestedName" \
+http://127.0.0.1:8000/
+
 ```
 
 ## Useful Links
@@ -95,6 +131,7 @@ Learn more about the power of pdf billings:
 - [SF Form types](https://symfony.com/doc/current/form/create_custom_field_type.html)
 - [Free PDF Document Importer](https://www.setasign.com/products/fpdi/about/)
 - [Html table](https://www.w3schools.com/html/html_table_padding_spacing.asp)
+- [Symfony debug forms errors](https://symfonycasts.com/blog/symfony-debugging-form-errors)
 
 ## Supports
 

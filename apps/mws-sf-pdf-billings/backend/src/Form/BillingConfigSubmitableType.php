@@ -10,6 +10,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BillingConfigSubmitableType extends BillingConfigType
 {
+    // https://symfony.com/doc/current/reference/constraints/UniqueEntity.html
+    // =>ovewrite only the 'unique' part of clientSlug for custom validators on it ?
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // https://stackoverflow.com/questions/74007075/symfony-form-type-extension-for-custom-types

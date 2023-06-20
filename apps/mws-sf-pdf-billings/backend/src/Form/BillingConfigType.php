@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\BillingConfig;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BillingConfigType extends AbstractType
@@ -13,9 +12,17 @@ class BillingConfigType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('clientSlug')
             ->add('clientName')
             ->add('quotationNumber')
-            ->add('clientSlug')
+            ->add('clientEmail')
+            ->add('clientTel')
+            ->add('clientSIRET')
+            ->add('clientTvaIntracom')
+            ->add('clientAddressL1')
+            ->add('clientAddressL2')
+            ->add('clientWebsite')
+            ->add('clientLogoUrl')
         ;
     }
 

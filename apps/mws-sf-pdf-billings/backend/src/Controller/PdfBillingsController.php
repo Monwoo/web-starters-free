@@ -21,7 +21,7 @@ class PdfBillingsController extends AbstractController
 {
     protected TCPDFController $tcpdf;
 
-    public function __construct(TCPDFController $tcpdf) 
+    public function __construct(TCPDFController $tcpdf)
     {
         $this->tcpdf = $tcpdf;
         $this->tcpdf->setClassName(MwsTCPDF::class);
@@ -33,51 +33,71 @@ class PdfBillingsController extends AbstractController
         EntityManagerInterface $em,
         BillingConfigRepository $bConfigRepository,
         LoggerInterface $logger,
-    ): Response
-    {
+    ): Response {
         // $clientId = $request->get('clientId');
+
+        // https://stackoverflow.com/questions/21124450/how-to-use-curl-multipart-form-data-to-post-array-field-from-command-line
 
         // https://symfony.com/doc/current/form/data_mappers.html
         // https://symfony.com/doc/current/form/use_empty_data.html
         // https://symfony.com/doc/current/form/direct_submit.html
-        $bConfigFactory = function () {
+        $bConfigFactory = function ($slug = null) use ($em) {
             $bConfig = new BillingConfig();
             // Default empty client, to let space for end client fill all his fields
-             // TODO : Setting 'null' from form give error : Expected argument of type "string", "null" given at property path "clientName"...
+            // TODO : Setting 'null' from form give error : Expected argument of type "string", "null" given at property path "clientName"...
             $bConfig->setClientName('______________________________');
-            $bConfig->setClientSlug('--');
+            $bConfig->setClientSlug($slug ?? '--');
+            $em->persist($bConfig);
+            $em->flush();
             return $bConfig;
         };
 
-        $bConfig = $bConfigRepository->findOneBy([]) ?? $bConfigFactory();
+        // $rawBillingConfig = $request->request->get('billing_config_submitable'); // To read from POST ONLY
+        $rawBillingConfig = $request->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request ;)
+        $clientSlug = $rawBillingConfig
+            ? ($rawBillingConfig['clientSlug'] ?? null) : null;
+        $clientSlug = $clientSlug ? $clientSlug : '--';
+        // var_dump($clientSlug); exit;
+
+        $bConfig = $bConfigRepository->findOneBy([
+            'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
+        ]) ?? $bConfigFactory($clientSlug);
         // var_dump($bConfig);exit;
         // $logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
-        $csrfToken = $request->request->get('_token');
+        // $csrfToken = $request->request->get('_token');
+        // if ($csrfToken && !$this->isCsrfTokenValid('pdf-billings', $csrfToken)) {
+        //     $logger->error('WRONG CSRF token', [
+        //         'token' => $csrfToken,
+        //     ]);
+        //     return $this->json([
+        //         'error' => 'Wrong initial call!',
+        //     ]);
+        // }
 
-        if ($csrfToken && !$this->isCsrfTokenValid('pdf-billings', $csrfToken)) {
-            $logger->error('WRONG CSRF token', [
-                'token' => $csrfToken,
-            ] );
-
-            return $this->json([ 
-                'error' => 'Wrong initial call!',
-            ]);    
-        }
         // https://symfony.com/doc/current/reference/forms/types/submit.html
         // https://symfony.com/doc/current/forms.html
         // https://symfony.com/doc/current/form/create_form_type_extension.html
         $form = $this->createForm(BillingConfigSubmitableType::class, $bConfig);
         $form->handleRequest($request);
+        // var_dump($form->isSubmitted());var_dump($form->isValid()); exit;
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // $bConfig->setComputedValue(...);
-            $em->persist($bConfig);
-            $em->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                // var_dump($bConfig); exit;
+                // $bConfig->setComputedValue(...);
+                $em->persist($bConfig);
+                $em->flush();
 
-            // TIPS : un-comment below if you want to redirect to full PDF view at form submit
-            // return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
+                // TIPS : un-comment below if you want to redirect to full PDF view at form submit
+                // return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
+            } else {
+                // var_dump($form->getErrors(true)->__toString());exit;
+                $logger->error('Form submit errors : '
+                    . $form->getErrors(true)->__toString()
+                );
+            }
         }
 
         // return $this->render('pdf-billings/index.html.twig', [
@@ -94,7 +114,7 @@ class PdfBillingsController extends AbstractController
         // EngineInterface $tplEngine,
         string $projectDir,
         BillingConfigRepository $bConfigRepository,
-    ) : Response {
+    ): Response {
         // Missing deps injections in new version ?
         // Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $tplEngine ?
         // $html = $tplEngine->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
@@ -114,14 +134,14 @@ class PdfBillingsController extends AbstractController
         // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         // https://stackoverflow.com/questions/5503969/tcpdf-how-to-adjust-height-of-header
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP-10, PDF_MARGIN_RIGHT);
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM-10);
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP - 10, PDF_MARGIN_RIGHT);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM - 10);
 
         $pdf->setFontSubsetting(true);
         // $pdf->SetFont('dejavusans', '', 14, '', true);
         // $pdf->SetFont('roboto', '', 14, '', true);
         // set text shadow effect
-        $pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>0.7, 'blend_mode'=>'Normal'));
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 0.7, 'blend_mode' => 'Normal'));
 
         // https://github.com/tecnickcom/TCPDF/blob/main/examples/example_009.php
         // $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -134,15 +154,19 @@ class PdfBillingsController extends AbstractController
         $PDF_HEADER_LOGO_WIDTH = 0; // "20";
         $PDF_HEADER_TITLE = null;
         $PDF_HEADER_STRING = "Monwoo"
-        . "                                                                             "
-        . "                             Devis n°" . $bConfig->getQuotationNumber();
+            . "                                                                             "
+            . "                             Devis n°" . $bConfig->getQuotationNumber();
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
         // . "E abc@gmail.com\n"
         // . "www.abc.com";
         // $PDF_HEADER_STRING = "";// "Devis n°" . $bConfig->getQuotationNumber();
         $pdf->SetHeaderData(
-            $PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE, $PDF_HEADER_STRING,
-            [0,0,0], [200,200,200]
+            $PDF_HEADER_LOGO,
+            $PDF_HEADER_LOGO_WIDTH,
+            $PDF_HEADER_TITLE,
+            $PDF_HEADER_STRING,
+            [0, 0, 0],
+            [200, 200, 200]
         );
         // https://stackoverflow.com/questions/25934841/tcpdf-how-to-set-top-margin-in-header
         // $margin = $pdf->getMargins();
@@ -150,7 +174,7 @@ class PdfBillingsController extends AbstractController
 
 
         // 🇺🇸🇺🇸 Footer arrangements
-        $pdf->setFooterData(array(0,64,0), array(0,64,128));
+        $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         // 🇺🇸🇺🇸 BODY arrangements
@@ -166,7 +190,7 @@ class PdfBillingsController extends AbstractController
         //     $w = 0, $h = 0, $x = -1, $y = '',
         //     $leftHeader, $border = 0, $ln = 1, $fill = 0,
         //     $reseth = true, $align = 'top', $autopadding = true);
-        $pdf->setTextShadow(array('enabled'=>false));
+        $pdf->setTextShadow(array('enabled' => false));
 
         // Print text using writeHTMLCell()
         // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);

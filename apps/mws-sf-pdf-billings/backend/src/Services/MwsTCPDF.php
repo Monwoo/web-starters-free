@@ -124,7 +124,7 @@ class MwsTCPDF extends TCPDF
     // $pdf->Write(0, 'Fill text', '', 0, '', true, 0, false, false, 0);
 
     // $this->setHeaderFont(['freemono', '', 10]);
-    $this->setHeaderFont(['freesans', '', 12]);
+    $this->setHeaderFont(['freesans', '', 10]);
     // $this->setHeaderFont(['freeserif', '', 12]);
     parent::Header();
   }

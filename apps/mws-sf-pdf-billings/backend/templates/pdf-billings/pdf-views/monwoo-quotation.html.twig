@@ -36,7 +36,9 @@ text-align
 .client-logo {
 	background-color: #0000FF;
 } */
-.contacts .business {
+
+
+/* .contacts .business {
 	background-color: #0FF00F;
 }
 .empty-space {
@@ -44,7 +46,7 @@ text-align
 }
 .contacts .client {
 	background-color: #F0F00F;
-}
+} */
 </style>
 
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
@@ -71,7 +73,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				Devis n°{{billingConfig.quotationNumber}}
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
-				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}" />
+				<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}" />
 			</td>
 		</tr>
 	</table>

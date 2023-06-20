@@ -5,30 +5,28 @@
 	{{billingConfig.clientName}}
 </div>
 <div>
-	via ajustement des bénéfices non commerciaux liées à SARL Kodiom
+	{{billingConfig.clientSIRET}}
 </div>
+<div>
+	{{billingConfig.clientTvaIntracom}}
+</div>
+{# // TODO : email open on click.... #}
 <div style="font-weight:bold;">
-	SIRET 530 496 868 00015
+	{% if billingConfig.clientEmail %}
+		Email :
+		{{billingConfig.clientEmail}}
+	{% endif %}
+</div>
+{# // TODO : tel open on click.... #}
+<div>
+	{% if billingConfig.clientTel %}
+		Tel :
+		{{billingConfig.clientTel}}
+	{% endif %}
 </div>
 <div>
-	Via 530 435 882 00010
+	{{billingConfig.clientTvaIntracom}}
 </div>
 <div>
-	Régime Micro-B.N.C.
+	{{billingConfig.clientTvaIntracom}}
 </div>
-{# // TODO : email open on click.... #}
-<div>
-	service@monwoo.com
-</div>
-{# // TODO : email open on click.... #}
-<div style="margin:0; padding:0;">
-	Tel : (+33) 7 51 33 58 20
-</div>
-<div>
-	21 rue de Fécamp chez Kodiom et Monwoo
-</div>
-<div>
-	75 012 Paris
-</div>
-<div>
-	{{billingConfig.clientSlug}}</div>
