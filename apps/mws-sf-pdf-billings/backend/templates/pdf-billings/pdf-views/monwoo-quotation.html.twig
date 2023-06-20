@@ -61,7 +61,8 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 #}
 
 	{% if billingConfig %}
-	{% set businessLogo = 'file://' ~ kernelRootDir ~ '/var/LogoMonwoo2023.jpeg' %}
+	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
+	: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
 	{# // TODO: empirique way, go check pdf default mesure unit... #}
 	{% set fullWidth = 510 %}
 		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>

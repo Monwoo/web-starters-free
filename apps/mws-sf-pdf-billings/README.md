@@ -59,9 +59,9 @@ symfony console list make
 php bin/console make:entity BillingConfig
 
 rm src/Form/BillingConfigType.php
-mv src/Form/_BillingConfigSubmitableType.php src/Form/BillingConfigSubmitableType.php
-php bin/console make:form BillingConfigType BillingConfig
 mv src/Form/BillingConfigSubmitableType.php src/Form/_BillingConfigSubmitableType.php 
+php bin/console make:form BillingConfigType BillingConfig
+mv src/Form/_BillingConfigSubmitableType.php src/Form/BillingConfigSubmitableType.php
 
 php bin/console make:entity --regenerate
 php bin/console make:entity --help

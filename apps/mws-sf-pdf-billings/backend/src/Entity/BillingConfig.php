@@ -47,6 +47,15 @@ class BillingConfig
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $clientLogoUrl = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $businessLogo = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $businessWorkloadHours = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $businessWorkloadDetails = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -180,6 +189,42 @@ class BillingConfig
     public function setClientLogoUrl(?string $clientLogoUrl): static
     {
         $this->clientLogoUrl = $clientLogoUrl;
+
+        return $this;
+    }
+
+    public function getBusinessLogo(): ?string
+    {
+        return $this->businessLogo;
+    }
+
+    public function setBusinessLogo(?string $businessLogo): static
+    {
+        $this->businessLogo = $businessLogo;
+
+        return $this;
+    }
+
+    public function getBusinessWorkloadHours(): ?float
+    {
+        return $this->businessWorkloadHours;
+    }
+
+    public function setBusinessWorkloadHours(?float $businessWorkloadHours): static
+    {
+        $this->businessWorkloadHours = $businessWorkloadHours;
+
+        return $this;
+    }
+
+    public function getBusinessWorkloadDetails(): ?string
+    {
+        return $this->businessWorkloadDetails;
+    }
+
+    public function setBusinessWorkloadDetails(?string $businessWorkloadDetails): static
+    {
+        $this->businessWorkloadDetails = $businessWorkloadDetails;
 
         return $this;
     }

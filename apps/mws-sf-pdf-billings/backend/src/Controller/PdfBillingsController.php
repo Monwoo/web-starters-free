@@ -20,28 +20,19 @@ use Psr\Log\LoggerInterface;
 class PdfBillingsController extends AbstractController
 {
     protected TCPDFController $tcpdf;
+    protected $billingConfigFactory;
 
-    public function __construct(TCPDFController $tcpdf)
-    {
+    public function __construct(
+        TCPDFController $tcpdf,
+        EntityManagerInterface $em,
+    ) {
         $this->tcpdf = $tcpdf;
         $this->tcpdf->setClassName(MwsTCPDF::class);
-    }
-
-    #[Route('/', name: 'app_pdf_billings')]
-    public function index(
-        Request $request,
-        EntityManagerInterface $em,
-        BillingConfigRepository $bConfigRepository,
-        LoggerInterface $logger,
-    ): Response {
-        // $clientId = $request->get('clientId');
-
-        // https://stackoverflow.com/questions/21124450/how-to-use-curl-multipart-form-data-to-post-array-field-from-command-line
 
         // https://symfony.com/doc/current/form/data_mappers.html
         // https://symfony.com/doc/current/form/use_empty_data.html
         // https://symfony.com/doc/current/form/direct_submit.html
-        $bConfigFactory = function ($slug = null) use ($em) {
+        $this->billingConfigFactory = function ($slug = null) use ($em) {
             $bConfig = new BillingConfig();
             // Default empty client, to let space for end client fill all his fields
             // TODO : Setting 'null' from form give error : Expected argument of type "string", "null" given at property path "clientName"...
@@ -51,6 +42,17 @@ class PdfBillingsController extends AbstractController
             $em->flush();
             return $bConfig;
         };
+    }
+
+    #[Route('/', name: 'app_pdf_billings')]
+    public function index(
+        Request $request,
+        BillingConfigRepository $bConfigRepository,
+        LoggerInterface $logger,
+    ): Response {
+        // $clientId = $request->get('clientId');
+
+        // https://stackoverflow.com/questions/21124450/how-to-use-curl-multipart-form-data-to-post-array-field-from-command-line
 
         // $rawBillingConfig = $request->request->get('billing_config_submitable'); // To read from POST ONLY
         $rawBillingConfig = $request->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request ;)
@@ -61,7 +63,7 @@ class PdfBillingsController extends AbstractController
 
         $bConfig = $bConfigRepository->findOneBy([
             'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
-        ]) ?? $bConfigFactory($clientSlug);
+        ]) ?? $this->billingConfigFactory($clientSlug);
         // var_dump($bConfig);exit;
         // $logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
@@ -103,14 +105,16 @@ class PdfBillingsController extends AbstractController
         // return $this->render('pdf-billings/index.html.twig', [
         //     'form' => $form->createView(),
         return $this->renderForm('pdf-billings/index.html.twig', [
-            'bConfig' => $bConfig,
+            'billingConfig' => $bConfig,
             'form' => $form,
             'title' => 'MWS SF PDF Billings - Index'
         ]);
     }
 
-    #[Route('/view', name: 'app_pdf_billings_view')]
+    // https://symfony.com/doc/current/routing.html
+    #[Route('/view/{clientSlug}', defaults: ['clientSlug' => 1 ], name: 'app_pdf_billings_view')]
     public function view(
+        string $clientSlug,
         // EngineInterface $tplEngine,
         string $projectDir,
         BillingConfigRepository $bConfigRepository,
@@ -121,7 +125,11 @@ class PdfBillingsController extends AbstractController
 
         $twig = $this->container->get('twig');
 
-        $bConfig = $bConfigRepository->findOneBy([]);
+        $bConfig = $bConfigRepository->findOneBy([
+            'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
+        ]) ?? $bConfigRepository->findOneBy([
+            'clientSlug' => '--', // Default empty client, all fillable by hand version...
+        ]) ?? $this->billingConfigFactory();
         $pdf = $this->tcpdf->create();
 
         // 🇺🇸🇺🇸 SEO

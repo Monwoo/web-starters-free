@@ -36,7 +36,7 @@
 
 	{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
 	{# Native way : #}
-<embed src="{{ path('app_pdf_billings_view') }}" style="width:100%; min-height:700px;" type="application/pdf"> {# TIPS : Need pdf.js integrated library : #}
+<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf"> {# TIPS : Need pdf.js integrated library : #}
 	{# <iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
 
 	{# TIPS : Need to BE online to be valide for gview ? #}

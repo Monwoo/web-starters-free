@@ -23,6 +23,9 @@ class BillingConfigType extends AbstractType
             ->add('clientAddressL2')
             ->add('clientWebsite')
             ->add('clientLogoUrl')
+            ->add('businessLogo')
+            ->add('businessWorkloadHours')
+            ->add('businessWorkloadDetails')
         ;
     }
 
