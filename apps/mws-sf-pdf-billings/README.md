@@ -1,5 +1,5 @@
 # Monwoo Web Starter Symfony PDF Billings (Free)
-<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Open Source Apache-2.0 with Copyright © MONWOO 2023**, all rights reserved.](https://moonkiosk.monwoo.com/en/categorie-produit/produced-solutions/mws_en/)
+<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Open Source Apache-2.0 with Copyright © MONWOO 2023**](https://moonkiosk.monwoo.com/en/categorie-produit/produced-solutions/mws_en/)
 
 ## Aim
 Provide a PHP local tool for pre-fillable self signed PDF billing templates.
@@ -59,9 +59,11 @@ symfony console list make
 php bin/console make:entity BillingConfig
 
 rm src/Form/BillingConfigType.php
-mv src/Form/BillingConfigSubmitableType.php src/Form/_BillingConfigSubmitableType.php 
+mv src/Form/BillingConfigSubmitableType.php \
+src/Form/_BillingConfigSubmitableType.php 
 php bin/console make:form BillingConfigType BillingConfig
-mv src/Form/_BillingConfigSubmitableType.php src/Form/BillingConfigSubmitableType.php
+mv src/Form/_BillingConfigSubmitableType.php \
+src/Form/BillingConfigSubmitableType.php
 
 php bin/console make:entity --regenerate
 php bin/console make:entity --help
@@ -76,13 +78,13 @@ php bin/console make:controller PdfBillings
 # You can test the JWT feature with curl :
 # Add a user (you will have to build up all other security aspects)
 curl -X POST -H "Content-Type: application/json" \
-    -d '{"username": "test", "password": "123", "email": "test@test.fr"}' \
-    http://127.0.0.1:8000/api/register
+ -d '{"username": "test", "password": "123", "email": "test@test.fr"}' \
+ http://127.0.0.1:8000/api/register
 
 # Get the JWT token from custom 'login_check' api url
 curl -X POST -H "Content-Type: application/json" \
-    -d '{"username": "test", "password": "123"}' \
-    http://127.0.0.1:8000/api/login_check
+ -d '{"username": "test", "password": "123"}' \
+ http://127.0.0.1:8000/api/login_check
 
 # Load some client (if exist) :
 open http://localhost:8000/?billing_config_submitable[clientSlug]=newClient
@@ -93,7 +95,8 @@ curl -X POST -d "billing_config_submitable[clientSlug]=test2" \
 http://127.0.0.1:8000/
 
 # Create or update quotation for new client slug (WRONG CSRF)
-curl -X POST -H "application/x-www-form-urlencoded" \
+curl -X POST \
+-H "application/x-www-form-urlencoded" \
 -d "billing_config_submitable[clientSlug]=test3" \
 -d "billing_config_submitable[clientName]=ClientTestedName" \
 http://127.0.0.1:8000/
@@ -117,7 +120,8 @@ curl -c cookies.txt -b cookies.txt -F "billing_config_submitable[clientSlug]=tes
 http://127.0.0.1:8000/
 
 # Similar (ok thanks to SF5 framework...)
-curl -X POST -c cookies.txt -b cookies.txt -H "application/x-www-form-urlencoded" \
+curl -X POST -c cookies.txt -b cookies.txt \
+-H "application/x-www-form-urlencoded" \
 -d "billing_config_submitable[_token]=$CSRF" \
 -d "billing_config_submitable[clientSlug]=test3" \
 -d "billing_config_submitable[clientName]=ClientTestedName" \

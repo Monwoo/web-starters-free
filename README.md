@@ -1,13 +1,13 @@
-# Monwoo Web Starter (MWS) Open source Apache-2.0 (Free)
-<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Copyright © MONWOO 2023**, all rights reserved.](https://moonkiosk.monwoo.com/en/categorie-produit/produced-solutions/mws_en/)
+# Monwoo Web Starters (MWS) Apache-2.0 (Free)
+<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Open Source Apache-2.0 with Copyright © MONWOO 2023**](https://moonkiosk.monwoo.com/en/categorie-produit/produced-solutions/mws_en/)
 
-Will contain multiple free webstarters (ready to use) and some parts of opened confidential starter (Optional full code under private license per domains, or for confidential knowledge with no rights to duplicate without appropriate notice or license)
+Contain multiple free webstarters and parts of opened confidential starters (Optional full code under private license per domains, or for confidential knowledge with no rights to duplicate without appropriate notice or license)
 
 ## Apps and Packages
 
 ### Monwoo Web Starters
 - `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential. Need paid licence to be fully integrated)
-- `mws-sf-pdf-billings`: Open Source Apache-2.0 PDF Billings Server in Symfony 5
+- `mws-sf-pdf-billings`: Open Source Apache-2.0 PDF Billings Server in Symfony 5. Provide a PHP local tool for pre-fillable self signed PDF billing templates.
 
 
 ### Next JS example
@@ -20,7 +20,7 @@ Will contain multiple free webstarters (ready to use) and some parts of opened c
 ### Svelte example
 - `svelte-docs`: a [svelte-kit](https://kit.svelte.dev/) app
 - `svelte-web`: another [svelte-kit](https://kit.svelte.dev/) app
-- `svelte-ui`: a stub Svelte component library shared by both `svelte-web` and `svelte-docs` applications
+- `svelte-ui`: a Svelte component library shared by `svelte-web` and `svelte-docs` applications
 - `svelte-eslint-config`: `eslint` configurations (includes `eslint-plugin-svelte` and `eslint-config-prettier`). WARNING : package name set to `eslint-config-svelte` for config compatibility purpose.
 - `svelte-tsconfig`: `tsconfig.json` used throughout the monorepo `svelte` apps and packages
 
