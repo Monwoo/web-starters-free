@@ -116,6 +116,13 @@ curl -c cookies.txt -b cookies.txt -F "billing_config_submitable[clientSlug]=tes
 -F "billing_config_submitable[clientName]=ClientTestedName" \
 http://127.0.0.1:8000/
 
+# Similar (ok thanks to SF5 framework...)
+curl -X POST -c cookies.txt -b cookies.txt -H "application/x-www-form-urlencoded" \
+-d "billing_config_submitable[_token]=$CSRF" \
+-d "billing_config_submitable[clientSlug]=test3" \
+-d "billing_config_submitable[clientName]=ClientTestedName" \
+http://127.0.0.1:8000/
+
 ```
 
 ## Useful Links
