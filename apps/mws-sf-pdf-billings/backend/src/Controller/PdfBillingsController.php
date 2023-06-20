@@ -21,12 +21,14 @@ class PdfBillingsController extends AbstractController
 {
     protected TCPDFController $tcpdf;
     protected $billingConfigFactory;
+    protected $em;
 
     public function __construct(
         TCPDFController $tcpdf,
-        EntityManagerInterface $em,
+        EntityManagerInterface $em
     ) {
         $this->tcpdf = $tcpdf;
+        $this->em = $em;
         $this->tcpdf->setClassName(MwsTCPDF::class);
 
         // https://symfony.com/doc/current/form/data_mappers.html
@@ -38,6 +40,17 @@ class PdfBillingsController extends AbstractController
             // TODO : Setting 'null' from form give error : Expected argument of type "string", "null" given at property path "clientName"...
             $bConfig->setClientName('______________________________');
             $bConfig->setClientSlug($slug ?? '--');
+            $bConfig->setQuotationNumber('________________');
+            $bConfig->setClientEmail('______________________________');
+            $bConfig->setClientTel('______________________________');
+            $bConfig->setClientSIRET('______________________________');
+            $bConfig->setClientTvaIntracom('______________________________');
+            $bConfig->setClientAddressL1('______________________________');
+            $bConfig->setClientAddressL2('______________________________');
+            $bConfig->setClientWebsite('______________________________');
+            $bConfig->setClientLogoUrl('______________________________');
+            $bConfig->setClientName('______________________________');
+            $bConfig->setClientName('______________________________');
             $em->persist($bConfig);
             $em->flush();
             return $bConfig;
@@ -63,7 +76,7 @@ class PdfBillingsController extends AbstractController
 
         $bConfig = $bConfigRepository->findOneBy([
             'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
-        ]) ?? $this->billingConfigFactory($clientSlug);
+        ]) ?? ($this->billingConfigFactory)($clientSlug);
         // var_dump($bConfig);exit;
         // $logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
@@ -89,8 +102,8 @@ class PdfBillingsController extends AbstractController
             if ($form->isValid()) {
                 // var_dump($bConfig); exit;
                 // $bConfig->setComputedValue(...);
-                $em->persist($bConfig);
-                $em->flush();
+                $this->em->persist($bConfig);
+                $this->em->flush();
 
                 // TIPS : un-comment below if you want to redirect to full PDF view at form submit
                 // return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
@@ -129,7 +142,7 @@ class PdfBillingsController extends AbstractController
             'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
         ]) ?? $bConfigRepository->findOneBy([
             'clientSlug' => '--', // Default empty client, all fillable by hand version...
-        ]) ?? $this->billingConfigFactory();
+        ]) ?? ($this->billingConfigFactory)();
         $pdf = $this->tcpdf->create();
 
         // 🇺🇸🇺🇸 SEO
@@ -142,7 +155,7 @@ class PdfBillingsController extends AbstractController
         // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         // https://stackoverflow.com/questions/5503969/tcpdf-how-to-adjust-height-of-header
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP - 10, PDF_MARGIN_RIGHT);
+        $pdf->SetMargins(PDF_MARGIN_LEFT - 7, PDF_MARGIN_TOP - 10, PDF_MARGIN_RIGHT - 7);
         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM - 10);
 
         $pdf->setFontSubsetting(true);
@@ -161,9 +174,9 @@ class PdfBillingsController extends AbstractController
         $PDF_HEADER_LOGO = null; // "logo.png";//any image file. check correct path.
         $PDF_HEADER_LOGO_WIDTH = 0; // "20";
         $PDF_HEADER_TITLE = null;
-        $PDF_HEADER_STRING = "Monwoo"
-            . "                                                                             "
-            . "                             Devis n°" . $bConfig->getQuotationNumber();
+        $PDF_HEADER_STRING = "monwoo.com (Démo mws-sf-pdf-billings) "
+            . "                                                             "
+            . "                                   Devis n° " . $bConfig->getQuotationNumber();
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
         // . "E abc@gmail.com\n"
         // . "www.abc.com";
@@ -174,12 +187,12 @@ class PdfBillingsController extends AbstractController
             $PDF_HEADER_TITLE,
             $PDF_HEADER_STRING,
             [0, 0, 0],
-            [200, 200, 200]
+            [242, 242, 242]
         );
         // https://stackoverflow.com/questions/25934841/tcpdf-how-to-set-top-margin-in-header
         // $margin = $pdf->getMargins();
         // $pdf->SetY($margin['top']);
-
+        $pdf->setHeaderMargin(3);
 
         // 🇺🇸🇺🇸 Footer arrangements
         $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));

@@ -123,6 +123,10 @@ curl -X POST -c cookies.txt -b cookies.txt -H "application/x-www-form-urlencoded
 -d "billing_config_submitable[clientName]=ClientTestedName" \
 http://127.0.0.1:8000/
 
+# After some moment, you want to start back from fresh data.
+# to clean and rebuild the database :
+rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
+
 ```
 
 ## Useful Links
