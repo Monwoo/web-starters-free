@@ -38,7 +38,7 @@ text-align
 } */
 
 
-/* .contacts .business {
+.contacts .business {
 	background-color: #0FF00F;
 }
 .empty-space {
@@ -46,7 +46,7 @@ text-align
 }
 .contacts .client {
 	background-color: #F0F00F;
-} */
+}
 </style>
 
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
@@ -64,7 +64,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
 	: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
 	{# // TODO: empirique way, go check pdf default mesure unit... #}
-	{% set fullWidth = 550.5 %}
+	{% set fullWidth = 539 %}
 		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
 			<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}" />

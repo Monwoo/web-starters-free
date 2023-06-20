@@ -155,7 +155,7 @@ class PdfBillingsController extends AbstractController
         // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         // https://stackoverflow.com/questions/5503969/tcpdf-how-to-adjust-height-of-header
-        $pdf->SetMargins(PDF_MARGIN_LEFT - 7, PDF_MARGIN_TOP - 10, PDF_MARGIN_RIGHT - 7);
+        $pdf->SetMargins(PDF_MARGIN_LEFT - 5, PDF_MARGIN_TOP - 10, PDF_MARGIN_RIGHT - 5);
         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM - 10);
 
         $pdf->setFontSubsetting(true);
