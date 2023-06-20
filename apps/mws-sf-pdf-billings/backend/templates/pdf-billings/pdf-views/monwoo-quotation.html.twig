@@ -74,7 +74,10 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
 	{# // TODO: empirique way, go check pdf default mesure unit... #}
 	{% set fullWidth = 539 %}
-	{% set quotationTotal = 30 + (billingConfig.businessWorkloadHours ?? 6) * 60 %}
+	{% set pricePerHour = 60 %}
+	{% set licenseWpDisplay = 30 %}
+	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? 6 %}
+	{% set quotationTotal = licenseWpDisplay + businessWorkloadHours * pricePerHour %}
 	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
 		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
 	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
@@ -86,7 +89,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 			</td>
 			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-										      font-weight:bold;color:#005B98;font-size:14pt;">
+															      font-weight:bold;color:#005B98;font-size:14pt;">
 				Devis n°{{billingConfig.quotationNumber}}
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -101,7 +104,14 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
             'app': app, 'billingConfig': billingConfig
         } %}
 			</td>
-			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};"></td>
+			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
+			text-align: center;
+			font-weight:bold;color:#005B98;font-size:16pt;
+			">
+				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+				<br />
+				T.T.C.
+			</td>
 			<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
 				{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
             'app': app, 'billingConfig': billingConfig
@@ -110,7 +120,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		</tr>
 	</table>
 	{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
-		<div class="empty-space" style="height:30;background-color:red;"></div> #}
+			<div class="empty-space" style="height:30;background-color:red;"></div> #}
 	<table class="empty-space" style="font-size:7pt;">
 		<tr>
 			<td></td>
@@ -126,10 +136,10 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		</tr>
 	</table>
 	<table class="temporality" style="
-				padding: 0px;
-				border-spacing:{{ (0) * fullWidth }} 0;
-				font-weight:bold;
-				font-size:14pt;border: solid 1px #000000;">
+							padding: 0px;
+							border-spacing:{{ (0) * fullWidth }} 0;
+							font-weight:bold;
+							font-size:14pt;border: solid 1px #000000;">
 		<tr>
 			<td class="empty-space" style="font-size:2pt;"></td>
 		</tr>
@@ -163,12 +173,24 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			<td class="aim-label" style="width:{{ 0.1 * fullWidth }};text-align:right;font-weight:bold;text-decoration:none;">
 				Objet :
 			</td>
-			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};text-align: center;">
-				<div class="title" style="font-weight:bold;color:#005B98;font-size:9pt;">
-					{{ quotationTotal }} € : Licence pour mws-svelte-wp-display et 3 itérations de mise en oeuvres Svelte
+			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};
+								text-align: center;
+								font-weight:bold;
+								font-size:10pt;">
+				<div class="title" style="color:#005B98;">
+					{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+					: Licence pour mws-svelte-wp-display et 3 itérations de mise en oeuvres Svelte
 				</div>
-				<div class="description" style="font-weight:bold">
-					description
+				<div class="description" style="">
+					- code du starter MWS Svelte-wp-display transmis par Git et/ou email. [promo
+					{{ licenseWpDisplay|format_currency('EUR', {rounding_mode: 'floor'})  }}]
+				</div>
+				<div class="description" style="">
+					- 3 itérations incluant
+					{{businessWorkloadHours}}
+					heures de conseils et ajustements Svelte. [
+					{{ (businessWorkloadHours * pricePerHour)|format_currency('EUR', {rounding_mode: 'floor'}) }}
+					]
 				</div>
 			</td>
 			<td class="empty-space" style="width:{{ 0.1 * fullWidth }};"></td>

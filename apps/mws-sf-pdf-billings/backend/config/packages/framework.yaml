@@ -17,6 +17,9 @@ framework:
     php_errors:
         log: true
 
+    # https://stackoverflow.com/questions/25948853/how-to-install-the-intl-extension-for-twig/28410279#28410279
+    default_locale: fr
+
 when@test:
     framework:
         test: true

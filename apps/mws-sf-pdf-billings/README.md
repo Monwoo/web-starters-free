@@ -131,6 +131,24 @@ http://127.0.0.1:8000/
 # to clean and rebuild the database :
 rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
 
+# Updating twig to bring extension if not already setup in composer.json
+# twig/extensions soud depreciated and replaced by twig/extra-bundle
+# as done with next command :
+composer require twig
+# For currency filter to work :
+composer require twig/intl-extra
+
+# https://symfony.com/doc/current/reference/configuration/twig.html
+php bin/console config:dump-reference twig
+php bin/console debug:config twig
+
+# MacOS quick tool to resize png images (and convert to jpeg) :
+find . -name '*.png' | sed 's/\.png//g' \
+| xargs -I % sips -Z 1800 \
+--setProperty format jpeg \
+--setProperty formatOptions 70.00 \
+"%.png" --out "%.jpg"
+
 ```
 
 ## Useful Links

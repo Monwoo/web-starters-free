@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Qipsius\TCPDFBundle\Controller\TCPDFController;
 use Doctrine\ORM\EntityManagerInterface;
+use Locale;
 use Psr\Log\LoggerInterface;
 
 
@@ -150,6 +151,7 @@ class PdfBillingsController extends AbstractController
         $pdf = $this->tcpdf->create();
 
         // 🇺🇸🇺🇸 SEO
+        Locale::setDefault('fr');
         $pdf->SetAuthor('Miguel Monwoo (service@monwoo.com)');
         $pdf->SetTitle('Devis 000');
         $pdf->SetSubject('Devis Monwoo');
