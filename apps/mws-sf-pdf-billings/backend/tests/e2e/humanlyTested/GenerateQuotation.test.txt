@@ -1,0 +1,5 @@
+70% des fonctionnalités demandées semblent atteintes.
+
+30% non fonctionnel :
+- Affichage des tautaux et mentions léguales
+- Presentation des CGV...

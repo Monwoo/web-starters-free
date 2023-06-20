@@ -181,7 +181,7 @@ class PdfBillingsController extends AbstractController
         $PDF_HEADER_LOGO_WIDTH = 0; // "20";
         $PDF_HEADER_TITLE = null;
         $PDF_HEADER_STRING = "monwoo.com (Démo mws-sf-pdf-billings) "
-            . "                                                             "
+            . "                                                        "
             . "                                   Devis n° " . $bConfig->getQuotationNumber();
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
         // . "E abc@gmail.com\n"

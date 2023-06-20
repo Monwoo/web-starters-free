@@ -1,7 +1,21 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
 	<style>
-{{pdfCssStyles}}</style>
+		{{pdfCssStyles}}
+		.quotation-item .header {
+			background-color: #005B98;
+			color: white;
+		}
+		.quotation-item .header th {
+			border-left: solid 1px white;
+			border-right: solid 1px white;
+		}
+
+		.quotation-item .data td {
+			border-left: solid 1px black;
+			border-right: solid 1px black;
+		}
+	</style>
 
 {# 
 https://stackoverflow.com/questions/31451779/tcpdf-adding-a-background-to-a-table-cell-or-div-that-shows-on-pdf
@@ -89,7 +103,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 			</td>
 			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-															      font-weight:bold;color:#005B98;font-size:14pt;">
+																				      font-weight:bold;color:#005B98;font-size:14pt;">
 				Devis n°{{billingConfig.quotationNumber}}
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -105,11 +119,11 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
         } %}
 			</td>
 			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
-			text-align: center;
-			font-weight:bold;color:#005B98;font-size:16pt;
-			">
+								text-align: center;
+								font-weight:bold;color:#005B98;font-size:16pt;
+								">
 				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
-				<br />
+				<br/>
 				T.T.C.
 			</td>
 			<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
@@ -120,7 +134,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		</tr>
 	</table>
 	{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
-			<div class="empty-space" style="height:30;background-color:red;"></div> #}
+				<div class="empty-space" style="height:30;background-color:red;"></div> #}
 	<table class="empty-space" style="font-size:7pt;">
 		<tr>
 			<td></td>
@@ -136,10 +150,10 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		</tr>
 	</table>
 	<table class="temporality" style="
-							padding: 0px;
-							border-spacing:{{ (0) * fullWidth }} 0;
-							font-weight:bold;
-							font-size:14pt;border: solid 1px #000000;">
+										padding: 0px;
+										border-spacing:{{ (0) * fullWidth }} 0;
+										font-weight:bold;
+										font-size:14pt;border: solid 1px #000000;">
 		<tr>
 			<td class="empty-space" style="font-size:2pt;"></td>
 		</tr>
@@ -174,16 +188,17 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				Objet :
 			</td>
 			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};
-								text-align: center;
-								font-weight:bold;
-								font-size:10pt;">
+													text-align: center;
+													font-weight:bold;
+													font-size:10pt;">
 				<div class="title" style="color:#005B98;">
 					{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
-					: Licence pour mws-svelte-wp-display et 3 itérations de mise en oeuvres Svelte
+					: Licence mws-svelte-wp-display + 3 itérations de mise en oeuvres Svelte
 				</div>
 				<div class="description" style="">
-					- code du starter MWS Svelte-wp-display transmis par Git et/ou email. [promo
-					{{ licenseWpDisplay|format_currency('EUR', {rounding_mode: 'floor'})  }}]
+					- code du starter MWS Svelte-wp-display transmis par Git et/ou email. [ promo
+					{{ licenseWpDisplay|format_currency('EUR', {rounding_mode: 'floor'})  }}
+					]
 				</div>
 				<div class="description" style="">
 					- 3 itérations incluant
@@ -195,7 +210,34 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			</td>
 			<td class="empty-space" style="width:{{ 0.1 * fullWidth }};"></td>
 		</tr>
+		<tr>
+			<td class="empty-space" style="height:100;"></td>
+		</tr>
 	</table>
+
+	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+		'app': app, 'billingConfig': billingConfig,
+		'description': 'Licence nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
+		'quantity': 1,
+		'pricePerUnitWithoutTaxes': licenseWpDisplay,
+		'taxesPercent': 0,
+		'discountPercent': 0,
+		'priceWithoutTaxes': licenseWpDisplay,
+		'priceWithTaxes': licenseWpDisplay,
+		'paddingBottom': 150,
+	} %}
+
+	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+		'app': app, 'billingConfig': billingConfig,
+		'description': '30 minutes d’expertise Frontend UI Svelte de votre site web en distancielle.',
+		'quantity': businessWorkloadHours * 2,
+		'pricePerUnitWithoutTaxes': pricePerHour / 2,
+		'taxesPercent': 0,
+		'discountPercent': 0,
+		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
+		'priceWithTaxes': businessWorkloadHours * pricePerHour,
+	} %}
+
 {% else %}
 	Please, submit previous form to update this PDF.
 {% endif %}
