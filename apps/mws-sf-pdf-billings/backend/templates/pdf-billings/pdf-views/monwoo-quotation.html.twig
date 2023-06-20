@@ -42,12 +42,20 @@ text-align
 /* .contacts .business {
 	background-color: #0FF00F;
 }
-.empty-space {
+.contacts .client {
+	background-color: #F0F00F;
+} */
+
+/* .empty-space {
 	background-color: #00808F;
 }
-.contacts .client {
-	background-color: #F0F00F; */
+
+.thanks {
+		background-color: #0AA00A;
 }
+.temporality {
+		background-color: #A0A00A;
+} */
 </style>
 
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
@@ -66,12 +74,19 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
 	{# // TODO: empirique way, go check pdf default mesure unit... #}
 	{% set fullWidth = 539 %}
+	{% set quotationTotal = 30 + (billingConfig.businessWorkloadHours ?? 6) * 60 %}
+	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
+		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
+	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
+		: ("now"|date) %}
+	{% set quotationEnd = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
+		: (quotationStart | date_modify("+15 day")) %}
 		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
 			<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 			</td>
 			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-					      font-weight:bold;color:#005B98;font-size:14pt;">
+										      font-weight:bold;color:#005B98;font-size:14pt;">
 				Devis n°{{billingConfig.quotationNumber}}
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -81,30 +96,82 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	</table>
 	<table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
 		<tr>
-			<td class="business" style="width:{{ 0.375 * fullWidth }};">
+			<td class="business" style="width:{{ 0.4 * fullWidth }};">
 				{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
             'app': app, 'billingConfig': billingConfig
         } %}
 			</td>
-			<td class="empty-space" style="width:{{ 0.25 * fullWidth }};"></td>
-			<td class="client" style="width:{{ 0.375 * fullWidth }};text-align: right;">
+			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};"></td>
+			<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
 				{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
             'app': app, 'billingConfig': billingConfig
         } %}
 			</td>
 		</tr>
 	</table>
+	{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
+		<div class="empty-space" style="height:30;background-color:red;"></div> #}
+	<table class="empty-space" style="font-size:7pt;">
+		<tr>
+			<td></td>
+		</tr>
+	</table>
+
+	<div class="thanks" style="color:#666666;font-size:10pt;text-align:center;">
+		Nous vous remercions de votre confiance
+	</div>
+	<table class="empty-space" style="font-size:2pt;">
+		<tr>
+			<td></td>
+		</tr>
+	</table>
+	<table class="temporality" style="
+				padding: 0px;
+				border-spacing:{{ (0) * fullWidth }} 0;
+				font-weight:bold;
+				font-size:14pt;border: solid 1px #000000;">
+		<tr>
+			<td class="empty-space" style="font-size:2pt;"></td>
+		</tr>
+		<tr>
+			<td class="aim-label" style="width:{{ 0.495 * fullWidth }};text-align:right;">
+				Devis fait le :
+			</td>
+			<td class="empty-space" style="width:{{ 0.01 * fullWidth }};"></td>
+			<td class="aim-description" style="width:{{ 0.495 * fullWidth }};text-align:left;color:#005B98;">
+				{{ quotationStart | date ( "d/m/Y") }}
+			</td>
+		</tr>
+		<tr>
+			<td class="aim-label" style="width:{{ 0.495 * fullWidth }};text-align:right;">
+				Valable jusqu'au :
+			</td>
+			<td class="empty-space" style="width:{{ 0.01 * fullWidth }};"></td>
+			<td class="aim-description" style="width:{{ 0.495 * fullWidth }};text-align:left;color:#005B98;">
+				{{ quotationEnd | date ( "d/m/Y") }}
+			</td>
+		</tr>
+		<tr>
+			<td class="empty-space" style="font-size:2pt;"></td>
+		</tr>
+	</table>
 	<table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
 		<tr>
-			<td class="aim-label" style="width:{{ 0.2 * fullWidth }};">
+			<td class="empty-space" style="font-size:7pt;"></td>
+		</tr>
+		<tr>
+			<td class="aim-label" style="width:{{ 0.1 * fullWidth }};text-align:right;font-weight:bold;text-decoration:none;">
 				Objet :
 			</td>
-			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};text-align: right;">
-				<h1>Bla</h1>
-				<p>
+			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};text-align: center;">
+				<div class="title" style="font-weight:bold;color:#005B98;font-size:9pt;">
+					{{ quotationTotal }} € : Licence pour mws-svelte-wp-display et 3 itérations de mise en oeuvres Svelte
+				</div>
+				<div class="description" style="font-weight:bold">
 					description
-				</p>
+				</div>
 			</td>
+			<td class="empty-space" style="width:{{ 0.1 * fullWidth }};"></td>
 		</tr>
 	</table>
 {% else %}

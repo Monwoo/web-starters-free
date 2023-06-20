@@ -7,6 +7,7 @@ use App\Entity\BillingConfig;
 use App\Form\BillingConfigSubmitableType;
 use App\Repository\BillingConfigRepository;
 use App\Services\MwsTCPDF;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,6 +52,9 @@ class PdfBillingsController extends AbstractController
             $bConfig->setClientLogoUrl('______________________________');
             $bConfig->setClientName('______________________________');
             $bConfig->setClientName('______________________________');
+            $bConfig->setQuotationStartDay(new DateTime('19/06/2023'));
+            $bConfig->setQuotationEndDay(new DateTime('03/07/2023'));
+
             $em->persist($bConfig);
             $em->flush();
             return $bConfig;

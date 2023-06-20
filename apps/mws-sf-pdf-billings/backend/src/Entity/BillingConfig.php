@@ -56,6 +56,12 @@ class BillingConfig
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $businessWorkloadDetails = null;
 
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $quotationStartDay = null;
+
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $quotationEndDay = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -225,6 +231,30 @@ class BillingConfig
     public function setBusinessWorkloadDetails(?string $businessWorkloadDetails): static
     {
         $this->businessWorkloadDetails = $businessWorkloadDetails;
+
+        return $this;
+    }
+
+    public function getQuotationStartDay(): ?\DateTimeInterface
+    {
+        return $this->quotationStartDay;
+    }
+
+    public function setQuotationStartDay(?\DateTimeInterface $quotationStartDay): static
+    {
+        $this->quotationStartDay = $quotationStartDay;
+
+        return $this;
+    }
+
+    public function getQuotationEndDay(): ?\DateTimeInterface
+    {
+        return $this->quotationEndDay;
+    }
+
+    public function setQuotationEndDay(?\DateTimeInterface $quotationEndDay): static
+    {
+        $this->quotationEndDay = $quotationEndDay;
 
         return $this;
     }
