@@ -1,6 +1,6 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
-<style>
+	<style>
 {{pdfCssStyles}}</style>
 
 {# 
@@ -24,6 +24,7 @@ text-align
 
 {# DEBUGS colors : #}
 	<style>
+;
 /* .header {
 	background-color: #FF0000;
 }
@@ -38,14 +39,14 @@ text-align
 } */
 
 
-.contacts .business {
+/* .contacts .business {
 	background-color: #0FF00F;
 }
 .empty-space {
 	background-color: #00808F;
 }
 .contacts .client {
-	background-color: #F0F00F;
+	background-color: #F0F00F; */
 }
 </style>
 
@@ -67,28 +68,42 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{% set fullWidth = 539 %}
 		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
 			<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
-				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}" />
+				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 			</td>
 			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-      font-weight:bold;color:#005B98;font-size:14pt;">
+					      font-weight:bold;color:#005B98;font-size:14pt;">
 				Devis n°{{billingConfig.quotationNumber}}
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
-				<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}" />
+				<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}"/>
 			</td>
 		</tr>
 	</table>
-  <table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;"> <tr>
+	<table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
+		<tr>
 			<td class="business" style="width:{{ 0.375 * fullWidth }};">
-        {% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
+				{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
             'app': app, 'billingConfig': billingConfig
         } %}
 			</td>
 			<td class="empty-space" style="width:{{ 0.25 * fullWidth }};"></td>
 			<td class="client" style="width:{{ 0.375 * fullWidth }};text-align: right;">
-        {% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
+				{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
             'app': app, 'billingConfig': billingConfig
         } %}
+			</td>
+		</tr>
+	</table>
+	<table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
+		<tr>
+			<td class="aim-label" style="width:{{ 0.2 * fullWidth }};">
+				Objet :
+			</td>
+			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};text-align: right;">
+				<h1>Bla</h1>
+				<p>
+					description
+				</p>
 			</td>
 		</tr>
 	</table>
