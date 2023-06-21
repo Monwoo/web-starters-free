@@ -196,6 +196,12 @@ class PdfBillingsController extends AbstractController
             ], 404);
         }
 
+        // Internals
+        // TIPS : below will need to be in custom config file,
+        // by using K_TCPDF_EXTERNAL_CONFIG for example ?
+        // apps/mws-sf-pdf-billings/backend/vendor/tecnickcom/tcpdf/config/tcpdf_config.php
+        // define('K_TCPDF_CALLS_IN_HTML', true);
+
         // 🇺🇸🇺🇸 SEO
         Locale::setDefault('fr');
         $pdf->SetAuthor('Miguel Monwoo (service@monwoo.com)');
