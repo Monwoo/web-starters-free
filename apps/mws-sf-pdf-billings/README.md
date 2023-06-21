@@ -137,6 +137,10 @@ rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
 composer require twig
 # For currency filter to work :
 composer require twig/intl-extra
+# https://symfony.com/doc/current/controller/error_pages.html
+composer require symfony/twig-pack
+# open error page in dev :
+open http://localhost:8000/index.php/_error/404
 
 # https://symfony.com/doc/current/reference/configuration/twig.html
 php bin/console config:dump-reference twig

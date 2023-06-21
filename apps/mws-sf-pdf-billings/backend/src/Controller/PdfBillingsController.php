@@ -24,11 +24,14 @@ class PdfBillingsController extends AbstractController
     protected TCPDFController $tcpdf;
     protected $billingConfigFactory;
     protected $em;
+    protected $logger;
 
     public function __construct(
+        LoggerInterface $logger,
         TCPDFController $tcpdf,
         EntityManagerInterface $em
     ) {
+        $this->logger = $logger;
         $this->tcpdf = $tcpdf;
         $this->em = $em;
         $this->tcpdf->setClassName(MwsTCPDF::class);
@@ -65,8 +68,7 @@ class PdfBillingsController extends AbstractController
     #[Route('/', name: 'app_pdf_billings')]
     public function index(
         Request $request,
-        BillingConfigRepository $bConfigRepository,
-        LoggerInterface $logger,
+        BillingConfigRepository $bConfigRepository
     ): Response {
         // $clientId = $request->get('clientId');
 
@@ -83,12 +85,12 @@ class PdfBillingsController extends AbstractController
             'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
         ]) ?? ($this->billingConfigFactory)($clientSlug);
         // var_dump($bConfig);exit;
-        // $logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-        $logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        // $this->logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $this->logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
         // $csrfToken = $request->request->get('_token');
         // if ($csrfToken && !$this->isCsrfTokenValid('pdf-billings', $csrfToken)) {
-        //     $logger->error('WRONG CSRF token', [
+        //     $this->logger->error('WRONG CSRF token', [
         //         'token' => $csrfToken,
         //     ]);
         //     return $this->json([
@@ -114,8 +116,9 @@ class PdfBillingsController extends AbstractController
                 // return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
             } else {
                 // var_dump($form->getErrors(true)->__toString());exit;
-                $logger->error('Form submit errors : '
-                    . $form->getErrors(true)->__toString()
+                $this->logger->error(
+                    'Form submit errors : '
+                        . $form->getErrors(true)->__toString()
                 );
             }
         }
@@ -130,12 +133,17 @@ class PdfBillingsController extends AbstractController
     }
 
     // https://symfony.com/doc/current/routing.html
-    #[Route('/view/{clientSlug}', defaults: ['clientSlug' => 1 ], name: 'app_pdf_billings_view')]
+    #[Route(
+        '/view/{clientSlug}/{template}',
+        defaults: ['clientSlug' => 1, 'template' => 'monwoo'],
+        name: 'app_pdf_billings_view'
+    )]
     public function view(
         string $clientSlug,
+        string $template,
         // EngineInterface $tplEngine,
         string $projectDir,
-        BillingConfigRepository $bConfigRepository,
+        BillingConfigRepository $bConfigRepository
     ): Response {
         // Missing deps injections in new version ?
         // Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $tplEngine ?
@@ -149,6 +157,44 @@ class PdfBillingsController extends AbstractController
             'clientSlug' => '--', // Default empty client, all fillable by hand version...
         ]) ?? ($this->billingConfigFactory)();
         $pdf = $this->tcpdf->create();
+
+        /*
+        https://stackoverflow.com/questions/50621578/get-version-from-composer-json-symfony
+        use PackageVersions\Versions;
+        use Jean85\PrettyVersions;
+        // Will output "1.0.0@0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"
+        echo Versions::getVersion('myvendor/mypackage');
+        // Will output "1.0.0"
+        echo (string) PrettyVersions::getVersion('myvendor/mypackage');
+        */
+
+        // Ok, but need local file access readings...
+        // $composerJson = file_get_contents(
+        //     $projectDir . '/composer.json'
+        // );
+        // $rootPackage = json_decode($composerJson, true);
+
+        // $version = \Composer\InstalledVersions::getRootPackage()['version'];
+        // ok, but need 'composer install' run to refresh right version :
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+        $packageName = array_slice(explode("monwoo/", $rootPackage['name']), -1)[0];
+        $isDev = $rootPackage['dev'] ?? false;
+        // var_dump($rootPackage);exit;
+        if ($isDev) {
+            $this->logger->warning('Packages are installed for DEV environement', $rootPackage);
+        }
+        $templatePath = "pdf-billings/pdf-views/quotation-templates/$template.html.twig";
+        // var_dump(get_class_methods($twig::class));exit;
+        try {
+            $twig->resolveTemplate($templatePath);
+        } catch (\Twig\Error\LoaderError $e) {
+            return new JsonResponse([
+                "msg" => "Quotation template '$template' not found",
+                "error" => $e->getMessage(),
+            ], 404);
+        }
 
         // 🇺🇸🇺🇸 SEO
         Locale::setDefault('fr');
@@ -180,8 +226,8 @@ class PdfBillingsController extends AbstractController
         $PDF_HEADER_LOGO = null; // "logo.png";//any image file. check correct path.
         $PDF_HEADER_LOGO_WIDTH = 0; // "20";
         $PDF_HEADER_TITLE = null;
-        $PDF_HEADER_STRING = "monwoo.com (Démo mws-sf-pdf-billings) "
-            . "                                                        "
+        $PDF_HEADER_STRING = "monwoo.com ($packageName v-$packageVersion)"
+            . "                                                       "
             . "                                   Devis n° " . $bConfig->getQuotationNumber();
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
         // . "E abc@gmail.com\n"
@@ -207,8 +253,9 @@ class PdfBillingsController extends AbstractController
         // 🇺🇸🇺🇸 BODY arrangements
         $pdf->AddPage();
         // Set some content to print
-        $html = $twig->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
+        $html = $twig->render($templatePath, [
             'billingConfig' => $bConfig,
+            'packageVersion' => $packageVersion, 'packageName' => $packageName,
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
         ]);
 
