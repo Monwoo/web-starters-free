@@ -200,6 +200,12 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	pagebreak="true"/>
 	{# // TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" /> #}
 
+	<table class="empty-space" style="font-size:10;">
+		<tr>
+			<td></td>
+		</tr>
+	</table>
+
 	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,
 		'description': '30 minutes d’expertise Frontend UI Svelte de votre site web en distancielle.',
