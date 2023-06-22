@@ -171,6 +171,7 @@ Learn more about the power of pdf billings:
 - [Html table](https://www.w3schools.com/html/html_table_padding_spacing.asp)
 - [Symfony debug forms errors](https://symfonycasts.com/blog/symfony-debugging-form-errors)
 - [Style css borders](https://developer.mozilla.org/fr/docs/Web/CSS/border)
+- [Tuto for Terms of sales](https://www.mbaskool.com/business-concepts/marketing-and-strategy-terms/10858-term-of-sale.html)
 
 ## Supports
 
