@@ -1,31 +1,24 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
-{% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
 <style></style>
 <table class="quotation-total" style="padding: 2px 2px;
-		border-spacing:{{ (0) * fullWidth }} 0;font-size:9pt;">
+				border-spacing:{{ (0) * fullWidth }} 0;font-size:9pt;">
 	<tr style="text-align:right;font-size:10pt;font-weight:bold;">
 		<td style="width:{{ 0.28 * fullWidth }};"></td>
 		<td style="width:{{ 0.24 * fullWidth }};">TOTAL H.T. :</td>
-		<td style="width:{{ 0.12 * fullWidth }};"></td>
-		<td style="width:{{ 0.12 * fullWidth }};"></td>
-		<td style="width:{{ 0.12 * fullWidth }};">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td style="width:{{ 0.36 * fullWidth }};">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
 	<tr style="text-align:right;font-size:9pt;">
 		<td style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;"></td>
 		<td style="width:{{ 0.24 * fullWidth }};">Montant T.V.A. :</td>
-		<td style="width:{{ 0.12 * fullWidth }};border-bottom:solid 1px black;"></td>
-		<td style="width:{{ 0.12 * fullWidth }};border-bottom:solid 1px black;"></td>
-		<td style="width:{{ 0.12 * fullWidth }};border-bottom:solid 1px black;">{{0|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td style="width:{{ 0.36 * fullWidth }};border-bottom:solid 1px black;">{{0|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};font-weight:bold;"></td>
 	</tr>
 	<tr style="text-align:right;font-size:12pt;font-weight:bold;">
 		<td style="width:{{ 0.28 * fullWidth }};"></td>
 		<td style="width:{{ 0.24 * fullWidth }};">Montant T.T.C. :</td>
-		<td style="width:{{ 0.12 * fullWidth }};"></td>
-		<td style="width:{{ 0.12 * fullWidth }};"></td>
-		<td style="width:{{ 0.12 * fullWidth }};">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td style="width:{{ 0.36 * fullWidth }};">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
 	<tr>
@@ -34,13 +27,13 @@
 	<tr style="text-align:right;font-size:10pt;font-weight:bold;">
 		<td style="width:{{ 0.28 * fullWidth }};"></td>
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;"></td>
-		<td  style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;border-bottom:solid 1px black;">%</td>
-		<td  style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;border-bottom:solid 1px black;">H.T.</td>
+		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;border-bottom:solid 1px black;">%</td>
+		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;border-bottom:solid 1px black;">H.T.</td>
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;border-bottom:solid 1px black;">T.V.A.</td>
 		<td style="width:{{ 0.12 * fullWidth }};border:solid 1px black;">T.T.C.</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
-	<tr style="text-align:right;font-size:10pt;font-weight:bold;">
+	<tr style="text-align:right;font-size:10pt;font-weight:bold;color:#666666;">
 		<td style="width:{{ 0.28 * fullWidth }};"></td>
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">Déjà payé :</td>
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{0|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }}</td>
@@ -54,9 +47,40 @@
 	</tr>
 	<tr style="text-align:right;font-size:12pt;font-weight:bold;">
 		<td style="width:{{ 0.40 * fullWidth }};"></td>
-		{# TODO : thick border ? https://stackoverflow.com/questions/25730636/different-borders-for-the-cell-in-tcpdf-by-setlinestyle #}
-		<td style="width:{{ 0.24 * fullWidth }};border:solid 4px black;border-width:5;">TOTAL Net :</td>
-		<td style="width:{{ 0.24 * fullWidth }};">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		{# TIPS : thick border ? https://stackoverflow.com/questions/25730636/different-borders-for-the-cell-in-tcpdf-by-setlinestyle 
+		https://developer.mozilla.org/fr/docs/Web/CSS/border
+		TCPDF do NOT work fully with 'border-width:2px;', sound like 'border-left-width:2px;' etc.. do the job...
+		#}
+		<td 
+		style="width:{{ 0.24 * fullWidth }};
+		border-width:1px;border-bottom-width:1px;border-left-width:1px;
+		border-color:black;border-style:solid;">TOTAL Net :</td>
+		<td style="width:{{ 0.24 * fullWidth }};text-align: center;
+		border-width:1px;border-bottom-width:1px;border-right-width:1px;
+		border-color:black;border-style:solid;">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
+	<tr>
+		<td class="empty-space" style="font-size:3px;">&nbsp;</td>
+	</tr>
+</table>
+<table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;
+		color:#666666;font-size:14pt;
+		border: solid 1px black;
+		text-align:center;font-weight:bold;">
+	<tr>
+		<td class="empty-space" style="font-size:4px;">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="aim-label" style="width:{{ fullWidth }};">
+			Dans l'attente de votre retour.
+		</td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="font-size:4px;">&nbsp;</td>
+	</tr>
+</table>
+<table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;
+		text-align:right;font-size:10pt;">
+		<tr><td>Merci et à bientôt.</td></tr>
 </table>

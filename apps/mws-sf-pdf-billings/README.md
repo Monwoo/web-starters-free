@@ -59,11 +59,12 @@ symfony console list make
 php bin/console make:entity BillingConfig
 
 rm src/Form/BillingConfigType.php
-mv src/Form/BillingConfigSubmitableType.php \
-src/Form/_BillingConfigSubmitableType.php 
+# # use below if you have error on missing BillingConfigType :
+# mv src/Form/BillingConfigSubmitableType.php \
+# src/Form/_BillingConfigSubmitableType.php 
 php bin/console make:form BillingConfigType BillingConfig
-mv src/Form/_BillingConfigSubmitableType.php \
-src/Form/BillingConfigSubmitableType.php
+# mv src/Form/_BillingConfigSubmitableType.php \
+# src/Form/BillingConfigSubmitableType.php
 
 php bin/console make:entity --regenerate
 php bin/console make:entity --help
@@ -169,6 +170,7 @@ Learn more about the power of pdf billings:
 - [Free PDF Document Importer](https://www.setasign.com/products/fpdi/about/)
 - [Html table](https://www.w3schools.com/html/html_table_padding_spacing.asp)
 - [Symfony debug forms errors](https://symfonycasts.com/blog/symfony-debugging-form-errors)
+- [Style css borders](https://developer.mozilla.org/fr/docs/Web/CSS/border)
 
 ## Supports
 

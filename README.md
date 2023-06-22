@@ -7,7 +7,7 @@ Contain multiple free webstarters and parts of opened confidential starters (Opt
 
 ### Monwoo Web Starters
 - `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential. Need paid licence to be fully integrated)
-- `mws-sf-pdf-billings`: Open Source Apache-2.0 PDF Billings Server in Symfony 5. Provide a PHP local tool for pre-fillable self signed PDF billing templates.
+- `mws-sf-pdf-billings`: Open Source Apache-2.0 PDF Billings Server in Symfony 5. Provide a PHP 8 local tool for pre-fillable self signed PDF billing templates. Includes Symfony 5, JWT authentifications, TCPDF, etc...
 
 
 ### Next JS example
