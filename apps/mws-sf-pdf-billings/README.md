@@ -197,6 +197,11 @@ php vendor/bin/simple-phpunit tests/BillingConfigTest.php
 
 # list recipes :
 omposer recipes
+
+# Do some package AUTO-UPDATINGS :
+rm -rf vendor composer.lock var/cache 
+composer update
+
 ```
 
 ## Useful Links
