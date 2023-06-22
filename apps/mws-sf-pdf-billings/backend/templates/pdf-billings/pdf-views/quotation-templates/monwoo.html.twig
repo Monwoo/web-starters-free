@@ -1,21 +1,27 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
 	<style>
-		{{pdfCssStyles}}
-		.quotation-item .header {
-			background-color: #005B98;
-			color: white;
-		}
-		.quotation-item .header th {
-			border-left: solid 1px white;
-			border-right: solid 1px white;
-		}
+{{pdfCssStyles}}
+.quotation-item .header {
+	background-color: #005B98;
+	color: white;
+}
+.quotation-item .header th {
+	border-left: solid 1px white;
+	border-right: solid 1px white;
+}
 
-		.quotation-item .data td {
-			border-left: solid 1px black;
-			border-right: solid 1px black;
-		}
-	</style>
+.quotation-item .data td {
+	border-left: solid 1px black;
+	border-right: solid 1px black;
+}
+</style>
+	<style>
+
+.empty-space {
+	font-size: 0;
+}
+</style>
 
 {# 
 https://stackoverflow.com/questions/31451779/tcpdf-adding-a-background-to-a-table-cell-or-div-that-shows-on-pdf
@@ -37,41 +43,53 @@ text-align
 #}
 
 {# DEBUGS colors : #}
-	<style>
-;
-/* .header {
-	background-color: #FF0000;
-}
-.business-logo {
-	background-color: #00FF00;
-}
-.quotation-title {
-	background-color: #AA0000;
-}
-.client-logo {
-	background-color: #0000FF;
-} */
-
-
-/* .contacts .business {
-	background-color: #0FF00F;
-}
-.contacts .client {
-	background-color: #F0F00F;
-} */
-
-/* .empty-space {
+{# .empty-space is already defined, if exact same syntax,
+will loose previous class definition...
+So we add the wildcard 'STAR' to ensure new rules for TCPDF parser
+#}
+{% set debugColors = false %}
+	{% if debugColors %}
+		<style>
+*.empty-space {
 	background-color: #00808F;
 }
 
-.thanks {
-		background-color: #0AA00A;
+*.header {
+	background-color: #FF0000;
 }
-.temporality {
-		background-color: #A0A00A;
-} */
-</style>
+*.business-logo {
+	background-color: #00FF00;
+}
+*.quotation-title {
+	background-color: #AA0000;
+}
+*.client-logo {
+	background-color: #0000FF;
+}
 
+*.contacts .business {
+	background-color: #0FF00F;
+}
+*.contacts .client {
+	background-color: #F0F00F;
+}
+
+*.thanks {
+	background-color: #0AA00A;
+}
+*.temporality {
+	background-color: #A0A00A;
+}
+
+*.aim-title {
+	background-color: #AF9F30;
+}
+
+*.businsess-details {
+	background-color: #D1B000;
+}
+</style>
+{% endif %}
 {# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
 https://stackoverflow.com/questions/19002634/how-to-use-external-css-in-tcpdf-pdf-generation
 https://stackoverflow.com/questions/11395171/why-does-tcpdf-ignore-my-inline-css
@@ -84,19 +102,18 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 #}
 
 	{% if billingConfig %}
-	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
-	: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
-	{# // TODO: empirique way, go check pdf default mesure unit... #}
+	{# // TODO: empirique way for now, go check pdf default mesure unit ?... #}
 	{% set fullWidth = 539 %}
 	{% set pricePerHour = 60 %}
 	{% set licenseWpDisplay = 30 %}
+	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
+		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
 	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? 6 %}
 	{% set businessWorkloadDetails = billingConfig.businessWorkloadDetails
 	?? include('pdf-billings/pdf-views/business-svelte-workload-details.html.twig',
 	{businessWorkloadHours:businessWorkloadHours}) %}
+	{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.png' %}
 	{% set quotationTotal = licenseWpDisplay + businessWorkloadHours * pricePerHour %}
-	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
-		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
 	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
 		: ("now"|date) %}
 	{% set quotationEnd = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
@@ -106,7 +123,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 			</td>
 			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-																				      font-weight:bold;color:#005B98;font-size:14pt;">
+																																																																											      font-weight:bold;color:#005B98;font-size:14pt;">
 				Devis n°{{billingConfig.quotationNumber}}
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -122,9 +139,9 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
         } %}
 			</td>
 			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
-								text-align: center;
-								font-weight:bold;color:#005B98;font-size:16pt;
-								">
+																																																															text-align: center;
+																																																															font-weight:bold;color:#005B98;font-size:16pt;
+																																																															">
 				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
 				<br/>
 				T.T.C.
@@ -137,7 +154,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		</tr>
 	</table>
 	{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
-				<div class="empty-space" style="height:30;background-color:red;"></div> #}
+															<div class="empty-space" style="height:30;background-color:red;"></div> #}
 	<table class="empty-space" style="font-size:7pt;">
 		<tr>
 			<td></td>
@@ -153,10 +170,10 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		</tr>
 	</table>
 	<table class="temporality" style="
-										padding: 0px;
-										border-spacing:{{ (0) * fullWidth }} 0;
-										font-weight:bold;
-										font-size:14pt;border: solid 1px #000000;">
+																																											padding: 0px;
+																																											border-spacing:{{ (0) * fullWidth }} 0;
+																																											font-weight:bold;
+																																											font-size:14pt;border: solid 1px #000000;">
 		<tr>
 			<td class="empty-space" style="font-size:2pt;"></td>
 		</tr>
@@ -191,9 +208,9 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				Objet :
 			</td>
 			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};
-													text-align: center;
-													font-weight:bold;
-													font-size:10pt;">
+																																																																				text-align: center;
+																																																																				font-weight:bold;
+																																																																				font-size:10pt;">
 				<div class="title" style="color:#005B98;">
 					{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
 					: Licence mws-svelte-wp-display + 3 itérations de mise en oeuvres Svelte
@@ -230,10 +247,11 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		'discountPercent': 0,
 		'priceWithoutTaxes': licenseWpDisplay,
 		'priceWithTaxes': licenseWpDisplay,
-		'paddingBottom': 150,
+		'paddingBottom': 1,
 	} %}
 
-	<br pagebreak="true" />
+	<br
+	pagebreak="true"/>
 	{# // TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" /> #}
 
 	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
@@ -248,6 +266,22 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		'discountPercent': 0,
 		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
 		'priceWithTaxes': businessWorkloadHours * pricePerHour,
+	} %}
+
+	{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
+		and div stay bigger than regular font size if no image inside...
+		If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
+		 #}
+	<div style="font-size:0px;background-color:#FFD700;">
+		<img style="width:{{ 1 * fullWidth }};" src="{{ quotationSeparator }}"/>
+	</div>
+
+	{# Simple since no need to handle TVA for micro-BNC status,
+		will need to handle TVA and pdf Cert Sign for bigger structures... #}
+	{% include 'pdf-billings/pdf-views/quotation-total.html.twig' with {
+		'app': app, 'billingConfig': billingConfig,
+		'priceWithoutTaxes': quotationTotal,
+		'priceWithTaxes': quotationTotal,
 	} %}
 
 {% else %}

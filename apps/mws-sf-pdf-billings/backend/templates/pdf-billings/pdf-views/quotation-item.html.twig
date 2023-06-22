@@ -1,5 +1,5 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
-{% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>' %}
+{% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
 <style></style>
 <table class="quotation-item" style="padding: 1px 2px;
@@ -36,5 +36,8 @@
 	</tr>
 	<tr>
 		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td>
+		{# TIPS : add TD to have full line (3 cells needed) :
+		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td>
+		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td> #}
 	</tr>
 </table>
