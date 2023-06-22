@@ -27,13 +27,32 @@ text-align:center;font-size:9pt;">
 	<tr>
 		<td class="empty-space" style="font-size:7px;">&nbsp;</td>
 	</tr>
-	<tr style="text-align:left;font-size:10pt;">
-		<td style="width:{{ 0.50 * fullWidth }};">
+	<tr style="text-align:center;font-size:10pt;">
+		<td style="width:{{ 0.50 * fullWidth }};color:#666666;border-color:black;border-top-width:0.4px;border-left-width:0.4px;border-right-width:0.4px;">
 			Signature(s) ou cachet(s) de validation Monwoo :</td>
 		<td
 			style="width:{{ 0.50 * fullWidth }};text-align:right;color:#005B98;">
 			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
-			Signé le : _ _ _ / _ _ _ / _ _ _ _ _ à : _ _ _ _ _ _ _ _ _ _ _ _</td>
+			Signé le : _ _ _ / _ _ _ / _ _ _ _ _ _ _ <br/><br/>
+			Fait à : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
+	</tr>
+	<tr style="text-align:left;font-size:10pt;">
+		<td style="width:{{ 0.5 * fullWidth }};border-left-width:0.4px;">
+			<div class="empty-space" style="font-size:0px">&nbsp;</div>
+			{# Only keep 0.25 on 0.5 to give space for Monwoo or Approved Intermediate 
+			to physically sign in case email is not enough or if client or business
+			need a hand writtend proof for better oldschool contracts ways (= offline paper mode...) #}
+			<img style="width:{{ 0.25 * fullWidth }};" src="{{ 'file://' ~ kernelRootDir ~ '/var/SignatureCleanV1.png' }}"/>
+			<div class="empty-space" style="font-size:24px">&nbsp;</div>
+		</td>
+		<td
+			style="width:{{ 0.5 * fullWidth }};font-size:10pt;color:#666666;border:solid 1px black;text-align:center;">
+			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
+			Signature du client :
+		</td>
 	</tr>
 	
 </table>

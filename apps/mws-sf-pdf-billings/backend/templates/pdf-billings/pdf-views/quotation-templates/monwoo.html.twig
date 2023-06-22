@@ -154,87 +154,32 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		</tr>
 	</table>
 	{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
-																						<div class="empty-space" style="height:30;background-color:red;"></div> #}
+	<div class="empty-space" style="height:30;background-color:red;"></div> #}
 	<table class="empty-space" style="font-size:7pt;">
 		<tr>
 			<td></td>
 		</tr>
 	</table>
 
-	<div class="thanks" style="color:#666666;font-size:10pt;text-align:center;">
-		Nous vous remercions de votre confiance
-	</div>
+	{% include 'pdf-billings/pdf-views/business-thanks.html.twig' with {
+		'app': app, 'billingConfig': billingConfig,
+	} %}
+
 	<table class="empty-space" style="font-size:2pt;">
 		<tr>
 			<td></td>
 		</tr>
 	</table>
-	<table class="temporality" style="
-	padding: 0px;
-	border-spacing:{{ (0) * fullWidth }} 0;
-	font-weight:bold;
-	font-size:14pt;border: solid 1px #000000;
-	">
-		<tr>
-			<td class="empty-space" style="font-size:2pt;"></td>
-		</tr>
-		<tr>
-			<td class="aim-label" style="width:{{ 0.495 * fullWidth }};text-align:right;">
-				Devis fait le :
-			</td>
-			<td class="empty-space" style="width:{{ 0.01 * fullWidth }};"></td>
-			<td class="aim-description" style="width:{{ 0.495 * fullWidth }};text-align:left;color:#005B98;">
-				{{ quotationStart | date ( "d/m/Y") }}
-			</td>
-		</tr>
-		<tr>
-			<td class="aim-label" style="width:{{ 0.495 * fullWidth }};text-align:right;">
-				Valable jusqu'au :
-			</td>
-			<td class="empty-space" style="width:{{ 0.01 * fullWidth }};"></td>
-			<td class="aim-description" style="width:{{ 0.495 * fullWidth }};text-align:left;color:#005B98;">
-				{{ quotationEnd | date ( "d/m/Y") }}
-			</td>
-		</tr>
-		<tr>
-			<td class="empty-space" style="font-size:2pt;"></td>
-		</tr>
-	</table>
-	<table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
-		<tr>
-			<td class="empty-space" style="font-size:7pt;"></td>
-		</tr>
-		<tr>
-			<td class="aim-label" style="width:{{ 0.1 * fullWidth }};text-align:right;font-weight:bold;text-decoration:none;">
-				Objet :
-			</td>
-			<td class="aim-description" style="width:{{ 0.8 * fullWidth }};
-																																																																																																							text-align: center;
-																																																																																																							font-weight:bold;
-																																																																																																							font-size:10pt;">
-				<div class="title" style="color:#005B98;">
-					{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
-					: Licence mws-svelte-wp-display + 3 itérations de mise en oeuvres Svelte
-				</div>
-				<div class="description" style="">
-					- code du starter MWS Svelte-wp-display transmis par Git et/ou email. [ promo
-					{{ licenseWpDisplay|format_currency('EUR', {rounding_mode: 'floor'})  }}
-					]
-				</div>
-				<div class="description" style="">
-					- 3 itérations incluant
-					{{businessWorkloadHours}}
-					heures de conseils et ajustements Svelte. [
-					{{ (businessWorkloadHours * pricePerHour)|format_currency('EUR', {rounding_mode: 'floor'}) }}
-					]
-				</div>
-			</td>
-			<td class="empty-space" style="width:{{ 0.1 * fullWidth }};"></td>
-		</tr>
-		<tr>
-			<td class="empty-space" style="height:100;"></td>
-		</tr>
-	</table>
+
+	{% include 'pdf-billings/pdf-views/business-temporality.html.twig' with {
+		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+	} %}
+
+	{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
+		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+	} %}
 
 	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,
@@ -270,15 +215,15 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	} %}
 
 	{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
-									and div stay bigger than regular font size if no image inside...
-									If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
-									 #}
+	and div stay bigger than regular font size if no image inside...
+	If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
+		#}
 	<div style="font-size:0px;background-color:#FFD700;">
 		<img style="width:{{ 1 * fullWidth }};" src="{{ quotationSeparator }}"/>
 	</div>
 
 	{# Simple since no need to handle TVA for micro-BNC status,
-									will need to handle TVA and pdf Cert Sign for bigger structures... #}
+	will need to handle TVA and pdf Cert Sign for bigger structures... #}
 	{% include 'pdf-billings/pdf-views/quotation-total.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,
 		'priceWithoutTaxes': quotationTotal,

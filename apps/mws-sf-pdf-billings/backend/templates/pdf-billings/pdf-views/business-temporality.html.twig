@@ -1,0 +1,32 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+<table class="temporality" style="
+padding: 0px;
+border-spacing:{{ (0) * fullWidth }} 0;
+font-weight:bold;
+font-size:14pt;border: solid 1px #000000;
+">
+	<tr>
+		<td class="empty-space" style="font-size:2pt;"></td>
+	</tr>
+	<tr>
+		<td class="aim-label" style="width:{{ 0.495 * fullWidth }};text-align:right;">
+			Devis fait le :
+		</td>
+		<td class="empty-space" style="width:{{ 0.01 * fullWidth }};"></td>
+		<td class="aim-description" style="width:{{ 0.495 * fullWidth }};text-align:left;color:#005B98;">
+			{{ quotationStart | date ( "d/m/Y") }}
+		</td>
+	</tr>
+	<tr>
+		<td class="aim-label" style="width:{{ 0.495 * fullWidth }};text-align:right;">
+			Valable jusqu'au :
+		</td>
+		<td class="empty-space" style="width:{{ 0.01 * fullWidth }};"></td>
+		<td class="aim-description" style="width:{{ 0.495 * fullWidth }};text-align:left;color:#005B98;">
+			{{ quotationEnd | date ( "d/m/Y") }}
+		</td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="font-size:2pt;"></td>
+	</tr>
+</table>

@@ -1,0 +1,36 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+<table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
+	<tr>
+		<td class="empty-space" style="font-size:7pt;"></td>
+	</tr>
+	<tr>
+		<td class="aim-label" style="width:{{ 0.1 * fullWidth }};text-align:right;font-weight:bold;text-decoration:none;">
+			Objet :
+		</td>
+		<td class="aim-description" style="width:{{ 0.8 * fullWidth }};
+text-align: center;
+font-weight:bold;
+font-size:10pt;">
+			<div class="title" style="color:#005B98;">
+				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+				: Licence mws-svelte-wp-display + 3 itérations de mise en oeuvres Svelte
+			</div>
+			<div class="description" style="">
+				- code du starter MWS Svelte-wp-display transmis par Git et/ou email. [ promo
+				{{ licenseWpDisplay|format_currency('EUR', {rounding_mode: 'floor'})  }}
+				]
+			</div>
+			<div class="description" style="">
+				- 3 itérations incluant
+				{{businessWorkloadHours|format_number({rounding_mode: 'floor', fraction_digit: 2}) }}
+				heures de conseils et ajustements Svelte. [
+				{{ (businessWorkloadHours * pricePerHour)|format_currency('EUR', {rounding_mode: 'floor'}) }}
+				]
+			</div>
+		</td>
+		<td class="empty-space" style="width:{{ 0.1 * fullWidth }};"></td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="height:100;"></td>
+	</tr>
+</table>
