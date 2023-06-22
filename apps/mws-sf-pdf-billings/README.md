@@ -53,7 +53,9 @@ php bin/console make:form BillingConfig
 # add users
 php bin/console make:user
 # list of available make commandes
-symfony console list make
+php bin/console list make
+# add listeners :
+php bin/console make:entity BillingConfig
 
 # other tools for models :
 php bin/console make:entity BillingConfig
@@ -154,6 +156,47 @@ find . -name '*.png' | sed 's/\.png//g' \
 --setProperty formatOptions 70.00 \
 "%.png" --out "%.jpg"
 
+# Add some tests :
+# php bin/console console make:functional-test
+# Intalls for tests :
+composer require --dev phpunit/phpunit symfony/test-pack
+composer require symfony/panther --dev # required for e2e scenarios
+# then use ChromeDriver :
+# https://github.com/symfony/panther
+# # Ubuntu :
+# apt-get install chromium-chromedriver firefox-geckodriver
+# # Mac Os : https://brew.sh/
+# brew install chromedriver geckodriver
+# # Windows : https://chocolatey.org/
+# choco install chromedriver selenium-gecko-driver
+# # Monwoo (Mac OS) :
+# https://codeception.com/docs/modules/WebDriver#local-chrome-andor-firefox
+# https://codeception.com/docs/modules/WebDriver#usage
+# https://chromedriver.storage.googleapis.com/index.html?path=108.0.5359.71/
+# In my case, for my chrome : 
+wget https://chromedriver.storage.googleapis.com/112.0.5615.49/chromedriver_mac64.zip
+rm chromedriver
+unzip chromedriver_mac64.zip
+rm chromedriver_mac64.zip 
+
+# launch the chrome webdriver (in background) :
+./chromedriver --url-base=/wd/hub &
+
+composer require --dev dbrekelmans/bdi
+vendor/bin/bdi detect drivers
+
+# install test tools :
+composer require --dev phpunit/phpunit symfony/test-pack
+composer require --dev symfony/phpunit-bridge
+php vendor/bin/simple-phpunit
+
+# use CLI to add some tests :
+php bin/console make:test
+
+php vendor/bin/simple-phpunit tests/BillingConfigTest.php
+
+# list recipes :
+omposer recipes
 ```
 
 ## Useful Links

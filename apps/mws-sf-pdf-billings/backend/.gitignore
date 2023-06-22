@@ -7,9 +7,21 @@
 /public/bundles/
 /var/
 /vendor/
+# ignore drivers since depends of dev env for symfony/panther
+/drivers/
 ###< symfony/framework-bundle ###
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 cookies.txt
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

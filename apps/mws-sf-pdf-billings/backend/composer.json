@@ -79,6 +79,12 @@
         }
     },
     "require-dev": {
-        "symfony/debug-bundle": "5.4.*"
+        "dbrekelmans/bdi": "^1.0",
+        "phpunit/phpunit": "^10.2",
+        "symfony/browser-kit": "5.4.*",
+        "symfony/css-selector": "5.4.*",
+        "symfony/debug-bundle": "5.4.*",
+        "symfony/panther": "^2.1",
+        "symfony/phpunit-bridge": "^6.3"
     }
 }
