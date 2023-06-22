@@ -156,6 +156,10 @@ class PdfBillingsController extends AbstractController
         ]) ?? $bConfigRepository->findOneBy([
             'clientSlug' => '--', // Default empty client, all fillable by hand version...
         ]) ?? ($this->billingConfigFactory)();
+
+        /**
+         * @var MwsTCPDF $pdf
+         */
         $pdf = $this->tcpdf->create();
 
         /*
@@ -232,6 +236,13 @@ class PdfBillingsController extends AbstractController
         $PDF_HEADER_LOGO = null; // "logo.png";//any image file. check correct path.
         $PDF_HEADER_LOGO_WIDTH = 0; // "20";
         $PDF_HEADER_TITLE = null;
+        // https://stackoverflow.com/questions/25934841/tcpdf-how-to-set-top-margin-in-header
+        // $margin = $pdf->getMargins();
+        // $pdf->SetY($margin['top']);
+        $pdf->setHeaderMargin(3);
+		$pdf->setHeaderFont(['freesans', '', 10]);
+
+        // 🇺🇸🇺🇸 Header content
         $PDF_HEADER_STRING = "monwoo.com ($packageName v-$packageVersion)"
             . "                                                       "
             . "                                   Devis n° " . $bConfig->getQuotationNumber();
@@ -245,16 +256,16 @@ class PdfBillingsController extends AbstractController
             $PDF_HEADER_TITLE,
             $PDF_HEADER_STRING,
             [0, 0, 0],
-            [242, 242, 242]
+            [255, 255, 255], //[242, 242, 242]
         );
-        // https://stackoverflow.com/questions/25934841/tcpdf-how-to-set-top-margin-in-header
-        // $margin = $pdf->getMargins();
-        // $pdf->SetY($margin['top']);
-        $pdf->setHeaderMargin(3);
 
         // 🇺🇸🇺🇸 Footer arrangements
-        $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
+        // $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+		$pdf->setFooterFont(['freesans', '', 10]);
+
+        // 🇺🇸🇺🇸 Footer content
+        $pdf->setFooterContent('IBAN : DE72 1001 1001 2623 6346 33    -     BIC : NTSBDEB1XXX');
 
         // 🇺🇸🇺🇸 BODY arrangements
         $pdf->AddPage();

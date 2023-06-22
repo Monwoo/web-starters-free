@@ -8,48 +8,55 @@ use TCPDF_FONTS;
 
 class MwsTCPDF extends TCPDF
 {
-  protected $mwsFontname;
-  // https://tcpdf.org/files/examples/example_003.phps
+	protected $mwsFontname;
+	protected $footerContent;
+	// https://tcpdf.org/files/examples/example_003.phps
 	public function __construct(
-    $orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false
-  ) {
-    parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
+		$orientation = 'P',
+		$unit = 'mm',
+		$format = 'A4',
+		$unicode = true,
+		$encoding = 'UTF-8',
+		$diskcache = false,
+		$pdfa = false
+	) {
+		parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
-    // K_PATH_FONTS constant ? Below will not work :
-    // $this->mwsFontname = TCPDF_FONTS::addTTFfont('ressources/fonts/arial-cufonfonts-com/arialceb.ttf', 'TrueTypeUnicode', '', 32);
-    // $this->setFont('arialceb', '', 14, '', false);
+		// K_PATH_FONTS constant ? Below will not work :
+		// $this->mwsFontname = TCPDF_FONTS::addTTFfont('ressources/fonts/arial-cufonfonts-com/arialceb.ttf', 'TrueTypeUnicode', '', 32);
+		// $this->setFont('arialceb', '', 14, '', false);
 
 		// apps/mws-sf-pdf-billings/backend/vendor/tecnickcom/tcpdf/tcpdf.php:2981
 		$this->setAllowLocalFiles(true);
-    $this->setHeaderMargin(2);
+		$this->setHeaderMargin(2);
 
 		// https://stackoverflow.com/questions/64388631/tcpdf-getting-spacing-issue-with-writehtml
 		// https://tcpdf.org/docs/srcdoc/TCPDF/classes-TCPDF/#method_setHtmlVSpace
 		$tagvs = [
 			'div' => [
-					0 => ['h' => 0, 'n' => 0],
-					1 => ['h' => 0, 'n' => 0]
+				0 => ['h' => 0, 'n' => 0],
+				1 => ['h' => 0, 'n' => 0]
 			],
 			'p' => [
-					0 => ['h' => 0, 'n' => 0],
-					1 => ['h' => 0, 'n' => 0]
+				0 => ['h' => 0, 'n' => 0],
+				1 => ['h' => 0, 'n' => 0]
 			]
 		];
 		$this->setHtmlVSpace($tagvs);
-  }
+	}
 
-  public function Header()
-  {
-    // $this->SetFont('helvetica', '', 8);
-    // parent::Header();
+	public function Header()
+	{
+		// $this->SetFont('helvetica', '', 8);
+		// parent::Header();
 
-    // https://stackoverflow.com/questions/25975074/write-html-to-custom-header-tcpdf
-    // $headerData = $this->getHeaderData();
-    // $this->SetFont('helvetica', 'B', 10);
-    // $this->writeHTML($headerData['string']);
+		// https://stackoverflow.com/questions/25975074/write-html-to-custom-header-tcpdf
+		// $headerData = $this->getHeaderData();
+		// $this->SetFont('helvetica', 'B', 10);
+		// $this->writeHTML($headerData['string']);
 
-    // apps/mws-sf-pdf-billings/backend/vendor/tecnickcom/tcpdf/tcpdf.php
-    // if ($this->header_xobjid === false) {
+		// apps/mws-sf-pdf-billings/backend/vendor/tecnickcom/tcpdf/tcpdf.php
+		// if ($this->header_xobjid === false) {
 		// 	// start a new XObject Template
 		// 	$this->header_xobjid = $this->startTemplate($this->w, $this->tMargin);
 		// 	$headerfont = $this->getHeaderFont();
@@ -119,13 +126,41 @@ class MwsTCPDF extends TCPDF
 		// 	$this->header_xobjid = false;
 		// }
 
-    // https://stackoverflow.com/questions/29896102/how-do-you-add-custom-fonts-in-tcpdf
-    // $pdf->SetFont('rumpelstiltskinwebfont', '', 14, '', false);
-    // $pdf->Write(0, 'Fill text', '', 0, '', true, 0, false, false, 0);
+		// https://stackoverflow.com/questions/29896102/how-do-you-add-custom-fonts-in-tcpdf
+		// $pdf->SetFont('rumpelstiltskinwebfont', '', 14, '', false);
+		// $pdf->Write(0, 'Fill text', '', 0, '', true, 0, false, false, 0);
 
-    // $this->setHeaderFont(['freemono', '', 10]);
-    $this->setHeaderFont(['freesans', '', 10]);
-    // $this->setHeaderFont(['freeserif', '', 12]);
-    parent::Header();
-  }
+		// $this->setHeaderFont(['freemono', '', 10]);
+		// $this->setHeaderFont(['freesans', '', 10]);
+		// $this->setHeaderFont(['freeserif', '', 12]);
+		parent::Header();
+	}
+
+	// https://stackoverflow.com/questions/2824423/tcpdf-edit-footer
+	public function Footer()
+	{
+		if ($this->footerContent) {
+			// Position at 15 mm from bottom
+			$this->SetY(-12);
+			// Set font
+			// $pdf->SetFont('helvetica', 'I', 8);
+			// Page number
+			// https://www.developpez.net/forums/d2105809/php/bibliotheques-frameworks/header-footer-tcpdf/
+			// $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+			// Footer content
+			$this->Cell(0, 10, $this->footerContent, 0, false, 'L', 0, '', 0, false, 'T', 'M');
+		}
+		// Page number
+		$this->Cell(-30, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+	}
+
+	public function getFooterContent()
+	{
+		return $this->footerContent;
+	}
+	public function setFooterContent($value)
+	{
+		$this->footerContent = $value;
+	}
 }

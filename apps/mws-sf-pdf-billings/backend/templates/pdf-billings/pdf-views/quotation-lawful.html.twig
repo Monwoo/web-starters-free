@@ -1,7 +1,7 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 <style></style>
-<table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;
-text-align:center;font-size:9pt;">
+<table class="lawful" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;
+		text-align:center;font-size:9pt;">
 	<tr>
 		<td class="empty-space" style="font-size:4px;">&nbsp;</td>
 	</tr>
@@ -16,7 +16,7 @@ text-align:center;font-size:9pt;">
 	</tr>
 	<tr style="text-align:left;color:#666666;">
 		<td style="width:{{ 0.28 * fullWidth }};
-						font-size:11pt;font-weight:bold;color:#005B98;">
+										font-size:11pt;font-weight:bold;color:#005B98;">
 			Fait en _ _ _ exemplaires.</td>
 		<td
 			style="width:{{ 0.72 * fullWidth }};text-align:right;font-size:8pt;">
@@ -28,31 +28,63 @@ text-align:center;font-size:9pt;">
 		<td class="empty-space" style="font-size:7px;">&nbsp;</td>
 	</tr>
 	<tr style="text-align:center;font-size:10pt;">
-		<td style="width:{{ 0.50 * fullWidth }};color:#666666;border-color:black;border-top-width:0.4px;border-left-width:0.4px;border-right-width:0.4px;">
+		<td style="width:{{ 0.50 * fullWidth }};color:#666666;border-color:#666666;border-top-width:0.4px;border-left-width:0.4px;border-right-width:0.4px;">
 			Signature(s) ou cachet(s) de validation Monwoo :</td>
 		<td
 			style="width:{{ 0.50 * fullWidth }};text-align:right;color:#005B98;">
 			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
-			Signé le : _ _ _ / _ _ _ / _ _ _ _ _ _ _ <br/><br/>
+			Signé le : _ _ _ / _ _ _ / _ _ _ _ _ _ _
+			<br/><br/>
 			Fait à : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</td>
 	</tr>
 	<tr>
 		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
 	</tr>
-	<tr style="text-align:left;font-size:10pt;">
+	<tr style="text-align:center;font-size:10pt;">
 		<td style="width:{{ 0.5 * fullWidth }};border-left-width:0.4px;">
-			<div class="empty-space" style="font-size:0px">&nbsp;</div>
-			{# Only keep 0.25 on 0.5 to give space for Monwoo or Approved Intermediate 
-			to physically sign in case email is not enough or if client or business
-			need a hand writtend proof for better oldschool contracts ways (= offline paper mode...) #}
-			<img style="width:{{ 0.25 * fullWidth }};" src="{{ 'file://' ~ kernelRootDir ~ '/var/SignatureCleanV1.png' }}"/>
-			<div class="empty-space" style="font-size:24px">&nbsp;</div>
+			<div class="empty-space" style="font-size:20px">&nbsp;</div>
+			{# Only keep 0.28 on 0.5 to give space for Monwoo or Approved Intermediate 
+						to physically sign in case email is not enough or if client or business
+						need a hand writtend proof for better oldschool contracts ways (= offline paper mode...) #}
+			<img style="width:{{ 0.28 * fullWidth }};" src="{{ 'file://' ~ kernelRootDir ~ '/var/SignatureCleanV1.png' }}"/>
+			<div class="empty-space" style="font-size:12px">&nbsp;</div>
 		</td>
 		<td
-			style="width:{{ 0.5 * fullWidth }};font-size:10pt;color:#666666;border:solid 1px black;text-align:center;">
+			style="width:{{ 0.5 * fullWidth }};font-size:10pt;color:#666666;border:solid 1px black;">
 			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
 			Signature du client :
 		</td>
 	</tr>
-	
+	<tr>
+		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
+	</tr>
+</table>
+<table class="lawful-extra" style="text-align: center;border-spacing:{{ (0) * fullWidth }} 0;">
+	<tr>
+		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
+	</tr>
+	<tr>
+		<td style="font-size:8pt;color:#666666;">
+			Conformément à l’article L.441-6 du code de commerce, des pénalités de retard, <br/>
+			au taux annuel de 20 % et une indemnité de 40€ sont dues à défaut de règlement le jour suivant la date de paiement figurant sur la facture.
+		</td>
+	</tr>
+	<tr>
+		<td style="font-size:8pt;color:#666666;">
+			Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers.
+		</td>
+	</tr>
+	<tr>
+		<td style="font-size:8pt;color:#666666;">
+			TVA non applicable, art. 293B du C.G.I. et art. 22 de la loi finances pour 2018.
+		</td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
+	</tr>
+	<tr>
+		<td style="font-size:8pt;font-weight:bold;">
+			For foreign user, please ensure a professional translation from French before signing.
+		</td>
+	</tr>
 </table>
