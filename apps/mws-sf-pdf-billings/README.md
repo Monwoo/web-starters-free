@@ -133,6 +133,8 @@ http://127.0.0.1:8000/
 # After some moment, you want to start back from fresh data.
 # to clean and rebuild the database :
 rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
+# save the empty fresh database as GDPR safe :
+cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 # Updating twig to bring extension if not already setup in composer.json
 # twig/extensions soud depreciated and replaced by twig/extra-bundle
@@ -199,9 +201,12 @@ php vendor/bin/simple-phpunit tests/BillingConfigTest.php
 omposer recipes
 
 # Do some package AUTO-UPDATINGS :
-rm -rf vendor composer.lock var/cache 
+rm -rf vendor composer.lock var/cache var/log
 composer update
 
+# Forseen :
+# https://symfonycasts.com/screencast/stimulus/controllers
+php bin/console make:stimulus-controller
 ```
 
 ## Useful Links
