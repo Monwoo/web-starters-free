@@ -87,8 +87,9 @@ class GdprSentinelListener
       // new \DateInterval('PT' . $this->maxGdprCleanupSafeDelayInHr . 'H')
       // TIPS : all float hours up to minutes precisions :
       new \DateInterval(
-        'P' # Date parts
-        // TODO : can't check times over 24hr ? need 1 day ?
+        'P'
+        # Date parts
+        // TODO : can't check times over 24hr ? need 1 day ? Day counts on 25hr is 2 => upper floor ?
         . intval($this->maxGdprCleanupSafeDelayInHr / 24) . 'D'
         . 'T' # Time parts
         . intval($this->maxGdprCleanupSafeDelayInHr) . 'H'

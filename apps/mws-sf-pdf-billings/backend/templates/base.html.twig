@@ -2,60 +2,69 @@
 {% set route = app.request.attributes.get('_route') %}
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible"  content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {%  if title is defined %}
-            {% block title %}{{ title }}{% endblock %}
-        {% endif %}
-    </title>
-    {% block stylesheets %}
-        {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
-    {% endblock %}
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>
+			{%  if title is defined %}
+				{% block title %}
+					{{ title }}
+				{% endblock %}
+			{% endif %}
+		</title>
+		{% block stylesheets %}
+			{# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
+		{% endblock %}
+	</head>
 
-<body>
+	<body>
 
-<div class="page-flex">
-    {# {% block navbar %}
-        {% include 'navigation/menu.html.twig' with {
-            'route': route, 'app': app
-        } %}
-    {% endblock %} #}
-    <p>
-    {% if gdprSentinelLoaded %}
-        {% set dateDiff = date().diff(gdprNextCleanDate) %}
-        {{ gdprSentinelRequestCheck ? "GDPR CHECK have been done." : "Missing GDPR check." }}
-        <strong>WARNING : Next database reset</strong> for GDPR safe sentinel will be done at :
-        {{ gdprNextCleanDate|date() }} (<strong>in
-        {{ dateDiff.invert ? '-' : '' }}
-        {{ (dateDiff.days * 24.0 + dateDiff.h + dateDiff.i / 60.0)|format_number({fraction_digit: 2}) }}
-        hours</strong>. Db last clean was at : {{ gdprLastCleanDate|date() }})
-    {% else %}
-        MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
-    {% endif %}
-    </p>
+		<div
+			class="page-flex">
+			{# {% block navbar %}
+			        {% include 'navigation/menu.html.twig' with {
+			            'route': route, 'app': app
+			        } %}
+			    {% endblock %} #}
+			<p>
+				{% if gdprSentinelLoaded %}
+					{% set dateDiff = date().diff(gdprNextCleanDate) %}
+					{{ gdprSentinelRequestCheck ? "GDPR CHECK have been done." : "Missing GDPR check." }}
+					<strong>WARNING : Next database reset</strong>
+					for GDPR safe sentinel will be done at :
+					{{ gdprNextCleanDate|date() }}
+					(<strong>in
+						{{ dateDiff.invert ? '-' : '' }}
+						{{ (dateDiff.days * 24.0 + dateDiff.h + dateDiff.i / 60.0)|format_number({fraction_digit: 2}) }}
+						hours</strong>. Db last clean was at :
+					{{ gdprLastCleanDate|date() }})
+				{% else %}
+					MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
+				{% endif %}
+				<br/>
+				<a href="{{ path('app_factory_reset') }}" target="_blank" onclick="return confirm('Are you sure ? Will reset the serveur data for ALL USAGES.')">
+					Reset application to Factory
+				</a>
+			</p>
 
-    {% block body %}{% endblock %}
+			{% block body %}{% endblock %}
 
-    {% if app.request.attributes.get('_route') != 'app_login' %}
-    <footer class="footer">
-       <p>© Monwoo 2023 (service@monwoo.com)</p>
-    </footer>
-    {% endif %}
-</div>
+			{% if app.request.attributes.get('_route') != 'app_login' %}
+				<footer class="footer">
+					<p>© Monwoo 2023 (service@monwoo.com)</p>
+				</footer>
+			{% endif %}
+		</div>
 
-{% block javascript %}
-    <script>
-        window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
-    </script>
+		{% block javascript %}
+			<script>
+				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
+			</script>
 
-    {# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}
-        <script src="{{ asset('libs/pdfjs-3.7.107/pdf.js') }}"></script>
-    {% endif %} #}
-{% endblock %}
-</body>
-
+			{# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}
+			        <script src="{{ asset('libs/pdfjs-3.7.107/pdf.js') }}"></script>
+			    {% endif %} #}
+		{% endblock %}
+	</body>
 </html>
