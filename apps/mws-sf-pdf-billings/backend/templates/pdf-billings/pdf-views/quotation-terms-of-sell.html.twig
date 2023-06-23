@@ -7,11 +7,11 @@
 	<tr style="text-align:center;font-size:14pt;font-weight:bold;">
 		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
 		<td style="width:{{ 0.138 * fullWidth }};">
-			<img style="width:{{ 0.07 * fullWidth }};" src="{{ businessLogo }}"/>
+			<img style="height:30pt;" src="{{ businessLogo }}"/>
 		</td>
 		<td style="width:{{ 0.138 * fullWidth }};"></td>
-		<td style="width:{{ 0.414 * fullWidth }};">
-			<div class="empty-space" style="font-size:7px">&nbsp;</div>
+		<td style="width:{{ 0.414 * fullWidth }};height:14px;">
+			<div class="empty-space" style="font-size:6px">&nbsp;</div>
 			Conditions générales de vente
 		</td>
 		<td style="width:{{ 0.138 * fullWidth }};"></td>
@@ -60,12 +60,9 @@
 				- Espèces avec reçu dans la limite de 1 000€ par facture,
 				le reste devant être soldé via carte(s) bancaire(s) ou virement(s)
 				avec référence au devis {{ billingConfig.quotationNumber }}.
-			</div>
-			<div class="notice" style="text-align:right; font-size:8pt">
-				https://www.service-public.fr/particuliers/vosdroits/F10999
-				- https://www.legifrance.gouv.fr/codes/id/LEGISCTA000019265478/
-				<br />
-				https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033612429/
+				<span class="notice" style="font-size:8pt">
+					https://www.service-public.fr/particuliers/vosdroits/F10999
+				</span>
 			</div>
 		</td>
 		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
@@ -91,6 +88,7 @@
 			délai de 15 jours suivant la notification, procéder de manière unilatérale
 			à la résiliation du contrat. Les parties peuvent aussi notifier la rupture
 			via emails avec accusé de réception de la partie adverse.
+			Merci de prévenir également par téléphone.
 		</td>
 		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
 	</tr>
@@ -114,9 +112,155 @@
 			Si demandé après le début de mission, le détail des charges dépendra
 			de la situation de nos moyens lors de la demande. Nous pouvons
 			organiser une visio au tarif de 2€ T.T.C. par minutes pour
-			étudier votre demande pour un suivi avancé.
+			étudier votre demande de suivi avancé.
 		</td>
 		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
 	</tr>
 
+	<tr style="text-align:left;font-weight:bold;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">Responsabilités :</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			Toute inexécution de l'une quelconque des obligations visées au présent contrat
+			engage la responsabilité contractuelle de son auteur. Monwoo mettra tous ses
+			moyens en œuvre pour la bonne réalisation de la prestation. La responsabilité
+			de Monwoo ne pourra être engagée au maximum qu’à hauteur des fonds payé par
+			le client pour la présente prestation, et uniquement si le client prouve la 
+			non mise à disposition de moyens adéquats pour la prestation demandée
+			au regard du contexte d'execution de la mission
+			limité par ce devis n°{{ billingConfig.quotationNumber }}.
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+
+	<tr style="text-align:left;font-weight:bold;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">Propriété de la prestation :</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			L'ensemble des travaux techniques et méthodologiques nécessaires à la réalisation
+			de la prestation demeure la propriété exclusive de Monwoo
+			jusqu'au paiement global de l'étude. Une fois soldé, le transfert de propriété
+			dépend du type de mission et montant facturé.
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+
+	<tr style="text-align:left;font-weight:bold;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">Exonération :</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			Monwoo est tenue à une obligation de moyens et sa responsabilitée ne
+			saurait en aucune manière être engagée 
+			pour manquement à une obligation de résultats.
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+
+	<tr style="text-align:left;font-weight:bold;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">Force majeure :</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			En cas de force majeure, interruption du travail, grève, accident, maladie,
+			mouvement syndical, guerre, acte de terrorisme,
+			congés notifiés 15 jours à l'avance, Monwoo ne pourra être tenu responsable
+			de l'annulation d'une prestation complète ou partielle
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+
+	<tr style="text-align:left;font-weight:bold;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">Résiliation :</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			En cas de manquement aux obligations souscrites au présent contrat
+			et sans qu'il y ait lieu d'avoir recours au juge, l'une ou l'autre
+			des parties qui se prévaut de l'inexécution des obligations ci-dessus
+			visées, pourra, après une mise en demeure notifiée par lettre
+			recommandée avec accusé de réception et à l'expiration d'un
+			délai de 15 jours suivant la notification, procéder de manière
+			unilatérale à la résiliation du contrat. La notification peut aussi
+			se faire par email si la partie adverse valide la bonne réception du mail.
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+
+	<tr style="text-align:left;font-weight:bold;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">Acceptation client :</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			<div>
+				Les présentes conditions générales de vente sont expressément agréées et
+				acceptées par le Client, qui déclare et reconnaît en avoir une parfaite
+				connaissance, et renonce, de ce fait, à se prévaloir de tout document
+				contradictoire.
+			</div>
+			<div style="text-align:right">
+				Conditions générales d'utilisations : https://miguel.monwoo.com/c-g-u
+			</div>
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+
+	<tr>
+		<td class="empty-space" style="font-size:0pt;"></td>
+	</tr>
+
+	<tr style="text-align:left;font-size:10pt;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			<strong>Tout paiements</strong> avec la référence
+			du devis ou de la facture <strong>vaut réception
+			sans réserve à hauteur du pourcentage</strong> payé si aucun procès-verbal 
+			contradictoire de réception n'est rédigé dans les 7 jours. <strong>Sinon le 
+			procès-verbal</strong> de réception <strong>détaillera l'état de la réception</strong>. 
+			Ce Procès-verbal peut être envoyé sur <strong>service@monwoo.com</strong> avec pour
+			objet : <strong>"Procès-verbal de réception {{ billingConfig.quotationNumber }}"</strong>
+			et nous <strong>signerons par</strong> nos <strong>réponses</strong>.
+			Un template 'Procès-verbal de réception'
+			vous sera transmis si votre message ne couvre pas tous les points
+			nécessaire au suivi de la réception.
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="font-size:3pt;"></td>
+	</tr>
+	<tr style="text-align:left;font-size:10pt;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			En cas d'<strong>annulation</strong>, Monwoo peut proposer un
+			<strong>remboursement en déduisant les frais engagés</strong>.
+			Par exemple, un paiement CB engage un frais bancaire de 7% à 3% suivant le montant.
+			De même, les charges aux tarifs en vigueur seront déduites au prorata des
+			temps effectués et/ou débours utilisés.
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="font-size:5pt;"></td>
+	</tr>
 </table>
