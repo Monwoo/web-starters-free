@@ -116,8 +116,8 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{% set quotationTotal = licenseWpDisplay + businessWorkloadHours * pricePerHour %}
 	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
 		: ("now"|date) %}
-	{% set quotationEnd = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
-		: (quotationStart | date_modify("+15 day")) %}
+	{% set quotationEnd = billingConfig.quotationEndDay
+	? billingConfig.quotationEndDay : quotationStart | date_modify("+15 day") %}
 		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
 			<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>

@@ -59,13 +59,13 @@ class PdfBillingsController extends AbstractController
             $bConfig->setClientLogoUrl('______________________________');
             $bConfig->setClientName('______________________________');
             $bConfig->setClientName('______________________________');
-            $timable = new DateTime();
 
-            $bConfig->setQuotationStartDay($timable);
-            // $timable->add(new DateInterval("PT24H"));
-            $timable->add(new DateInterval("P15D"));
-
-            $bConfig->setQuotationEndDay($timable);
+            // TIPS : COULD be setup, but will not be dynamic on current day at view side if so :
+            // $timable = new DateTime();
+            // $bConfig->setQuotationStartDay($timable);
+            // // $timable->add(new DateInterval("PT24H"));
+            // $timable->add(new DateInterval("P15D"));
+            // $bConfig->setQuotationEndDay($timable);
 
             $em->persist($bConfig);
             $em->flush();
