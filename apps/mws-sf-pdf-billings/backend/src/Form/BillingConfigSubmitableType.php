@@ -4,6 +4,7 @@
 namespace App\Form;
 
 use App\Entity\BillingConfig;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +18,24 @@ class BillingConfigSubmitableType extends BillingConfigType
         // https://stackoverflow.com/questions/74007075/symfony-form-type-extension-for-custom-types
         // https://stackoverflow.com/questions/11237511/multiple-ways-of-calling-parent-method-in-php
         parent::buildForm($builder, $options);
+        // https://symfony.com/doc/current/reference/forms/types/choice.html
+        $builder->add('quotationTemplate', ChoiceType::class, [
+            // https://symfony.com/doc/current/reference/forms/types/choice.html#choice-name
+            // 'choice_value' => ChoiceList::fieldName($this, 'template'),
+            // TIPS : Using data option is no good, because:
+            // The data option always overrides the value taken from the domain data (object) 
+            // TIPS : you can set from form (but will not be saved in database then...)
+            // $form = $formBuilder->getForm();
+            // $form->get('firstname')->setData('John');
+            // + You will need to set "mapped" at false if it's not linked to the data_class
+            // "mapped" => false,
+            'choices'  => [
+                'Monwoo Svelte PWA' => 'monwoo',
+                'Monwoo WooCommerce' => 'monwoo-02-wp-e-com',
+                'Monwoo PHP backend' => 'monwoo-03-php-backend',
+                'Monwoo Fullstack hybrid' => 'monwoo-04-hybrid-app',
+            ],
+        ]);
         $builder->add('submit', SubmitType::class, ['label' => 'Mettre à jour']);
     }
 

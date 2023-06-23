@@ -145,13 +145,12 @@ class PdfBillingsController extends AbstractController
 
     // https://symfony.com/doc/current/routing.html
     #[Route(
-        '/view/{clientSlug}/{template}',
-        defaults: ['clientSlug' => 1, 'template' => 'monwoo'],
+        '/view/{clientSlug}',
+        defaults: ['clientSlug' => 1],
         name: 'app_pdf_billings_view'
     )]
     public function view(
         string $clientSlug,
-        string $template,
         // EngineInterface $tplEngine,
         string $projectDir,
         BillingConfigRepository $bConfigRepository
@@ -168,6 +167,8 @@ class PdfBillingsController extends AbstractController
         ]) ?? $bConfigRepository->findOneBy([
             'clientSlug' => '--', // Default empty client, all fillable by hand version...
         ]) ?? ($this->billingConfigFactory)();
+
+        $template = $bConfig->getQuotationTemplate() ?? 'monwoo';
 
         /**
          * @var MwsTCPDF $pdf

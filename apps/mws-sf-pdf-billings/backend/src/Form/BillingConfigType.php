@@ -28,6 +28,7 @@ class BillingConfigType extends AbstractType
             ->add('businessWorkloadDetails')
             ->add('quotationStartDay')
             ->add('quotationEndDay')
+            ->add('quotationTemplate')
         ;
     }
 

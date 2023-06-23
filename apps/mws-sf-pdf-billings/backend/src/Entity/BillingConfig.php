@@ -62,6 +62,9 @@ class BillingConfig
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $quotationEndDay = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $quotationTemplate = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -255,6 +258,18 @@ class BillingConfig
     public function setQuotationEndDay(?\DateTimeInterface $quotationEndDay): static
     {
         $this->quotationEndDay = $quotationEndDay;
+
+        return $this;
+    }
+
+    public function getQuotationTemplate(): ?string
+    {
+        return $this->quotationTemplate;
+    }
+
+    public function setQuotationTemplate(?string $quotationTemplate): static
+    {
+        $this->quotationTemplate = $quotationTemplate;
 
         return $this;
     }
