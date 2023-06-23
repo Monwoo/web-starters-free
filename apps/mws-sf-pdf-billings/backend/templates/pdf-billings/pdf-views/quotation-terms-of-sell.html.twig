@@ -27,13 +27,46 @@
 		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
 		<td style="width:{{ 0.966 * fullWidth }};">
 			Les prix contenus dans les guides pour les professionnels sont des 
-			prix hors taxes. Nous indiquons <strong>H.T</strong>. pour un prix Hors Taxes,
-			et <strong>T.T.C</strong>. pour un prix Toutes Taxes Comprises.
-			<strong>P.U.</strong> signifiant : Prix Unitaire.
-			<strong>T.V.A</strong> : Taxe sur la valeur ajoutée.
-			<strong>U.E.</strong> : Union Européenne.
+			prix hors taxes. Nous indiquons <strong>H.T</strong>. pour un prix <strong>H</strong>ors <strong>T</strong>axes,
+			et <strong>T.T.C</strong>. pour un prix <strong>T</strong>outes <strong>T</strong>axes <strong>C</strong>omprises.
+			<strong>P.U.</strong> signifiant : <strong>P</strong>rix <strong>U</strong>nitaire.
+			<strong>T.V.A</strong> : <strong>T</strong>axe sur la <strong>V</strong>aleur <strong>A</strong>joutée.
+			{# noWrap seem useless for TCPDF, do hard line return instead : #}
+			<br/>
+			<strong>U.E.</strong> : <strong>U</strong>nion
+			<span style="white-space:nowrap;word-break: keep-all;"><strong>E</strong>uropéenne.</span>
 			<strong>Note</strong> : tant que Monwoo reste une petite entreprise personnel,
-			la T.V.A. ne sera pas facturé.
+			la T.V.A. ne sera pas facturée.
+		</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;font-weight:bold;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">Moyens de paiement :</td>
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+	</tr>
+	<tr style="text-align:left;color:#005B98;">
+		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
+		<td style="width:{{ 0.966 * fullWidth }};">
+			<div class="pay-title" style="">
+				Les règlements peuvent se faire selon l'un des moyens suivants :
+			</div>
+			<div class="pay-method">
+				- Carte(s) bancaire(s) (VISA, MasterCard, AmericanExpress, PayPal, etc... sur le PayPal Monwoo)
+				ou virement(s) sur le RIB en pied de page. Indiquez la référence au devis : {{ billingConfig.quotationNumber }}.
+				Les virements SEPA sont gratuis depuis l'U.E..
+			</div>
+			<div class="pay-method">
+				- Espèces avec reçu dans la limite de 1 000€ par facture,
+				le reste devant être soldé via carte(s) bancaire(s) ou virement(s)
+				avec référence au devis {{ billingConfig.quotationNumber }}.
+			</div>
+			<div class="notice" style="text-align:right; font-size:8pt">
+				https://www.service-public.fr/particuliers/vosdroits/F10999
+				- https://www.legifrance.gouv.fr/codes/id/LEGISCTA000019265478/
+				<br />
+				https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033612429/
+			</div>
 		</td>
 		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
 	</tr>
