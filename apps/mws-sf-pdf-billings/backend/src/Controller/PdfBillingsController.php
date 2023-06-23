@@ -32,6 +32,8 @@ class PdfBillingsController extends AbstractController
         TCPDFController $tcpdf,
         EntityManagerInterface $em
     ) {
+        ob_start();
+
         $this->logger = $logger;
         $this->tcpdf = $tcpdf;
         $this->em = $em;
@@ -67,6 +69,8 @@ class PdfBillingsController extends AbstractController
 
             $em->persist($bConfig);
             $em->flush();
+            ob_end_clean();
+
             return $bConfig;
         };
     }
@@ -128,6 +132,7 @@ class PdfBillingsController extends AbstractController
                 );
             }
         }
+        ob_end_clean();
 
         // return $this->render('pdf-billings/index.html.twig', [
         //     'form' => $form->createView(),
@@ -154,6 +159,7 @@ class PdfBillingsController extends AbstractController
         // Missing deps injections in new version ?
         // Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $tplEngine ?
         // $html = $tplEngine->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
+        ob_start();
 
         $twig = $this->container->get('twig');
 
@@ -292,6 +298,7 @@ class PdfBillingsController extends AbstractController
         // Print text using writeHTMLCell()
         // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
         $pdf->writeHTML($html, true, false, true, false, '');
+        ob_end_clean(); // TODO : where is it mendatory ? done to avoid error header data already set
 
         $pdf->lastPage();
         $response = new Response($pdf->Output('MonwooQuotation_000.pdf'));
