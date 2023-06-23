@@ -31,4 +31,9 @@ services:
     # Register our listeners :
     # https://symfony.com/doc/current/event_dispatcher.html
     App\EventListener\GdprSentinelListener:
-        tags: [kernel.event_listener]
+        tags:
+            # php bin/console debug:event-dispatcher
+            # - { name: kernel.event_listener } # OK if you type Listener methode like : 
+            # public function __invoke(ExceptionEvent $event)
+            - { name: kernel.event_listener, event: kernel.exception }
+            - { name: kernel.event_listener, event: kernel.request }

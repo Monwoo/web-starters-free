@@ -24,6 +24,19 @@
             'route': route, 'app': app
         } %}
     {% endblock %} #}
+    <p>
+    {% if gdprSentinelLoaded %}
+        {% set dateDiff = date().diff(gdprNextCleanDate) %}
+        {{ gdprSentinelRequestCheck ? "GDPR CHECK have been done." : "Missing GDPR check." }}
+        <strong>WARNING : Next database reset</strong> for GDPR safe sentinel will be done at :
+        {{ gdprNextCleanDate|date() }} (<strong>in
+        {{ dateDiff.invert ? '-' : '' }}
+        {{ (dateDiff.days * 24.0 + dateDiff.h + dateDiff.i / 60.0)|format_number({fraction_digit: 2}) }}
+        hours</strong>. Db last clean was at : {{ gdprLastCleanDate|date() }})
+    {% else %}
+        MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
+    {% endif %}
+    </p>
 
     {% block body %}{% endblock %}
 

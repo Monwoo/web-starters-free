@@ -10,23 +10,42 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class GdprSentinelListener
 {
+  // TODO : buggy if going over 24 hours... of for now, demo will reset every 23.5 hours
+  // protected $maxGdprCleanupSafeDelayInHr = 24;
+  protected $maxGdprCleanupSafeDelayInHr = 23.5;
+
   protected LoggerInterface $logger;
   protected string $projectDir;
-	public function __construct(
+  protected \Twig\Environment $twig;
+
+  public function __construct(
     LoggerInterface $logger,
-    string $projectDir		
+    string $projectDir,
+    \Twig\Environment $twig
 	) {
+    // echo "GDPRSentinelListener constructor OK"; exit;
     $this->logger = $logger;
     $this->projectDir = $projectDir;
+    // https://stackoverflow.com/questions/20349194/how-to-send-var-to-view-from-event-listener-in-symfony2
+    $this->twig = $twig;
+    $this->twig->addGlobal('gdprSentinelLoaded', true);
   }
 
+  // https://stackoverflow.com/questions/41839970/why-listener-setting-in-service-yml-in-symfony-not-working
+  // https://symfony.com/doc/current/components/event_dispatcher.html#creating-and-dispatching-an-event
+  // => using 'ExceptionEvent $event' is same as 'tags: - { name: kernel.event_listener, event: kernel.exception }'
   public function __invoke(
-    ExceptionEvent $event
+    // ExceptionEvent $event
+    Event $event
   ): void {
     // https://www.w3docs.com/snippets/php/php-how-can-i-get-file-creation-date.html
+    // echo "GDPRSentinelListener enabled OK"; exit; // TODO : DO e2e TESTS ENSURING gdpr is activated ?
+    // Config value available for db start time == GDPRSentinelListener ok since will inject it ?
+    $this->twig->addGlobal('gdprSentinelRequestCheck', true);
 
     if (!$this->projectDir || !(strlen($this->projectDir) > 0)) {
       $this->logger->error(
@@ -42,43 +61,70 @@ class GdprSentinelListener
     // For our aim, empty database is ok, since we can add billings informations quickly
     // by HTML get form or POST request with CSRF
     $safeGdprDatabase = $this->projectDir . '/var/data.gdpr-ok.db.sqlite';
-    $database = $this->projectDir . '/var/data.gdpr-ok.db.sqlite';
+    // TODO : generic process for doctrine ORM instead of going at lower db implementation ? (dependent of sqlite techno for now)
+    $database = $this->projectDir . '/var/data.db.sqlite';
 
     if (file_exists($safeGdprDatabase)) {
       $file_creation_date = filectime($safeGdprDatabase);
       $this->logger->debug(
-        "Gdpr safe databse created at : " . date('Y-m-d H:i:s', $file_creation_date)
+        "Gdpr safe database created at : " . date('Y-m-d H:i:s', $file_creation_date)
       );
     } else {
       $this->logger->error(
-        "Gdpr safe databse missing at path : " . $safeGdprDatabase
+        "Gdpr safe database missing at path : " . $safeGdprDatabase
       );
       return; // Do not messup working database, we did send some GDPR log error already...
     }
 
     // $database already exist otherwise whould have already give some sql error ?
     $database_creation_timestamp = filectime($database);
-    $database_creation_date = new \DateTime();
-    $database_creation_date->setTimestamp($database_creation_timestamp);
+    $last_clean_date = new \DateTime();
+    $last_clean_date->setTimestamp($database_creation_timestamp);
 
-    $deltaHr = abs($database_creation_date->diff(new \DateTime())->days);
-    $this->logger->debug(
-      "Gdpr databse created at : " . $database_creation_date->format('Y-m-d H:i:s')
-      .". In usage from : " . $deltaHr . " hours"
+    $next_clean_date = clone $last_clean_date;
+    $next_clean_date->add(
+      // TIPS : will only work with INT hours
+      // new \DateInterval('PT' . $this->maxGdprCleanupSafeDelayInHr . 'H')
+      // TIPS : all float hours up to minutes precisions :
+      new \DateInterval(
+        'P' # Date parts
+        // TODO : can't check times over 24hr ? need 1 day ?
+        . intval($this->maxGdprCleanupSafeDelayInHr / 24) . 'D'
+        . 'T' # Time parts
+        . intval($this->maxGdprCleanupSafeDelayInHr) . 'H'
+        . intval($this->maxGdprCleanupSafeDelayInHr * 60) % 60 . 'M'
+      )
     );
 
-    if ($deltaHr > 24) {
+    $this->twig->addGlobal('gdprLastCleanDate', $last_clean_date);
+    $this->twig->addGlobal('gdprNextCleanDate', $next_clean_date);
+
+    // $nextDiff = $next_clean_date->diff(new \DateTime());
+    $nextDiff = (new \DateTime())->diff($next_clean_date);
+    // var_dump($nextDiff);
+    // TIPS : $nextDiff->i IS MINUTES, whereas $nextDiff->m is MONTH...
+    $deltaHr = ($nextDiff->days * 24 + $nextDiff->h + $nextDiff->i/60)
+    * ($nextDiff->invert ? -1 : 1);
+    $this->logger->debug(
+      "Gdpr database created at : " . $last_clean_date->format('Y-m-d H:i:s')
+      . ". In usage up to : " . $next_clean_date->format('c') . ", same as "
+      . $deltaHr . " hours remainings"
+    );
+
+    if ($deltaHr < 0) {
       $dbBackup = $this->projectDir . '/var/data.db.'
       . date('Ymd_His') . '.bckup.sqlite';
       // we clean up database every 24hr... (// TODO : send cleaning comming up live notification
       // 3 hours before to all user still connected before the forseen cleanup ?)
-      $this->logger->debug(
-        "Gdpr database is too old, replacing by last available gdpr DB"
-        ."Backuped at : "
-      );
       copy($database, $dbBackup);
+      $this->logger->info(
+        "Gdpr database is too old, replacing by last available gdpr DB. "
+        ."Backuped at : $dbBackup" 
+      );
       unlink($database);
       copy($safeGdprDatabase, $database);
+
+      // TODO : UI Feedback when cleaning ? it say
     }
 
     // TODO : show time counter before next forseen cleaning db time ? or do with
