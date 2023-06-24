@@ -198,6 +198,10 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'paddingBottom': 1,
 		} %}
 
+		{% for outlay in billingConfig.outlays %}
+			{{ outlay.providerName }}
+		{% endfor %}
+
 		<br
 		pagebreak="true"/>
 		{# // TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" /> #}
