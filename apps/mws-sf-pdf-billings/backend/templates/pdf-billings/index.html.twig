@@ -20,20 +20,63 @@
 			{{ form_errors(form.clientName) }}
 		</div>
 	</div>
+
+	{# TIPS : https://symfony.com/doc/current/form/form_collections.html
+		https://symfony.com/doc/current/form/form_themes.html#form-custom-prototype #}
+	<ul class="outlays" data-index="{{ form.outlays|length > 0 ? form.outlays|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.outlays.vars.prototype)|e('html_attr') }}"></ul>
+
 	{# <input
-	type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}"> #}
+		type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}"> #}
 	{# TIPS : {{ form_rest(form) }}
-	     with {{ form_end(form, {'render_rest': false}) }}
-	     to move the forme rest somewhere else
-	#}
+		     with {{ form_end(form, {'render_rest': false}) }}
+		     to move the forme rest somewhere else
+		#}
 	{{ form_end(form) }}
+	<br/><br/>
+	<button type="button" class="add_outlay_link" data-collection-holder-class="outlays">Ajouter un débours</button>
 
 	{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
 	{# Native way : #}
-<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf"> {# TIPS : Need pdf.js integrated library : #}
+	<p style="text-align:right">
+		<a href="{{ path('app_pdf_billings_view', { clientSlug: billingConfig.clientSlug, viewPart: 'CGV' } ) }}" target="_blank">
+			Conditions générales de vente
+		</a>
+	</p>
+	<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf">
+{# TIPS : Need pdf.js integrated library : #}
 	{# <iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
 
 	{# TIPS : Need to BE online to be valide for gview ? #}
 	{# <iframe src="https://docs.google.com/gview?url={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
 
+{% endblock %}
+
+{% block javascript %}
+	{{ parent() }}
+	<script>
+		// https://symfony.com/doc/current/form/form_collections.html#allowing-new-tags-with-the-prototype
+		const addFormToCollection = (e) => {
+			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+			const item = document.createElement('li');
+
+			item.innerHTML = collectionHolder
+				.dataset
+				.prototype
+				.replace(
+					/__name__/g,
+					collectionHolder.dataset.index
+				);
+
+			// collectionHolder.appendChild(item);
+			const target = document.querySelector('#billing_config_submitable_outlays');
+			target.appendChild(item);
+
+			collectionHolder.dataset.index++;
+		};
+
+		document.querySelectorAll('.add_outlay_link').forEach(btn => {
+			btn.addEventListener("click", addFormToCollection)
+		});
+	</script>
 {% endblock %}

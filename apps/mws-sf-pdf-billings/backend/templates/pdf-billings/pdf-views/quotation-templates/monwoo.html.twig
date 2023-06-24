@@ -118,131 +118,135 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		: ("now"|date) %}
 	{% set quotationEnd = billingConfig.quotationEndDay
 	? billingConfig.quotationEndDay : quotationStart | date_modify("+15 day") %}
-		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
-			<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
-				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
-			</td>
-			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-			font-weight:bold;color:#005B98;font-size:14pt;">
-				Devis n°{{billingConfig.quotationNumber}}
-			</td>
-			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
-				<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}"/>
-			</td>
-		</tr>
-	</table>
-	<table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
-		<tr>
-			<td class="business" style="width:{{ 0.4 * fullWidth }};">
-				{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
+
+		{% if viewPart != 'CGV' %}
+			<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
+				<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
+					<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
+				</td>
+				<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
+									font-weight:bold;color:#005B98;font-size:14pt;">
+					Devis n°{{billingConfig.quotationNumber}}
+				</td>
+				<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
+					<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}"/>
+				</td>
+			</tr>
+		</table>
+		<table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
+			<tr>
+				<td class="business" style="width:{{ 0.4 * fullWidth }};">
+					{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
             'app': app, 'billingConfig': billingConfig
         } %}
-			</td>
-			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
-			text-align: center;
-			font-weight:bold;color:#005B98;font-size:16pt;
-			">
-				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
-				<br/>
-				T.T.C.
-			</td>
-			<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
-				{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
+				</td>
+				<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
+									text-align: center;
+									font-weight:bold;color:#005B98;font-size:16pt;
+									">
+					{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+					<br/>
+					T.T.C.
+				</td>
+				<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
+					{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
             'app': app, 'billingConfig': billingConfig
         } %}
-			</td>
-		</tr>
-	</table>
-	{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
-	<div class="empty-space" style="height:30;background-color:red;"></div> #}
-	<table class="empty-space" style="font-size:7pt;">
-		<tr>
-			<td></td>
-		</tr>
-	</table>
+				</td>
+			</tr>
+		</table>
+		{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
+		<div class="empty-space" style="height:30;background-color:red;"></div> #}
+		<table class="empty-space" style="font-size:7pt;">
+			<tr>
+				<td></td>
+			</tr>
+		</table>
 
-	{% include 'pdf-billings/pdf-views/business-thanks.html.twig' with {
-		'app': app, 'billingConfig': billingConfig,
-	} %}
+		{% include 'pdf-billings/pdf-views/business-thanks.html.twig' with {
+			'app': app, 'billingConfig': billingConfig,
+		} %}
 
-	<table class="empty-space" style="font-size:2pt;">
-		<tr>
-			<td></td>
-		</tr>
-	</table>
+		<table class="empty-space" style="font-size:2pt;">
+			<tr>
+				<td></td>
+			</tr>
+		</table>
 
-	{% include 'pdf-billings/pdf-views/business-temporality.html.twig' with {
-		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
-		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
-	} %}
+		{% include 'pdf-billings/pdf-views/business-temporality.html.twig' with {
+			'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+			'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+		} %}
 
-	{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
-		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
-		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
-	} %}
+		{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
+			'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+			'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+		} %}
 
-	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
-		'app': app, 'billingConfig': billingConfig,
-		'description': 'Licence nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
-		'aimTitle': 'Détail de licence :',
-		'aimTitleBis': 'Monwoo Web Starters <br/>[ Svelte-WP-display ]',
-		'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
-		'quantity': 1,
-		'pricePerUnitWithoutTaxes': licenseWpDisplay,
-		'taxesPercent': 0,
-		'discountPercent': 0,
-		'priceWithoutTaxes': licenseWpDisplay,
-		'priceWithTaxes': licenseWpDisplay,
-		'paddingBottom': 1,
-	} %}
+		{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+			'app': app, 'billingConfig': billingConfig,
+			'description': 'Licence nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
+			'aimTitle': 'Détail de licence :',
+			'aimTitleBis': 'Monwoo Web Starters <br/>[ Svelte-WP-display ]',
+			'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
+			'quantity': 1,
+			'pricePerUnitWithoutTaxes': licenseWpDisplay,
+			'taxesPercent': 0,
+			'discountPercent': 0,
+			'priceWithoutTaxes': licenseWpDisplay,
+			'priceWithTaxes': licenseWpDisplay,
+			'paddingBottom': 1,
+		} %}
 
-	<br
-	pagebreak="true"/>
-	{# // TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" /> #}
+		<br
+		pagebreak="true"/>
+		{# // TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" /> #}
 
-	<table class="empty-space" style="font-size:10;">
-		<tr>
-			<td></td>
-		</tr>
-	</table>
+		<table class="empty-space" style="font-size:10;">
+			<tr>
+				<td></td>
+			</tr>
+		</table>
 
-	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
-		'app': app, 'billingConfig': billingConfig,
-		'description': '30 minutes d’expertise Frontend UI Svelte de votre site web en distancielle.',
-		'aimTitle': 'Objectif(s) de la prestation :',
-		'aimTitleBis': 'Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
-		'aimDescription': businessWorkloadDetails,
-		'quantity': businessWorkloadHours * 2,
-		'pricePerUnitWithoutTaxes': pricePerHour / 2,
-		'taxesPercent': 0,
-		'discountPercent': 0,
-		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
-		'priceWithTaxes': businessWorkloadHours * pricePerHour,
-	} %}
+		{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+			'app': app, 'billingConfig': billingConfig,
+			'description': '30 minutes d’expertise Frontend UI Svelte de votre site web en distancielle.',
+			'aimTitle': 'Objectif(s) de la prestation :',
+			'aimTitleBis': 'Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
+			'aimDescription': businessWorkloadDetails,
+			'quantity': businessWorkloadHours * 2,
+			'pricePerUnitWithoutTaxes': pricePerHour / 2,
+			'taxesPercent': 0,
+			'discountPercent': 0,
+			'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
+			'priceWithTaxes': businessWorkloadHours * pricePerHour,
+		} %}
 
-	{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
-	and div stay bigger than regular font size if no image inside...
-	If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
-		#}
-	<div style="font-size:0px;background-color:#FFD700;">
-		<img style="width:{{ 1 * fullWidth }};" src="{{ quotationSeparator }}"/>
-	</div>
+		{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
+			and div stay bigger than regular font size if no image inside...
+			If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
+				#}
+		<div style="font-size:0px;background-color:#FFD700;">
+			<img style="width:{{ 1 * fullWidth }};" src="{{ quotationSeparator }}"/>
+		</div>
 
-	{# Simple since no need to handle TVA for micro-BNC status,
-	will need to handle TVA and pdf Cert Sign for bigger structures... #}
-	{% include 'pdf-billings/pdf-views/quotation-total.html.twig' with {
-		'app': app, 'billingConfig': billingConfig,
-		'priceWithoutTaxes': quotationTotal,
-		'priceWithTaxes': quotationTotal,
-	} %}
+		{# Simple since no need to handle TVA for micro-BNC status,
+			will need to handle TVA and pdf Cert Sign for bigger structures... #}
+		{% include 'pdf-billings/pdf-views/quotation-total.html.twig' with {
+			'app': app, 'billingConfig': billingConfig,
+			'priceWithoutTaxes': quotationTotal,
+			'priceWithTaxes': quotationTotal,
+		} %}
 
-	{% include 'pdf-billings/pdf-views/quotation-lawful.html.twig' with {
-		'app': app, 'billingConfig': billingConfig,
-		'quotationNumber': billingConfig.quotationNumber,
-	} %}
+		{% include 'pdf-billings/pdf-views/quotation-lawful.html.twig' with {
+			'app': app, 'billingConfig': billingConfig,
+			'quotationNumber': billingConfig.quotationNumber,
+		} %}
 
-	<br
-	pagebreak="true"/>
+		<br pagebreak="true"/>
+
+	{% endif %}
+
 
 	{% include 'pdf-billings/pdf-views/quotation-terms-of-sell.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,

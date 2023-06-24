@@ -37,8 +37,14 @@ class BillingConfigSubmitableType extends BillingConfigType
                 'Monwoo Fullstack hybrid' => 'monwoo-04-hybrid-app',
             ],
         ]);
+        // https://symfony.com/doc/current/form/form_collections.html
         $builder->add('outlays', CollectionType::class, [
-            'entry_type' => OutlayType::class
+            'entry_type' => OutlayType::class,
+            'allow_add' => true,
+            'by_reference' => true,
+            // 'allow_add' => true,
+            // 'prototype' => true,
+            // 'entry_options' => ['label' => false],
         ]);
 
         $builder->add('submit', SubmitType::class, ['label' => 'Mettre à jour']);

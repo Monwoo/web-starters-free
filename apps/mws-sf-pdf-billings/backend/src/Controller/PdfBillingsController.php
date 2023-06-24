@@ -144,13 +144,18 @@ class PdfBillingsController extends AbstractController
     }
 
     // https://symfony.com/doc/current/routing.html
+    // https://symfony.com/doc/5.4/routing.html#parameters-validation
     #[Route(
-        '/view/{clientSlug}',
-        defaults: ['clientSlug' => 1],
+        '/view/{clientSlug}/{viewPart<CGV>?}',
+        defaults: [
+            'clientSlug' => 1,
+            'viewPart' => ''
+        ],
         name: 'app_pdf_billings_view'
     )]
     public function view(
         string $clientSlug,
+        string $viewPart,
         // EngineInterface $tplEngine,
         string $projectDir,
         BillingConfigRepository $bConfigRepository
@@ -299,6 +304,7 @@ class PdfBillingsController extends AbstractController
         // Set some content to print
         $html = $twig->render($templatePath, [
             'billingConfig' => $bConfig, 'businessSignatureImg' => $businessSignatureImg,
+            'viewPart' => $viewPart,
             'packageVersion' => $packageVersion, 'packageName' => $packageName,
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
         ]);

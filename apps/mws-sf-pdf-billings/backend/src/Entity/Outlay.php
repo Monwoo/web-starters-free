@@ -31,7 +31,7 @@ class Outlay
     #[ORM\Column(nullable: true)]
     private ?float $providerTaxes = null;
 
-    #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays')]
+    #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays', cascade:['remove', 'persist'])]
     private Collection $billingConfigs;
 
     // // https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
