@@ -3,17 +3,24 @@
 namespace App\Entity;
 
 use App\Repository\BillingConfigRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BillingConfigRepository::class)]
+#[ORM\Index(columns: ['client_slug'], name: 'client_slug_idx')]
 class BillingConfig
 {
-    // #[ORM\Id]
-    // #[ORM\GeneratedValue]
-    // #[ORM\Column]
-    // private ?int $id = null;
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    // #[ORM\Id] // TODO : not good idea to avoid ID duplication ?
+    // only using clientSlug and removing id
+    // sound like 'clientSlug' need to be called 'id' otherwise all other stuff 
+    // assuming entity have id will breaks... (same if ID go from integer to string ?)
     #[ORM\Column(length: 255, unique: true)]
     private ?string $clientSlug = null;
 
@@ -65,9 +72,35 @@ class BillingConfig
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $quotationTemplate = null;
 
-    public function getId(): ?int
+    #[ORM\Column(nullable: true)]
+    private ?float $percentDiscount = null;
+
+    // TODO : WORK on ManyToMany relationships for Entity WITHOUT id FIELD (replaced by 'client_slug' normally ...)
+    // #[ORM\JoinColumn(name: 'billing_config_client_slug', referencedColumnName: 'id')]
+    // #[ORM\InverseJoinColumn(name: 'outlay_id', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs')]
+    private Collection $outlays;
+
+    // // TODO : Why is 'specifying' inversedBy make all migration fail on error : 
+    // // Column name "id" referenced for relation from App\Entity\BillingConfig
+    // // towards App\Entity\Outlay does not exist.
+    // // https://stackoverflow.com/questions/66533631/symfony-doctrine-rename-table-used-for-manytomany
+    // // https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/association-mapping.html#many-to-many-bidirectional
+    // // #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs')]
+    // // #[JoinTable(name: 'billing_configs_outlays')]
+    // #[JoinColumn(name: 'billing_config_client_slug', referencedColumnName: 'id')]
+    // #[InverseJoinColumn(name: 'outlay_id', referencedColumnName: 'id')]
+    // #[ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs')]
+    // private Collection $outlays;
+
+    public function __construct()
     {
-        return $this->id;
+        $this->outlays = new ArrayCollection();
+    }
+
+    public function getClientSlug(): ?string
+    {
+        return $this->clientSlug;
     }
 
     public function getClientName(): ?string
@@ -90,18 +123,6 @@ class BillingConfig
     public function setQuotationNumber(?string $quotationNumber): static
     {
         $this->quotationNumber = $quotationNumber;
-
-        return $this;
-    }
-
-    public function getClientSlug(): ?string
-    {
-        return $this->clientSlug;
-    }
-
-    public function setClientSlug(string $clientSlug): static
-    {
-        $this->clientSlug = $clientSlug;
 
         return $this;
     }
@@ -270,6 +291,54 @@ class BillingConfig
     public function setQuotationTemplate(?string $quotationTemplate): static
     {
         $this->quotationTemplate = $quotationTemplate;
+
+        return $this;
+    }
+
+    public function getPercentDiscount(): ?float
+    {
+        return $this->percentDiscount;
+    }
+
+    public function setPercentDiscount(?float $percentDiscount): static
+    {
+        $this->percentDiscount = $percentDiscount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Outlay>
+     */
+    public function getOutlays(): Collection
+    {
+        return $this->outlays;
+    }
+
+    public function addOutlay(Outlay $outlay): static
+    {
+        if (!$this->outlays->contains($outlay)) {
+            $this->outlays->add($outlay);
+        }
+
+        return $this;
+    }
+
+    public function removeOutlay(Outlay $outlay): static
+    {
+        $this->outlays->removeElement($outlay);
+
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setClientSlug(string $clientSlug): static
+    {
+        $this->clientSlug = $clientSlug;
 
         return $this;
     }

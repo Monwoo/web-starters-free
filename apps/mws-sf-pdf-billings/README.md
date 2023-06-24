@@ -47,15 +47,11 @@ open http://localhost:8000
 ```bash
 # usefull :
 php bin/console debug:form
-# Generate some formType based on entity model :
-php bin/console make:form BillingConfig
 
 # add users
 php bin/console make:user
 # list of available make commandes
 php bin/console list make
-# add listeners :
-php bin/console make:entity BillingConfig
 
 # other tools for models :
 php bin/console make:entity BillingConfig
@@ -68,12 +64,25 @@ php bin/console make:form BillingConfigType BillingConfig
 # mv src/Form/_BillingConfigSubmitableType.php \
 # src/Form/BillingConfigSubmitableType.php
 
+# https://symfony.com/doc/current/doctrine/associations.html
+php bin/console make:entity Outlay
+rm src/Form/OutlayType.php
+php bin/console make:form OutlayType Outlay
+
+
+# ensure your databse is clean and in sync with existing migration
+# (WARNING : will reset your dev database) :
+rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
+
 php bin/console make:entity --regenerate
 php bin/console make:entity --help
+# Make migration from your database diff :
+php bin/console doctrine:migrations:diff --help
 # If you change your model,
 # you need to generate the associated migrations :
 php bin/console make:migration
 php bin/console doctrine:migrations:migrate
+cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 # add a new controller
 php bin/console make:controller PdfBillings

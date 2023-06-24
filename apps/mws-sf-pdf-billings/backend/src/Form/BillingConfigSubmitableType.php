@@ -5,6 +5,7 @@ namespace App\Form;
 
 use App\Entity\BillingConfig;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,6 +37,10 @@ class BillingConfigSubmitableType extends BillingConfigType
                 'Monwoo Fullstack hybrid' => 'monwoo-04-hybrid-app',
             ],
         ]);
+        $builder->add('outlays', CollectionType::class, [
+            'entry_type' => OutlayType::class
+        ]);
+
         $builder->add('submit', SubmitType::class, ['label' => 'Mettre à jour']);
     }
 
