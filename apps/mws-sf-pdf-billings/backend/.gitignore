@@ -25,3 +25,6 @@ cookies.txt
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+# copy from .env.prod.dist if missing in you dev env, and adapt for production...
+.env.prod
