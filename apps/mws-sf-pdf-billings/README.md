@@ -5,9 +5,10 @@
 
 ## Aim
 Provide a PHP local tool for pre-fillable self signed PDF billing templates.
+Bonus : Basic controller ok for simple JWT authentification if needed.
 
-## Bonus
-Basic controller ok for simple JWT authentification if needed.
+## Demonstration
+[@demo mws.monwoo.com/demos/sf-pdf-billings/](https://mws.monwoo.com/demos/sf-pdf-billings/)
 
 ## Build
 
