@@ -207,7 +207,7 @@ php bin/console make:test
 php vendor/bin/simple-phpunit tests/BillingConfigTest.php
 
 # list recipes :
-omposer recipes
+composer recipes
 
 # Do some package AUTO-UPDATINGS :
 rm -rf vendor composer.lock var/cache var/log

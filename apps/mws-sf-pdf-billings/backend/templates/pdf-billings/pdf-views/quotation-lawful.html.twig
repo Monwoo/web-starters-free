@@ -8,7 +8,9 @@
 	<tr>
 		<td style="font-size:11pt;">
 			La signature du présent devis n°{{quotationNumber}}
-			ou un paiement d'acompte avec la référence au devis entraîne l'acceptation sans réserve des conditions générales de vente figurant en annexe
+			ou un paiement d'acompte avec la référence au devis
+			entraîne l'acceptation sans réserve des
+			conditions générales de vente figurant en annexe
 		</td>
 	</tr>
 	<tr>
@@ -22,7 +24,8 @@
 			style="width:{{ 0.72 * fullWidth }};text-align:right;font-size:8pt;">
 			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
 			<div class="empty-space" style="font-size:2.5px">&nbsp;</div>
-			Datez et paraphez chaques pages. Cachet mention "Bon pour accord", cachet de l'entreprise et signature(s) :</td>
+			Datez et paraphez chaques pages. Cachet mention "Bon pour accord",
+			cachet de l'entreprise et signature(s) :</td>
 	</tr>
 	<tr>
 		<td class="empty-space" style="font-size:7px;">&nbsp;</td>
@@ -43,10 +46,14 @@
 	<tr style="text-align:center;font-size:10pt;">
 		<td style="width:{{ 0.5 * fullWidth }};border-left-width:0.4px;">
 			<div class="empty-space" style="font-size:20px">&nbsp;</div>
-			{# Only keep 0.28 on 0.5 to give space for Monwoo or Approved Intermediate 
-						to physically sign in case email is not enough or if client or business
-						need a hand writtend proof for better oldschool contracts ways (= offline paper mode...) #}
-			<img style="width:{{ 0.28 * fullWidth }};" src="{{ 'file://' ~ kernelRootDir ~ '/var/SignatureCleanV1.png' }}"/>
+				{# Only keep 0.28 on 0.5 to give space for Monwoo or Approved Intermediate 
+				to physically sign in case email is not enough or if client or business
+				need a hand writtend proof for better oldschool contracts ways (= offline paper mode...) #}
+				{% if businessSignatureImg ?? null %}
+					<img style="width:{{ 0.28 * fullWidth }};" src="{{ 'file://' ~ kernelRootDir ~ '/var/SignatureCleanV1.png' }}"/>
+				{% else %}
+					Devis de démonstration. Merci de l'envoyer sur service@monwoo.com pour obtenir l'accord et le numéro de devis Monwoo.
+				{% endif %}
 			<div class="empty-space" style="font-size:12px">&nbsp;</div>
 		</td>
 		<td
@@ -66,12 +73,14 @@
 	<tr>
 		<td style="font-size:8pt;color:#666666;">
 			Conformément à l’article L.441-6 du code de commerce, des pénalités de retard, <br/>
-			au taux annuel de 20 % et une indemnité de 40€ sont dues à défaut de règlement le jour suivant la date de paiement figurant sur la facture.
+			au taux annuel de 20 % et une indemnité de 40€ sont dues à défaut de 
+			règlement le jour suivant la date de paiement figurant sur la facture.
 		</td>
 	</tr>
 	<tr>
 		<td style="font-size:8pt;color:#666666;">
-			Dispensé d'immatriculation au registre du commerce et des sociétés (RCS) et au répertoire des métiers.
+			Dispensé d'immatriculation au registre du commerce et des sociétés (RCS)
+			et au répertoire des métiers.
 		</td>
 	</tr>
 	<tr>
