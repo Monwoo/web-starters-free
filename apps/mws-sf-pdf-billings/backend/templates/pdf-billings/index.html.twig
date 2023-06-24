@@ -55,18 +55,35 @@
 	{{ parent() }}
 	<script>
 		// https://symfony.com/doc/current/form/form_collections.html#allowing-new-tags-with-the-prototype
+		const addOutlayFormDeleteLink = (item) => {
+			const removeFormButton = document.createElement('button');
+			removeFormButton.innerText = 'Supprimer ce débours';
+
+			item.append(removeFormButton);
+
+			removeFormButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					// remove the item for the outlay form
+					item.remove();
+			});
+		}
+
 		const addFormToCollection = (e) => {
 			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
-			const item = document.createElement('li');
+			const item = document.createElement('div');
 
+			const idx = collectionHolder.dataset.index;
 			item.innerHTML = collectionHolder
-				.dataset
-				.prototype
-				.replace(
-					/__name__/g,
-					collectionHolder.dataset.index
-				);
+			.dataset
+			.prototype
+			.replace(
+				/__name__/g,
+				idx
+			);
+			item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
+			// add a delete link to the new form
+			addOutlayFormDeleteLink(item);
 
 			// collectionHolder.appendChild(item);
 			const target = document.querySelector('#billing_config_submitable_outlays');
@@ -78,5 +95,12 @@
 		document.querySelectorAll('.add_outlay_link').forEach(btn => {
 			btn.addEventListener("click", addFormToCollection)
 		});
+
+		document
+		.querySelectorAll('[id^="billing_config_submitable_outlays_"]:not([name])')
+    .forEach((tag) => {
+        addOutlayFormDeleteLink(tag)
+    })
+
 	</script>
 {% endblock %}

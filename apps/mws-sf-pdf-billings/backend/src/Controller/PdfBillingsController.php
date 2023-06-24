@@ -9,6 +9,7 @@ use App\Repository\BillingConfigRepository;
 use App\Services\MwsTCPDF;
 use DateInterval;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,6 +99,18 @@ class PdfBillingsController extends AbstractController
         // $this->logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $this->logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
+        // https://symfony.com/doc/current/form/form_collections.html#allowing-tags-to-be-removed
+        $originalOutlays = new ArrayCollection();
+        $originalBConfigsByOutlay = [];
+        // Create an ArrayCollection of the current Outlay objects in the database
+        foreach ($bConfig->getOutlays() as $outlay) {
+            $originalOutlays->add($outlay);
+            $originalBConfigsByOutlay["".$outlay] = [];
+            foreach ($outlay->getBillingConfigs() as $originalOutlaysBConfig) {
+                $originalBConfigsByOutlay["".$outlay][] = $originalOutlaysBConfig;
+            }
+        }
+
         // $csrfToken = $request->request->get('_token');
         // if ($csrfToken && !$this->isCsrfTokenValid('pdf-billings', $csrfToken)) {
         //     $this->logger->error('WRONG CSRF token', [
@@ -119,11 +132,84 @@ class PdfBillingsController extends AbstractController
             if ($form->isValid()) {
                 // var_dump($bConfig); exit;
                 // $bConfig->setComputedValue(...);
+                // https://symfony.com/doc/current/form/form_collections.html#allowing-tags-to-be-removed
+                
+                // remove the relationship between the outlay and the bConfig
+                foreach ($originalOutlays as $orignialOutlay) {
+                    if (false === $bConfig->getOutlays()->contains($orignialOutlay)) {
+                        // remove the Task from the Outlay
+                        // $orignialOutlay->getBillingConfigs()->removeElement($bConfig);
+                        $orignialOutlay->removeBillingConfig($bConfig);
+
+                        // if it was a many-to-one relationship, remove the relationship like this
+                        // $orignialOutlay->setTask(null);
+
+                        $this->em->persist($orignialOutlay);
+                        // if you wanted to delete the Outlay entirely, you can also do that
+                        // $entityManager->remove($orignialOutlay);
+                    }
+                }
+
+                // Handle Outlay embed form linking back to BillingConfigs that can be selected/unSelected
+                // var_dump("Testing outlays from " . $bConfig . '.');
+                foreach ($bConfig->getOutlays() as $outlay) {
+                    // ensure multiple choice-add is OK
+                    foreach ($outlay->getBillingConfigs() as $outlayBConfig) {
+                        if (false === $outlayBConfig->getOutlays()->contains($outlay)) {
+                            $outlayBConfig->addOutlay($outlay);
+                            $this->em->persist($outlayBConfig);
+                        }
+                    }
+                    // ensure multiple choice-remove is OK
+                    // var_dump("Testing delete from original for " . $outlay . '.');
+                    if ($originalOutlay = $originalOutlays->findFirst(function ($k, $e) use ($outlay) {
+                        return $e === $outlay;
+                    })) {
+                        // var_dump("Testing original " . $originalOutlay . '.');
+                        // TIPS : getBillingConfigs on original Outlay will not work :
+                        // $originalOutlaysBConfigs = $originalOutlay->getBillingConfigs()
+                        $originalOutlaysBConfigs = $originalBConfigsByOutlay["".$originalOutlay];
+                        foreach ($originalOutlaysBConfigs as $originalOutlayBConfig) {
+                            // var_dump("Testing " . $originalOutlayBConfig . ' from ' . $originalOutlay
+                            // . " aginst " . $outlay);
+                            if (false === $outlay->getBillingConfigs()->contains($originalOutlayBConfig)) {
+                                // var_dump("Removing " . $outlay . ' from ' . $originalOutlayBConfig); exit;
+                                // $originalOutlayBConfig->removeOutlay($outlay); // TODO : same as remove $originalOutlay ?
+                                $originalOutlayBConfig->removeOutlay($originalOutlay);
+                                $this->em->persist($originalOutlayBConfig);
+                            }
+                        }
+                    }
+                }
+                // exit;
                 $this->em->persist($bConfig);
                 $this->em->flush();
 
+                // Sounds like previous deletes do not reflect on saved form,
+                // need to load from get to see changes...
+                $this->em->refresh($bConfig);
+
+                // // TIPS :
+                // // Will error : You cannot change the data of a submitted form.
+                // $form->setData($bConfig);
+                // // So right way sound more like :
+                // $builder->addEventListener(FormEvents::POST_SUBMIT, 
+                //     function (FormEvent $event) { 
+                //     if(!$event->getForm()->isValid()){
+                //         $event->getForm()->get('field1')->setData('value1'); 
+                //     }
+                // });
+    
                 // TIPS : un-comment below if you want to redirect to full PDF view at form submit
                 // return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
+
+                // TIPS : redirect to self view with GET client ID to force data db refresh
+                //       after embedded form edits not reflected in validated form...
+                return $this->redirectToRoute('app_pdf_billings', [
+                    "billing_config_submitable" => [
+                        "clientSlug" => $clientSlug
+                    ]
+                ]);
             } else {
                 // var_dump($form->getErrors(true)->__toString());exit;
                 $this->logger->error(

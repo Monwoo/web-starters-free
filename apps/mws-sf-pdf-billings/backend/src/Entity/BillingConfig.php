@@ -78,7 +78,8 @@ class BillingConfig
     // TODO : WORK on ManyToMany relationships for Entity WITHOUT id FIELD (replaced by 'client_slug' normally ...)
     // #[ORM\JoinColumn(name: 'billing_config_client_slug', referencedColumnName: 'id')]
     // #[ORM\InverseJoinColumn(name: 'outlay_id', referencedColumnName: 'id')]
-    #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist', 'remove'])]
+    // #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist', 'remove'])]
+    #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist'])]
     private Collection $outlays;
 
     // // TODO : Why is 'specifying' inversedBy make all migration fail on error : 

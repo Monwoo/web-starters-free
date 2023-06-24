@@ -41,7 +41,8 @@ class BillingConfigSubmitableType extends BillingConfigType
         $builder->add('outlays', CollectionType::class, [
             'entry_type' => OutlayType::class,
             'allow_add' => true,
-            'by_reference' => true,
+            'allow_delete' => true,
+            'by_reference' => false,
             // 'allow_add' => true,
             // 'prototype' => true,
             // 'entry_options' => ['label' => false],
