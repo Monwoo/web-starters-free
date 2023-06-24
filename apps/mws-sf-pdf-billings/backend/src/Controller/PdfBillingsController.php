@@ -169,6 +169,16 @@ class PdfBillingsController extends AbstractController
         ]) ?? ($this->billingConfigFactory)();
 
         $template = $bConfig->getQuotationTemplate() ?? 'monwoo';
+        // TODO : from config or .env params ?
+        $businessSignatureImg = 'file://' . $projectDir . '/var/businessSignature.png';
+        // First try png extension (will work with tcpdf bg ? // TODO test...)
+        // TIPS : png have more visual animation power, but .jpg also have better compressions...
+        if (!file_exists($businessSignatureImg)) {
+            $businessSignatureImg = 'file://' . $projectDir . '/var/businessSignature.jpg';
+            if (!file_exists($businessSignatureImg)) {
+                $businessSignatureImg = null;
+            }
+        }
 
         /**
          * @var MwsTCPDF $pdf
@@ -222,7 +232,7 @@ class PdfBillingsController extends AbstractController
         // 🇺🇸🇺🇸 SEO
         Locale::setDefault('fr');
         $pdf->SetAuthor('Miguel Monwoo (service@monwoo.com)');
-        $pdf->SetTitle('Devis 000');
+        $pdf->SetTitle('Devis Monwoo n° ' . $bConfig->getQuotationNumber());
         $pdf->SetSubject('Devis Monwoo');
         $pdf->SetKeywords('Monwoo, PWA, Svelte, PHP, Symfony');
 
@@ -257,8 +267,12 @@ class PdfBillingsController extends AbstractController
 
         // 🇺🇸🇺🇸 Header content
         $PDF_HEADER_STRING = "monwoo.com ($packageName v-$packageVersion)"
-            . "                                                       "
-            . "                                   Devis n° " . $bConfig->getQuotationNumber();
+        . (
+            $businessSignatureImg
+            ? "                                                                   "
+            : "   Brouillon à confirmer                            "
+        )
+        . "                                   Devis n° " . $bConfig->getQuotationNumber();
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
         // . "E abc@gmail.com\n"
         // . "www.abc.com";
@@ -284,7 +298,7 @@ class PdfBillingsController extends AbstractController
         $pdf->AddPage();
         // Set some content to print
         $html = $twig->render($templatePath, [
-            'billingConfig' => $bConfig,
+            'billingConfig' => $bConfig, 'businessSignatureImg' => $businessSignatureImg,
             'packageVersion' => $packageVersion, 'packageName' => $packageName,
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
         ]);

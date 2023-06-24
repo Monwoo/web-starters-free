@@ -1,7 +1,7 @@
 {
     "type": "project",
     "name": "monwoo/mws-sf-pdf-billings",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "license": "Apache-2.0_monwoo",
     "minimum-stability": "stable",
     "prefer-stable": true,

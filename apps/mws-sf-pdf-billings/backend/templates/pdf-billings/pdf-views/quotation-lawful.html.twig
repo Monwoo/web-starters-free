@@ -50,7 +50,7 @@
 				to physically sign in case email is not enough or if client or business
 				need a hand writtend proof for better oldschool contracts ways (= offline paper mode...) #}
 				{% if businessSignatureImg ?? null %}
-					<img style="width:{{ 0.28 * fullWidth }};" src="{{ 'file://' ~ kernelRootDir ~ '/var/SignatureCleanV1.png' }}"/>
+					<img style="width:{{ 0.28 * fullWidth }};" src="{{ businessSignatureImg }}"/>
 				{% else %}
 					Devis de démonstration. Merci de l'envoyer sur service@monwoo.com pour obtenir l'accord et le numéro de devis Monwoo.
 				{% endif %}

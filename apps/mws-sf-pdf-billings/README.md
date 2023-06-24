@@ -167,6 +167,16 @@ find . -name '*.png' | sed 's/\.png//g' \
 --setProperty formatOptions 70.00 \
 "%.png" --out "%.jpg"
 
+# optimise your signature to avoid huge pdf outputs (Keep transparency)
+sips -Z 400 \
+"var/SignatureCleanV1.png" --out "var/businessSignature.png"
+
+# optimise your signature to avoid huge pdf outputs (best compressions)
+sips -Z 400 \
+--setProperty format jpeg \
+--setProperty formatOptions 90.00 \
+"var/SignatureCleanV1.png" --out "var/businessSignature.jpg"
+
 # Add some tests :
 # php bin/console console make:functional-test
 # Intalls for tests :

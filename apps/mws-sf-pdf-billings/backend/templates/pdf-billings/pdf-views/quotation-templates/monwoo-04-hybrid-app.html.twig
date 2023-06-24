@@ -73,12 +73,12 @@
 	{% set pricePerHour = 60 %}
 	{% set deboursLws = 30 %}
 	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
-		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpeg' %}
+		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpg' %}
 	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? 6 %}
 	{% set businessWorkloadDetails = billingConfig.businessWorkloadDetails
 	?? include('pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig',
 	{businessWorkloadHours:businessWorkloadHours}) %}
-	{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.png' %}
+	{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.jpg' %}
 	{% set quotationTotal = deboursLws + businessWorkloadHours * pricePerHour %}
 	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
 		: ("now"|date) %}
