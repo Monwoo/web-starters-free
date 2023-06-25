@@ -234,9 +234,10 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			{% set outlayPPUWT = outlay.providerAddedPrice
 			+ outlay.percentOnBusinessTotal * businessTotal %}
 			{% set outlayTaxes = outlay.providerTaxesPercent
-			? businessTotal - businessTotal 
-			/ (1 + outlay.providerTaxesPercent)
+			? (outlayPPUWT - outlayPPUWT 
+			/ (1 + outlay.providerTaxesPercent))
 			: outlay.providerTaxes %}
+				{# {{ outlayPPUWT }} #}
 
 			{% if outlay.insertPageBreakBefore %}
 				<br pagebreak="true"/>

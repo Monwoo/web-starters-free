@@ -90,7 +90,9 @@ class PdfBillingsController extends AbstractController
                 // TIPS : for added price to count in total business offer
                 // $defaultOutlay->setProviderAddedPrice(130);
                 $defaultOutlay->setProviderTotalWithTaxesForseenForClient(130);
-                $defaultOutlay->setProviderTaxes(130 * (1 - 1/1.2)); // 20% de taxes
+                // $defaultOutlay->setProviderTaxes(130 * (1 - 1/1.2)); // 20% de taxes
+                $defaultOutlay->setProviderTaxes(null); // 20% de taxes
+                $defaultOutlay->setProviderTaxesPercent(0.2); // 20% de taxes
                 $defaultOutlay->setProviderDetails(
                     $twig->render('pdf-billings/pdf-views/quotation-outlay-details-lws.html.twig', [
                         "outlay" => $defaultOutlay

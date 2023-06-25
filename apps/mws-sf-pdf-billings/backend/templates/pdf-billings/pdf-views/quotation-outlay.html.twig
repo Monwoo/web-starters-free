@@ -30,10 +30,17 @@
 			<div class="first" style="text-decoration:underline;">{{(aimTitle ?? "")|striptags(allowedHtmlTags)|raw}}</div>
 			<div class="second" style="text-align:right;">
 			{{(aimTitleBis ?? "")|striptags(allowedHtmlTags)|raw}}
-			<br/>
-			{% if providerTotalWithTaxesForseenForClient %}
-				[ {{ providerTotalWithTaxesForseenForClient|format_currency('EUR', {rounding_mode: 'floor'}) }} ]
+			{% if providerTotalWithTaxesForseenForClient or outlay.providerAddedPrice %}
+				<br/>
+				[ {{ (providerTotalWithTaxesForseenForClient
+				+ outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'floor'}) }} ]
 			{% endif %}
+			{% if outlay.percentOnBusinessTotal %}
+				<br/>
+				[ {{ outlay.percentOnBusinessTotal|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }} sur
+					{{ businessTotal|format_currency('EUR', {rounding_mode: 'floor'}) }} ]
+			{% endif %}
+			
 			</div>
 		</td>
 		<td class="aim-description" style="width:{{ 0.60 * fullWidth }};font-weight:normal;text-align:left;">
