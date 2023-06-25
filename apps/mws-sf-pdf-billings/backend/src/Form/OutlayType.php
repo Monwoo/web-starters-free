@@ -14,6 +14,7 @@ class OutlayType extends AbstractType
         $builder
             ->add('providerName')
             ->add('insertPageBreakBefore')
+            ->add('insertPageBreakAfter')
             ->add('providerShortDescription')
             ->add('percentOnBusinessTotal')
             ->add('providerTaxes')

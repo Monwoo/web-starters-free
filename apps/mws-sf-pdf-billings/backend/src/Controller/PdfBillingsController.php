@@ -85,6 +85,11 @@ class PdfBillingsController extends AbstractController
             if ('monwoo' === $template) {
                 $defaultOutlet = new Outlay();
                 $defaultOutlet->setProviderName("LWS");
+                $defaultOutlet->setProviderShortDescription("(nécessaire)<br/>Hébergment LWS");
+                // TIPS : for added price to count in total business offer
+                // $defaultOutlet->setProviderAddedPrice(130);
+                $defaultOutlet->setProviderTotalWithTaxesForseenForClient(130);
+                $defaultOutlet->setProviderTaxes(130 * (1 - 1/1.2)); // 20% de taxes
                 $bConfig->addOutlay($defaultOutlet);
                 // We DO NOT persiste $defaultOutlet since we let end user to chose to save with it or not...
                 // TODO : doc : if user remove all outlets, defaults outlets will comme back, OK ?

@@ -28,7 +28,13 @@
 	<tr class="sub-data" style="text-align:right;font-size:10pt;">
 		<td class="aim-title" style="width:{{ 0.28 * fullWidth }};text-align:left;font-weight:bold;">
 			<div class="first" style="text-decoration:underline;">{{(aimTitle ?? "")|striptags(allowedHtmlTags)|raw}}</div>
-			<div class="second" style="text-align:right;">{{(aimTitleBis ?? "")|striptags(allowedHtmlTags)|raw}}</div>
+			<div class="second" style="text-align:right;">
+			{{(aimTitleBis ?? "")|striptags(allowedHtmlTags)|raw}}
+			<br/>
+			{% if providerTotalWithTaxesForseenForClient %}
+				[ {{ providerTotalWithTaxesForseenForClient|format_currency('EUR', {rounding_mode: 'floor'}) }} ]
+			{% endif %}
+			</div>
 		</td>
 		<td class="aim-description" style="width:{{ 0.60 * fullWidth }};font-weight:normal;text-align:left;">
 			{{(aimDescription ?? "")|striptags(allowedHtmlTags)|raw}}

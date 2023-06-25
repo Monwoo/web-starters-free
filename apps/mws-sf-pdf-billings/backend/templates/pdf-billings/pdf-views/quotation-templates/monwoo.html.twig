@@ -113,11 +113,17 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	?? include('pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig',
 	{businessWorkloadHours:businessWorkloadHours}) %}
 	{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.jpg' %}
-	{% set quotationTotal = licenseWpDisplay + businessWorkloadHours * pricePerHour %}
 	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
-		: ("now"|date) %}
+	: ("now"|date) %}
 	{% set quotationEnd = billingConfig.quotationEndDay
 	? billingConfig.quotationEndDay : quotationStart | date_modify("+15 day") %}
+
+	{% set outlaysForseenTotal = billingConfig.outlays|reduce(
+		(acc, o) => acc + o.providerTotalWithTaxesForseenForClient, 0
+	) %}
+
+	{% set quotationTotal = licenseWpDisplay + businessWorkloadHours * pricePerHour %}
+	{% set forseenTotal = quotationTotal + outlaysForseenTotal %}
 
 		{% if viewPart != 'CGV' %}
 			<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
@@ -125,7 +131,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 					<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 				</td>
 				<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-									font-weight:bold;color:#005B98;font-size:14pt;">
+															font-weight:bold;color:#005B98;font-size:14pt;">
 					Devis n°{{billingConfig.quotationNumber}}
 				</td>
 				<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -141,12 +147,26 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
         } %}
 				</td>
 				<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
-									text-align: center;
-									font-weight:bold;color:#005B98;font-size:16pt;
-									">
-					{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
-					<br/>
-					T.T.C.
+				text-align: center;
+				font-weight:bold;color:#005B98;font-size:16pt;
+				">
+					<div>
+						{{ forseenTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+						<br/>
+						T.T.C.
+					</div>
+					{# <div>
+						{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+						<br/>
+						T.T.C.
+					</div>
+					{% if forseenTotal != quotationTotal %}
+						<div style="font-size:10pt;">
+							Sur budget de :
+							{{ forseenTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+							T.T.C.
+						</div>
+					{% endif %} #}
 				</td>
 				<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
 					{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
@@ -156,7 +176,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			</tr>
 		</table>
 		{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
-		<div class="empty-space" style="height:30;background-color:red;"></div> #}
+				<div class="empty-space" style="height:30;background-color:red;"></div> #}
 		<table class="empty-space" style="font-size:7pt;">
 			<tr>
 				<td></td>
@@ -187,7 +207,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'app': app, 'billingConfig': billingConfig,
 			'description': 'Licence nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
 			'aimTitle': 'Détail de licence :',
-			'aimTitleBis': 'Monwoo Web Starters <br/>[ Svelte-WP-display ]',
+			'aimTitleBis': '(nécessaire)<br/>Monwoo Web Starters <br/>[ Svelte-WP-display ]',
 			'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
 			'quantity': 1,
 			'pricePerUnitWithoutTaxes': licenseWpDisplay,
@@ -197,6 +217,9 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'priceWithTaxes': licenseWpDisplay,
 			'paddingBottom': 0.1,
 		} %}
+		{# // TIPS : will break page only if no outlays present (otherwise,
+				outlay can add or remove a before page break to handle alignements ) #}
+		{% set breakAfterOutlays = billingConfig.outlays.count <= 0 %}
 		{% for outlay in billingConfig.outlays %}
 			{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
 			{% set outlayPPUWT = outlay.providerAddedPrice %}
@@ -204,25 +227,31 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			{% if outlay.insertPageBreakBefore %}
 				<br pagebreak="true"/>
 			{% endif %}
-			{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+			{% include 'pdf-billings/pdf-views/quotation-outlay.html.twig' with {
 				'app': app, 'billingConfig': billingConfig,
 				'description': 'Débours via ' ~ outlay.providerName,
 				'aimTitle': 'Objectif(s) de la participation :',
 				'aimTitleBis': outlay.providerShortDescription ?? ('Via ' ~ outlay.providerName ),
 				'aimDescription': include('pdf-billings/pdf-views/quotation-outlay-details.html.twig'),
 				'quantity': 1,
-				'pricePerUnitWithoutTaxes': outlayPPUWT - outlayTaxes,
+				'pricePerUnitWithoutTaxes': outlayPPUWT ? outlayPPUWT - outlayTaxes : 0,
 				'taxesPercent': outlayPPUWT ? outlayTaxes / outlayPPUWT : 0,
 				'discountPercent': 0,
-				'priceWithoutTaxes': outlayPPUWT - outlayTaxes,
+				'priceWithoutTaxes': outlayPPUWT ? outlayPPUWT - outlayTaxes : 0,
 				'priceWithTaxes': outlayPPUWT,
 				'paddingBottom': 0.1,
+				'providerTotalWithTaxesForseenForClient': outlay.providerTotalWithTaxesForseenForClient,
 			} %}
+			{% if outlay.insertPageBreakAfter %}
+				<br pagebreak="true"/>
+			{% endif %}
 		{% endfor %}
 
-		<br
-		pagebreak="true"/>
+		{% if breakAfterOutlays %}
+			<br
+			pagebreak="true"/>
 		{# // TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" /> #}
+		{% endif %}
 
 		<table class="empty-space" style="font-size:10;">
 			<tr>
@@ -234,7 +263,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'app': app, 'billingConfig': billingConfig,
 			'description': '30 minutes d’expertise Frontend UI Svelte de votre site web en distancielle.',
 			'aimTitle': 'Objectif(s) de la prestation :',
-			'aimTitleBis': 'Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
+			'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
 			'aimDescription': businessWorkloadDetails,
 			'quantity': businessWorkloadHours * 2,
 			'pricePerUnitWithoutTaxes': pricePerHour / 2,
@@ -245,15 +274,15 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		} %}
 
 		{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
-			and div stay bigger than regular font size if no image inside...
-			If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
-				#}
+					and div stay bigger than regular font size if no image inside...
+					If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
+						#}
 		<div style="font-size:0px;background-color:#FFD700;">
 			<img style="width:{{ 1 * fullWidth }};" src="{{ quotationSeparator }}"/>
 		</div>
 
 		{# Simple since no need to handle TVA for micro-BNC status,
-			will need to handle TVA and pdf Cert Sign for bigger structures... #}
+					will need to handle TVA and pdf Cert Sign for bigger structures... #}
 		{% include 'pdf-billings/pdf-views/quotation-total.html.twig' with {
 			'app': app, 'billingConfig': billingConfig,
 			'priceWithoutTaxes': quotationTotal,

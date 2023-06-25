@@ -22,6 +22,9 @@ class Outlay
     #[ORM\Column(nullable: true)]
     private ?bool $insertPageBreakBefore = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $insertPageBreakAfter = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $providerShortDescription = null;
 
@@ -209,6 +212,18 @@ class Outlay
     public function setProviderShortDescription(?string $providerShortDescription): static
     {
         $this->providerShortDescription = $providerShortDescription;
+
+        return $this;
+    }
+
+    public function isInsertPageBreakAfter(): ?bool
+    {
+        return $this->insertPageBreakAfter;
+    }
+
+    public function setInsertPageBreakAfter(?bool $insertPageBreakAfter): static
+    {
+        $this->insertPageBreakAfter = $insertPageBreakAfter;
 
         return $this;
     }
