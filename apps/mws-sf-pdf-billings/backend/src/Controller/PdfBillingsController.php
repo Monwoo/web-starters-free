@@ -85,7 +85,7 @@ class PdfBillingsController extends AbstractController
             if ('monwoo' === $template) {
                 $defaultOutlet = new Outlay();
                 $defaultOutlet->setProviderName("LWS");
-                $defaultOutlet->setProviderShortDescription("(nécessaire)<br/>Hébergment LWS");
+                $defaultOutlet->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
                 // TIPS : for added price to count in total business offer
                 // $defaultOutlet->setProviderAddedPrice(130);
                 $defaultOutlet->setProviderTotalWithTaxesForseenForClient(130);
@@ -354,8 +354,14 @@ class PdfBillingsController extends AbstractController
         // 🇺🇸🇺🇸 SEO
         Locale::setDefault('fr');
         $pdf->SetAuthor('Miguel Monwoo (service@monwoo.com)');
-        $pdf->SetTitle('Devis Monwoo n° ' . $bConfig->getQuotationNumber());
-        $pdf->SetSubject('Devis Monwoo');
+        $pdf->SetTitle($businessSignatureImg
+            ? 'Devis Monwoo n° ' . $bConfig->getQuotationNumber()
+            : 'Démo Devis Monwoo n° ' . $bConfig->getQuotationNumber()
+        );
+        $pdf->SetSubject($businessSignatureImg
+            ? 'Devis Monwoo'
+            : 'Démonstration de Devis Monwoo'
+        );
         $pdf->SetKeywords('Monwoo, PWA, Svelte, PHP, Symfony');
 
         // 🇺🇸🇺🇸 Global page container
@@ -439,7 +445,10 @@ class PdfBillingsController extends AbstractController
         ob_end_clean(); // TODO : where is it mendatory ? done to avoid error header data already set
 
         $pdf->lastPage();
-        $response = new Response($pdf->Output('MonwooQuotation_000.pdf'));
+        $response = new Response($pdf->Output($businessSignatureImg
+            ? 'DevisMonwoo' . $bConfig->getQuotationNumber() . '.pdf'
+            : 'DemoDevisMonwoo' . $bConfig->getQuotationNumber() . '.pdf'
+        ));
         $response->headers->set('Content-Type', 'application/pdf');
         return $response;
     }
