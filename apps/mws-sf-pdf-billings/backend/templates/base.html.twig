@@ -51,6 +51,9 @@
             </p>
 			<p>
 				{% if gdprSentinelLoaded %}
+					{# // TODO : why do not exist error in production ? #}
+					{% set gdprLastCleanDate = gdprLastCleanDate ?? date('now') %}
+					{% set gdprNextCleanDate = gdprNextCleanDate ?? date('now') %}
 					{% set dateDiff = date().diff(gdprNextCleanDate) %}
 					{{ gdprSentinelRequestCheck ? "GDPR CHECK have been done." : "Missing GDPR check." }}
 					<strong>WARNING : Next database reset</strong>

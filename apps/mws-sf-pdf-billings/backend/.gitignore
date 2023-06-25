@@ -28,3 +28,6 @@ cookies.txt
 
 # copy from .env.prod.dist if missing in you dev env, and adapt for production...
 .env.prod
+
+mws-sf-pdf-billings.zip
+mws-sf-pdf-billings*.zip

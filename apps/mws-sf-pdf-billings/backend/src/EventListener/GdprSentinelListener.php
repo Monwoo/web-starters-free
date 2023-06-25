@@ -65,7 +65,11 @@ class GdprSentinelListener
     $database = $this->projectDir . '/var/data.db.sqlite';
 
     if (file_exists($safeGdprDatabase)) {
-      $file_creation_date = filectime($safeGdprDatabase);
+      // https://stackoverflow.com/questions/13386082/filemtime-warning-stat-failed-for
+      $file_creation_date = filectime(realpath($safeGdprDatabase));
+      // $stat = stat($safeGdprDatabase);
+      // $file_creation_date = $stat['ctime']; // date_create(date("Y-m-d", $stat['ctime']));
+
       $this->logger->debug(
         "Gdpr safe database created at : " . date('Y-m-d H:i:s', $file_creation_date)
       );
@@ -77,7 +81,11 @@ class GdprSentinelListener
     }
 
     // $database already exist otherwise whould have already give some sql error ?
-    $database_creation_timestamp = filectime($database);
+    // https://stackoverflow.com/questions/13386082/filemtime-warning-stat-failed-for
+    $database_creation_timestamp = filectime(realpath($database));
+    // $stat = stat(realpath($database)); // Will be false on next call, normal ?
+    // $database_creation_timestamp = $stat['ctime']; // date_create(date("Y-m-d", $stat['ctime']));
+
     $last_clean_date = new \DateTime();
     $last_clean_date->setTimestamp($database_creation_timestamp);
 
@@ -117,12 +125,14 @@ class GdprSentinelListener
       . date('Ymd_His') . '.bckup.sqlite';
       // we clean up database every 24hr... (// TODO : send cleaning comming up live notification
       // 3 hours before to all user still connected before the forseen cleanup ?)
-      copy($database, $dbBackup);
-      $this->logger->info(
-        "Gdpr database is too old, replacing by last available gdpr DB. "
-        ."Backuped at : $dbBackup" 
-      );
-      unlink($database);
+      if (file_exists($database)) {
+        copy($database, $dbBackup);
+        $this->logger->info(
+          "Gdpr database is too old, replacing by last available gdpr DB. "
+          ."Backuped at : $dbBackup" 
+        );
+        unlink($database);  
+      }
       copy($safeGdprDatabase, $database);
 
       // TODO : UI Feedback when cleaning ? it say

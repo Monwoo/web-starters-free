@@ -44,7 +44,69 @@ open http://localhost:8000
 ```
 
 <div style="page-break-before: always;"></div>
+## Build for Production
 
+```bash
+# tested under php 8.1.2
+# Other php versions might work, but it's not tested yet.
+php -v
+alias composer="php '$PWD/composer.phar'"                      
+cd apps/mws-sf-pdf-billings/backend
+
+# CLEAN DEV ENV (will lose your dev, be sure of it :)
+rm -rf mws-sf-pdf-billings.zip var vendor config/jwt
+
+# Build for prodution
+mkdir config/jwt
+# WARNING : use hard pass other than : jwt_test (and setup accordingly in .env.prod)
+openssl genrsa -out config/jwt/private.pem -aes256 4096
+openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass : jwt_test
+
+# APP_ENV=prod composer install --no-dev 
+APP_ENV=prod composer install --no-ansi --no-dev \
+--no-interaction --no-scripts --no-progress \
+--optimize-autoloader
+
+# bootstrap database
+APP_ENV=prod php bin/console doctrine:migrations:migrate -n
+cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
+
+APP_ENV=prod composer dump-env prod
+
+zip -r mws-sf-pdf-billings.zip .env.prod \
+.htaccess composer.json config public src \
+templates vendor var
+
+````
+## Build production for debugs (for pre-prod debugs)
+
+```bash
+# tested under php 8.1.2
+# Other php versions might work, but it's not tested yet.
+php -v
+alias composer="php '$PWD/composer.phar'"                      
+cd apps/mws-sf-pdf-billings/backend
+
+# CLEAN DEV ENV (will lose your dev, be sure of it :)
+rm -rf mws-sf-pdf-billings.zip var vendor config/jwt
+
+# Build for prodution
+mkdir config/jwt
+# WARNING : use hard pass other than : jwt_test (and setup accordingly in .env.prod)
+openssl genrsa -out config/jwt/private.pem -aes256 4096
+openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass : jwt_test
+
+# APP_ENV=prod composer install --no-dev 
+composer install
+
+# bootstrap database
+php bin/console doctrine:migrations:migrate -n
+cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
+
+zip -r mws-sf-pdf-billings.zip .env.prod \
+.htaccess composer.json config public src \
+templates vendor var
+````
 ## Going further
 
 ```bash

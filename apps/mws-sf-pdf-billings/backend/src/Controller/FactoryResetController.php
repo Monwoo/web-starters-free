@@ -28,7 +28,11 @@ class FactoryResetController extends AbstractController
             $msg .= 'Resolution in progress : Did create database. ';
         }
         $serverClock = new \DateTime();
-        $db_creation_timestamp = filectime($database);
+        // https://stackoverflow.com/questions/13386082/filemtime-warning-stat-failed-for
+        $db_creation_timestamp = filectime(realpath($database));
+        // $stat = stat($database);
+        // $db_creation_timestamp = $stat['ctime']; // date_create(date("Y-m-d", $stat['ctime']));
+
         $next_possible_reset_date = new \DateTime();
         $next_possible_reset_date->setTimestamp($db_creation_timestamp);
         // TIPS : allow factory reset only each 5 minutes to avoid service cleanups overloads
