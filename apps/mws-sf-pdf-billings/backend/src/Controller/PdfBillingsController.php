@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Entity\BillingConfig;
+use App\Entity\Outlay;
 use App\Form\BillingConfigSubmitableType;
 use App\Repository\BillingConfigRepository;
 use App\Services\MwsTCPDF;
@@ -76,6 +77,28 @@ class PdfBillingsController extends AbstractController
         };
     }
 
+    protected function setupBillingConfigDefaults(BillingConfig &$bConfig) {
+        $template = $bConfig->getQuotationTemplate() ?? 'monwoo';
+        // TIPS : hard coded outlays default if no outlays is already set in database :
+        // TODO : add test on first add/remove to show default only if no changes occures ?
+        if ($bConfig->getOutlays()->count() === 0 && !$bConfig->isHideDefaultOutlaysOnEmptyOutlays()) {
+            if ('monwoo' === $template) {
+                $defaultOutlet = new Outlay();
+                $defaultOutlet->setProviderName("LWS");
+                $bConfig->addOutlay($defaultOutlet);
+                // We DO NOT persiste $defaultOutlet since we let end user to chose to save with it or not...
+                // TODO : doc : if user remove all outlets, defaults outlets will comme back, OK ?
+            }
+            if ('monwoo-02-wp-e-com' === $template) {
+                $defaultOutlet = new Outlay();
+                $defaultOutlet->setProviderName("LWS");
+                $bConfig->addOutlay($defaultOutlet);
+                // We DO NOT persiste $defaultOutlet since we let end user to chose to save with it or not...
+                // TODO : doc : if user remove all outlets, defaults outlets will comme back, OK ?
+            }
+        }            
+    }
+
     #[Route('/', name: 'app_pdf_billings')]
     public function index(
         Request $request,
@@ -110,6 +133,8 @@ class PdfBillingsController extends AbstractController
                 $originalBConfigsByOutlay["".$outlay][] = $originalOutlaysBConfig;
             }
         }
+
+        $this->setupBillingConfigDefaults($bConfig);
 
         // $csrfToken = $request->request->get('_token');
         // if ($csrfToken && !$this->isCsrfTokenValid('pdf-billings', $csrfToken)) {
@@ -270,6 +295,7 @@ class PdfBillingsController extends AbstractController
                 $businessSignatureImg = null;
             }
         }
+        $this->setupBillingConfigDefaults($bConfig);
 
         /**
          * @var MwsTCPDF $pdf

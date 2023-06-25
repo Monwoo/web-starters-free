@@ -82,6 +82,9 @@ class BillingConfig
     #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist'])]
     private Collection $outlays;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $hideDefaultOutlaysOnEmptyOutlays = null;
+
     // // TODO : Why is 'specifying' inversedBy make all migration fail on error : 
     // // Column name "id" referenced for relation from App\Entity\BillingConfig
     // // towards App\Entity\Outlay does not exist.
@@ -345,6 +348,18 @@ class BillingConfig
     public function setClientSlug(string $clientSlug): static
     {
         $this->clientSlug = $clientSlug;
+
+        return $this;
+    }
+
+    public function isHideDefaultOutlaysOnEmptyOutlays(): ?bool
+    {
+        return $this->hideDefaultOutlaysOnEmptyOutlays;
+    }
+
+    public function setHideDefaultOutlaysOnEmptyOutlays(?bool $hideDefaultOutlaysOnEmptyOutlays): static
+    {
+        $this->hideDefaultOutlaysOnEmptyOutlays = $hideDefaultOutlaysOnEmptyOutlays;
 
         return $this;
     }

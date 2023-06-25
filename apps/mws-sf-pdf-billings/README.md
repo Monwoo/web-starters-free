@@ -25,6 +25,7 @@ mkdir config/jwt
 openssl genrsa -out config/jwt/private.pem -aes256 4096 # pass : jwt_test
 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass : jwt_test
 
+export APP_ENV=dev
 composer install
 
 # bootstrap database
@@ -148,7 +149,7 @@ php bin/console doctrine:migrations:diff --help
 # If you change your model,
 # you need to generate the associated migrations :
 php bin/console make:migration
-php bin/console doctrine:migrations:migrate
+php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 # add a new controller

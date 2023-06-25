@@ -30,6 +30,7 @@ class BillingConfigType extends AbstractType
             ->add('quotationEndDay')
             ->add('quotationTemplate')
             ->add('percentDiscount')
+            ->add('hideDefaultOutlaysOnEmptyOutlays')
             ->add('outlays')
         ;
     }
