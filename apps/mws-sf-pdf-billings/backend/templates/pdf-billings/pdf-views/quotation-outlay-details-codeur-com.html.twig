@@ -1,14 +1,7 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 <div class="quuotation-outlay-details">
-Service par : {{ outlay.providerName }} pour :
-{% if outlay.percentOnBusinessTotal %}
-  {{ outlay.percentOnBusinessTotal }} % du montant du projet.
-{% else %}
-  {{ (outlay.providerTotalWithTaxesForseenForClient
-  ? outlay.providerTotalWithTaxesForseenForClient
-  : outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'floor'})
-  }}
-{% endif %}
+Service de suivi par {{ outlay.providerName }}
+: {{ outlay.percentOnBusinessTotal }} % du montant du projet (ou 5 euros HT minimum).
 <br/><br/>
 L'acceptation de ce devis par le client vaut Mandat de débours pour ce service
 auprès de {{ outlay.providerName }}. <br/><br/>

@@ -60,6 +60,9 @@ class Outlay
     #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays', cascade:['persist'])]
     private Collection $billingConfigs;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $providerTaxesPercent = null;
+
     // // https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
     // #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays')]
     // private Collection $billingConfigs;
@@ -224,6 +227,18 @@ class Outlay
     public function setInsertPageBreakAfter(?bool $insertPageBreakAfter): static
     {
         $this->insertPageBreakAfter = $insertPageBreakAfter;
+
+        return $this;
+    }
+
+    public function getProviderTaxesPercent(): ?float
+    {
+        return $this->providerTaxesPercent;
+    }
+
+    public function setProviderTaxesPercent(?float $providerTaxesPercent): static
+    {
+        $this->providerTaxesPercent = $providerTaxesPercent;
 
         return $this;
     }

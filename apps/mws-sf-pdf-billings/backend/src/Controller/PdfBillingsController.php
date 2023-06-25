@@ -82,23 +82,45 @@ class PdfBillingsController extends AbstractController
         // TIPS : hard coded outlays default if no outlays is already set in database :
         // TODO : add test on first add/remove to show default only if no changes occures ?
         if ($bConfig->getOutlays()->count() === 0 && !$bConfig->isHideDefaultOutlaysOnEmptyOutlays()) {
+            $twig = $this->container->get('twig');
             if ('monwoo' === $template) {
-                $defaultOutlet = new Outlay();
-                $defaultOutlet->setProviderName("LWS");
-                $defaultOutlet->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
+                $defaultOutlay = new Outlay();
+                $defaultOutlay->setProviderName("lws.fr");
+                $defaultOutlay->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
                 // TIPS : for added price to count in total business offer
-                // $defaultOutlet->setProviderAddedPrice(130);
-                $defaultOutlet->setProviderTotalWithTaxesForseenForClient(130);
-                $defaultOutlet->setProviderTaxes(130 * (1 - 1/1.2)); // 20% de taxes
-                $bConfig->addOutlay($defaultOutlet);
-                // We DO NOT persiste $defaultOutlet since we let end user to chose to save with it or not...
+                // $defaultOutlay->setProviderAddedPrice(130);
+                $defaultOutlay->setProviderTotalWithTaxesForseenForClient(130);
+                $defaultOutlay->setProviderTaxes(130 * (1 - 1/1.2)); // 20% de taxes
+                $defaultOutlay->setProviderDetails(
+                    $twig->render('pdf-billings/pdf-views/quotation-outlay-details-lws.html.twig', [
+                        "outlay" => $defaultOutlay
+                    ])
+                );        
+                $bConfig->addOutlay($defaultOutlay);
+
+                $defaultOutlay = new Outlay();
+                $defaultOutlay->setProviderName("codeur.com");
+                $defaultOutlay->setProviderShortDescription("(nécessaire)<br/>Suivi de mission");
+                // TIPS : for added price to count in total business offer
+                // $defaultOutlay->setProviderAddedPrice(130);
+                $defaultOutlay->setProviderDetails(
+                    $twig->render('pdf-billings/pdf-views/quotation-outlay-details-codeur-com.html.twig', [
+                        "outlay" => $defaultOutlay
+                    ])
+                );
+                $defaultOutlay->setPercentOnBusinessTotal(0.04);
+                $defaultOutlay->setProviderTaxes(null); // With percent, will precead other value
+                $defaultOutlay->setProviderTaxesPercent(0.2); // 20% de taxes
+                $bConfig->addOutlay($defaultOutlay);
+
+                // We DO NOT persiste $defaultOutlay since we let end user to chose to save with it or not...
                 // TODO : doc : if user remove all outlets, defaults outlets will comme back, OK ?
             }
             if ('monwoo-02-wp-e-com' === $template) {
-                $defaultOutlet = new Outlay();
-                $defaultOutlet->setProviderName("LWS");
-                $bConfig->addOutlay($defaultOutlet);
-                // We DO NOT persiste $defaultOutlet since we let end user to chose to save with it or not...
+                $defaultOutlay = new Outlay();
+                $defaultOutlay->setProviderName("LWS");
+                $bConfig->addOutlay($defaultOutlay);
+                // We DO NOT persiste $defaultOutlay since we let end user to chose to save with it or not...
                 // TODO : doc : if user remove all outlets, defaults outlets will comme back, OK ?
             }
         }            

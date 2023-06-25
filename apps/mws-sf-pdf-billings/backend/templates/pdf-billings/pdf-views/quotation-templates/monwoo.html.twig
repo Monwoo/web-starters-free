@@ -122,7 +122,16 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		(acc, o) => acc + o.providerTotalWithTaxesForseenForClient, 0
 	) %}
 
-	{% set quotationTotal = licenseWpDisplay + businessWorkloadHours * pricePerHour %}
+	{% set outlayAddedPriceTotalForBusiness =  billingConfig.outlays|reduce(
+		(acc, o) => acc + (o.useProviderAddedPriceForBusiness
+		? o.providerAddedPriceForBusiness
+		: 0), 0
+	) %}
+	{# TIPS : businessTotal hold the total HT base of this quotation#}
+	{% set businessTotal = outlayAddedPriceTotalForBusiness
+	+ businessWorkloadHours * pricePerHour %}
+
+	{% set quotationTotal = businessTotal + licenseWpDisplay %}
 	{% set forseenTotal = quotationTotal + outlaysForseenTotal %}
 
 		{% if viewPart != 'CGV' %}
@@ -222,8 +231,13 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		{% set breakAfterOutlays = billingConfig.outlays.count <= 0 %}
 		{% for outlay in billingConfig.outlays %}
 			{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
-			{% set outlayPPUWT = outlay.providerAddedPrice %}
-			{% set outlayTaxes = outlay.providerTaxes %}
+			{% set outlayPPUWT = outlay.providerAddedPrice
+			+ outlay.percentOnBusinessTotal * businessTotal %}
+			{% set outlayTaxes = outlay.providerTaxesPercent
+			? businessTotal - businessTotal 
+			/ (1 + outlay.providerTaxesPercent)
+			: outlay.providerTaxes %}
+
 			{% if outlay.insertPageBreakBefore %}
 				<br pagebreak="true"/>
 			{% endif %}
@@ -232,7 +246,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				'description': 'Débours via ' ~ outlay.providerName,
 				'aimTitle': 'Objectif(s) de la participation :',
 				'aimTitleBis': outlay.providerShortDescription ?? ('Via ' ~ outlay.providerName ),
-				'aimDescription': include('pdf-billings/pdf-views/quotation-outlay-details.html.twig'),
+				'aimDescription': outlay.providerDetails ?? include('pdf-billings/pdf-views/quotation-outlay-details.html.twig'),
 				'quantity': 1,
 				'pricePerUnitWithoutTaxes': outlayPPUWT ? outlayPPUWT - outlayTaxes : 0,
 				'taxesPercent': outlayPPUWT ? outlayTaxes / outlayPPUWT : 0,

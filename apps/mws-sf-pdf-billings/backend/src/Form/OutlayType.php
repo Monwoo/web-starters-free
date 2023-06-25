@@ -22,6 +22,7 @@ class OutlayType extends AbstractType
             ->add('providerAddedPrice')
             ->add('useProviderAddedPriceForBusiness')
             ->add('providerTotalWithTaxesForseenForClient')
+            ->add('providerTaxesPercent')
             ->add('billingConfigs')
         ;
     }
