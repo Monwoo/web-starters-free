@@ -54,7 +54,9 @@ alias composer="php '$PWD/composer.phar'"
 cd apps/mws-sf-pdf-billings/backend
 
 # CLEAN DEV ENV (will lose your dev, be sure of it :)
-rm -rf mws-sf-pdf-billings.zip var vendor config/jwt
+rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env
+
+echo 'APP_ENV=prod' > .env
 
 # Build for prodution
 mkdir config/jwt
@@ -75,7 +77,7 @@ APP_ENV=prod composer dump-env prod
 
 zip -r mws-sf-pdf-billings.zip .env.prod \
 .htaccess composer.json config public src \
-templates vendor var
+templates vendor var .env
 
 ````
 ## Build production for debugs (for pre-prod debugs)
@@ -105,7 +107,7 @@ cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 zip -r mws-sf-pdf-billings.zip .env.prod \
 .htaccess composer.json config public src \
-templates vendor var
+templates vendor var .env
 ````
 ## Going further
 
