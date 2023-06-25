@@ -19,6 +19,12 @@ class Outlay
     #[ORM\Column(length: 255)]
     private ?string $providerName = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $insertPageBreakBefore = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $providerShortDescription = null;
+
     // TODO : doc : percentOnBusinessTotal will give the ProviderAmount WITH TAXES
     // to get from the client to outlay at business quotation owner....
     // $providerTaxes is only some indicator for acountings, provider billings will
@@ -181,4 +187,30 @@ class Outlay
 
         return $this;
     }
+    
+
+    public function isInsertPageBreakBefore(): ?bool
+    {
+        return $this->insertPageBreakBefore;
+    }
+
+    public function setInsertPageBreakBefore(?bool $insertPageBreakBefore): static
+    {
+        $this->insertPageBreakBefore = $insertPageBreakBefore;
+
+        return $this;
+    }
+
+    public function getProviderShortDescription(): ?string
+    {
+        return $this->providerShortDescription;
+    }
+
+    public function setProviderShortDescription(?string $providerShortDescription): static
+    {
+        $this->providerShortDescription = $providerShortDescription;
+
+        return $this;
+    }
+
 }

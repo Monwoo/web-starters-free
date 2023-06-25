@@ -195,11 +195,29 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'discountPercent': 0,
 			'priceWithoutTaxes': licenseWpDisplay,
 			'priceWithTaxes': licenseWpDisplay,
-			'paddingBottom': 1,
+			'paddingBottom': 0.1,
 		} %}
-
 		{% for outlay in billingConfig.outlays %}
-			{{ outlay.providerName }}
+			{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
+			{% set outlayPPUWT = outlay.providerAddedPrice %}
+			{% set outlayTaxes = outlay.providerTaxes %}
+			{% if outlay.insertPageBreakBefore %}
+				<br pagebreak="true"/>
+			{% endif %}
+			{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+				'app': app, 'billingConfig': billingConfig,
+				'description': 'Débours via ' ~ outlay.providerName,
+				'aimTitle': 'Objectif(s) de la participation :',
+				'aimTitleBis': outlay.providerShortDescription ?? ('Via ' ~ outlay.providerName ),
+				'aimDescription': include('pdf-billings/pdf-views/quotation-outlay-details.html.twig'),
+				'quantity': 1,
+				'pricePerUnitWithoutTaxes': outlayPPUWT - outlayTaxes,
+				'taxesPercent': outlayPPUWT ? outlayTaxes / outlayPPUWT : 0,
+				'discountPercent': 0,
+				'priceWithoutTaxes': outlayPPUWT - outlayTaxes,
+				'priceWithTaxes': outlayPPUWT,
+				'paddingBottom': 0.1,
+			} %}
 		{% endfor %}
 
 		<br
