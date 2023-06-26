@@ -78,7 +78,7 @@ APP_ENV=prod composer dump-env prod
 
 zip -r mws-sf-pdf-billings.zip .env.prod \
 .htaccess composer.json config public src \
-templates vendor var .env
+templates vendor var .env .env.local.php
 
 ````
 ## Build production for debugs (for pre-prod debugs)
