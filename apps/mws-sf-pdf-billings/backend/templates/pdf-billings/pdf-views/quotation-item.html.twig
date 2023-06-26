@@ -2,6 +2,13 @@
 {% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
 <style></style>
+{% if paddingTop ?? null %}
+	<table>
+		<tr>
+			<td class="empty-space" style="height:{{paddingTop}};font-size:{{paddingTop}};">&nbsp;</td>
+		</tr>
+	</table>
+{% endif %}
 <table class="quotation-item" style="padding: 1px 2px;
 		border-spacing:{{ (0) * fullWidth }} 0;font-size:8pt;">
 	<tr class="header" style="font-weight:bold;text-align:right;">
@@ -34,10 +41,18 @@
 			{{(aimDescription ?? "")|striptags(allowedHtmlTags)|raw}}
 		</td>
 	</tr>
+	{# TIPS : add TD to have full line (3 cells needed) :
 	<tr>
 		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td>
-		{# TIPS : add TD to have full line (3 cells needed) :
 		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td>
-		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td> #}
+		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td>
 	</tr>
+	#}
 </table>
+{% if paddingBottom ?? null %}
+	<table>
+		<tr>
+			<td class="empty-space" style="height:{{paddingBottom}};"></td>
+		</tr>
+	</table>
+{% endif %}

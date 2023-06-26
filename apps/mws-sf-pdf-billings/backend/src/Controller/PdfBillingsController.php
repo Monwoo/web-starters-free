@@ -93,6 +93,7 @@ class PdfBillingsController extends AbstractController
                 // $defaultOutlay->setProviderTaxes(130 * (1 - 1/1.2)); // 20% de taxes
                 $defaultOutlay->setProviderTaxes(null); // 20% de taxes
                 $defaultOutlay->setProviderTaxesPercent(0.2); // 20% de taxes
+                $defaultOutlay->setinsertPageBreakAfter(true);
                 $defaultOutlay->setProviderDetails(
                     $twig->render('pdf-billings/pdf-views/quotation-outlay-details-lws.html.twig', [
                         "outlay" => $defaultOutlay
@@ -102,7 +103,7 @@ class PdfBillingsController extends AbstractController
 
                 $defaultOutlay = new Outlay();
                 $defaultOutlay->setProviderName("codeur.com");
-                $defaultOutlay->setProviderShortDescription("(nécessaire)<br/>Suivi de mission");
+                $defaultOutlay->setProviderShortDescription("(contractuel)<br/>Suivi de mission");
                 // TIPS : for added price to count in total business offer
                 // $defaultOutlay->setProviderAddedPrice(130);
                 $defaultOutlay->setProviderDetails(

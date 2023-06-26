@@ -1,9 +1,9 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 <div class="quuotation-outlay">
 Service d'<strong>hébergment {{ outlay.providerName }}</strong> :
-{{ outlay.providerTotalWithTaxesForseenForClient +
-  outlay.providerAddedPrice
- }} € pour 1 ans en saison haute.
+{{ (outlay.providerTotalWithTaxesForseenForClient +
+  outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'floor'})
+ }} &nbsp; pour 1 ans en saison haute.
 Tarifs variables suivant affiliation Monwoo
 (ex : code promo : "CT313" (-15%)).<br/><br/>
 L'<strong>acceptation</strong> de ce devis par le client <strong>vaut
