@@ -160,6 +160,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				font-weight:bold;color:#005B98;font-size:16pt;
 				">
 					<div>
+						<span style="color:#000000; font-size:12pt;">Budget :</span>
 						{{ forseenTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
 						<br/>
 						T.T.C.
@@ -214,7 +215,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 
 		{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 			'app': app, 'billingConfig': billingConfig,
-			'description': 'Licence nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
+			'description': '<strong>Licence</strong> nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
 			'aimTitle': 'Détail de licence :',
 			'aimTitleBis': '(nécessaire)<br/>Monwoo Web Starters <br/>[ Svelte-WP-display ]',
 			'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
@@ -231,30 +232,34 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				outlay can add or remove a before page break to handle alignements ) #}
 		{% set breakAfterOutlays = billingConfig.outlays.count <= 0 %}
 		{% for outlay in billingConfig.outlays %}
+			{% set outlayOnBusinessTotal = outlay.percentOnBusinessTotal * businessTotal %}
 			{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
-			{% set outlayPPUWT = outlay.providerAddedPrice
-			+ outlay.percentOnBusinessTotal * businessTotal %}
-			{% set outlayTaxes = outlay.providerTaxesPercent
-			? (outlayPPUWT - outlayPPUWT 
-			/ (1 + outlay.providerTaxesPercent))
-			: outlay.providerTaxes %}
-				{# {{ outlayPPUWT }} #}
+			{% set outlayPricePUnitWithT = outlay.providerAddedPrice
+			+ outlayOnBusinessTotal %}
+			{% set outlayTaxes = (
+				outlay.providerAddedPriceTaxesPercent
+				? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
+				: outlay.providerAddedPriceTaxes
+			) + (outlayOnBusinessTotal - outlayOnBusinessTotal
+			/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal))
+			%}
+				{# {{ outlayPricePUnitWithT }} #}
 
 			{% if outlay.insertPageBreakBefore %}
 				<br pagebreak="true"/>
 			{% endif %}
 			{% include 'pdf-billings/pdf-views/quotation-outlay.html.twig' with {
 				'app': app, 'billingConfig': billingConfig,
-				'description': 'Débours via ' ~ outlay.providerName,
+				'description': '<strong>Débours</strong> via ' ~ outlay.providerName,
 				'aimTitle': 'Objectif(s) de la participation :',
 				'aimTitleBis': outlay.providerShortDescription ?? ('Via ' ~ outlay.providerName ),
 				'aimDescription': outlay.providerDetails ?? include('pdf-billings/pdf-views/quotation-outlay-details.html.twig'),
 				'quantity': 1,
-				'pricePerUnitWithoutTaxes': outlayPPUWT ? outlayPPUWT - outlayTaxes : 0,
-				'taxesPercent': outlayPPUWT ? outlayTaxes / outlayPPUWT : 0,
+				'pricePerUnitWithoutTaxes': outlayPricePUnitWithT ? outlayPricePUnitWithT - outlayTaxes : 0,
+				'taxesPercent': outlayPricePUnitWithT ? outlayTaxes / (outlayPricePUnitWithT - outlayTaxes) : 0,
 				'discountPercent': 0,
-				'priceWithoutTaxes': outlayPPUWT ? outlayPPUWT - outlayTaxes : 0,
-				'priceWithTaxes': outlayPPUWT,
+				'priceWithoutTaxes': outlayPricePUnitWithT ? outlayPricePUnitWithT - outlayTaxes : 0,
+				'priceWithTaxes': outlayPricePUnitWithT,
 				'paddingBottom': 0.1,
 				'providerTotalWithTaxesForseenForClient': outlay.providerTotalWithTaxesForseenForClient,
 			} %}
@@ -277,7 +282,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 
 		{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 			'app': app, 'billingConfig': billingConfig,
-			'description': '30 minutes d’expertise Frontend UI Svelte de votre site web en distancielle.',
+			'description': '<strong>30 minutes d’expertise Frontend</strong> UI Svelte de votre site web en distancielle.',
 			'aimTitle': 'Objectif(s) de la prestation :',
 			'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
 			'aimDescription': businessWorkloadDetails,

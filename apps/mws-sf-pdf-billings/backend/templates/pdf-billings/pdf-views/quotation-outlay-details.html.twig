@@ -2,7 +2,9 @@
 <div class="quuotation-outlay-details">
 Service par : {{ outlay.providerName }} pour :
 {% if outlay.percentOnBusinessTotal %}
-  {{ outlay.percentOnBusinessTotal }} % du montant du projet.
+  {{ outlay.percentOnBusinessTotal|format_percent_number({
+    rounding_mode: 'floor', fraction_digit: 2
+  }) }} % du montant du projet.
 {% else %}
   {{ (outlay.providerTotalWithTaxesForseenForClient
   ? outlay.providerTotalWithTaxesForseenForClient

@@ -13,16 +13,17 @@ class OutlayType extends AbstractType
     {
         $builder
             ->add('providerName')
+            ->add('percentOnBusinessTotal')
+            ->add('taxesPercentIncludedInPercentOnBusinessTotal')
+            ->add('providerTotalWithTaxesForseenForClient')
+            ->add('providerAddedPrice')
+            ->add('providerAddedPriceTaxes')
+            ->add('providerAddedPriceTaxesPercent')
+            ->add('useProviderAddedPriceForBusiness')
+            ->add('providerShortDescription')
             ->add('insertPageBreakBefore')
             ->add('insertPageBreakAfter')
-            ->add('providerShortDescription')
-            ->add('percentOnBusinessTotal')
-            ->add('providerTaxes')
             ->add('providerDetails')
-            ->add('providerAddedPrice')
-            ->add('useProviderAddedPriceForBusiness')
-            ->add('providerTotalWithTaxesForseenForClient')
-            ->add('providerTaxesPercent')
             ->add('billingConfigs')
         ;
     }

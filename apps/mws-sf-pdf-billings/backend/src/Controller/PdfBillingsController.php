@@ -89,11 +89,13 @@ class PdfBillingsController extends AbstractController
                 $defaultOutlay->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
                 // TIPS : for added price to count in total business offer
                 // $defaultOutlay->setProviderAddedPrice(130);
-                $defaultOutlay->setProviderTotalWithTaxesForseenForClient(130);
-                // $defaultOutlay->setProviderTaxes(130 * (1 - 1/1.2)); // 20% de taxes
-                $defaultOutlay->setProviderTaxes(null); // 20% de taxes
-                $defaultOutlay->setProviderTaxesPercent(0.2); // 20% de taxes
+                $defaultOutlay->setProviderTotalWithTaxesForseenForClient(100);
+                // $defaultOutlay->setProviderAddedPriceTaxes(130 * (1 - 1/1.2)); // 20% de taxes
+                $defaultOutlay->setProviderAddedPriceTaxes(null); // 20% de taxes
+                $defaultOutlay->setProviderAddedPriceTaxesPercent(0.2); // 20% de taxes
                 $defaultOutlay->setinsertPageBreakAfter(true);
+
+                // TIPS : do template after outlay setup to use it in template...
                 $defaultOutlay->setProviderDetails(
                     $twig->render('pdf-billings/pdf-views/quotation-outlay-details-lws.html.twig', [
                         "outlay" => $defaultOutlay
@@ -104,28 +106,26 @@ class PdfBillingsController extends AbstractController
                 $defaultOutlay = new Outlay();
                 $defaultOutlay->setProviderName("codeur.com");
                 $defaultOutlay->setProviderShortDescription("(contractuel)<br/>Suivi de mission");
-                // TIPS : for added price to count in total business offer
-                // $defaultOutlay->setProviderAddedPrice(130);
+                $defaultOutlay->setPercentOnBusinessTotal(0.04);
+                $defaultOutlay->setTaxesPercentIncludedInPercentOnBusinessTotal(0.2); // 20% de taxes inclus dans comission codeur.com
+                $defaultOutlay->setProviderAddedPriceTaxes(null); // With percent, will precead other value
+
+                // TIPS : do template after outlay setup to use it in template...
                 $defaultOutlay->setProviderDetails(
                     $twig->render('pdf-billings/pdf-views/quotation-outlay-details-codeur-com.html.twig', [
                         "outlay" => $defaultOutlay
                     ])
                 );
-                $defaultOutlay->setPercentOnBusinessTotal(0.04);
-                $defaultOutlay->setProviderTaxes(null); // With percent, will precead other value
-                $defaultOutlay->setProviderTaxesPercent(0.2); // 20% de taxes
                 $bConfig->addOutlay($defaultOutlay);
-
-                // We DO NOT persiste $defaultOutlay since we let end user to chose to save with it or not...
-                // TODO : doc : if user remove all outlets, defaults outlets will comme back, OK ?
             }
             if ('monwoo-02-wp-e-com' === $template) {
                 $defaultOutlay = new Outlay();
                 $defaultOutlay->setProviderName("LWS");
                 $bConfig->addOutlay($defaultOutlay);
-                // We DO NOT persiste $defaultOutlay since we let end user to chose to save with it or not...
-                // TODO : doc : if user remove all outlets, defaults outlets will comme back, OK ?
             }
+            // We DO NOT persiste $defaultOutlay since we let end user to chose to save with it or not...
+            // TODO : doc : if user remove all outlets, defaults outlets will comme back if
+            // hideDefaultOutlaysOnEmptyOutlays from BillingConfig is set to true...
         }            
     }
 

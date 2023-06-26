@@ -19,6 +19,69 @@ class Outlay
     #[ORM\Column(length: 255)]
     private ?string $providerName = null;
 
+    ///////////////////////////////////
+    // 🇺🇸🇺🇸 taken from BUSINESS outlay properties :
+
+    // TODO : doc : percentOnBusinessTotal will give the ProviderAmount WITH TAXES
+    // to get from the client to outlay at business quotation owner....
+    // $providerAddedPriceTaxes is only some indicator for acountings, provider billings will
+    // details taxes if somes have to be paied for this provider...
+    // It will NOT COUNT for business total, use providerAddedPrice for that
+    #[ORM\Column(nullable: true)]
+    private ?float $percentOnBusinessTotal = null;
+
+    // TODO : doc : used to inform clients about possible taxes on the
+    // Provider services taken on percentage of business total...
+    #[ORM\Column(nullable: true)]
+    private ?float $taxesPercentIncludedInPercentOnBusinessTotal = null;
+
+    ///////////////////////////////////
+    // 🇺🇸🇺🇸 given to the PROVIDER outlay properties :
+
+    // TODO : doc : forseen can be use to give a global budget amount without
+    // taking the money in the business domain (Monwoo for this starter demonstration)
+    // (letting it to be paid and used from the client domain directly....)
+    // This kind of outlay is like an independant add for the targeted provider
+    #[ORM\Column(nullable: true)]
+    private ?float $providerTotalWithTaxesForseenForClient = null;
+
+    ///////////////////////////////////
+    // 🇺🇸🇺🇸 given to the PROVIDER through BUSINESS outlay properties :
+
+    // TODO : doc : Price added to business outlay (will ask for it
+    // to be paid to the business bank account that will lay back to the provider)
+    #[ORM\Column(nullable: true)]
+    private ?float $providerAddedPrice = null;
+
+    // TODO : doc : count ALL Taxes => providerAddedPrice is WITHOUT taxes.
+    // providerAddedPriceTaxes Sum Taxes for providerAddedPrice
+    // It will NOT BE USED if providerAddedPriceTaxesPercent is other than 0.
+    // It will NOT count for possible amounts due to percentOnBusinessTotal values
+    // (BusinessTotal will be counted WITHOUT TAXES)
+    // use use RAW value, since provider may use MULTIPLE taxes factor, depending of
+    // their bills, so we only summary the global TVA amount for client's awarness.
+    // The provider bills or quotation will take the détails or change this value
+    // so it's not realy some commitment, but we need to know since we want
+    // to show the right price for the full package with taxes.
+    #[ORM\Column(nullable: true)]
+    private ?float $providerAddedPriceTaxes = null;
+
+    // TODO : doc : Percent to use to count taxes on providerAddedPrice 
+    // that is without taxes. It will OVERWRITE providerAddedPriceTaxes
+    // values since one have to be chosen if both show different results
+    // (and/or for optimisation purposes)
+    #[ORM\Column(nullable: true)]
+    private ?float $providerAddedPriceTaxesPercent = null;
+
+    // TODO : doc : it TRUE, will use the added price be useed
+    // to count values at the business total (it will count for
+    // other outlay using the percentOnBusinessTotal factor)
+    #[ORM\Column(nullable: true)]
+    private ?bool $useProviderAddedPriceForBusiness = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $providerShortDescription = null;
+
     #[ORM\Column(nullable: true)]
     private ?bool $insertPageBreakBefore = null;
 
@@ -26,42 +89,11 @@ class Outlay
     private ?bool $insertPageBreakAfter = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $providerShortDescription = null;
-
-    // TODO : doc : percentOnBusinessTotal will give the ProviderAmount WITH TAXES
-    // to get from the client to outlay at business quotation owner....
-    // $providerTaxes is only some indicator for acountings, provider billings will
-    // details taxes if somes have to be paied for this provider...
-    #[ORM\Column(nullable: true)]
-    private ?float $percentOnBusinessTotal = null;
-
-    // TODO : doc : count ALL Taxes => providerAddedPrice is WITHOUT taxes.
-    // providerTaxes Sum Taxes for providerAddedPrice and
-    // for possible percentOnBusinessTotal amounts (BusinessTotal will be counted WITHOUT TAXES)
-    #[ORM\Column(nullable: true)]
-    private ?float $providerTaxes = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $providerDetails = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $providerAddedPrice = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $useProviderAddedPriceForBusiness = null;
-
-    // TODO : doc : forseen can be use to give a global budget amount without
-    // taking the money at the business domain
-    // (letting it to be usable from client domain directly....)
-    #[ORM\Column(nullable: true)]
-    private ?float $providerTotalWithTaxesForseenForClient = null;
 
     // #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays', cascade:['remove', 'persist'])]
     #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays', cascade:['persist'])]
     private Collection $billingConfigs;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $providerTaxesPercent = null;
 
     // // https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
     // #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays')]
@@ -107,6 +139,30 @@ class Outlay
         return $this;
     }
 
+    public function getTaxesPercentIncludedInPercentOnBusinessTotal(): ?float
+    {
+        return $this->taxesPercentIncludedInPercentOnBusinessTotal;
+    }
+
+    public function setTaxesPercentIncludedInPercentOnBusinessTotal(?float $taxesPercentIncludedInPercentOnBusinessTotal): static
+    {
+        $this->taxesPercentIncludedInPercentOnBusinessTotal = $taxesPercentIncludedInPercentOnBusinessTotal;
+
+        return $this;
+    }
+
+    public function getProviderTotalWithTaxesForseenForClient(): ?float
+    {
+        return $this->providerTotalWithTaxesForseenForClient;
+    }
+
+    public function setProviderTotalWithTaxesForseenForClient(?float $providerTotalWithTaxesForseenForClient): static
+    {
+        $this->providerTotalWithTaxesForseenForClient = $providerTotalWithTaxesForseenForClient;
+
+        return $this;
+    }
+
     public function getProviderAddedPrice(): ?float
     {
         return $this->providerAddedPrice;
@@ -119,6 +175,78 @@ class Outlay
         return $this;
     }
 
+    public function getProviderAddedPriceTaxes(): ?float
+    {
+        return $this->providerAddedPriceTaxes;
+    }
+
+    public function setProviderAddedPriceTaxes(?float $providerAddedPriceTaxes): static
+    {
+        $this->providerAddedPriceTaxes = $providerAddedPriceTaxes;
+
+        return $this;
+    }
+
+    public function getProviderAddedPriceTaxesPercent(): ?float
+    {
+        return $this->providerAddedPriceTaxesPercent;
+    }
+
+    public function setProviderAddedPriceTaxesPercent(?float $providerAddedPriceTaxesPercent): static
+    {
+        $this->providerAddedPriceTaxesPercent = $providerAddedPriceTaxesPercent;
+
+        return $this;
+    }
+
+    public function isUseProviderAddedPriceForBusiness(): ?bool
+    {
+        return $this->useProviderAddedPriceForBusiness;
+    }
+
+    public function setUseProviderAddedPriceForBusiness(?bool $useProviderAddedPriceForBusiness): static
+    {
+        $this->useProviderAddedPriceForBusiness = $useProviderAddedPriceForBusiness;
+
+        return $this;
+    }
+
+    public function getProviderShortDescription(): ?string
+    {
+        return $this->providerShortDescription;
+    }
+
+    public function setProviderShortDescription(?string $providerShortDescription): static
+    {
+        $this->providerShortDescription = $providerShortDescription;
+
+        return $this;
+    }
+
+    public function isInsertPageBreakBefore(): ?bool
+    {
+        return $this->insertPageBreakBefore;
+    }
+
+    public function setInsertPageBreakBefore(?bool $insertPageBreakBefore): static
+    {
+        $this->insertPageBreakBefore = $insertPageBreakBefore;
+
+        return $this;
+    }
+
+    public function isInsertPageBreakAfter(): ?bool
+    {
+        return $this->insertPageBreakAfter;
+    }
+
+    public function setInsertPageBreakAfter(?bool $insertPageBreakAfter): static
+    {
+        $this->insertPageBreakAfter = $insertPageBreakAfter;
+
+        return $this;
+    }
+
     public function getProviderDetails(): ?string
     {
         return $this->providerDetails;
@@ -127,18 +255,6 @@ class Outlay
     public function setProviderDetails(?string $providerDetails): static
     {
         $this->providerDetails = $providerDetails;
-
-        return $this;
-    }
-
-    public function getProviderTaxes(): ?float
-    {
-        return $this->providerTaxes;
-    }
-
-    public function setProviderTaxes(?float $providerTaxes): static
-    {
-        $this->providerTaxes = $providerTaxes;
 
         return $this;
     }
@@ -166,79 +282,6 @@ class Outlay
         if ($this->billingConfigs->removeElement($billingConfig)) {
             $billingConfig->removeOutlay($this);
         }
-
-        return $this;
-    }
-
-    public function isUseProviderAddedPriceForBusiness(): ?bool
-    {
-        return $this->useProviderAddedPriceForBusiness;
-    }
-
-    public function setUseProviderAddedPriceForBusiness(?bool $useProviderAddedPriceForBusiness): static
-    {
-        $this->useProviderAddedPriceForBusiness = $useProviderAddedPriceForBusiness;
-
-        return $this;
-    }
-
-    public function getProviderTotalWithTaxesForseenForClient(): ?float
-    {
-        return $this->providerTotalWithTaxesForseenForClient;
-    }
-
-    public function setProviderTotalWithTaxesForseenForClient(?float $providerTotalWithTaxesForseenForClient): static
-    {
-        $this->providerTotalWithTaxesForseenForClient = $providerTotalWithTaxesForseenForClient;
-
-        return $this;
-    }
-    
-
-    public function isInsertPageBreakBefore(): ?bool
-    {
-        return $this->insertPageBreakBefore;
-    }
-
-    public function setInsertPageBreakBefore(?bool $insertPageBreakBefore): static
-    {
-        $this->insertPageBreakBefore = $insertPageBreakBefore;
-
-        return $this;
-    }
-
-    public function getProviderShortDescription(): ?string
-    {
-        return $this->providerShortDescription;
-    }
-
-    public function setProviderShortDescription(?string $providerShortDescription): static
-    {
-        $this->providerShortDescription = $providerShortDescription;
-
-        return $this;
-    }
-
-    public function isInsertPageBreakAfter(): ?bool
-    {
-        return $this->insertPageBreakAfter;
-    }
-
-    public function setInsertPageBreakAfter(?bool $insertPageBreakAfter): static
-    {
-        $this->insertPageBreakAfter = $insertPageBreakAfter;
-
-        return $this;
-    }
-
-    public function getProviderTaxesPercent(): ?float
-    {
-        return $this->providerTaxesPercent;
-    }
-
-    public function setProviderTaxesPercent(?float $providerTaxesPercent): static
-    {
-        $this->providerTaxesPercent = $providerTaxesPercent;
 
         return $this;
     }
