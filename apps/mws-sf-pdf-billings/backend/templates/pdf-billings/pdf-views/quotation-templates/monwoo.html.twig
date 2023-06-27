@@ -111,20 +111,29 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{% set businessPercentDiscount = billingConfig.percentDiscount %}
 
 	{% block workloadPriceSetup %}
+    {% set sessionSuccess = app.session.set('defaultBusinessWorkloadHours', 6) %}
     {% set sessionSuccess = app.session.set('pricePerHourWithoutDiscount', 60) %}
+    {% set sessionSuccess = app.session.set('licenseWpDisplayPrice', 40) %}
+    {% set sessionSuccess = app.session.set('licenseWpDisplayDiscount', 0.25) %}
+    {% set sessionSuccess = app.session.set(
+			'businessWorkloadTemplate',
+			'pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig'
+		) %}
 	{% endblock %}
+	{% set defaultBusinessWorkloadHours =  app.session.get('defaultBusinessWorkloadHours') %}
 	{% set pricePerHourWithoutDiscount = app.session.get('pricePerHourWithoutDiscount') %}
+	{% set businessWorkloadTemplate = app.session.get('businessWorkloadTemplate') %}
 
 	{% set pricePerHour = pricePerHourWithoutDiscount * (1 - businessPercentDiscount) %}
-	{% set licenseWpDisplayPrice = 40 %}
-	{% set licenseWpDisplayDiscount = 0.25 %}
+	{% set licenseWpDisplayPrice = app.session.get('licenseWpDisplayPrice') %}
+	{% set licenseWpDisplayDiscount = app.session.get('licenseWpDisplayDiscount') %}
 	{% set licenseWpDisplay = licenseWpDisplayPrice * (1 - licenseWpDisplayDiscount) %}
 	
 	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
 		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpg' %}
-	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? 6 %}
+	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours %}
 	{% set businessWorkloadDetails = billingConfig.businessWorkloadDetails
-	?? include('pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig',
+	?? include(businessWorkloadTemplate,
 	{businessWorkloadHours:businessWorkloadHours}) %}
 	{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.jpg' %}
 	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
@@ -297,7 +306,6 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		{% endblock %}
 		{# // TIPS : will break page only if no outlays present (otherwise,
 				outlay can add or remove a before page break to handle alignements ) #}
-		{% set breakAfterOutlays = billingConfig.outlays.count <= 0 %}
 		{% for outlay in billingConfig.outlays %}
 			{% set outlayOnBusinessTotal = outlay.percentOnBusinessTotal * businessTotal %}
 			{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
@@ -343,11 +351,11 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			{% endif %}
 		{% endfor %}
 
-		{% if breakAfterOutlays %}
+		{# {% if breakAfterOutlays %}
 			<br
 			pagebreak="true"/>
-		{# // TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" /> #}
-		{% endif %}
+		// TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" />
+		{% endif %} #}
 
 		<table class="empty-space" style="font-size:10;">
 			<tr>

@@ -1,6 +1,9 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
+{# // TIPS : force float conversion to ignore about possible discountPercent null value... #}
+{% set discountPercent = discountPercent ?? 0.0 %}
+
 <style></style>
 {% if outlay.marginTop ?? null %}
 	<table>

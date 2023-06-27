@@ -1,13 +1,22 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends 'pdf-billings/pdf-views/quotation-templates/monwoo.html.twig' %}
 
+{# http://localhost:8000/?billing_config_submitable%5BclientSlug%5D=--&billing_config_submitable%5BquotationTemplate%5D=monwoo-06-analytical-study #}
+
 {# https://stackoverflow.com/questions/42855003/passing-variable-data-between-blocks-in-twig #}
 {% block workloadPriceSetup %}
+	{% set sessionSuccess = app.session.set('defaultBusinessWorkloadHours', 2) %}
 	{% set sessionSuccess = app.session.set('pricePerHourWithoutDiscount', 60) %}
+	{% set sessionSuccess = app.session.set('licenseWpDisplayPrice', 0) %}
+	{% set sessionSuccess = app.session.set('licenseWpDisplayDiscount', 0) %}
+	{% set sessionSuccess = app.session.set(
+		'businessWorkloadTemplate',
+		'pdf-billings/pdf-views/business-item-analytical-study-workload-details.html.twig'
+	) %}
 {% endblock %}
 
 {% block businessAim %}
-	{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
+	{% include 'pdf-billings/pdf-views/business-aim-06.html.twig' with {
 		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
 		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
 	} %}
@@ -17,6 +26,12 @@
 {% endblock %}
 
 {% block businessEndItem %}
+	<table>
+		<tr>
+			{% set asMargin = 30 %}
+			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
+		</tr>
+	</table>
 	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,
 		'description': '<strong>30 minutes d’étude analytique</strong> de projet(s).',
@@ -29,5 +44,14 @@
 		'discountPercent': businessPercentDiscount,
 		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
 		'priceWithTaxes': businessWorkloadHours * pricePerHour,
+
 	} %}
+	<br pagebreak="true"/>
+	<table>
+		<tr>
+			{% set asMargin = 120 %}
+			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
+		</tr>
+	</table>
+
 {% endblock %}

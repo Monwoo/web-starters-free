@@ -1,6 +1,9 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
+{# // TIPS : force float conversion to ignore about possible discountPercent null value... #}
+{% set discountPercent = discountPercent ?? 0.0 %}
+
 <style></style>
 {% if paddingTop ?? null %}
 	<table>
@@ -28,7 +31,7 @@
 		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{quantity|format_number({fraction_digit: 2})}}</td>
 		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">{{pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">{{taxesPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
-		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">{{discountPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
+		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">{{(discountPercent)|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
 		<td class="price-without-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td class="price-with-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 	</tr>
