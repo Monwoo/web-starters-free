@@ -20,7 +20,14 @@
 		<td class="description" style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;">{{description|striptags(allowedHtmlTags)|raw}}</td>
 		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{quantity|format_number({fraction_digit: 2})}}</td>
 		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">{{pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
-		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">{{taxesPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
+		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">
+			{% if taxesPercent or outlay.providerAddedPrice or outlay.percentOnBusinessTotal %}
+				{% if outlay.providerTotalWithTaxesForseenForClient %} ! ~ {% endif %}
+				{{ taxesPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}
+			{% else %}
+				Cf débours
+			{% endif %}
+		</td>
 		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">
 			{# TIPS : discountPercent is on WORKLOADS hours only for now...
 			// TODO : will have to improve for next version or better to 
@@ -37,16 +44,14 @@
 			<div class="second" style="text-align:right;">
 			{{(aimTitleBis ?? "")|striptags(allowedHtmlTags)|raw}}
 			{% if providerTotalWithTaxesForseenForClient or outlay.providerAddedPrice %}
-				<br/>
-				[ {{ (providerTotalWithTaxesForseenForClient
+				<br/>[ {{ (providerTotalWithTaxesForseenForClient
 				+ outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'halfeven'}) }} ]
 			{% endif %}
 			{% if outlay.percentOnBusinessTotal %}
-				<br/>
-				[ {{ outlay.percentOnBusinessTotal|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} sur
-					{{ businessTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }} ]
+				{# TIPS : was ONE space wrong alignment, wrapping with 'span' tag did solve the trouble #}
+				<br/><span>[ {{ outlay.percentOnBusinessTotal|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} sur
+				{{ businessTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }} ]</span>
 			{% endif %}
-			
 			</div>
 		</td>
 		<td class="aim-description" style="width:{{ 0.60 * fullWidth }};font-weight:normal;text-align:left;">

@@ -48,7 +48,7 @@
 	{# <object data="MonwooDevis{{viewPart}}.pdf" type="application/pdf" frameborder="0" width="100%" height="600px" style="padding: 20px;">
 		<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf">
 	</object> #}
-	<iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe>
+	<iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug})|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe>
 
 	{# TIPS : Need pdf.js integrated library : #}
 	{# <iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}

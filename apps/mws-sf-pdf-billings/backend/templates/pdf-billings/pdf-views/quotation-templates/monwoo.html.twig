@@ -108,8 +108,13 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 {% if billingConfig %}
 	{# // TODO: empirique way for now, go check pdf default mesure unit ?... #}
 	{% set fullWidth = 569 %}
-	{% set pricePerHour = 60 %}
-	{% set licenseWpDisplay = 30 %}
+	{% set businessPercentDiscount = billingConfig.percentDiscount %}
+	{% set pricePerHourWithoutDiscount = 60 %}
+	{% set pricePerHour = pricePerHourWithoutDiscount * (1 - businessPercentDiscount) %}
+	{% set licenseWpDisplayPrice = 40 %}
+	{% set licenseWpDisplayDiscount = 0.25 %}
+	{% set licenseWpDisplay = licenseWpDisplayPrice * (1 - licenseWpDisplayDiscount) %}
+	
 	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
 		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpg' %}
 	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? 6 %}
@@ -126,13 +131,13 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		(acc, o) => acc + o.providerTotalWithTaxesForseenForClient, 0
 	) %}
 
-	{% set outlaysAddedPriceTotalForBusiness =  billingConfig.outlays|reduce(
+	{% set outlaysAddedPriceTotalForBusiness = billingConfig.outlays|reduce(
 		(acc, outlay) => acc + (outlay.useProviderAddedPriceForBusiness
 		? outlay.providerAddedPrice
 		: 0), 0
 	) %}
 
-	{# TIPS : businessTotal hold the total HT base of this quotation#}
+	{# TIPS : businessTotal hold the total HT base of this quotation #}
 	{% set businessTotal = outlaysAddedPriceTotalForBusiness
 	+ businessWorkloadHours * pricePerHour %}
 
@@ -159,13 +164,19 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			outlay.percentOnBusinessTotal * businessTotal
 	), 0) %}
 
+	{% set outlaysAddedPriceTotalForQuotation = billingConfig.outlays|reduce(
+		(acc, outlay) => acc + ( not outlay.useProviderAddedPriceForBusiness
+		? outlay.providerAddedPrice
+		: 0), 0
+	) %}
+
 	{# TODO : better namings, quotationTotal might be monwooQuotationTotal ?
 	Need to check priority : Monwoo getting the full money (this includes outlays...)
 	or Monwoo getting it's business Amounts, outlays being other stuff (Monwoo only
 	transfert the money to the provider and register the paiement on the client's name...)
 	#}
-	{% set quotationTotal = businessTotal + licenseWpDisplay %}
-	{% set totalPriceWithTaxes = licenseWpDisplay + businessTotal
+	{% set quotationTotal = businessTotal + licenseWpDisplay + outlaysAddedPriceTotalForQuotation %}
+	{% set totalPriceWithTaxes = licenseWpDisplay + quotationTotal
 	+ outlaysPriceOnBusinessTotal + (outlaysTaxes - outlaysTaxesIncludedInBusinessTotalPercent) %}
 	{% set totalPriceWithoutTaxes = totalPriceWithTaxes - outlaysTaxes %}
 
@@ -259,9 +270,9 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'aimTitleBis': '(nécessaire)<br/>Monwoo Web Starters <br/>[ Svelte-WP-display ]',
 			'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
 			'quantity': 1,
-			'pricePerUnitWithoutTaxes': licenseWpDisplay,
+			'pricePerUnitWithoutTaxes': licenseWpDisplayPrice,
 			'taxesPercent': 0,
-			'discountPercent': 0,
+			'discountPercent': licenseWpDisplayDiscount,
 			'priceWithoutTaxes': licenseWpDisplay,
 			'priceWithTaxes': licenseWpDisplay,
 			'paddingTop': 42,
@@ -334,9 +345,9 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
 			'aimDescription': businessWorkloadDetails,
 			'quantity': businessWorkloadHours * 2,
-			'pricePerUnitWithoutTaxes': pricePerHour / 2,
+			'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
 			'taxesPercent': 0,
-			'discountPercent': 0,
+			'discountPercent': businessPercentDiscount,
 			'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
 			'priceWithTaxes': businessWorkloadHours * pricePerHour,
 		} %}
