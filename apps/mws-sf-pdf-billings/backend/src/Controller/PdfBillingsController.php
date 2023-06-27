@@ -389,6 +389,17 @@ class PdfBillingsController extends AbstractController
         );
         $pdf->SetKeywords('Monwoo, PWA, Svelte, PHP, Symfony');
 
+        // 🇺🇸🇺🇸 Signing
+        // TODO : data backup and signing ? simple b64 chuncked encode
+        // to start (data-01 ... data-n, max 255 char per keys...)
+        // + serialize inputs data inside PDF for contrôle
+        // + load devis feature FROM pdf to do Billings....
+        // (In case client is not in DB anymore due ton WEB gdrp compilance...)
+
+        // + add 'loaded from pdf' attribut in BillingConfig but not in form inputs...
+        // Will be set to import date if config IS loaded from pdf...
+        // + Add last edit date + first édit date...
+
         // 🇺🇸🇺🇸 Global page container
         // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);

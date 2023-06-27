@@ -2,6 +2,13 @@
 {% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
 <style></style>
+{% if outlay.marginTop ?? null %}
+	<table>
+		<tr>
+			<td class="empty-space" style="height:{{outlay.marginTop}};font-size:{{outlay.marginTop}};">&nbsp;</td>
+		</tr>
+	</table>
+{% endif %}
 <table class="quotation-outlay" style="padding: 1px 2px;
 		border-spacing:{{ (0) * fullWidth }} 0;font-size:8pt;">
 	<tr class="header" style="font-weight:bold;text-align:right;">
@@ -65,3 +72,10 @@
 		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td> #}
 	</tr>
 </table>
+{% if outlay.marginBottom ?? null %}
+	<table>
+		<tr>
+			<td class="empty-space" style="height:{{outlay.marginBottom}};font-size:{{outlay.marginBottom}};">&nbsp;</td>
+		</tr>
+	</table>
+{% endif %}

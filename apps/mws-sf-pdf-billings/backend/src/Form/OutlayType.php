@@ -22,7 +22,9 @@ class OutlayType extends AbstractType
             ->add('useProviderAddedPriceForBusiness')
             ->add('providerShortDescription')
             ->add('insertPageBreakBefore')
+            ->add('marginTop')
             ->add('insertPageBreakAfter')
+            ->add('marginBottom')
             ->add('providerDetails')
             ->add('billingConfigs')
         ;

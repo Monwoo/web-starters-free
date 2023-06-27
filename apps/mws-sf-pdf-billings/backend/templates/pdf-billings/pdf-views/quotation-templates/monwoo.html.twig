@@ -176,7 +176,7 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	transfert the money to the provider and register the paiement on the client's name...)
 	#}
 	{% set quotationTotal = businessTotal + licenseWpDisplay + outlaysAddedPriceTotalForQuotation %}
-	{% set totalPriceWithTaxes = licenseWpDisplay + quotationTotal
+	{% set totalPriceWithTaxes = quotationTotal
 	+ outlaysPriceOnBusinessTotal + (outlaysTaxes - outlaysTaxesIncludedInBusinessTotalPercent) %}
 	{% set totalPriceWithoutTaxes = totalPriceWithTaxes - outlaysTaxes %}
 
@@ -258,26 +258,38 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
 		} %}
 
-		{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
-			'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
-			'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
-		} %}
+		{% block businessAim %}
+			{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
+				'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+				'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+			} %}
+		{% endblock %}
 
-		{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
-			'app': app, 'billingConfig': billingConfig,
-			'description': '<strong>Licence</strong> nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
-			'aimTitle': 'Détail de licence :',
-			'aimTitleBis': '(nécessaire)<br/>Monwoo Web Starters <br/>[ Svelte-WP-display ]',
-			'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
-			'quantity': 1,
-			'pricePerUnitWithoutTaxes': licenseWpDisplayPrice,
-			'taxesPercent': 0,
-			'discountPercent': licenseWpDisplayDiscount,
-			'priceWithoutTaxes': licenseWpDisplay,
-			'priceWithTaxes': licenseWpDisplay,
-			'paddingTop': 42,
-			'paddingBottom': 0.1,
-		} %}
+		{% if billingConfig.marginBeforeStartItem ?? null %}
+			<table>
+				<tr>
+					<td class="empty-space" style="height:{{billingConfig.marginBeforeStartItem}};font-size:{{billingConfig.marginBeforeStartItem}};">&nbsp;</td>
+				</tr>
+			</table>
+		{% endif %}
+
+		{% block businessStartItem %}
+			{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+				'app': app, 'billingConfig': billingConfig,
+				'description': '<strong>Licence</strong> nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
+				'aimTitle': 'Détail de licence :',
+				'aimTitleBis': '(nécessaire)<br/>Monwoo Web Starters <br/>[ Svelte-WP-display ]',
+				'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
+				'quantity': 1,
+				'pricePerUnitWithoutTaxes': licenseWpDisplayPrice,
+				'taxesPercent': 0,
+				'discountPercent': licenseWpDisplayDiscount,
+				'priceWithoutTaxes': licenseWpDisplay,
+				'priceWithTaxes': licenseWpDisplay,
+				'paddingTop': 42,
+				'paddingBottom': 0.1,
+			} %}
+		{% endblock %}
 		{# // TIPS : will break page only if no outlays present (otherwise,
 				outlay can add or remove a before page break to handle alignements ) #}
 		{% set breakAfterOutlays = billingConfig.outlays.count <= 0 %}
@@ -338,19 +350,29 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			</tr>
 		</table>
 
-		{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
-			'app': app, 'billingConfig': billingConfig,
-			'description': '<strong>30 minutes d’expertise Frontend</strong> UI Svelte de votre site web en distancielle.',
-			'aimTitle': 'Objectif(s) de la prestation :',
-			'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
-			'aimDescription': businessWorkloadDetails,
-			'quantity': businessWorkloadHours * 2,
-			'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
-			'taxesPercent': 0,
-			'discountPercent': businessPercentDiscount,
-			'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
-			'priceWithTaxes': businessWorkloadHours * pricePerHour,
-		} %}
+		{% if billingConfig.marginBeforeEndItem ?? null %}
+			<table>
+				<tr>
+					<td class="empty-space" style="height:{{billingConfig.marginBeforeEndItem}};font-size:{{billingConfig.marginBeforeEndItem}};">&nbsp;</td>
+				</tr>
+			</table>
+		{% endif %}
+
+		{% block businessEndItem %}
+			{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+				'app': app, 'billingConfig': billingConfig,
+				'description': '<strong>30 minutes d’expertise Frontend</strong> UI Svelte de votre site web en distancielle.',
+				'aimTitle': 'Objectif(s) de la prestation :',
+				'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
+				'aimDescription': businessWorkloadDetails,
+				'quantity': businessWorkloadHours * 2,
+				'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
+				'taxesPercent': 0,
+				'discountPercent': businessPercentDiscount,
+				'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
+				'priceWithTaxes': businessWorkloadHours * pricePerHour,
+			} %}
+		{% endblock %}
 
 		{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
 					and div stay bigger than regular font size if no image inside...

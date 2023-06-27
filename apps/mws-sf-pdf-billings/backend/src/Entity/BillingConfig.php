@@ -75,15 +75,21 @@ class BillingConfig
     #[ORM\Column(nullable: true)]
     private ?float $percentDiscount = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marginBeforeStartItem = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marginBeforeEndItem = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $hideDefaultOutlaysOnEmptyOutlays = null;
+
     // TODO : WORK on ManyToMany relationships for Entity WITHOUT id FIELD (replaced by 'client_slug' normally ...)
     // #[ORM\JoinColumn(name: 'billing_config_client_slug', referencedColumnName: 'id')]
     // #[ORM\InverseJoinColumn(name: 'outlay_id', referencedColumnName: 'id')]
     // #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist', 'remove'])]
     #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist'])]
     private Collection $outlays;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $hideDefaultOutlaysOnEmptyOutlays = null;
 
     // // TODO : Why is 'specifying' inversedBy make all migration fail on error : 
     // // Column name "id" referenced for relation from App\Entity\BillingConfig
@@ -360,6 +366,30 @@ class BillingConfig
     public function setHideDefaultOutlaysOnEmptyOutlays(?bool $hideDefaultOutlaysOnEmptyOutlays): static
     {
         $this->hideDefaultOutlaysOnEmptyOutlays = $hideDefaultOutlaysOnEmptyOutlays;
+
+        return $this;
+    }
+
+    public function getMarginBeforeStartItem(): ?string
+    {
+        return $this->marginBeforeStartItem;
+    }
+
+    public function setMarginBeforeStartItem(?string $marginBeforeStartItem): static
+    {
+        $this->marginBeforeStartItem = $marginBeforeStartItem;
+
+        return $this;
+    }
+
+    public function getMarginBeforeEndItem(): ?string
+    {
+        return $this->marginBeforeEndItem;
+    }
+
+    public function setMarginBeforeEndItem(?string $marginBeforeEndItem): static
+    {
+        $this->marginBeforeEndItem = $marginBeforeEndItem;
 
         return $this;
     }

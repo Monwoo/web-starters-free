@@ -85,8 +85,14 @@ class Outlay
     #[ORM\Column(nullable: true)]
     private ?bool $insertPageBreakBefore = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marginTop = null;
+
     #[ORM\Column(nullable: true)]
     private ?bool $insertPageBreakAfter = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marginBottom = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $providerDetails = null;
@@ -282,6 +288,30 @@ class Outlay
         if ($this->billingConfigs->removeElement($billingConfig)) {
             $billingConfig->removeOutlay($this);
         }
+
+        return $this;
+    }
+
+    public function getMarginTop(): ?string
+    {
+        return $this->marginTop;
+    }
+
+    public function setMarginTop(?string $marginTop): static
+    {
+        $this->marginTop = $marginTop;
+
+        return $this;
+    }
+
+    public function getMarginBottom(): ?string
+    {
+        return $this->marginBottom;
+    }
+
+    public function setMarginBottom(?string $marginBottom): static
+    {
+        $this->marginBottom = $marginBottom;
 
         return $this;
     }
