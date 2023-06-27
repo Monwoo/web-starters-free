@@ -129,6 +129,29 @@ class PdfBillingsController extends AbstractController
         }            
     }
 
+    protected function getDefaultTemplateData(string $template) {
+        switch ($template) {
+            case 'monwoo-06-analytical-study':
+                return [
+                    "defaultBusinessWorkloadHours" => 2,
+                    "pricePerHourWithoutDiscount" => 60,
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-analytical-study-workload-details.html.twig",
+                    "licenseWpDisplayPrice" => 0,
+                    "licenseWpDisplayDiscount" => 0,
+                ];
+                break;
+            default:
+                return [
+                    "defaultBusinessWorkloadHours" => 6,
+                    "pricePerHourWithoutDiscount" => 60,
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig",
+                    "licenseWpDisplayPrice" => 40,
+                    "licenseWpDisplayDiscount" => 0.24,
+                ];
+                break;
+        }
+    }
+
     #[Route('/', name: 'app_pdf_billings')]
     public function index(
         Request $request,
@@ -315,6 +338,10 @@ class PdfBillingsController extends AbstractController
         ]) ?? ($this->billingConfigFactory)();
 
         $template = $bConfig->getQuotationTemplate() ?? 'monwoo';
+        // TODO : template data inside config ? make it some optional config form on template changes ?
+        // $templateData = $bConfig->getTemplateData() ?? $this->defaultTemplateData($template);
+        $templateData = $this->getDefaultTemplateData($template);
+
         // TODO : from config or .env params ?
         $businessSignatureImg = 'file://' . $projectDir . '/var/businessSignature.png';
         // First try png extension (will work with tcpdf bg ? // TODO test...)
@@ -461,12 +488,12 @@ class PdfBillingsController extends AbstractController
         // 🇺🇸🇺🇸 BODY arrangements
         $pdf->AddPage();
         // Set some content to print
-        $html = $twig->render($templatePath, [
+        $html = $twig->render($templatePath, array_merge([
             'billingConfig' => $bConfig, 'businessSignatureImg' => $businessSignatureImg,
             'viewPart' => $viewPart,
             'packageVersion' => $packageVersion, 'packageName' => $packageName,
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
-        ]);
+        ], $templateData));
 
         // https://stackoverflow.com/questions/14495688/how-to-put-html-data-into-header-of-tcpdf
         // $pdf->writeHTMLCell( // NOP, DO not go OVER header barre...
