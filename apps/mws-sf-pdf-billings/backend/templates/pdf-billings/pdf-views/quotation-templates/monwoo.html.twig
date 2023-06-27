@@ -109,7 +109,12 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{# // TODO: empirique way for now, go check pdf default mesure unit ?... #}
 	{% set fullWidth = 569 %}
 	{% set businessPercentDiscount = billingConfig.percentDiscount %}
-	{% set pricePerHourWithoutDiscount = 60 %}
+
+	{% block workloadPriceSetup %}
+    {% set sessionSuccess = app.session.set('pricePerHourWithoutDiscount', 60) %}
+	{% endblock %}
+	{% set pricePerHourWithoutDiscount = app.session.get('pricePerHourWithoutDiscount') %}
+
 	{% set pricePerHour = pricePerHourWithoutDiscount * (1 - businessPercentDiscount) %}
 	{% set licenseWpDisplayPrice = 40 %}
 	{% set licenseWpDisplayDiscount = 0.25 %}

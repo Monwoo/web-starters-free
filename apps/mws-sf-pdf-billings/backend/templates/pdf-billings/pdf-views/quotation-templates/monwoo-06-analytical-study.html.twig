@@ -1,0 +1,33 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends 'pdf-billings/pdf-views/quotation-templates/monwoo.html.twig' %}
+
+{# https://stackoverflow.com/questions/42855003/passing-variable-data-between-blocks-in-twig #}
+{% block workloadPriceSetup %}
+	{% set sessionSuccess = app.session.set('pricePerHourWithoutDiscount', 60) %}
+{% endblock %}
+
+{% block businessAim %}
+	{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
+		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+	} %}
+{% endblock %}
+
+{% block businessStartItem %}
+{% endblock %}
+
+{% block businessEndItem %}
+	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+		'app': app, 'billingConfig': billingConfig,
+		'description': '<strong>30 minutes d’étude analytique</strong> de projet(s).',
+		'aimTitle': 'Objectif(s) de la prestation :',
+		'aimTitleBis': '(nécessaire)<br/>Etude Analytique<br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
+		'aimDescription': businessWorkloadDetails,
+		'quantity': businessWorkloadHours * 2,
+		'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
+		'taxesPercent': 0,
+		'discountPercent': businessPercentDiscount,
+		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
+		'priceWithTaxes': businessWorkloadHours * pricePerHour,
+	} %}
+{% endblock %}

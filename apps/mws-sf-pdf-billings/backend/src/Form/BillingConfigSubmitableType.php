@@ -35,6 +35,8 @@ class BillingConfigSubmitableType extends BillingConfigType
                 'Monwoo WooCommerce' => 'monwoo-02-wp-e-com',
                 'Monwoo PHP backend' => 'monwoo-03-php-backend',
                 'Monwoo Fullstack hybrid' => 'monwoo-04-hybrid-app',
+                'Monwoo CRM PHP' => 'monwoo-05-php-crm',
+                'Monwoo Etude Analytique' => 'monwoo-06-analytical-study',
             ],
         ]);
         // https://symfony.com/doc/current/form/form_collections.html

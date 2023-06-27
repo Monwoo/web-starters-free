@@ -13,13 +13,13 @@
 {% block body %}
 
 	{{ form_start(form) }}
-	<div class="">
+	{# <div class="">
 		<div class="">
 			{{ form_label(form.clientName) }}
 			{{ form_widget(form.clientName) }}
 			{{ form_errors(form.clientName) }}
 		</div>
-	</div>
+	</div> #}
 
 	{# TIPS : https://symfony.com/doc/current/form/form_collections.html
 		https://symfony.com/doc/current/form/form_themes.html#form-custom-prototype #}
@@ -37,6 +37,20 @@
 
 	{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
 	{# Native way : #}
+	<p style="text-align:right">
+		<a href="{{ path('app_pdf_billings_view', { clientSlug: billingConfig.clientSlug } ) }}" target="_blank">
+			Share a realtime PDF updated view of this billings to some client.
+		</a>
+		<br/>
+		Advice : only for quick editing. GDPR sentinel will erase all data every 24hr.
+		So best way to save your data, is to send the pdf by email.
+	</p>
+	<p style="text-align:right">
+		{# <a href="{{ path('app_pdf_billings_view', { clientSlug: billingConfig.clientSlug, viewPart: 'CGV' } ) }}" target="_blank">
+			Share a realtime PDF updated view of this billings to some client.
+		</a> #}
+		Comming soon : verify your PDF Authenticity and reload data from billings pdf imports.
+	</p>
 	<p style="text-align:right">
 		<a href="{{ path('app_pdf_billings_view', { clientSlug: billingConfig.clientSlug, viewPart: 'CGV' } ) }}" target="_blank">
 			Conditions générales de vente

@@ -138,8 +138,8 @@ class PdfBillingsController extends AbstractController
 
         // https://stackoverflow.com/questions/21124450/how-to-use-curl-multipart-form-data-to-post-array-field-from-command-line
 
-        // $rawBillingConfig = $request->request->get('billing_config_submitable'); // To read from POST ONLY
-        $rawBillingConfig = $request->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request ;)
+        $rawBillingConfig = $request->request->get('billing_config_submitable'); // To read from POST ONLY
+        $rawBillingConfig = $rawBillingConfig ?? $request->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request if not in POST mode ;)
         $clientSlug = $rawBillingConfig
             ? ($rawBillingConfig['clientSlug'] ?? null) : null;
         $clientSlug = $clientSlug ? $clientSlug : '--';
