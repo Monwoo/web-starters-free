@@ -2,7 +2,7 @@
 {% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
 <style></style>
-<table class="quotation-item" style="padding: 1px 2px;
+<table class="quotation-outlay" style="padding: 1px 2px;
 		border-spacing:{{ (0) * fullWidth }} 0;font-size:8pt;">
 	<tr class="header" style="font-weight:bold;text-align:right;">
 		<th class="description" style="width:{{ 0.28 * fullWidth }}">Désignation</th>
@@ -14,16 +14,22 @@
 		<th class="price-with-taxes" style="width:{{ 0.12 * fullWidth }}">Prix T.T.C.</th>
 	</tr>
 </table>
-<table class="quotation-item" style="padding: 2px 2px;
+<table class="quotation-outlay" style="padding: 2px 2px;
 		border-spacing:{{ (0) * fullWidth }} 0;font-size:9pt;">
 	<tr class="data" style="text-align:right;font-size:10pt;">
 		<td class="description" style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;">{{description|striptags(allowedHtmlTags)|raw}}</td>
 		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{quantity|format_number({fraction_digit: 2})}}</td>
-		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">{{pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
-		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">{{taxesPercent|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }}</td>
-		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">{{discountPercent|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }}</td>
-		<td class="price-without-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
-		<td class="price-with-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">{{pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">{{taxesPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
+		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">
+			{# TIPS : discountPercent is on WORKLOADS hours only for now...
+			// TODO : will have to improve for next version or better to 
+			// only have one way to quickly bill anything ?
+			{{discountPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} #}
+			Cf débours
+		</td>
+		<td class="price-without-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td class="price-with-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 	</tr>
 	<tr class="sub-data" style="text-align:right;font-size:10pt;">
 		<td class="aim-title" style="width:{{ 0.28 * fullWidth }};text-align:left;font-weight:bold;">
@@ -33,12 +39,12 @@
 			{% if providerTotalWithTaxesForseenForClient or outlay.providerAddedPrice %}
 				<br/>
 				[ {{ (providerTotalWithTaxesForseenForClient
-				+ outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'floor'}) }} ]
+				+ outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'halfeven'}) }} ]
 			{% endif %}
 			{% if outlay.percentOnBusinessTotal %}
 				<br/>
-				[ {{ outlay.percentOnBusinessTotal|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }} sur
-					{{ businessTotal|format_currency('EUR', {rounding_mode: 'floor'}) }} ]
+				[ {{ outlay.percentOnBusinessTotal|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} sur
+					{{ businessTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }} ]
 			{% endif %}
 			
 			</div>

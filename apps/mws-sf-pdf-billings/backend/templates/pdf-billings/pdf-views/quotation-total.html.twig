@@ -1,24 +1,33 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 
 <style></style>
+
+{# "ceiling", "floor", "down", "up", "halfeven", "halfdown", "halfup". #}
+
 <table class="quotation-total" style="padding: 2px 2px;
 				border-spacing:{{ (0) * fullWidth }} 0;font-size:9pt;">
 	<tr style="text-align:right;font-size:10pt;font-weight:bold;">
 		<td style="width:{{ 0.28 * fullWidth }};"></td>
 		<td style="width:{{ 0.24 * fullWidth }};">TOTAL H.T. :</td>
-		<td style="width:{{ 0.36 * fullWidth }};">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td style="width:{{ 0.36 * fullWidth }};">{{totalPriceWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
 	<tr style="text-align:right;font-size:9pt;">
 		<td style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;"></td>
-		<td style="width:{{ 0.24 * fullWidth }};">Montant T.V.A. :</td>
-		<td style="width:{{ 0.36 * fullWidth }};border-bottom:solid 1px black;">{{0|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td style="width:{{ 0.24 * fullWidth }};">T.V.A. Monwoo :</td>
+		<td style="width:{{ 0.36 * fullWidth }};">{{0|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td style="width:{{ 0.12 * fullWidth }};font-weight:bold;"></td>
+	</tr>
+	<tr style="text-align:right;font-size:9pt;">
+		<td style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;"></td>
+		<td style="width:{{ 0.24 * fullWidth }};">T.V.A. Débours :</td>
+		<td style="width:{{ 0.36 * fullWidth }};border-bottom:solid 1px black;">{{outlaysTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};font-weight:bold;"></td>
 	</tr>
 	<tr style="text-align:right;font-size:12pt;font-weight:bold;">
 		<td style="width:{{ 0.28 * fullWidth }};"></td>
 		<td style="width:{{ 0.24 * fullWidth }};">Montant T.T.C. :</td>
-		<td style="width:{{ 0.36 * fullWidth }};">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td style="width:{{ 0.36 * fullWidth }};">{{totalPriceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
 	<tr>
@@ -36,10 +45,10 @@
 	<tr style="text-align:right;font-size:10pt;font-weight:bold;color:#666666;">
 		<td style="width:{{ 0.28 * fullWidth }};"></td>
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">Déjà payé :</td>
-		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{0|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }}</td>
-		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{0|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
-		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">{{0|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
-		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">{{0|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{0|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
+		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{0|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">{{0|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">{{0|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
 	<tr>
@@ -57,7 +66,7 @@
 		border-color:black;border-style:solid;">TOTAL Net :</td>
 		<td style="width:{{ 0.24 * fullWidth }};text-align: center;
 		border-width:1px;border-bottom-width:1px;border-right-width:1px;
-		border-color:black;border-style:solid;">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		border-color:black;border-style:solid;">{{totalPriceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
 	<tr>

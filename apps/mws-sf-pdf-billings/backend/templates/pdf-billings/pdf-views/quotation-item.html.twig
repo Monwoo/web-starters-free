@@ -26,11 +26,11 @@
 	<tr class="data" style="text-align:right;font-size:10pt;">
 		<td class="description" style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;">{{description|striptags(allowedHtmlTags)|raw}}</td>
 		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{quantity|format_number({fraction_digit: 2})}}</td>
-		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">{{pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
-		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">{{taxesPercent|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }}</td>
-		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">{{discountPercent|format_percent_number({rounding_mode: 'floor', fraction_digit: 2}) }}</td>
-		<td class="price-without-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
-		<td class="price-with-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithTaxes|format_currency('EUR', {rounding_mode: 'floor'})}}</td>
+		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">{{pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">{{taxesPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
+		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">{{discountPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}</td>
+		<td class="price-without-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td class="price-with-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{priceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 	</tr>
 	<tr class="sub-data" style="text-align:right;font-size:10pt;">
 		<td class="aim-title" style="width:{{ 0.28 * fullWidth }};text-align:left;font-weight:bold;">

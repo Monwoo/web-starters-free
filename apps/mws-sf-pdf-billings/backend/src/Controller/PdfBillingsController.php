@@ -89,7 +89,7 @@ class PdfBillingsController extends AbstractController
                 $defaultOutlay->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
                 // TIPS : for added price to count in total business offer
                 // $defaultOutlay->setProviderAddedPrice(130);
-                $defaultOutlay->setProviderTotalWithTaxesForseenForClient(100);
+                $defaultOutlay->setProviderTotalWithTaxesForseenForClient(95);
                 // $defaultOutlay->setProviderAddedPriceTaxes(130 * (1 - 1/1.2)); // 20% de taxes
                 $defaultOutlay->setProviderAddedPriceTaxes(null); // 20% de taxes
                 $defaultOutlay->setProviderAddedPriceTaxesPercent(0.2); // 20% de taxes

@@ -48,7 +48,7 @@ class Outlay
     ///////////////////////////////////
     // 🇺🇸🇺🇸 given to the PROVIDER through BUSINESS outlay properties :
 
-    // TODO : doc : Price added to business outlay (will ask for it
+    // TODO : doc : Price WITHOUT TAXES added to business outlay (will ask for it
     // to be paid to the business bank account that will lay back to the provider)
     #[ORM\Column(nullable: true)]
     private ?float $providerAddedPrice = null;

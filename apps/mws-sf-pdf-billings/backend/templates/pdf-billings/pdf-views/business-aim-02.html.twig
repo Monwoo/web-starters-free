@@ -11,20 +11,20 @@
 text-align: center;
 font-weight:bold;
 font-size:10pt;">
-			<div class="title" style="color:#005B98;">
-				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+			<div class="title" style="color:#11589A;">
+				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 				: Débours LWS Serveur PHP CPanel 1 ans ou pub + 3 itérations de mise en oeuvres Svelte
 			</div>
 			<div class="description" style="">
 				- TODO : debours lws. [ code promo CT113 ?)
-				{{ deboursLws|format_currency('EUR', {rounding_mode: 'floor'})  }}
+				{{ deboursLws|format_currency('EUR', {rounding_mode: 'halfeven'})  }}
 				]
 			</div>
 			<div class="description" style="">
 				- 3 itérations incluant
-				{{businessWorkloadHours|format_number({rounding_mode: 'floor', fraction_digit: 2}) }}
+				{{businessWorkloadHours|format_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}
 				heures de conseils et ajustements Svelte. [
-				{{ (businessWorkloadHours * pricePerHour)|format_currency('EUR', {rounding_mode: 'floor'}) }}
+				{{ (businessWorkloadHours * pricePerHour)|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 				]
 			</div>
 		</td>

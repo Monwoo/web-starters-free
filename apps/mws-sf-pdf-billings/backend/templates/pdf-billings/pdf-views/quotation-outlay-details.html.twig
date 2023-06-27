@@ -3,12 +3,12 @@
 Service par : {{ outlay.providerName }} pour :
 {% if outlay.percentOnBusinessTotal %}
   {{ outlay.percentOnBusinessTotal|format_percent_number({
-    rounding_mode: 'floor', fraction_digit: 2
+    rounding_mode: 'halfeven', fraction_digit: 2
   }) }} % du montant du projet.
 {% else %}
   {{ (outlay.providerTotalWithTaxesForseenForClient
   ? outlay.providerTotalWithTaxesForseenForClient
-  : outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'floor'})
+  : outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'halfeven'})
   }}
 {% endif %}
 <br/><br/>

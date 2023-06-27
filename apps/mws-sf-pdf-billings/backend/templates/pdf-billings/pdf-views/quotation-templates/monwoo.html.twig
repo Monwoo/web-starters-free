@@ -3,15 +3,19 @@
 	<style>
 {{pdfCssStyles}}
 .quotation-item .header {
-	background-color: #005B98;
+	background-color: #11589A;
+	color: #fee6bf;
+}
+.quotation-outlay .header {
+	background-color: #11589A;
 	color: white;
 }
-.quotation-item .header th {
+.quotation-item .header th, .quotation-outlay .header th {
 	border-left: solid 1px white;
 	border-right: solid 1px white;
 }
 
-.quotation-item .data td {
+.quotation-item .data td, .quotation-outlay .data td {
 	border-left: solid 1px black;
 	border-right: solid 1px black;
 }
@@ -101,7 +105,7 @@ table {
 TCPDF has a very limited CSS support. It doesn't support all attributes.
 #}
 
-	{% if billingConfig %}
+{% if billingConfig %}
 	{# // TODO: empirique way for now, go check pdf default mesure unit ?... #}
 	{% set fullWidth = 569 %}
 	{% set pricePerHour = 60 %}
@@ -122,25 +126,60 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		(acc, o) => acc + o.providerTotalWithTaxesForseenForClient, 0
 	) %}
 
-	{% set outlayAddedPriceTotalForBusiness =  billingConfig.outlays|reduce(
-		(acc, o) => acc + (o.useProviderAddedPriceForBusiness
-		? o.providerAddedPriceForBusiness
+	{% set outlaysAddedPriceTotalForBusiness =  billingConfig.outlays|reduce(
+		(acc, outlay) => acc + (outlay.useProviderAddedPriceForBusiness
+		? outlay.providerAddedPrice
 		: 0), 0
 	) %}
+
 	{# TIPS : businessTotal hold the total HT base of this quotation#}
-	{% set businessTotal = outlayAddedPriceTotalForBusiness
+	{% set businessTotal = outlaysAddedPriceTotalForBusiness
 	+ businessWorkloadHours * pricePerHour %}
 
-	{% set quotationTotal = businessTotal + licenseWpDisplay %}
-	{% set forseenTotal = quotationTotal + outlaysForseenTotal %}
+	{# TODO : remove computation duplication : use OutlayRepository->computeTaxes ?
+	or extend OutlayEntity as ComputedOutlayEntity
+	(but add model for comput stuff, not so good....) 
+	or add a MwsCompute SERVICE to handles all sub computings on any entities ? #}
+	{% set outlaysTaxesIncludedInBusinessTotalPercent = billingConfig.outlays|reduce(
+		(acc, outlay) => acc + (
+			outlay.percentOnBusinessTotal * businessTotal
+			-  outlay.percentOnBusinessTotal * businessTotal
+			/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal)
+		), 0
+	) %}
 
-		{% if viewPart != 'CGV' %}
-			<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;"> <tr>
+	{% set outlaysTaxes = billingConfig.outlays|reduce((acc, outlay) => acc + (
+			outlay.providerAddedPriceTaxesPercent
+			? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
+			: outlay.providerAddedPriceTaxes
+		), 0
+	) + outlaysTaxesIncludedInBusinessTotalPercent %}
+
+	{% set outlaysPriceOnBusinessTotal = billingConfig.outlays|reduce((acc, outlay) => acc + (
+			outlay.percentOnBusinessTotal * businessTotal
+	), 0) %}
+
+	{# TODO : better namings, quotationTotal might be monwooQuotationTotal ?
+	Need to check priority : Monwoo getting the full money (this includes outlays...)
+	or Monwoo getting it's business Amounts, outlays being other stuff (Monwoo only
+	transfert the money to the provider and register the paiement on the client's name...)
+	#}
+	{% set quotationTotal = businessTotal + licenseWpDisplay %}
+	{% set totalPriceWithTaxes = licenseWpDisplay + businessTotal
+	+ outlaysPriceOnBusinessTotal + (outlaysTaxes - outlaysTaxesIncludedInBusinessTotalPercent) %}
+	{% set totalPriceWithoutTaxes = totalPriceWithTaxes - outlaysTaxes %}
+
+
+	{% set forseenTotal = totalPriceWithTaxes + outlaysForseenTotal %}
+
+	{% if viewPart != 'CGV' %}
+		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;">
+			<tr>
 				<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
 					<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 				</td>
 				<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-															font-weight:bold;color:#005B98;font-size:14pt;">
+															font-weight:bold;color:#11589A;font-size:14pt;">
 					Devis n°{{billingConfig.quotationNumber}}
 				</td>
 				<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -157,23 +196,23 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				</td>
 				<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
 				text-align: center;
-				font-weight:bold;color:#005B98;font-size:16pt;
+				font-weight:bold;color:#11589A;font-size:16pt;
 				">
 					<div>
-						<span style="color:#000000; font-size:12pt;">Budget :</span>
-						{{ forseenTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+						<span style="color:#000000; font-size:12pt;">Budget :</span><br/>
+						{{ forseenTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 						<br/>
 						T.T.C.
 					</div>
 					{# <div>
-						{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+						{{ quotationTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 						<br/>
 						T.T.C.
 					</div>
 					{% if forseenTotal != quotationTotal %}
 						<div style="font-size:10pt;">
 							Sur budget de :
-							{{ forseenTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+							{{ forseenTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 							T.T.C.
 						</div>
 					{% endif %} #}
@@ -234,8 +273,16 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 		{% for outlay in billingConfig.outlays %}
 			{% set outlayOnBusinessTotal = outlay.percentOnBusinessTotal * businessTotal %}
 			{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
-			{% set outlayPricePUnitWithT = outlay.providerAddedPrice
+			{% set outlayPricePUnitWithT = outlay.providerAddedPrice + (
+				outlay.providerAddedPriceTaxesPercent
+				? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
+				: outlay.providerAddedPriceTaxes
+			)
 			+ outlayOnBusinessTotal %}
+			{# TODO : remove computation duplication : use OutlayRepository->computeTaxes ?
+			or extend OutlayEntity as ComputedOutlayEntity
+			(but add model for compute stuff, not so good....) 
+			or add a MwsCompute SERVICE to handles all sub computings on any entities ? #}
 			{% set outlayTaxes = (
 				outlay.providerAddedPriceTaxesPercent
 				? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)

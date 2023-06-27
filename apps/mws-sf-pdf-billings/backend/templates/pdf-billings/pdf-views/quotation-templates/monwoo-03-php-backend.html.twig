@@ -3,7 +3,7 @@
 <style>
 	{{pdfCssStyles}}
 	.quotation-item .header {
-		background-color: #005B98;
+		background-color: #11589A;
 		color: white;
 	}
 	.quotation-item .header th {
@@ -90,7 +90,7 @@
 				<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
 			</td>
 			<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-								font-weight:bold;color:#005B98;font-size:14pt;">
+								font-weight:bold;color:#11589A;font-size:14pt;">
 				Devis n°{{billingConfig.quotationNumber}} // TODO : Template PHP backend in DEV...
 			</td>
 			<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
@@ -107,9 +107,9 @@
 			</td>
 			<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
 								text-align: center;
-								font-weight:bold;color:#005B98;font-size:16pt;
+								font-weight:bold;color:#11589A;font-size:16pt;
 								">
-				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'floor'}) }}
+				{{ quotationTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 				<br/>
 				T.T.C.
 			</td>
