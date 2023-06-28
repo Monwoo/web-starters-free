@@ -89,6 +89,25 @@
 			});
 		}
 
+		const addOutlayFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
+			const removeFormButton = document.createElement('button');
+			removeFormButton.innerText = 'Supprimer tous les débours';
+
+			appendTo.append(removeFormButton);
+
+			removeFormButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					// remove all items for the outlays form
+					document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
+						item.remove();
+					});
+			});
+		}
+
+		const billingConfigOutlaysSelector = '#billing_config_submitable_outlays';
+		const target = document.querySelector(billingConfigOutlaysSelector);
+		const itemsSelector = '[id^="billing_config_submitable_outlays_"]:not([name])';
+
 		const addFormToCollection = (e) => {
 			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
@@ -107,7 +126,6 @@
 			addOutlayFormDeleteLink(item);
 
 			// collectionHolder.appendChild(item);
-			const target = document.querySelector('#billing_config_submitable_outlays');
 			target.appendChild(item);
 
 			collectionHolder.dataset.index++;
@@ -118,10 +136,11 @@
 		});
 
 		document
-		.querySelectorAll('[id^="billing_config_submitable_outlays_"]:not([name])')
+		.querySelectorAll(itemsSelector)
     .forEach((tag) => {
         addOutlayFormDeleteLink(tag)
     })
+		addOutlayFormDeleteAllLink(target, itemsSelector);
 
 	</script>
 {% endblock %}
