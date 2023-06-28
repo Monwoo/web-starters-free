@@ -6,6 +6,7 @@ namespace App\Form;
 use App\Entity\BillingConfig;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,6 +20,31 @@ class BillingConfigSubmitableType extends BillingConfigType
         // https://stackoverflow.com/questions/74007075/symfony-form-type-extension-for-custom-types
         // https://stackoverflow.com/questions/11237511/multiple-ways-of-calling-parent-method-in-php
         parent::buildForm($builder, $options);
+
+        // $builder->add(
+        $builder->add('quotationStartDay',
+            // DateTimeTzType::class,
+            DateTimeType::class,
+            array(
+                'required' => false,
+                'widget' => 'single_text',
+                // 'format' => 'yyyy-MM-dd  HH:mm',
+                // https://ourcodeworld.com/articles/read/1182/how-to-solve-symfony-5-exception-cannot-use-the-format-option-of-symfony-component-form-extension-core-type-datetype-when-the-html5-option-is-enabled
+                // 'html5' => false,
+                'html5' => true,
+            )
+        );
+
+        $builder->add('quotationEndDay',
+            DateTimeType::class,
+            array(
+                'required' => false,
+                'widget' => 'single_text',
+                // 'format' => 'yyyy-MM-dd  HH:mm',
+                'html5' => true,
+            )
+        );
+
         // https://symfony.com/doc/current/reference/forms/types/choice.html
         $builder->add('quotationTemplate', ChoiceType::class, [
             // https://symfony.com/doc/current/reference/forms/types/choice.html#choice-name

@@ -7,6 +7,41 @@
 		.form-input {
 			width: 100%;
 		}
+		button, input, textarea {
+			margin: 4px;
+			padding: 7px;
+		}
+		textarea {
+			width: 94%;
+			height: 4em;
+		}
+		label {
+			font-weight: bold;
+		}
+		select {
+			min-width: 30vw;
+		}
+		[id="billing_config_submitable_outlays"] > div:nth-child(even) {
+			margin: 12px 4px;
+			padding: 7px;
+			border: solid 1px #CCCCCC;
+			background: #EEEEEE;
+			border-radius: 12px;
+		}
+		/* TODO : not working, add class and get better selectors ? */
+		[id="billing_config_submitable_outlays"] > div:nth-child(odd) {
+			margin: 12px 4px;
+			padding: 7px;
+			border: solid 1px #EEEEEE;
+			background: #CCCCCC;
+			border-radius: 12px;
+		}
+		[id="billing_config_submitable_outlays"] > div > label {
+			font-size: 16pt;
+			font-weight: bold;
+			color: darkblue;
+		}
+		
 	</style>
 {% endblock %}
 
@@ -142,7 +177,7 @@
     .forEach((tag) => {
         addOutlayFormDeleteLink(tag)
     })
-		addOutlayFormDeleteAllLink(target, itemsSelector);
+		addOutlayFormDeleteAllLink(target.parentElement, itemsSelector);
 
 	</script>
 {% endblock %}
