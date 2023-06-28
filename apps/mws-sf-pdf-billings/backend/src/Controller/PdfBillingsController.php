@@ -344,6 +344,11 @@ class PdfBillingsController extends AbstractController
         // $html = $tplEngine->render('pdf-billings/pdf-views/monwoo-quotation.html.twig', [
         ob_start();
 
+        // TODO : going further with the timestamp refresh system : client view with same
+        // timestamp might have refresh issues if some cache systems ignore headers
+        // so main idea it to re-direct to new timestamp
+        // if userlink timestamp is higher than current billingConfig lastModification timestamp...
+
         $twig = $this->container->get('twig');
 
         $bConfig = $bConfigRepository->findOneBy([
