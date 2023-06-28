@@ -84,8 +84,9 @@ class PdfBillingsController extends AbstractController
         if ($bConfig->getOutlays()->count() === 0 && !$bConfig->isHideDefaultOutlaysOnEmptyOutlays()) {
             $twig = $this->container->get('twig');
             if ('monwoo' === $template
-            || 'monwoo-02-wp-e-com' === $template
-            || 'monwoo-03-php-backend' === $template) {
+                || 'monwoo-02-wp-e-com' === $template
+                || 'monwoo-03-php-backend' === $template
+            ) {
                 $defaultOutlay = new Outlay();
                 $defaultOutlay->setProviderName("lws.fr");
                 $defaultOutlay->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
@@ -123,7 +124,22 @@ class PdfBillingsController extends AbstractController
             // We DO NOT persiste $defaultOutlay since we let end user to chose to save with it or not...
             // TODO : doc : if user remove all outlets, defaults outlets will comme back if
             // hideDefaultOutlaysOnEmptyOutlays from BillingConfig is set to true...
-        }            
+
+            if ('monwoo-04-hybrid-app' === $template) {
+                $defaultOutlay = new Outlay();
+                $defaultOutlay->setProviderName("codeur.com");
+                $defaultOutlay->setProviderShortDescription("(contractuel)<br/>Suivi de mission");
+                $defaultOutlay->setPercentOnBusinessTotal(0.04);
+                $defaultOutlay->setTaxesPercentIncludedInPercentOnBusinessTotal(0.2); // 20% de taxes inclus dans comission codeur.com
+                $defaultOutlay->setProviderAddedPriceTaxes(null); // With percent, will precead other value
+                $defaultOutlay->setProviderDetails(
+                    $twig->render('pdf-billings/pdf-views/quotation-outlay-details-codeur-com.html.twig', [
+                        "outlay" => $defaultOutlay
+                    ])
+                );
+                $bConfig->addOutlay($defaultOutlay);
+            }
+        }
     }
 
     protected function getDefaultTemplateData(string $template) {
@@ -146,6 +162,15 @@ class PdfBillingsController extends AbstractController
                     "licenseWpDisplayDiscount" => 0,
                 ];
                 break;    
+            case 'monwoo-04-hybrid-app':
+                return [
+                    "defaultBusinessWorkloadHours" => 18,
+                    "pricePerHourWithoutDiscount" => 120,
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-hybrid-workload-details.html.twig",
+                    "licenseWpDisplayPrice" => 0,
+                    "licenseWpDisplayDiscount" => 0,
+                ];
+                break;        
             case 'monwoo-06-analytical-study':
                 return [
                     "defaultBusinessWorkloadHours" => 2,
