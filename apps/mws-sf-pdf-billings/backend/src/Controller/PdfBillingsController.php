@@ -83,7 +83,7 @@ class PdfBillingsController extends AbstractController
         // TODO : add test on first add/remove to show default only if no changes occures ?
         if ($bConfig->getOutlays()->count() === 0 && !$bConfig->isHideDefaultOutlaysOnEmptyOutlays()) {
             $twig = $this->container->get('twig');
-            if ('monwoo' === $template) {
+            if ('monwoo' === $template || 'monwoo-02-wp-e-com' === $template) {
                 $defaultOutlay = new Outlay();
                 $defaultOutlay->setProviderName("lws.fr");
                 $defaultOutlay->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
@@ -118,11 +118,6 @@ class PdfBillingsController extends AbstractController
                 );
                 $bConfig->addOutlay($defaultOutlay);
             }
-            if ('monwoo-02-wp-e-com' === $template) {
-                $defaultOutlay = new Outlay();
-                $defaultOutlay->setProviderName("LWS");
-                $bConfig->addOutlay($defaultOutlay);
-            }
             // We DO NOT persiste $defaultOutlay since we let end user to chose to save with it or not...
             // TODO : doc : if user remove all outlets, defaults outlets will comme back if
             // hideDefaultOutlaysOnEmptyOutlays from BillingConfig is set to true...
@@ -131,6 +126,15 @@ class PdfBillingsController extends AbstractController
 
     protected function getDefaultTemplateData(string $template) {
         switch ($template) {
+            case 'monwoo-02-wp-e-com':
+                return [
+                    "defaultBusinessWorkloadHours" => 4.5,
+                    "pricePerHourWithoutDiscount" => 80,
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-wa-config-workload-details.html.twig",
+                    "licenseWpDisplayPrice" => 0,
+                    "licenseWpDisplayDiscount" => 0,
+                ];
+                break;
             case 'monwoo-06-analytical-study':
                 return [
                     "defaultBusinessWorkloadHours" => 2,

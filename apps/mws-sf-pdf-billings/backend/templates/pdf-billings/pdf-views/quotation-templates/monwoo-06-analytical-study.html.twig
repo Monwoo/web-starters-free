@@ -34,9 +34,9 @@
 	</table>
 	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,
-		'description': '<strong>30 minutes d’étude analytique</strong> de projet(s).',
+		'description': '<strong>30 minutes d’étude analytique</strong> de projet(s) par Monwoo.',
 		'aimTitle': 'Objectif(s) de la prestation :',
-		'aimTitleBis': '(nécessaire)<br/>Etude Analytique<br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 0}) ~ ' heures ]',
+		'aimTitleBis': '(nécessaire)<br/>Etude Analytique<br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
 		'aimDescription': businessWorkloadDetails,
 		'quantity': businessWorkloadHours * 2,
 		'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
