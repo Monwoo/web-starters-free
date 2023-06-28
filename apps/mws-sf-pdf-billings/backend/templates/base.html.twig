@@ -76,6 +76,27 @@
 					Reset application to Factory
 				</a>
 			</p>
+			<p>
+				<strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr 
+				before switching templates to be sure to have the default outlays and not 
+				the one you juste saved...)<br/><br/>
+				{% for monwooTemplate in [ 
+					'monwoo', 'monwoo-02-wp-e-com', 'monwoo-03-php-backend',
+					'monwoo-04-hybrid-app', 'monwoo-05-php-crm',
+					'monwoo-06-analytical-study', 'monwoo-07-upkeep',  ] %}
+					<a href="{{ path('app_pdf_billings', {
+						billing_config_submitable: {
+							clientSlug: billingConfig.clientSlug,
+							quotationTemplate: monwooTemplate,
+						}, ts:tStamp
+					}) }}">
+						{{monwooTemplate}}
+					</a> &nbsp;&nbsp;&nbsp;
+				{% endfor %}
+			<br/>
+			</p>
+
+			monwoo-02-wp-e-com
 
 			{% block body %}{% endblock %}
 

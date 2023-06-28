@@ -220,8 +220,9 @@ class PdfBillingsController extends AbstractController
 
         // https://stackoverflow.com/questions/21124450/how-to-use-curl-multipart-form-data-to-post-array-field-from-command-line
 
-        $rawBillingConfig = $request->request->get('billing_config_submitable'); // To read from POST ONLY
-        $rawBillingConfig = $rawBillingConfig ?? $request->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request if not in POST mode ;)
+        $rawBillingConfigFromGET = $request->query->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request if not in POST mode ;)
+        $rawBillingConfigFromPOST = $request->request->get('billing_config_submitable'); // To read from POST ONLY
+        $rawBillingConfig = $rawBillingConfigFromPOST ?? $rawBillingConfigFromGET;
         $clientSlug = $rawBillingConfig
             ? ($rawBillingConfig['clientSlug'] ?? null) : null;
         $clientSlug = $clientSlug ? $clientSlug : '--';
@@ -230,6 +231,19 @@ class PdfBillingsController extends AbstractController
         $bConfig = $bConfigRepository->findOneBy([
             'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
         ]) ?? ($this->billingConfigFactory)($clientSlug);
+
+        // var_dump($rawBillingConfigFromGET); exit;
+        // TIPS : MAKE GET param ovewrite post value for some key config keys :
+        $templateFromGET = $rawBillingConfigFromGET['quotationTemplate'] ?? null;
+        if ($templateFromGET) {
+            $bConfig->setQuotationTemplate($templateFromGET);
+            $this->em->persist($bConfig);
+            $this->em->flush(); // For next conccurency possible issue, save and flush new template choice
+        }
+        // Now you can use links like :
+        // http://localhost:8000/?billing_config_submitable%5BclientSlug%5D=--&billing_config_submitable%5BquotationTemplate%5D=monwoo-06-analytical-study
+
+
         // var_dump($bConfig);exit;
         // $this->logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $this->logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
