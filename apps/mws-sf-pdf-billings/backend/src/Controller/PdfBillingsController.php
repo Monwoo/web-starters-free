@@ -528,6 +528,10 @@ class PdfBillingsController extends AbstractController
             : 'DemoDevisMonwoo' . $bConfig->getQuotationNumber() . '.pdf'
         ));
         $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Cache-Control', 'no-cache');
+        $response->headers->set('Pragma', 'no-chache');
+        $response->headers->set('Expires', '0');
+
         return $response;
     }
 
