@@ -86,6 +86,7 @@ class PdfBillingsController extends AbstractController
             if ('monwoo' === $template
                 || 'monwoo-02-wp-e-com' === $template
                 || 'monwoo-03-php-backend' === $template
+                || 'monwoo-05-php-crm' === $template
             ) {
                 $defaultOutlay = new Outlay();
                 $defaultOutlay->setProviderName("lws.fr");
@@ -161,7 +162,7 @@ class PdfBillingsController extends AbstractController
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
-                break;    
+                break;
             case 'monwoo-04-hybrid-app':
                 return [
                     "defaultBusinessWorkloadHours" => 18,
@@ -171,6 +172,15 @@ class PdfBillingsController extends AbstractController
                     "licenseWpDisplayDiscount" => 0,
                 ];
                 break;        
+            case 'monwoo-05-php-crm':
+                return [
+                    "defaultBusinessWorkloadHours" => 18,
+                    "pricePerHourWithoutDiscount" => 80,
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-php-crm-workload-details.html.twig",
+                    "licenseWpDisplayPrice" => 0,
+                    "licenseWpDisplayDiscount" => 0,
+                ];
+                break;    
             case 'monwoo-06-analytical-study':
                 return [
                     "defaultBusinessWorkloadHours" => 2,

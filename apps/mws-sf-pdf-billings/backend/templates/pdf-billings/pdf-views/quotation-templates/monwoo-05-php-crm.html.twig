@@ -2,13 +2,56 @@
 {% extends 'pdf-billings/pdf-views/quotation-templates/monwoo.html.twig' %}
 
 {% block businessAim %}
-	TODO : objectifs en cours d'écritures...
+	{% include 'pdf-billings/pdf-views/business-aim-05.html.twig' with {
+		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+	} %}
 {% endblock %}
 
 {% block businessStartItem %}
-	TODO : item de début en cours d'écritures...
+  {% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+    'app': app, 'billingConfig': billingConfig,
+    'description': "<strong>Starter Open Source</strong> mws-sf-pdf-billings construit par Miguel Monwoo.",
+    'aimTitle': 'Détail du starter :',
+    'aimTitleBis': '(nécessaire)<br/>Monwoo PHP CRM<br/>[ mws-sf-pdf-billings ]',
+    'aimDescription': include('pdf-billings/pdf-views/business-item-php-crm-details.html.twig'),
+    'quantity': 1,
+    'pricePerUnitWithoutTaxes': 0,
+    'taxesPercent': 0,
+    'discountPercent': 0,
+    'priceWithoutTaxes': 0,
+    'priceWithTaxes': 0,
+    'paddingTop': 42,
+    'paddingBottom': 0.1,
+  } %}
 {% endblock %}
 
 {% block businessEndItem %}
-	TODO : item de fin en cours d'écritures...
+	<table>
+		<tr>
+			{% set asMargin = 0 %}
+			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
+		</tr>
+	</table>
+	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+		'app': app, 'billingConfig': billingConfig,
+		'description': '<strong>30 minutes de conseils et modifications</strong> du CRM mws-sf-pdf-billings en télétravail.',
+		'aimTitle': 'Objectif(s) de la prestation :',
+		'aimTitleBis': '(nécessaire)<br/>PHP CRM Simple<br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
+		'aimDescription': businessWorkloadDetails,
+		'quantity': businessWorkloadHours * 2,
+		'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
+		'taxesPercent': 0,
+		'discountPercent': businessPercentDiscount,
+		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
+		'priceWithTaxes': businessWorkloadHours * pricePerHour,
+
+	} %}
+	<table>
+		<tr>
+			{% set asMargin = 0 %}
+			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
+		</tr>
+	</table>
+
 {% endblock %}
