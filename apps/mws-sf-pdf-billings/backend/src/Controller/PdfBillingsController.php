@@ -83,7 +83,9 @@ class PdfBillingsController extends AbstractController
         // TODO : add test on first add/remove to show default only if no changes occures ?
         if ($bConfig->getOutlays()->count() === 0 && !$bConfig->isHideDefaultOutlaysOnEmptyOutlays()) {
             $twig = $this->container->get('twig');
-            if ('monwoo' === $template || 'monwoo-02-wp-e-com' === $template) {
+            if ('monwoo' === $template
+            || 'monwoo-02-wp-e-com' === $template
+            || 'monwoo-03-php-backend' === $template) {
                 $defaultOutlay = new Outlay();
                 $defaultOutlay->setProviderName("lws.fr");
                 $defaultOutlay->setProviderShortDescription("(Payable hors Monwoo)<br/>Hébergment LWS");
@@ -135,6 +137,15 @@ class PdfBillingsController extends AbstractController
                     "licenseWpDisplayDiscount" => 0,
                 ];
                 break;
+            case 'monwoo-03-php-backend':
+                return [
+                    "defaultBusinessWorkloadHours" => 15,
+                    "pricePerHourWithoutDiscount" => 100,
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-wa-config-workload-details.html.twig",
+                    "licenseWpDisplayPrice" => 0,
+                    "licenseWpDisplayDiscount" => 0,
+                ];
+                break;    
             case 'monwoo-06-analytical-study':
                 return [
                     "defaultBusinessWorkloadHours" => 2,
