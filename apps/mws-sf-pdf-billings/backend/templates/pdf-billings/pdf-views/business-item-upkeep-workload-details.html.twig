@@ -1,0 +1,20 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+<div class="businsess-item analytical-study">
+	Maintenances simples par sessions de 20 minutes en distanciels.<br/>
+	<br/>
+	<strong>10 premiers jours du mois</strong>
+	: Mise à jours simples sans correctifs. <br />
+	<strong>En cas de bug :</strong> Rapport d'analyse et recherche de devis d'experts.<br/>
+	<br/>
+	<strong>10 jours intermédiaire du mois</strong>
+	: Ajustement des configurations de la solution pour optimiser le métier.<br/>
+	<br/>
+	<strong>10 derniers jours du mois</strong>
+	: Analyse des suivis, usages et interactions avec la solution.<br/>
+	<br/>
+	Soit
+	{{ (businessWorkloadHours * 3/3)|format_number({fraction_digit: 0}) }}
+	{{ businessWorkloadHours > 1 ? 
+	'travaux distanciels' : 'travail distanciel' }}
+		de 20 minutes par 10ènes de jours sur 1 mois.
+</div>

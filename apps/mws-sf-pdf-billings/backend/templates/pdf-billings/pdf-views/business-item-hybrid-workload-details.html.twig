@@ -14,5 +14,7 @@
 	<br/>
 	Avec
 	{{ (businessWorkloadHours * 2/3)|format_number({fraction_digit: 0}) }}
-	travaux distanciels de 30 minutes par Lot.
+	{{ businessWorkloadHours * 2/3 > 1 ? 
+	'travaux distanciels' : 'travail distanciel' }}
+  de 30 minutes par Lot.
 </div>

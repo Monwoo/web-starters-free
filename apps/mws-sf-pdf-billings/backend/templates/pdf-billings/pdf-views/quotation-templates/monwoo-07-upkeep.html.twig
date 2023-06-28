@@ -1,9 +1,6 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends 'pdf-billings/pdf-views/quotation-templates/monwoo.html.twig' %}
 
-// TODO : upkeep quotation : genre 3 fois 20 minutes de verif santé wordpress
-ou conseils d'améliorations de votre solution web (60€/hr)
-
 {% block businessAim %}
 	{% include 'pdf-billings/pdf-views/business-aim-06.html.twig' with {
 		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
@@ -23,9 +20,9 @@ ou conseils d'améliorations de votre solution web (60€/hr)
 	</table>
 	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,
-		'description': '<strong>30 minutes d’étude analytique</strong> de projet(s) par Monwoo.',
+		'description': '<strong>30 minutes de maintenances simples</strong> de backend PHP ou Frontend Svelte par Monwoo.',
 		'aimTitle': 'Objectif(s) de la prestation :',
-		'aimTitleBis': '(nécessaire)<br/>Etude Analytique<br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
+		'aimTitleBis': '(nécessaire)<br/>Maintenances simples<br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
 		'aimDescription': businessWorkloadDetails,
 		'quantity': businessWorkloadHours * 2,
 		'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
