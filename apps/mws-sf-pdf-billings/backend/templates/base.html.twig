@@ -19,6 +19,15 @@
 		</title>
 		{% block stylesheets %}
 			{# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
+			{# https://www.javatpoint.com/css-transition-opacity
+			transition: opacity 0.3s linear 2s; // effect on 0.3 millisecond   #}
+
+			<style>
+			a:hover {
+				opacity: 0.75;
+				transition: opacity 0.1s;
+			}
+			</style>
 		{% endblock %}
 	</head>
 
@@ -76,7 +85,7 @@
 					Reset application to Factory
 				</a>
 			</p>
-			<p>
+			<p style="display:flex;flex-wrap: wrap;">
 				<strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr 
 				before switching templates to be sure to have the default outlays and not 
 				the one you juste saved...)<br/><br/>
@@ -89,14 +98,12 @@
 							clientSlug: billingConfig.clientSlug,
 							quotationTemplate: monwooTemplate,
 						}, ts:tStamp
-					}) }}">
+					}) }}" style="font-size:16pt;padding:7px;margin:7px;">
 						{{monwooTemplate}}
 					</a> &nbsp;&nbsp;&nbsp;
 				{% endfor %}
 			<br/>
 			</p>
-
-			monwoo-02-wp-e-com
 
 			{% block body %}{% endblock %}
 
