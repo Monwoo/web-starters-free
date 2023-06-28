@@ -16,11 +16,26 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Asset\Packages;
+
 use Qipsius\TCPDFBundle\Controller\TCPDFController;
 use Doctrine\ORM\EntityManagerInterface;
 use Locale;
 use Psr\Log\LoggerInterface;
-
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PdfBillingsController extends AbstractController
 {
@@ -28,13 +43,14 @@ class PdfBillingsController extends AbstractController
     protected $billingConfigFactory;
     protected $em;
     protected $logger;
+    protected Serializer $serializer;
 
     public function __construct(
         LoggerInterface $logger,
         TCPDFController $tcpdf,
         EntityManagerInterface $em
     ) {
-        ob_start();
+        // ob_start();
 
         $this->logger = $logger;
         $this->tcpdf = $tcpdf;
@@ -71,10 +87,22 @@ class PdfBillingsController extends AbstractController
 
             $em->persist($bConfig);
             $em->flush();
-            ob_end_clean();
+            // ob_end_clean();
 
             return $bConfig;
         };
+
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        // $normalizers = [new ObjectNormalizer()];
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, string $format, array $context): string {
+                return "**" . (string)$object . "**";
+            },
+        ];
+        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
+        $normalizers = [ $normalizer ];
+
+        $this->serializer = new Serializer($normalizers, $encoders);
     }
 
     protected function setupBillingConfigDefaults(BillingConfig &$bConfig) {
@@ -211,6 +239,76 @@ class PdfBillingsController extends AbstractController
         }
     }
 
+    protected function getQrCodeStamp($data, $logoPath, $label = '© Monwoo') {
+        try {
+            // https://stackoverflow.com/questions/10991035/best-way-to-compress-string-in-php
+            $compressed = gzdeflate($data,  9);
+            $compressed = gzdeflate($compressed, 9);
+            // b64 to bring back string data
+            $compressed = base64_encode($compressed);
+            // echo strlen($compressed); //99 bytes
+            // echo gzinflate(gzinflate($compressed));
+
+            // TIPS to QUICKY validate qrCode : scan it, copy the data and launch :
+            // php -a
+            // $data = 'AbEBTv6VU01vozAQ/S8+RkXabm+5NU1WRYoatLDKoVqtDB6IFTPD2uPuRlX/ew2BRKJfhAvSvA8/84ZnURgNyKnxlZiLKBJX/eRB1hAmfz59AvuvJ5asCR98nYN9R3KyXNVSmymeR3oGF5DT+Ocqu8D7ScbIVhZUTxfdKmXBufX15ZLv0yVbyJ1mmC5YU0W/7KRvlXunsc0TJGKO3pjzbEt2b0iqe/LWfQQugUOHJ/hUfsrS8lIe3gArVO+NM6gbI7tb1oT/iKJvN1Gza6JcFntAFbI2YItwu6V2BXnkwYI8G3kICR6fhVZifh2Ylp60Atuv7HqbnuUbXPRXyMLRZnBh+R9ccqTEWBivQMWYfKoZjumGW827rDX5QdYBYHjddW2M2WEDQCVWF/Ax0hl9AffZBpZ3kLwhhhBDcjEvpXFwtkt3FBoCV1jdtA0MRhodWE5kBQsLcr+Akiyc1CP0tuT2Fx9Zj5Yi18ZorO4IS121RYnZLIpmM/H7StTSVhozagbycbAg5vZPbGcvgdYXuwvuSyilN7w51r7BVd3wYTMsQZ+kd+myd6sYM9SjIzowrOMZenkF'
+            // echo gzinflate(gzinflate(base64_decode($data)));
+            // You should see the json data use to setup the billings...
+
+            $writer = new PngWriter();
+            $qrCode = QrCode::create("http://certif.localhost/?data=$compressed")
+                ->setEncoding(new Encoding('UTF-8'))
+                ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+                ->setSize(120)
+                ->setMargin(0)
+                ->setForegroundColor(new Color(0, 0, 0))
+                ->setBackgroundColor(new Color(255, 255, 255));
+
+            // var_dump($logoPath); exit;
+            // throw new \Exception("force wrong");
+            $logo = $logoPath ? Logo::create($logoPath)
+                ->setResizeToWidth(24) : null;
+            $qrLabel = Label::create('')->setFont(new NotoSans(8));
+            return $writer->write(
+                $qrCode,
+                $logo,
+                $qrLabel->setText($label)->setFont(new NotoSans(12))
+            )->getDataUri();
+        } catch (\Exception $e) {
+            $this->logger->error("Fail to generate QRCODE : " . $e, ['err' => $e]);
+            return null;
+        }
+
+        // $qrCodes = [];
+        // $qrCodes['img'] = $writer->write($qrCode, $logo)->getDataUri();
+        // $qrCodes['simple'] = $writer->write(
+        //                         $qrCode,
+        //                         null,
+        //                         $label->setText('Simple')
+        //                     )->getDataUri();
+ 
+        // $qrCode->setForegroundColor(new Color(255, 0, 0));
+        // $qrCodes['changeColor'] = $writer->write(
+        //     $qrCode,
+        //     null,
+        //     $label->setText('Color Change')
+        // )->getDataUri();
+ 
+        // $qrCode->setForegroundColor(new Color(0, 0, 0))->setBackgroundColor(new Color(255, 0, 0));
+        // $qrCodes['changeBgColor'] = $writer->write(
+        //     $qrCode,
+        //     null,
+        //     $label->setText('Background Color Change')
+        // )->getDataUri();
+ 
+        // $qrCode->setSize(200)->setForegroundColor(new Color(0, 0, 0))->setBackgroundColor(new Color(255, 255, 255));
+        // $qrCodes['withImage'] = $writer->write(
+        //     $qrCode,
+        //     $logo,
+        //     $label->setText('With Image')->setFont(new NotoSans(20))
+        // )->getDataUri();
+    }
+
     #[Route('/', name: 'app_pdf_billings')]
     public function index(
         Request $request,
@@ -246,7 +344,10 @@ class PdfBillingsController extends AbstractController
 
         // var_dump($bConfig);exit;
         // $this->logger->info('From route [app_pdf_billings] :' . json_encode(get_object_vars($bConfig), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-        $this->logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        // $this->logger->info('From route [app_pdf_billings] :' . json_encode($bConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $this->logger->debug('From route [app_pdf_billings] :' . $this->serializer->serialize(
+            $bConfig, 'json'
+        ));        
 
         // https://symfony.com/doc/current/form/form_collections.html#allowing-tags-to-be-removed
         $originalOutlays = new ArrayCollection();
@@ -391,11 +492,14 @@ class PdfBillingsController extends AbstractController
         name: 'app_pdf_billings_view'
     )]
     public function view(
+        Request $request,
         string $clientSlug,
         string $viewPart,
         // EngineInterface $tplEngine,
         string $projectDir,
-        BillingConfigRepository $bConfigRepository
+        BillingConfigRepository $bConfigRepository,
+        Packages $packages,
+        // UrlGeneratorInterface $urlGenerator,
     ): Response {
         // Missing deps injections in new version ?
         // Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $tplEngine ?
@@ -431,6 +535,14 @@ class PdfBillingsController extends AbstractController
             }
         }
         $this->setupBillingConfigDefaults($bConfig);
+        // https://stackoverflow.com/questions/8811251/how-to-get-the-full-url-for-an-asset-in-controller
+        $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+
+        $businessLogo = $bConfig->getBusinessLogo() ? $bConfig->getBusinessLogo()
+        // : $urlGenerator->generate('/public/medias/LogoMonwooDemo.jpg');
+        : $baseurl . $packages->getUrl('/medias/LogoMonwooDemo.jpg');
+        // Warning: get_headers(): This function may only be used against URLs with below :
+        // : 'file://' . $projectDir . '/public/medias/LogoMonwooDemo.jpg';
 
         /**
          * @var MwsTCPDF $pdf
@@ -505,6 +617,14 @@ class PdfBillingsController extends AbstractController
         // Will be set to import date if config IS loaded from pdf...
         // + Add last edit date + first édit date...
 
+        // Allow pdf meta to hold all inputs data (for reload / debug and certification purpose)
+        $footprint = $this->serializer->serialize(
+            $bConfig, 'json'
+        );
+        // Sound hard in meta data, new idea from past r&d : use QrCode ;)
+        $footprintQrCodeUrl = $this->getQrCodeStamp($footprint, $businessLogo);
+        // var_dump($footprintQrCodeUrl);exit;
+
         // 🇺🇸🇺🇸 Global page container
         // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         // $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
@@ -568,7 +688,8 @@ class PdfBillingsController extends AbstractController
         // Set some content to print
         $html = $twig->render($templatePath, array_merge([
             'billingConfig' => $bConfig, 'businessSignatureImg' => $businessSignatureImg,
-            'viewPart' => $viewPart,
+            'viewPart' => $viewPart, 'footprintQrCodeUrl' => $footprintQrCodeUrl,
+            'businessLogo' => $businessLogo,
             'packageVersion' => $packageVersion, 'packageName' => $packageName,
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
         ], $templateData));

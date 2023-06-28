@@ -38,6 +38,9 @@
             "migrations/.gitignore"
         ]
     },
+    "endroid/qr-code-bundle": {
+        "version": "4.3.1"
+    },
     "lexik/jwt-authentication-bundle": {
         "version": "2.19",
         "recipe": {

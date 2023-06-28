@@ -71,28 +71,35 @@
 		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
 	</tr>
 	<tr>
-		<td style="font-size:8pt;color:#666666;">
-			Conformément à l’article L.441-6 du code de commerce, des pénalités de retard, <br/>
-			au taux annuel de 20 % et une indemnité de 40€ sont dues à défaut de 
-			règlement le jour suivant la date de paiement figurant sur la facture.
+		<td style="width:{{ 0.14 * fullWidth }};text-align: left;">
+			{% if footprintQrCodeUrl ?? null %}
+				<img style="height:42px;" src="{{ footprintQrCodeUrl }}"/>
+			{% endif %}
 		</td>
-	</tr>
-	<tr>
-		<td style="font-size:8pt;color:#666666;">
-			Dispensé d'immatriculation au registre du commerce et des sociétés (RCS)
-			et au répertoire des métiers.
+		<td style="width:{{ 0.72 * fullWidth }};font-size:8pt;color:#666666;">
+			<div>
+				Conformément à l’article L.441-6 du code de commerce, des pénalités de retard,
+				au taux annuel de 20 % et une indemnité de 40€ sont dues à défaut de 
+				règlement le jour suivant la date de paiement figurant sur la facture.
+			</div>
+			<div>
+				Dispensé d'immatriculation au registre du commerce et des sociétés (RCS)
+				et au répertoire des métiers.
+			</div>
+			<div>
+				TVA non applicable, art. 293B du C.G.I. et art. 22 de la loi finances pour 2018.
+			</div>
 		</td>
-	</tr>
-	<tr>
-		<td style="font-size:8pt;color:#666666;">
-			TVA non applicable, art. 293B du C.G.I. et art. 22 de la loi finances pour 2018.
+		<td style="width:{{ 0.14 * fullWidth }}">
 		</td>
 	</tr>
 	<tr>
 		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
 	</tr>
 	<tr>
-		<td style="font-size:8pt;font-weight:bold;">
+		<td style="width:{{ 0.14 * fullWidth }}">
+		</td>
+		<td style="width:{{ 0.72 * fullWidth }};font-size:8pt;font-weight:bold;">
 			For foreign user, please ensure a professional translation from French before signing.
 		</td>
 	</tr>

@@ -126,8 +126,6 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 	{% set pricePerHour = pricePerHourWithoutDiscount * (1 - businessPercentDiscount) %}
 	{% set licenseWpDisplay = licenseWpDisplayPrice * (1 - licenseWpDisplayDiscount) %}
 	
-	{% set businessLogo = billingConfig.businessLogo ? billingConfig.businessLogo
-		: 'file://' ~ kernelRootDir ~ '/public/medias/LogoMonwooDemo.jpg' %}
 	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours %}
 	{% set businessWorkloadDetails = billingConfig.businessWorkloadDetails
 	?? include(businessWorkloadTemplate,
