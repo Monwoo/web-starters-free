@@ -71,12 +71,12 @@
 		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
 	</tr>
 	<tr>
-		<td style="width:{{ 0.14 * fullWidth }};text-align: left;">
+		<td style="width:{{ 0.21 * fullWidth }};text-align: center;">
 			{% if footprintQrCodeUrl ?? null %}
-				<img style="height:42px;" src="{{ footprintQrCodeUrl }}"/>
+				<img style="width:75px;" src="{{ footprintQrCodeUrl }}"/>
 			{% endif %}
 		</td>
-		<td style="width:{{ 0.72 * fullWidth }};font-size:8pt;color:#666666;">
+		<td style="width:{{ 0.79 * fullWidth }};font-size:8pt;color:#666666;">
 			<div>
 				Conformément à l’article L.441-6 du code de commerce, des pénalités de retard,
 				au taux annuel de 20 % et une indemnité de 40€ sont dues à défaut de 
@@ -89,18 +89,13 @@
 			<div>
 				TVA non applicable, art. 293B du C.G.I. et art. 22 de la loi finances pour 2018.
 			</div>
+			<div class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;
+			</div>
+			<div style="font-size:8pt;font-weight:bold;">
+				For foreign user, please ensure a professional translation from French before signing.
+			</div>
 		</td>
-		<td style="width:{{ 0.14 * fullWidth }}">
-		</td>
-	</tr>
-	<tr>
-		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
-	</tr>
-	<tr>
-		<td style="width:{{ 0.14 * fullWidth }}">
-		</td>
-		<td style="width:{{ 0.72 * fullWidth }};font-size:8pt;font-weight:bold;">
-			For foreign user, please ensure a professional translation from French before signing.
+		<td style="width:{{ 0.00 * fullWidth }}">
 		</td>
 	</tr>
 </table>

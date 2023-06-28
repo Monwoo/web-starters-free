@@ -29,7 +29,8 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Label\Label;
 use Endroid\QrCode\Logo\Logo;
@@ -255,30 +256,37 @@ class PdfBillingsController extends AbstractController
             // echo gzinflate(gzinflate(base64_decode($data)));
             // You should see the json data use to setup the billings...
 
+            // https://php-download.com/package/endroid/qr-code/example
+            // https://github.com/endroid/qr-code
             $writer = new PngWriter();
             $qrCode = QrCode::create("http://certif.localhost/?data=$compressed")
                 ->setEncoding(new Encoding('UTF-8'))
-                ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
-                ->setSize(120)
+                ->setErrorCorrectionLevel(new ErrorCorrectionLevelMedium())
+                ->setSize(300)
                 ->setMargin(0)
+                // ->setPadding(0)
+                ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+                // ->setLogoPunchoutBackground(true)
                 ->setForegroundColor(new Color(0, 0, 0))
                 ->setBackgroundColor(new Color(255, 255, 255));
 
             // var_dump($logoPath); exit;
             // throw new \Exception("force wrong");
             $logo = $logoPath ? Logo::create($logoPath)
-                ->setResizeToWidth(24) : null;
-            $qrLabel = Label::create('')->setFont(new NotoSans(8));
+                ->setResizeToWidth(42) : null;
+            // $qrLabel = Label::create('')->setFont(new NotoSans(8));
             return $writer->write(
                 $qrCode,
                 $logo,
-                $qrLabel->setText($label)->setFont(new NotoSans(12))
+                null // $qrLabel->setText($label)->setFont(new NotoSans(12))
             )->getDataUri();
         } catch (\Exception $e) {
             $this->logger->error("Fail to generate QRCODE : " . $e, ['err' => $e]);
             return null;
         }
 
+        // https://www.binaryboxtuts.com/php-tutorials/symfony-tutorials/symfony-5-qr-code-generator-tutorial/
+        // https://github.com/endroid/qr-code-bundle
         // $qrCodes = [];
         // $qrCodes['img'] = $writer->write($qrCode, $logo)->getDataUri();
         // $qrCodes['simple'] = $writer->write(
