@@ -50,7 +50,7 @@
 				to physically sign in case email is not enough or if client or business
 				need a hand writtend proof for better oldschool contracts ways (= offline paper mode...) #}
 				{% if businessSignatureImg ?? null %}
-					<img style="width:{{ 0.28 * fullWidth }};" src="{{ businessSignatureImg }}"/>
+					<img style="height:64};" src="{{ businessSignatureImg }}"/>
 				{% else %}
 					Devis de démonstration. Merci de l'envoyer sur service@monwoo.com pour obtenir l'accord et le numéro de devis Monwoo.
 				{% endif %}
@@ -63,17 +63,17 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
+		<td class="empty-space" style="font-size:4px;border-left-width:0.4px;">&nbsp;</td>
 	</tr>
 </table>
 <table class="lawful-extra" style="text-align: center;border-spacing:{{ (0) * fullWidth }} 0;">
 	<tr>
-		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
+		<td class="empty-space" style="font-size:4px;border-left-width:0.4px;">&nbsp;</td>
 	</tr>
 	<tr>
 		<td style="width:{{ 0.21 * fullWidth }};text-align: center;">
 			{% if footprintQrCodeUrl ?? null %}
-				<img style="width:75px;" src="{{ footprintQrCodeUrl }}"/>
+				<img style="width:50px;" src="{{ footprintQrCodeUrl }}"/>
 			{% endif %}
 		</td>
 		<td style="width:{{ 0.79 * fullWidth }};font-size:8pt;color:#666666;">

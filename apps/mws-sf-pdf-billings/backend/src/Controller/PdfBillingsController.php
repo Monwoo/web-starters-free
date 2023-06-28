@@ -30,6 +30,7 @@ use Symfony\Component\Serializer\Serializer;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Label\Label;
@@ -97,7 +98,8 @@ class PdfBillingsController extends AbstractController
         // $normalizers = [new ObjectNormalizer()];
         $defaultContext = [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, string $format, array $context): string {
-                return "**" . (string)$object . "**";
+                // return "**" . (string)$object . "**";
+                return "****";
             },
         ];
         $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
@@ -242,38 +244,58 @@ class PdfBillingsController extends AbstractController
 
     protected function getQrCodeStamp($data, $logoPath, $label = '© Monwoo') {
         try {
+            $this->logger->debug("getQrCodeStamp: " . $data);
             // https://stackoverflow.com/questions/10991035/best-way-to-compress-string-in-php
-            $compressed = gzdeflate($data,  9);
-            $compressed = gzdeflate($compressed, 9);
-            // b64 to bring back string data
-            $compressed = base64_encode($compressed);
+            // TIPS : not a good idea, will explode qr code limits for small readers
+            // $compressed = gzdeflate($data,  9);
+            // $compressed = gzdeflate($compressed, 9);
+            // // b64 to bring back string data
+            // // $compressed = base64_encode($compressed);
+            // $compressed = urlencode($compressed);
+            $hash = md5($data);
+
+
+            // $this->logger->debug("getQrCodeStamp: compressed :" . $compressed);
+            $this->logger->debug("getQrCodeStamp: hash :" . $hash);
+
             // echo strlen($compressed); //99 bytes
             // echo gzinflate(gzinflate($compressed));
 
-            // TIPS to QUICKY validate qrCode : scan it, copy the data and launch :
+            // TIPS to QUICKY validate compressed : scan it, copy the data and launch :
             // php -a
             // $data = 'AbEBTv6VU01vozAQ/S8+RkXabm+5NU1WRYoatLDKoVqtDB6IFTPD2uPuRlX/ew2BRKJfhAvSvA8/84ZnURgNyKnxlZiLKBJX/eRB1hAmfz59AvuvJ5asCR98nYN9R3KyXNVSmymeR3oGF5DT+Ocqu8D7ScbIVhZUTxfdKmXBufX15ZLv0yVbyJ1mmC5YU0W/7KRvlXunsc0TJGKO3pjzbEt2b0iqe/LWfQQugUOHJ/hUfsrS8lIe3gArVO+NM6gbI7tb1oT/iKJvN1Gza6JcFntAFbI2YItwu6V2BXnkwYI8G3kICR6fhVZifh2Ylp60Atuv7HqbnuUbXPRXyMLRZnBh+R9ccqTEWBivQMWYfKoZjumGW827rDX5QdYBYHjddW2M2WEDQCVWF/Ax0hl9AffZBpZ3kLwhhhBDcjEvpXFwtkt3FBoCV1jdtA0MRhodWE5kBQsLcr+Akiyc1CP0tuT2Fx9Zj5Yi18ZorO4IS121RYnZLIpmM/H7StTSVhozagbycbAg5vZPbGcvgdYXuwvuSyilN7w51r7BVd3wYTMsQZ+kd+myd6sYM9SjIzowrOMZenkF'
             // echo gzinflate(gzinflate(base64_decode($data)));
+            // echo gzinflate(gzinflate(urldecode($data)));
             // You should see the json data use to setup the billings...
+            // But in the end, even with compression, it's too huge for qr code
+            // so using hash instead (for sample purpose, need secu backend sync ?) :
 
             // https://php-download.com/package/endroid/qr-code/example
             // https://github.com/endroid/qr-code
             $writer = new PngWriter();
-            $qrCode = QrCode::create("http://certif.localhost/?data=$compressed")
+            // $qrCode = QrCode::create("http://certif.localhost/?data=$compressed")
+            $qrCode = QrCode::create("http://certif.localhost/?dataMD5=$hash")
                 ->setEncoding(new Encoding('UTF-8'))
                 ->setErrorCorrectionLevel(new ErrorCorrectionLevelMedium())
-                ->setSize(300)
+                // ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+                // ->setSize(480)
+                ->setSize(120)
                 ->setMargin(0)
                 // ->setPadding(0)
                 ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
                 // ->setLogoPunchoutBackground(true)
+                // ->logoPunchoutBackground(true) // with builder....
+                // ->validateResult(false)
                 ->setForegroundColor(new Color(0, 0, 0))
                 ->setBackgroundColor(new Color(255, 255, 255));
 
             // var_dump($logoPath); exit;
             // throw new \Exception("force wrong");
+            // Qr code will try to fetch headers if urls look 
+            // like web url for local file due to tcpdf formats...
+            $logoPath = str_replace("file://", "", $logoPath);
             $logo = $logoPath ? Logo::create($logoPath)
-                ->setResizeToWidth(42) : null;
+                ->setResizeToWidth(21)->setPunchoutBackground(true) : null;
             // $qrLabel = Label::create('')->setFont(new NotoSans(8));
             return $writer->write(
                 $qrCode,
@@ -546,9 +568,11 @@ class PdfBillingsController extends AbstractController
         // https://stackoverflow.com/questions/8811251/how-to-get-the-full-url-for-an-asset-in-controller
         $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
 
+        $defaultLogoPublic = $baseurl . $packages->getUrl('/medias/LogoMonwooDemo.jpg');
+        $defaultLogoPrivate = 'file://' . $projectDir . '/var/businessLogo.jpg';
         $businessLogo = $bConfig->getBusinessLogo() ? $bConfig->getBusinessLogo()
         // : $urlGenerator->generate('/public/medias/LogoMonwooDemo.jpg');
-        : $baseurl . $packages->getUrl('/medias/LogoMonwooDemo.jpg');
+        : (file_exists($defaultLogoPrivate) ? $defaultLogoPrivate : $defaultLogoPublic);
         // Warning: get_headers(): This function may only be used against URLs with below :
         // : 'file://' . $projectDir . '/public/medias/LogoMonwooDemo.jpg';
 
