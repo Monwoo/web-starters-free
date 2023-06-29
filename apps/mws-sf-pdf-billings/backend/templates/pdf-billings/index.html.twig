@@ -61,7 +61,7 @@
 {% block body %}
 	<div class="billing-config-summary">
 		<p><strong>{{billingConfig.quotationNumber}}</strong> pour : {{billingConfig.clientName}}</p>
-		<p>Nb d'heures Monwoo : {{billingConfig.businessWorkloadHours}}</p>
+		<p>Nb d'heures Monwoo : {{billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours}}</p>
 		<p><strong>Template : </strong>{{billingConfig.quotationTemplate}}</p>
 		<p>Détail des heures Monwoo : </p>
 		<div class="workload-details" onclick="const preElt = document.querySelector('.workload-details-pre');

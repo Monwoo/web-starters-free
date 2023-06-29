@@ -501,7 +501,8 @@ class PdfBillingsController extends AbstractController
             }
         }
         // ob_end_clean();
-        $templateData = $this->getDefaultTemplateData($bConfig->getQuotationTemplate());
+        // TODO : add configs for default template 'monwoo' if not already set up ?
+        $templateData = $this->getDefaultTemplateData($bConfig->getQuotationTemplate() ?? 'monwoo');
 
         // return $this->render('pdf-billings/index.html.twig', [
         //     'form' => $form->createView(),
