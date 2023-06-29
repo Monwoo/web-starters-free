@@ -98,7 +98,9 @@
 		#}
 	{{ form_end(form) }}
 	<br/><br/>
-	<button type="button" class="add_outlay_link" data-collection-holder-class="outlays">Ajouter un débours</button>
+	<button type="button" class="add_outlay_link" data-collection-holder-class="outlays"
+	type="button"
+	>Ajouter un débours</button>
 
 	{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
 	{# Native way : #}
@@ -143,6 +145,15 @@
 		// https://symfony.com/doc/current/form/form_collections.html#allowing-new-tags-with-the-prototype
 		const addOutlayFormDeleteLink = (item) => {
 			const removeFormButton = document.createElement('button');
+			// Disallow button submit on previous form possible user 'enter' key input
+			// onkeydown="return event.key != 'Enter';"
+			// removeFormButton.setAttribute('onkeydown', "return event.keyCode !== 13;");
+			// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
+			// Type : button: The button has no default behavior, and does nothing
+			// when pressed by default. It can have client-side scripts listen
+			// to the element's events, which are triggered when the events occur.
+			removeFormButton.setAttribute('type', "button");
+
 			removeFormButton.innerText = 'Supprimer ce débours';
 
 			item.append(removeFormButton);
@@ -156,6 +167,7 @@
 
 		const addOutlayFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
 			const removeFormButton = document.createElement('button');
+			removeFormButton.setAttribute('type', "button");
 			removeFormButton.innerText = 'Supprimer tous les débours';
 
 			appendTo.append(removeFormButton);
