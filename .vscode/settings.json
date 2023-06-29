@@ -1,8 +1,6 @@
 {
   "intelephense.environment.phpVersion": "8.2",
   "workbench.colorCustomizations": {
-    "statusBar.background": "#DAA520",
-    "statusBar.debuggingBackground": "#DAA520",
     "statusBar.noFolderBackground": "#DAA520",
     "statussBar.prominentBackground": "#DAA520"
   }

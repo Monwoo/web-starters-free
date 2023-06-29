@@ -1,5 +1,6 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends 'base.html.twig' %}
+{% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
 
 {% block stylesheets %}
 	{{ parent() }}
@@ -41,13 +42,40 @@
 			font-weight: bold;
 			color: darkblue;
 		}
-		
+		.workload-details {
+			border: solid 1px black;
+			border-radius: 12px;
+			padding: 7px;
+		}
+		.workload-details-pre {
+			/* display: pre; */
+			overflow: hidden;
+			height: 0px;
+		}
+
 	</style>
 {% endblock %}
 
 {% set tStamp = 'now'|date('U') %}
 
 {% block body %}
+	<div class="billing-config-summary">
+		<p><strong>{{billingConfig.quotationNumber}}</strong> pour : {{billingConfig.clientName}}</p>
+		<p>Nb d'heures Monwoo : {{billingConfig.businessWorkloadHours}}</p>
+		<p><strong>Template : </strong>{{billingConfig.quotationTemplate}}</p>
+		<p>Détail des heures Monwoo : </p>
+		<div class="workload-details" onclick="const preElt = document.querySelector('.workload-details-pre');
+		preElt.offsetHeight === 0
+		? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
+			billingConfig.businessWorkloadDetails ?? include(businessWorkloadTemplate)
+		)  |striptags(allowedHtmlTags)|raw}}
+		</div>
+		<pre class="workload-details-pre">{{ (
+				billingConfig.businessWorkloadDetails ?? include(businessWorkloadTemplate)
+			)  |striptags(allowedHtmlTags)}}
+		</pre>
+	</div>
+
 
 	{{ form_start(form) }}
 	{# <div class="">

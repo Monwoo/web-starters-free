@@ -189,7 +189,7 @@ class PdfBillingsController extends AbstractController
                 return [
                     "defaultBusinessWorkloadHours" => 15,
                     "pricePerHourWithoutDiscount" => 100,
-                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-wa-config-workload-details.html.twig",
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-php-backend-workload-details.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -500,15 +500,18 @@ class PdfBillingsController extends AbstractController
                 );
             }
         }
-        ob_end_clean();
+        // ob_end_clean();
+        $templateData = $this->getDefaultTemplateData($bConfig->getQuotationTemplate());
 
         // return $this->render('pdf-billings/index.html.twig', [
         //     'form' => $form->createView(),
-        return $this->renderForm('pdf-billings/index.html.twig', [
+        return $this->renderForm('pdf-billings/index.html.twig', array_merge($templateData, [
+            'businessWorkloadHours' => $bConfig->getBusinessWorkloadHours()
+            ?? $templateData['defaultBusinessWorkloadHours'],
             'billingConfig' => $bConfig,
             'form' => $form,
             'title' => 'MWS SF PDF Billings - Index'
-        ]);
+        ]));
     }
 
     // https://symfony.com/doc/current/routing.html
