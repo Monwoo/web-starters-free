@@ -1,13 +1,13 @@
 mws:
-    copyright: Copyright © MONWOO 2023, all rights reseved.
-    goToGithub: Go to Github open source project.
-    goToAppSupports: "To get support from us, you can use regular features of : "
-    goToBusinessSupports: "To support us and/or help us open more software, send a subvention with :"
+    copyright: Copyright © MONWOO 2023, tous droits réservés.
+    goToGithub: Accédez au projet open source Github.
+    goToAppSupports: "Pour obtenir de l'aide de notre part, vous pouvez utiliser les fonctionnalités habituelles de :"
+    goToBusinessSupports: "Pour nous soutenir et/ou nous aider à ouvrir plus de logiciels, envoyez une subvention avec :"
     gdpr:
-        checkOK: GDPR CHECK have been done.
-        checkIsMissing: Missing GDPR check.
-        endUserWarning: "<strong>WARNING : Next database reset</strong> for GDPR safe sentinel will be done at : { gdprNextCleanDate } (<strong>in { diffSign } { hoursLeftBeforeReset } hours</strong>. Db last clean was at : { gdprLastCleanDate })"
-        sentinelIsMissing: MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
-    resetAppToFactory: Reset application to Factory
+        checkOK: Vérification GDPR effectuée.
+        checkIsMissing: Vérification GDPR manquante.
+        endUserWarning: "<strong>ATTENTION : La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le : { gdprNextCleanDate } (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le : { gdprLastCleanDate } )"
+        sentinelIsMissing: Sentinelle GDPR manquante, veuillez vérifier le service pour apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
+    resetAppToFactory: Réinitialiser l'application aux données d'usine
     templates:
-        availableListLabel: <strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr before switching templates to be sure to have the default outlays and not the one you juste saved...)
+        availableListLabel: <strong>Modèles disponibles :</strong> (veuillez supprimer toutes les dépenses appelées 'débours' avant de changer de modèle pour être sûr d'avoir les dépenses par défaut et non celle que vous venez d'enregistrer...)

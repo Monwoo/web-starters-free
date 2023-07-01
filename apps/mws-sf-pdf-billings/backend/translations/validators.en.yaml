@@ -1,0 +1,69 @@
+'This form should not contain extra fields':
+    '': 'This form should not contain extra fields.'
+'The uploaded file was too large':
+    ' Please try to upload a smaller file':
+        '': 'The uploaded file was too large. Please try to upload a smaller file.'
+'The CSRF token is invalid':
+    ' Please try to resubmit the form':
+        '': 'The CSRF token is invalid. Please try to resubmit the form.'
+'This value is not a valid HTML5 color':
+    '': 'This value is not a valid HTML5 color.'
+'Please enter a valid birthdate':
+    '': 'Please enter a valid birthdate.'
+'The selected choice is invalid':
+    '': 'The selected choice is invalid.'
+'The collection is invalid':
+    '': 'The collection is invalid.'
+'Please select a valid color':
+    '': 'Please select a valid color.'
+'Please select a valid country':
+    '': 'Please select a valid country.'
+'Please select a valid currency':
+    '': 'Please select a valid currency.'
+'Please choose a valid date interval':
+    '': 'Please choose a valid date interval.'
+'Please enter a valid date and time':
+    '': 'Please enter a valid date and time.'
+'Please enter a valid date':
+    '': 'Please enter a valid date.'
+'Please select a valid file':
+    '': 'Please select a valid file.'
+'The hidden field is invalid':
+    '': 'The hidden field is invalid.'
+'Please enter an integer':
+    '': 'Please enter an integer.'
+'Please select a valid language':
+    '': 'Please select a valid language.'
+'Please select a valid locale':
+    '': 'Please select a valid locale.'
+'Please enter a valid money amount':
+    '': 'Please enter a valid money amount.'
+'Please enter a number':
+    '': 'Please enter a number.'
+'The password is invalid':
+    '': 'The password is invalid.'
+'Please enter a percentage value':
+    '': 'Please enter a percentage value.'
+'The values do not match':
+    '': 'The values do not match.'
+'Please enter a valid time':
+    '': 'Please enter a valid time.'
+'Please select a valid timezone':
+    '': 'Please select a valid timezone.'
+'Please enter a valid URL':
+    '': 'Please enter a valid URL.'
+'Please enter a valid search term':
+    '': 'Please enter a valid search term.'
+'Please provide a valid phone number':
+    '': 'Please provide a valid phone number.'
+'The checkbox has an invalid value':
+    '': 'The checkbox has an invalid value.'
+'Please enter a valid email address':
+    '': 'Please enter a valid email address.'
+'Please select a valid option':
+    '': 'Please select a valid option.'
+'Please select a valid range':
+    '': 'Please select a valid range.'
+'Please enter a valid week':
+    '': 'Please enter a valid week.'
+Error: __Error

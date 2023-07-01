@@ -50,13 +50,26 @@
 										{{ 'mws.goToGithub'|trans|raw }}
                 </a>
             </p>
+
+						<div class="nav-item dropdown">
+							{{ app.request.locale|locale_name(app.request.locale)|u.title }}
+							<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
+									<li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'en'}) }}">
+									{{ 'en'|locale_name('en')|u.title }}
+									</a></li>
+									<li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'fr'}) }}">
+									{{ 'fr'|locale_name('fr')|u.title }}
+									</a></li>
+							</ul>
+						</div>
+
             <p>
 								{{ 'mws.goToAppSupports'|trans|raw }}
                 <a href="https://github.com/Monwoo/web-starters-free/issues" target="_blank">
                 github.com/Monwoo/web-starters-free/issues
                 </a>
             </p>
-			<p>
+						<p>
 								{{ 'mws.goToBusinessSupports'|trans|raw }}
                 <a href="https://www.monwoo.com/don" target="_blank">
                 www.monwoo.com/don
@@ -68,10 +81,8 @@
 					{% set gdprLastCleanDate = gdprLastCleanDate ?? date('now') %}
 					{% set gdprNextCleanDate = gdprNextCleanDate ?? date('now') %}
 					{% set dateDiff = date().diff(gdprNextCleanDate) %}
-					{{ 'mws.gdpr.checkOK'|trans|raw }}
-					{{ 'mws.gdpr.checkIsMissing'|trans|raw }}
 					
-					{{ gdprSentinelRequestCheck ? "" : "" }}
+					{{ gdprSentinelRequestCheck ? 'mws.gdpr.checkOK'|trans|raw : 'mws.gdpr.checkIsMissing'|trans|raw }}
 					{{ 'mws.gdpr.endUserWarning'|trans({
 						'%gdprNextCleanDate%': gdprNextCleanDate|date(),
 						'%diffSign%': dateDiff.invert ? '-' : '',

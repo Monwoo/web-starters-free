@@ -39,6 +39,19 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+# https://symfony.com/doc/6.2/the-fast-track/en/28-intl.html
+# https://symfony.com/doc/5.4/the-fast-track/en/28-intl.html
+// TODO : from config ? also setup in apps/mws-sf-pdf-billings/backend/config/packages/translation.yaml
+
+// #[Route(
+//     '/{_locale?<%app.supported_locales%>}/',
+//     defaults: [
+//         '_locale' => null,
+//     ]
+// )] => sounds gread, but do not redirect '/' and add wierdy behavior on param checks...
+
+
+#[Route('/{_locale<%app.supported_locales%>}/')]
 class PdfBillingsController extends AbstractController
 {
     protected TCPDFController $tcpdf;
@@ -339,7 +352,7 @@ class PdfBillingsController extends AbstractController
         // )->getDataUri();
     }
 
-    #[Route('/', name: 'app_pdf_billings')]
+    #[Route('', name: 'app_pdf_billings')]
     public function index(
         Request $request,
         BillingConfigRepository $bConfigRepository
