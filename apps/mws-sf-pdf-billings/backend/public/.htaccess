@@ -24,6 +24,10 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Force https :
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
     # This RewriteRule is used to dynamically discover the RewriteBase path.
     # See https://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewriterule
     # Here we will compare the stripped per-dir path *relative to the filesystem
