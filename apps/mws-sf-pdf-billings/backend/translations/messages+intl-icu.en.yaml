@@ -1,13 +1,21 @@
 mws:
-    copyright: Copyright © MONWOO 2023, all rights reseved.
-    goToGithub: Go to Github open source project.
-    goToAppSupports: "To get support from us, you can use regular features of : "
-    goToBusinessSupports: "To support us and/or help us open more software, send a subvention with :"
+    copyright: 'Copyright © MONWOO 2023, all rights reseved.'
+    goToGithub: 'Go to Github open source project.'
+    goToAppSupports: 'To get support from us, you can use regular features of : '
+    goToBusinessSupports: 'To support us and/or help us open more software, send a subvention with :'
     gdpr:
-        checkOK: GDPR CHECK have been done.
-        checkIsMissing: Missing GDPR check.
-        endUserWarning: "<strong>WARNING : Next database reset</strong> for GDPR safe sentinel will be done at : { gdprNextCleanDate } (<strong>in { diffSign } { hoursLeftBeforeReset } hours</strong>. Db last clean was at : { gdprLastCleanDate })"
-        sentinelIsMissing: MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
-    resetAppToFactory: Reset application to Factory
+        checkOK: 'GDPR CHECK have been done.'
+        checkIsMissing: 'Missing GDPR check.'
+        endUserWarning: 'Server time : { currentTime }. <strong>WARNING : Next database reset</strong> for GDPR safe sentinel will be done at : { gdprNextCleanDate }. (<strong>in { diffSign } { hoursLeftBeforeReset } hours</strong>. Db last clean was at : { gdprLastCleanDate })'
+        sentinelIsMissing: 'MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php'
+    resetAppToFactory: 'Reset application to Factory'
     templates:
-        availableListLabel: <strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr before switching templates to be sure to have the default outlays and not the one you juste saved...)
+        availableListLabel: '<strong>Available templates :</strong>&nbsp; (please, remove all outlays called ''débours'' in fr before switching templates to be sure to have the default outlays and not the one you juste saved...)'
+        labels:
+            monwoo_01_WpDisplay: Monwoo Wp Display (svelte PWA frontend for WordPress)
+            monwoo_02_WpWaConfigECom: Monwoo Wa Config E-com (basic WooCommerce by Monwoo)
+            monwoo_03_PhpBackend: Monwoo PHP Backend 
+            monwoo_04_hybridApp: Monwoo hybrid applications
+            monwoo_05_PhpCrm: Monwoo PHP CRM
+            monwoo_06_analyticalStudy: Monwoo Analytical Study
+            monwoo_07_upkeep: Monwoo keepup

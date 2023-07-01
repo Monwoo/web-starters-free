@@ -1,13 +1,21 @@
 mws:
-    copyright: Copyright © MONWOO 2023, tous droits réservés.
-    goToGithub: Accédez au projet open source Github.
-    goToAppSupports: "Pour obtenir de l'aide de notre part, vous pouvez utiliser les fonctionnalités habituelles de :"
-    goToBusinessSupports: "Pour nous soutenir et/ou nous aider à ouvrir plus de logiciels, envoyez une subvention avec :"
+    copyright: 'Copyright © MONWOO 2023, tous droits réservés.'
+    goToGithub: 'Accédez au projet open source Github.'
+    goToAppSupports: "Pour obtenir de l'aide de notre part, vous pouvez utiliser les fonctionnalités habituelles de\_:"
+    goToBusinessSupports: 'Pour nous soutenir et/ou nous aider à ouvrir plus de logiciels, envoyez une subvention avec :'
     gdpr:
-        checkOK: Vérification GDPR effectuée.
-        checkIsMissing: Vérification GDPR manquante.
-        endUserWarning: "<strong>ATTENTION : La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le : { gdprNextCleanDate } (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le : { gdprLastCleanDate } )"
-        sentinelIsMissing: Sentinelle GDPR manquante, veuillez vérifier le service pour apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
-    resetAppToFactory: Réinitialiser l'application aux données d'usine
+        checkOK: 'Vérification GDPR effectuée.'
+        checkIsMissing: 'Vérification GDPR manquante.'
+        endUserWarning: "Heure du serveur : { currentTime }. <strong>ATTENTION\_: La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le\_: { gdprNextCleanDate }. (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le\_: { gdprLastCleanDate }.)"
+        sentinelIsMissing: 'Sentinelle GDPR manquante, veuillez vérifier le service pour apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php'
+    resetAppToFactory: 'Réinitialiser l''application aux données d''usine'
     templates:
-        availableListLabel: <strong>Modèles disponibles :</strong> (veuillez supprimer toutes les dépenses appelées 'débours' avant de changer de modèle pour être sûr d'avoir les dépenses par défaut et non celle que vous venez d'enregistrer...)
+        availableListLabel: "<strong>Modèles disponibles :</strong>&nbsp; (veuillez supprimer toutes les dépenses appelées 'débours' avant de changer de modèle pour être sûr d'avoir les dépenses par défaut et non celle que vous venez d'enregistrer...)"
+        labels:
+            monwoo_01_WpDisplay: Monwoo Wp Display (PWA Svelte Frontend pour WordPress)
+            monwoo_02_WpWaConfigECom: Monwoo Wa Config E-com (WooCommerce basique par Monwoo)
+            monwoo_03_PhpBackend: Monwoo Backend PHP 
+            monwoo_04_hybridApp: Monwoo Application hybrides
+            monwoo_05_PhpCrm: Monwoo CRM en PHP
+            monwoo_06_analyticalStudy: Monwoo Etude Analytique
+            monwoo_07_upkeep: Monwoo maintenances

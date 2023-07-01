@@ -295,7 +295,7 @@ composer update
 php bin/console translation:extract --dump-messages fr
 # Update translations file from source codes by locale :
 php bin/console translation:extract --format=yaml \
---as-tree=3 --force fr
+--as-tree=7 --force fr
 
 # prefix, output format, domain, sorting, etc... :
 php bin/console translation:extract --help

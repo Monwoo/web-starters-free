@@ -84,10 +84,11 @@
 					
 					{{ gdprSentinelRequestCheck ? 'mws.gdpr.checkOK'|trans|raw : 'mws.gdpr.checkIsMissing'|trans|raw }}
 					{{ 'mws.gdpr.endUserWarning'|trans({
-						'%gdprNextCleanDate%': gdprNextCleanDate|date(),
+						'%gdprNextCleanDate%': gdprNextCleanDate|format_datetime,
 						'%diffSign%': dateDiff.invert ? '-' : '',
 						'%hoursLeftBeforeReset%': (dateDiff.days * 24.0 + dateDiff.h + dateDiff.i / 60.0)|format_number({fraction_digit: 2}),
-						'%gdprLastCleanDate%': gdprLastCleanDate|date(),
+						'%gdprLastCleanDate%': gdprLastCleanDate|format_datetime,
+						'%currentTime%': 'now'|format_datetime('short'),
 					})|raw }}
 				{% else %}
 					{{ 'mws.gdpr.sentinelIsMissing'|trans|raw }}
@@ -100,18 +101,29 @@
 			<p style="display:flex;flex-wrap: wrap;">
 					{{ 'mws.templates.availableListLabel'|trans|raw }}
 				<br/><br/>
-				{% for monwooTemplate in [ 
+				{% set monwooTemplates = [ 
 					'monwoo', 'monwoo-02-wp-e-com', 'monwoo-03-php-backend',
 					'monwoo-04-hybrid-app', 'monwoo-05-php-crm',
-					'monwoo-06-analytical-study', 'monwoo-07-upkeep',  ] %}
+					'monwoo-06-analytical-study', 'monwoo-07-upkeep' ] %}
+				{# TIPS : setup with FULL translated string for extractions 
+				tools to extract translated strings... #}
+				{% set monwooTemplatesTranslatedLabels = {
+					'monwoo' : 'mws.templates.labels.monwoo_01_WpDisplay'|trans,
+					'monwoo-02-wp-e-com' : 'mws.templates.labels.monwoo_02_WpWaConfigECom'|trans,
+					'monwoo-03-php-backend' : 'mws.templates.labels.monwoo_03_PhpBackend'|trans,
+					'monwoo-04-hybrid-app' : 'mws.templates.labels.monwoo_04_hybridApp'|trans,
+					'monwoo-05-php-crm' : 'mws.templates.labels.monwoo_05_PhpCrm'|trans,
+					'monwoo-06-analytical-study' : 'mws.templates.labels.monwoo_06_analyticalStudy'|trans,
+					'monwoo-07-upkeep' : 'mws.templates.labels.monwoo_07_upkeep'|trans,
+				} %}
+				{% for monwooTemplate in monwooTemplates %}
 					<a href="{{ path('app_pdf_billings', {
 						billing_config_submitable: {
 							clientSlug: billingConfig.clientSlug,
 							quotationTemplate: monwooTemplate,
 						}, ts:tStamp
 					}) }}" style="font-size:16pt;padding:7px;margin:7px;">
-					{{ ('mws.templates.labels.' ~ monwooTemplate)|trans|raw }}
-						{{monwooTemplate}}
+					{{ monwooTemplatesTranslatedLabels[monwooTemplate] }}
 					</a> &nbsp;&nbsp;&nbsp;
 				{% endfor %}
 			<br/>
