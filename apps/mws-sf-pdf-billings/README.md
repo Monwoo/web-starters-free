@@ -291,6 +291,21 @@ composer recipes
 rm -rf vendor composer.lock var/cache var/log
 composer update
 
+# Preview new translations from source codes by locale :
+php bin/console translation:extract --dump-messages fr
+# Update translations file from source codes by locale :
+php bin/console translation:extract --format=yaml \
+--as-tree=3 --force fr
+
+# prefix, output format, domain, sorting, etc... :
+php bin/console translation:extract --help
+
+# Each time you create a new message catalog
+# (or install a bundle that includes a translation catalog),
+# be sure to clear your cache so that Symfony
+# can discover the new translation resources:
+php bin/console cache:clear
+
 # Forseen :
 # https://symfonycasts.com/screencast/stimulus/controllers
 php bin/console make:stimulus-controller

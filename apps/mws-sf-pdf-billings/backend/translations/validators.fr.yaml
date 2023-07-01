@@ -1,0 +1,69 @@
+'This form should not contain extra fields':
+    '': 'Ce formulaire ne doit pas contenir de champs supplémentaires.'
+'The uploaded file was too large':
+    ' Please try to upload a smaller file':
+        '': 'Le fichier téléchargé est trop volumineux. Merci d''essayer d''envoyer un fichier plus petit.'
+'The CSRF token is invalid':
+    ' Please try to resubmit the form':
+        '': 'Le jeton CSRF est invalide. Veuillez renvoyer le formulaire.'
+'This value is not a valid HTML5 color':
+    '': 'Cette valeur n''est pas une couleur HTML5 valide.'
+'Please enter a valid birthdate':
+    '': 'Veuillez entrer une date de naissance valide.'
+'The selected choice is invalid':
+    '': 'Le choix sélectionné est invalide.'
+'The collection is invalid':
+    '': 'La collection est invalide.'
+'Please select a valid color':
+    '': 'Veuillez sélectionner une couleur valide.'
+'Please select a valid country':
+    '': 'Veuillez sélectionner un pays valide.'
+'Please select a valid currency':
+    '': 'Veuillez sélectionner une devise valide.'
+'Please choose a valid date interval':
+    '': 'Veuillez choisir un intervalle de dates valide.'
+'Please enter a valid date and time':
+    '': 'Veuillez saisir une date et une heure valides.'
+'Please enter a valid date':
+    '': 'Veuillez entrer une date valide.'
+'Please select a valid file':
+    '': 'Veuillez sélectionner un fichier valide.'
+'The hidden field is invalid':
+    '': 'Le champ masqué n''est pas valide.'
+'Please enter an integer':
+    '': 'Veuillez saisir un entier.'
+'Please select a valid language':
+    '': 'Veuillez sélectionner une langue valide.'
+'Please select a valid locale':
+    '': 'Veuillez sélectionner une langue valide.'
+'Please enter a valid money amount':
+    '': 'Veuillez saisir un montant valide.'
+'Please enter a number':
+    '': 'Veuillez saisir un nombre.'
+'The password is invalid':
+    '': 'Le mot de passe est invalide.'
+'Please enter a percentage value':
+    '': 'Veuillez saisir un pourcentage valide.'
+'The values do not match':
+    '': 'Les valeurs ne correspondent pas.'
+'Please enter a valid time':
+    '': 'Veuillez saisir une heure valide.'
+'Please select a valid timezone':
+    '': 'Veuillez sélectionner un fuseau horaire valide.'
+'Please enter a valid URL':
+    '': 'Veuillez saisir une URL valide.'
+'Please enter a valid search term':
+    '': 'Veuillez saisir un terme de recherche valide.'
+'Please provide a valid phone number':
+    '': 'Veuillez fournir un numéro de téléphone valide.'
+'The checkbox has an invalid value':
+    '': 'La case à cocher a une valeur non valide.'
+'Please enter a valid email address':
+    '': 'Veuillez saisir une adresse email valide.'
+'Please select a valid option':
+    '': 'Veuillez sélectionner une option valide.'
+'Please select a valid range':
+    '': 'Veuillez sélectionner une plage valide.'
+'Please enter a valid week':
+    '': 'Veuillez entrer une semaine valide.'
+Error: __Error

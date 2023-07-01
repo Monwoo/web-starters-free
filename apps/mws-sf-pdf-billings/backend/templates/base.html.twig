@@ -42,21 +42,25 @@
 			    {% endblock %} #}
 
             <p>
+							{{ 'mws.copyright'|trans|raw }}
                 Copyright © MONWOO 2023, all rights reseved.
                 <br/>
                 <br/>
                 <a href="https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-sf-pdf-billings"
                 target="_blank">
+										{{ 'mws.goToGithub'|trans|raw }}
                     Go to Github open source project.
                 </a>
             </p>
             <p>
+								{{ 'mws.goToAppSupports'|trans|raw }}
                 To get support from us, you can use regular features of : 
                 <a href="https://github.com/Monwoo/web-starters-free/issues" target="_blank">
                 github.com/Monwoo/web-starters-free/issues
                 </a>
             </p>
 			<p>
+								{{ 'mws.goToBusinessSupports'|trans|raw }}
                 To support us and/or help us open more software, send a subvention with :
                 <a href="https://www.monwoo.com/don" target="_blank">
                 www.monwoo.com/don
@@ -68,6 +72,10 @@
 					{% set gdprLastCleanDate = gdprLastCleanDate ?? date('now') %}
 					{% set gdprNextCleanDate = gdprNextCleanDate ?? date('now') %}
 					{% set dateDiff = date().diff(gdprNextCleanDate) %}
+					{{ 'mws.gdpr.checkOK'|trans|raw }}
+					{{ 'mws.gdpr.checkIsMissing'|trans|raw }}
+					{{ 'mws.gdpr.endUserWarning'|trans|raw }}
+					
 					{{ gdprSentinelRequestCheck ? "GDPR CHECK have been done." : "Missing GDPR check." }}
 					<strong>WARNING : Next database reset</strong>
 					for GDPR safe sentinel will be done at :
@@ -78,14 +86,17 @@
 						hours</strong>. Db last clean was at :
 					{{ gdprLastCleanDate|date() }})
 				{% else %}
+					{{ 'mws.gdpr.sentinelIsMissing'|trans|raw }}
 					MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
 				{% endif %}
 				<br/>
 				<a href="{{ path('app_factory_reset') }}" target="_blank" onclick="return confirm('Are you sure ? Will reset the serveur data for ALL USAGES.')">
+					{{ 'mws.resetAppToFactory'|trans|raw }}
 					Reset application to Factory
 				</a>
 			</p>
 			<p style="display:flex;flex-wrap: wrap;">
+					{{ 'mws.templates.availableListLabel'|trans|raw }}
 				<strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr 
 				before switching templates to be sure to have the default outlays and not 
 				the one you juste saved...)<br/><br/>
@@ -99,6 +110,7 @@
 							quotationTemplate: monwooTemplate,
 						}, ts:tStamp
 					}) }}" style="font-size:16pt;padding:7px;margin:7px;">
+					{{ ('mws.templates.labels.' ~ monwooTemplate)|trans|raw }}
 						{{monwooTemplate}}
 					</a> &nbsp;&nbsp;&nbsp;
 				{% endfor %}

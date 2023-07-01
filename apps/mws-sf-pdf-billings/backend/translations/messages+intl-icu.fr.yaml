@@ -1,0 +1,13 @@
+mws:
+    copyright: __mws.copyright
+    goToGithub: __mws.goToGithub
+    goToAppSupports: __mws.goToAppSupports
+    goToBusinessSupports: __mws.goToBusinessSupports
+    gdpr:
+        checkOK: __mws.gdpr.checkOK
+        checkIsMissing: __mws.gdpr.checkIsMissing
+        endUserWarning: __mws.gdpr.endUserWarning
+        sentinelIsMissing: __mws.gdpr.sentinelIsMissing
+    resetAppToFactory: __mws.resetAppToFactory
+    templates:
+        availableListLabel: __mws.templates.availableListLabel
