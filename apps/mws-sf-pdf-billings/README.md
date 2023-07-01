@@ -45,6 +45,7 @@ open http://localhost:8000
 ```
 
 <div style="page-break-before: always;"></div>
+
 ## Build for Production
 
 ```bash
@@ -55,15 +56,16 @@ alias composer="php '$PWD/composer.phar'"
 cd apps/mws-sf-pdf-billings/backend
 
 # CLEAN DEV ENV (will lose your dev, be sure of it :)
-rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env
+rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
 
 echo 'APP_ENV=prod' > .env
+export APP_ENV=prod
 
 # Build for prodution
 mkdir config/jwt
 # WARNING : use hard pass other than : jwt_test (and setup accordingly in .env.prod)
 openssl genrsa -out config/jwt/private.pem -aes256 4096
-openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass : jwt_test
+openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 
 # APP_ENV=prod composer install --no-dev 
 APP_ENV=prod composer install --no-ansi --no-dev \
@@ -75,12 +77,17 @@ APP_ENV=prod php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 APP_ENV=prod composer dump-env prod
+rm -rf var/cache var/log 
 
 zip -r mws-sf-pdf-billings.zip .env.prod \
 .htaccess composer.json config public src \
-templates vendor var .env .env.local.php
+templates translations \
+vendor var .env .env.local.php
 
-````
+```
+
+<div style="page-break-before: always;"></div>
+
 ## Build production for debugs (for pre-prod debugs)
 
 ```bash
@@ -91,7 +98,9 @@ alias composer="php '$PWD/composer.phar'"
 cd apps/mws-sf-pdf-billings/backend
 
 # CLEAN DEV ENV (will lose your dev, be sure of it :)
-rm -rf mws-sf-pdf-billings.zip var vendor config/jwt
+rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
+
+export APP_ENV=dev
 
 # Build for prodution
 mkdir config/jwt
@@ -108,8 +117,12 @@ cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 zip -r mws-sf-pdf-billings.zip .env.prod \
 .htaccess composer.json config public src \
-templates vendor var .env
-````
+templates translations \
+vendor var .env .env.local.php
+```
+
+<div style="page-break-before: always;"></div>
+
 ## Going further
 
 ```bash
