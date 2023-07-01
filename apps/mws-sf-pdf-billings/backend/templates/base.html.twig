@@ -43,25 +43,21 @@
 
             <p>
 							{{ 'mws.copyright'|trans|raw }}
-                Copyright © MONWOO 2023, all rights reseved.
                 <br/>
                 <br/>
                 <a href="https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-sf-pdf-billings"
                 target="_blank">
 										{{ 'mws.goToGithub'|trans|raw }}
-                    Go to Github open source project.
                 </a>
             </p>
             <p>
 								{{ 'mws.goToAppSupports'|trans|raw }}
-                To get support from us, you can use regular features of : 
                 <a href="https://github.com/Monwoo/web-starters-free/issues" target="_blank">
                 github.com/Monwoo/web-starters-free/issues
                 </a>
             </p>
 			<p>
 								{{ 'mws.goToBusinessSupports'|trans|raw }}
-                To support us and/or help us open more software, send a subvention with :
                 <a href="https://www.monwoo.com/don" target="_blank">
                 www.monwoo.com/don
                 </a>
@@ -74,32 +70,25 @@
 					{% set dateDiff = date().diff(gdprNextCleanDate) %}
 					{{ 'mws.gdpr.checkOK'|trans|raw }}
 					{{ 'mws.gdpr.checkIsMissing'|trans|raw }}
-					{{ 'mws.gdpr.endUserWarning'|trans|raw }}
 					
-					{{ gdprSentinelRequestCheck ? "GDPR CHECK have been done." : "Missing GDPR check." }}
-					<strong>WARNING : Next database reset</strong>
-					for GDPR safe sentinel will be done at :
-					{{ gdprNextCleanDate|date() }}
-					(<strong>in
-						{{ dateDiff.invert ? '-' : '' }}
-						{{ (dateDiff.days * 24.0 + dateDiff.h + dateDiff.i / 60.0)|format_number({fraction_digit: 2}) }}
-						hours</strong>. Db last clean was at :
-					{{ gdprLastCleanDate|date() }})
+					{{ gdprSentinelRequestCheck ? "" : "" }}
+					{{ 'mws.gdpr.endUserWarning'|trans({
+						'%gdprNextCleanDate%': gdprNextCleanDate|date(),
+						'%diffSign%': dateDiff.invert ? '-' : '',
+						'%hoursLeftBeforeReset%': (dateDiff.days * 24.0 + dateDiff.h + dateDiff.i / 60.0)|format_number({fraction_digit: 2}),
+						'%gdprLastCleanDate%': gdprLastCleanDate|date(),
+					})|raw }}
 				{% else %}
 					{{ 'mws.gdpr.sentinelIsMissing'|trans|raw }}
-					MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
 				{% endif %}
 				<br/>
 				<a href="{{ path('app_factory_reset') }}" target="_blank" onclick="return confirm('Are you sure ? Will reset the serveur data for ALL USAGES.')">
 					{{ 'mws.resetAppToFactory'|trans|raw }}
-					Reset application to Factory
 				</a>
 			</p>
 			<p style="display:flex;flex-wrap: wrap;">
 					{{ 'mws.templates.availableListLabel'|trans|raw }}
-				<strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr 
-				before switching templates to be sure to have the default outlays and not 
-				the one you juste saved...)<br/><br/>
+				<br/><br/>
 				{% for monwooTemplate in [ 
 					'monwoo', 'monwoo-02-wp-e-com', 'monwoo-03-php-backend',
 					'monwoo-04-hybrid-app', 'monwoo-05-php-crm',

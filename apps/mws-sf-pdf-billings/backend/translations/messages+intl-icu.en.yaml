@@ -6,8 +6,8 @@ mws:
     gdpr:
         checkOK: GDPR CHECK have been done.
         checkIsMissing: Missing GDPR check.
-        endUserWarning: "<strong>WARNING : Next database reset</strong> for GDPR safe sentinel will be done at : { gdprNextCleanDate } (<strong>in { diffSign } { hoursLeftBeforeReset } hours</strong>. Db last clean was at : { gdprLastCleanDate })"
+        endUserWarning: "<strong>WARNING : Next database reset</strong> for GDPR safe sentinel will be done at : { gdprNextCleanDate } (<strong>in { diffSign } { hoursLeftBeforeReset } hours</strong>. Db last clean was at : { gdprLastCleanDate|date })"
         sentinelIsMissing: MISSING GDPR Sentinel, please check service for apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
     resetAppToFactory: Reset application to Factory
     templates:
-        availableListLabel: <strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr before switching templates to be sure to have the default outlays and not the one you juste saved...)
+        availableListLabel: <strong>Available templates :</strong> (please, remove all outlays called 'débours' in fr  before switching templates to be sure to have the default outlays and not the one you juste saved...)

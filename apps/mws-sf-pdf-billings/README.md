@@ -306,6 +306,20 @@ php bin/console translation:extract --help
 # can discover the new translation resources:
 php bin/console cache:clear
 
+# tips : if you have some html to convert to yaml string, you can use :
+open https://olayaml.com/yaml-stringifier
+# MayBe : internal page and service for wysiwyg translations ?
+
+# https://symfony.com/doc/current/translation.html
+# Installing and Configuring a Third Party Provider :
+composer require symfony/loco-translation-provider
+# You'll now have a new line in your .env file that you can uncomment:
+LOCO_DSN=loco://API_KEY@default
+# Pushing Translations (OVERWRITE provider values)
+php bin/console translation:push loco --force
+# and Pulling (OVERWRITE local files values)
+php bin/console translation:pull loco --force
+
 # Forseen :
 # https://symfonycasts.com/screencast/stimulus/controllers
 php bin/console make:stimulus-controller
