@@ -58,6 +58,12 @@ cd apps/mws-sf-pdf-billings/backend
 # CLEAN DEV ENV (will lose your dev, be sure of it :)
 rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
 
+# Clean possible dev configs (if no previous prod builds...)
+mkdir -p config-disabled/packages config-disabled/routes
+mv config/routes/web_profiler.yaml config-disabled/routes/
+mv config/packages/debug.yaml config/packages/web_profiler.yaml \
+config-disabled/packages/
+
 echo 'APP_ENV=prod' > .env
 export APP_ENV=prod
 
@@ -88,7 +94,7 @@ vendor var .env .env.local.php
 
 <div style="page-break-before: always;"></div>
 
-## Build production for debugs (for pre-prod debugs)
+## Build production for debugs (for full pre-prod debugs)
 
 ```bash
 # tested under php 8.1.2
@@ -99,6 +105,9 @@ cd apps/mws-sf-pdf-billings/backend
 
 # CLEAN DEV ENV (will lose your dev, be sure of it :)
 rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
+
+# bring back dev configs (that MIGHT move due to production builds)
+mv config-disabled/packages/* config/packages/
 
 export APP_ENV=dev
 
@@ -336,6 +345,11 @@ php bin/console translation:pull loco --force
 # Forseen :
 # https://symfonycasts.com/screencast/stimulus/controllers
 php bin/console make:stimulus-controller
+
+# We did use file structure changes to avoid not loaded bundles,
+# might be possible with PHP code too :
+# https://symfony.com/doc/current/bundles/extension.html
+
 ```
 
 ## Useful Links

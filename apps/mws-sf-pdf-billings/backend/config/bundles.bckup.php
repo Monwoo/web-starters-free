@@ -1,5 +1,5 @@
 <?php
-
+// TODO : not so good to edit bundles.php (will be rewrite on each composer new package installs...)
 $bundles = [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
