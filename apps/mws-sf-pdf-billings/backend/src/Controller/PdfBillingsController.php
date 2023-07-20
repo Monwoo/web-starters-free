@@ -82,11 +82,11 @@ class PdfBillingsController extends AbstractController
             $bConfig->setClientName('______________________________');
             $bConfig->setClientSlug($slug ?? '--');
             $bConfig->setQuotationNumber('________________');
-            $bConfig->setClientEmail('______________________________');
-            $bConfig->setClientTel('______________________________');
+            $bConfig->setClientEmail('📂@ ______________________________');
+            $bConfig->setClientTel('📞 ______________________________');
             $bConfig->setClientSIRET('______________________________');
             $bConfig->setClientTvaIntracom('______________________________');
-            $bConfig->setClientAddressL1('______________________________');
+            $bConfig->setClientAddressL1('🧭 ______________________________');
             $bConfig->setClientAddressL2('______________________________');
             $bConfig->setClientWebsite('______________________________');
             $bConfig->setClientLogoUrl('______________________________');
