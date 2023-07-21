@@ -59,7 +59,11 @@
 			{% endif %}
 			{% if outlay.percentOnBusinessTotal %}
 				{# TIPS : was ONE space wrong alignment, wrapping with 'span' tag did solve the trouble #}
-				<br/><span>[ {{ outlay.percentOnBusinessTotal|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} sur
+				<br/><span>[ {{ ( outlay.percentOnBusinessTotal +
+					+ outlay.percentOnBusinessTotal * businessTotal
+					* outlay.taxesPercentAddedToPercentOnBusinessTotal
+					/ businessTotal
+				) |format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} T.T.C. sur
 				{{ businessTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }} ]</span>
 			{% endif %}
 			</div>

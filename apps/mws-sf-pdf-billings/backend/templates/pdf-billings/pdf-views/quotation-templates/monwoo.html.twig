@@ -1,421 +1,429 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
-	<style>
-{{pdfCssStyles}}
-.quotation-item .header {
-	background-color: #11589A;
-	color: #fee6bf;
-}
-.quotation-outlay .header {
-	background-color: #11589A;
-	color: white;
-}
-.quotation-item .header th, .quotation-outlay .header th {
-	border-left: solid 1px white;
-	border-right: solid 1px white;
-}
-
-.quotation-item .data td, .quotation-outlay .data td {
-	border-left: solid 1px black;
-	border-right: solid 1px black;
-}
-</style>
-	<style>
-
-.empty-space {
-	font-size: 0;
-}
-</style>
-
-{# 
-https://stackoverflow.com/questions/31451779/tcpdf-adding-a-background-to-a-table-cell-or-div-that-shows-on-pdf
-Currently, only the following CSS attributes are supported:
-
-font-family
-font-weight
-font-style
-color
-background-color
-text-decoration
-width
-height
-text-align
-
-
-	text-align: center; =>  work in style= attr ONLY...
-
-#}
-
-{# DEBUGS colors : #}
-{# .empty-space is already defined, if exact same syntax,
-will loose previous class definition...
-So we add the wildcard 'STAR' to ensure new rules for TCPDF parser
-#}
-{% set debugColors = false %}
-	{% if debugColors %}
-		<style>
-*.empty-space {
-	background-color: #00808F;
-}
-
-*.header {
-	background-color: #FF0000;
-}
-*.business-logo {
-	background-color: #00FF00;
-}
-*.quotation-title {
-	background-color: #AA0000;
-}
-*.client-logo {
-	background-color: #0000FF;
-}
-
-*.contacts .business {
-	background-color: #0FF00F;
-}
-*.contacts .client {
-	background-color: #F0F00F;
-}
-
-*.thanks {
-	background-color: #0AA00A;
-}
-*.temporality {
-	background-color: #A0A00A;
-}
-
-*.aim-title {
-	background-color: #AF9F30;
-}
-
-*.businsess-details {
-	background-color: #D1B000;
-}
-</style>
-{% endif %}
-{# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
-https://stackoverflow.com/questions/19002634/how-to-use-external-css-in-tcpdf-pdf-generation
-https://stackoverflow.com/questions/11395171/why-does-tcpdf-ignore-my-inline-css
-Some things won't work when included within <style> tags, however they will if added in a style="" attribute in the HTML tag. E.g. table padding – this doesn't work
-table {
-    padding: 5px;
-} 
-
-TCPDF has a very limited CSS support. It doesn't support all attributes.
-#}
-
-{% if billingConfig %}
-	{# // TODO: empirique way for now, go check pdf default mesure unit ?... #}
-	{% set fullWidth = 569 %}
-	{% set businessPercentDiscount = billingConfig.percentDiscount %}
-
-	{# 
-	TIPS : OK, will work in dev, BUT TOO hacky, will messup at prod twig cache level...
-	{% block workloadPriceSetup %}
-    {% set sessionSuccess = app.session.set('defaultBusinessWorkloadHours', 6) %}
-    {% set sessionSuccess = app.session.set('pricePerHourWithoutDiscount', 60) %}
-    {% set sessionSuccess = app.session.set('licenseWpDisplayPrice', 40) %}
-    {% set sessionSuccess = app.session.set('licenseWpDisplayDiscount', 0.25) %}
-    {% set sessionSuccess = app.session.set(
-			'businessWorkloadTemplate',
-			'pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig'
-		) %}
-	{% endblock %} #}
-
-	{% set pricePerHour = pricePerHourWithoutDiscount * (1 - businessPercentDiscount) %}
-	{% set licenseWpDisplay = licenseWpDisplayPrice * (1 - licenseWpDisplayDiscount) %}
+<style>
+	{{pdfCssStyles}}
+	.quotation-item .header {
+		background-color: #11589A;
+		color: #fee6bf;
+	}
+	.quotation-outlay .header {
+		background-color: #11589A;
+		color: white;
+	}
+	.quotation-item .header th, .quotation-outlay .header th {
+		border-left: solid 1px white;
+		border-right: solid 1px white;
+	}
 	
-	{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours %}
-	{% set businessWorkloadDetails = billingConfig.businessWorkloadDetails
-	?? include(businessWorkloadTemplate,
-	{businessWorkloadHours:businessWorkloadHours}) %}
-	{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.jpg' %}
-	{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
-	: ("now"|date) %}
-	{% set quotationEnd = billingConfig.quotationEndDay
-	? billingConfig.quotationEndDay : quotationStart | date_modify("+15 day") %}
-
-	{% set outlaysForseenTotal = billingConfig.outlays|reduce(
-		(acc, o) => acc + o.providerTotalWithTaxesForseenForClient, 0
-	) %}
-
-	{% set outlaysAddedPriceTotalForBusiness = billingConfig.outlays|reduce(
-		(acc, outlay) => acc + (outlay.useProviderAddedPriceForBusiness
-		? outlay.providerAddedPrice
-		: 0), 0
-	) %}
-
-	{# TIPS : businessTotal hold the total HT base of this quotation #}
-	{% set businessTotal = outlaysAddedPriceTotalForBusiness
-	+ businessWorkloadHours * pricePerHour %}
-
-	{# TODO : remove computation duplication : use OutlayRepository->computeTaxes ?
-	or extend OutlayEntity as ComputedOutlayEntity
-	(but add model for comput stuff, not so good....) 
-	or add a MwsCompute SERVICE to handles all sub computings on any entities ? #}
-	{% set outlaysTaxesIncludedInBusinessTotalPercent = billingConfig.outlays|reduce(
-		(acc, outlay) => acc + (
-			outlay.percentOnBusinessTotal * businessTotal
-			-  outlay.percentOnBusinessTotal * businessTotal
-			/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal)
-		), 0
-	) %}
-
-	{% set outlaysTaxes = billingConfig.outlays|reduce((acc, outlay) => acc + (
-			outlay.providerAddedPriceTaxesPercent
-			? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
-			: outlay.providerAddedPriceTaxes
-		), 0 + outlaysTaxesIncludedInBusinessTotalPercent
-	 + outlayOnBusinessTotal * outlay.taxesPercentAddedToPercentOnBusinessTotal
-	 %}
-
-	{% set outlaysPriceOnBusinessTotal = billingConfig.outlays|reduce((acc, outlay) => acc + (
-			outlay.percentOnBusinessTotal * businessTotal
-	), 0) %}
-
-	{% set outlaysAddedPriceTotalForQuotation = billingConfig.outlays|reduce(
-		(acc, outlay) => acc + ( not outlay.useProviderAddedPriceForBusiness
-		? outlay.providerAddedPrice
-		: 0), 0
-	) %}
-
-	{# TODO : better namings, quotationTotal might be monwooQuotationTotal ?
-	Need to check priority : Monwoo getting the full money (this includes outlays...)
-	or Monwoo getting it's business Amounts, outlays being other stuff (Monwoo only
-	transfert the money to the provider and register the paiement on the client's name...)
+	.quotation-item .data td, .quotation-outlay .data td {
+		border-left: solid 1px black;
+		border-right: solid 1px black;
+	}
+	</style>
+		<style>
+	
+	.empty-space {
+		font-size: 0;
+	}
+	</style>
+	
+	{# 
+	https://stackoverflow.com/questions/31451779/tcpdf-adding-a-background-to-a-table-cell-or-div-that-shows-on-pdf
+	Currently, only the following CSS attributes are supported:
+	
+	font-family
+	font-weight
+	font-style
+	color
+	background-color
+	text-decoration
+	width
+	height
+	text-align
+	
+	
+		text-align: center; =>  work in style= attr ONLY...
+	
 	#}
-	{% set quotationTotal = businessTotal + licenseWpDisplay + outlaysAddedPriceTotalForQuotation %}
-	{% set totalPriceWithTaxes = quotationTotal
-	+ outlaysPriceOnBusinessTotal + (outlaysTaxes - outlaysTaxesIncludedInBusinessTotalPercent) %}
-	{% set totalPriceWithoutTaxes = totalPriceWithTaxes - outlaysTaxes %}
+	
+	{# DEBUGS colors : #}
+	{# .empty-space is already defined, if exact same syntax,
+	will loose previous class definition...
+	So we add the wildcard 'STAR' to ensure new rules for TCPDF parser
+	#}
+	{% set debugColors = false %}
+		{% if debugColors %}
+			<style>
+	*.empty-space {
+		background-color: #00808F;
+	}
+	
+	*.header {
+		background-color: #FF0000;
+	}
+	*.business-logo {
+		background-color: #00FF00;
+	}
+	*.quotation-title {
+		background-color: #AA0000;
+	}
+	*.client-logo {
+		background-color: #0000FF;
+	}
+	
+	*.contacts .business {
+		background-color: #0FF00F;
+	}
+	*.contacts .client {
+		background-color: #F0F00F;
+	}
+	
+	*.thanks {
+		background-color: #0AA00A;
+	}
+	*.temporality {
+		background-color: #A0A00A;
+	}
+	
+	*.aim-title {
+		background-color: #AF9F30;
+	}
+	
+	*.businsess-details {
+		background-color: #D1B000;
+	}
+	</style>
+	{% endif %}
+	{# https://stackoverflow.com/questions/3404095/tcpdf-not-render-all-css-properties
+	https://stackoverflow.com/questions/19002634/how-to-use-external-css-in-tcpdf-pdf-generation
+	https://stackoverflow.com/questions/11395171/why-does-tcpdf-ignore-my-inline-css
+	Some things won't work when included within <style> tags, however they will if added in a style="" attribute in the HTML tag. E.g. table padding – this doesn't work
+	table {
+			padding: 5px;
+	} 
+	
+	TCPDF has a very limited CSS support. It doesn't support all attributes.
+	#}
+	
+	{% if billingConfig %}
+		{# // TODO: empirique way for now, go check pdf default mesure unit ?... #}
+		{% set fullWidth = 569 %}
+		{% set businessPercentDiscount = billingConfig.percentDiscount %}
+	
+		{# 
+		TIPS : OK, will work in dev, BUT TOO hacky, will messup at prod twig cache level...
+		{% block workloadPriceSetup %}
+			{% set sessionSuccess = app.session.set('defaultBusinessWorkloadHours', 6) %}
+			{% set sessionSuccess = app.session.set('pricePerHourWithoutDiscount', 60) %}
+			{% set sessionSuccess = app.session.set('licenseWpDisplayPrice', 40) %}
+			{% set sessionSuccess = app.session.set('licenseWpDisplayDiscount', 0.25) %}
+			{% set sessionSuccess = app.session.set(
+				'businessWorkloadTemplate',
+				'pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig'
+			) %}
+		{% endblock %} #}
+	
+		{% set pricePerHour = pricePerHourWithoutDiscount * (1 - businessPercentDiscount) %}
+		{% set licenseWpDisplay = licenseWpDisplayPrice * (1 - licenseWpDisplayDiscount) %}
+		
+		{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours %}
+		{% set businessWorkloadDetails = billingConfig.businessWorkloadDetails
+		?? include(businessWorkloadTemplate,
+		{businessWorkloadHours:businessWorkloadHours}) %}
+		{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.jpg' %}
+		{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
+		: ("now"|date) %}
+		{% set quotationEnd = billingConfig.quotationEndDay
+		? billingConfig.quotationEndDay : quotationStart | date_modify("+15 day") %}
+	
+		{% set outlaysForseenTotal = billingConfig.outlays|reduce(
+			(acc, o) => acc + o.providerTotalWithTaxesForseenForClient, 0
+		) %}
+	
+		{% set outlaysAddedPriceTotalForBusiness = billingConfig.outlays|reduce(
+			(acc, outlay) => acc + (outlay.useProviderAddedPriceForBusiness
+			? outlay.providerAddedPrice
+			: 0), 0
+		) %}
+	
+		{# TIPS : businessTotal hold the total HT base of this quotation #}
+		{% set businessTotal = outlaysAddedPriceTotalForBusiness
+		+ businessWorkloadHours * pricePerHour %}
+	
+		{# TODO : remove computation duplication : use OutlayRepository->computeTaxes ?
+		or extend OutlayEntity as ComputedOutlayEntity
+		(but add model for comput stuff, not so good....) 
+		or add a MwsCompute SERVICE to handles all sub computings on any entities ? #}
+		{% set outlaysTaxesIncludedInBusinessTotalPercent = billingConfig.outlays|reduce(
+			(acc, outlay) => acc + (
+				outlay.percentOnBusinessTotal * businessTotal
+				-  outlay.percentOnBusinessTotal * businessTotal
+				/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal)
+			), 0
+		) %}
+		{% set outlaysTaxesAddedToBusinessTotalPercent = billingConfig.outlays|reduce(
+			(acc, outlay) => acc + (
+				outlay.percentOnBusinessTotal * businessTotal
+				* outlay.taxesPercentAddedToPercentOnBusinessTotal
+			), 0
+		) %}
 
-
-	{% set forseenTotal = totalPriceWithTaxes + outlaysForseenTotal %}
-
-	{% if viewPart != 'CGV' %}
-		<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;">
-			<tr>
-				<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
-					<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
-				</td>
-				<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
-															font-weight:bold;color:#11589A;font-size:14pt;">
-					Devis n°{{billingConfig.quotationNumber}}
-				</td>
-				<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
-					<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}"/>
-				</td>
-			</tr>
-		</table>
-		<table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
-			<tr>
-				<td class="business" style="width:{{ 0.4 * fullWidth }};">
-					{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
-            'app': app, 'billingConfig': billingConfig
-        } %}
-				</td>
-				<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
-				text-align: center;
-				font-weight:bold;color:#11589A;font-size:16pt;
-				">
-					<div>
-						<span style="color:#000000; font-size:12pt;">Budget :</span><br/>
-						{{ forseenTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
-						<br/>
-						T.T.C.
-					</div>
-					{# <div>
-						{{ quotationTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
-						<br/>
-						T.T.C.
-					</div>
-					{% if forseenTotal != quotationTotal %}
-						<div style="font-size:10pt;">
-							Sur budget de :
+		{# TODO : send log to debugger or log file or symfony dump server from twig ? 
+		{% comment %} {{ outlaysTaxesAddedToBusinessTotalPercent }} {% endcomment %} #}
+	
+		{% set outlaysTaxes = billingConfig.outlays|reduce((acc, outlay) => acc + (
+				outlay.providerAddedPriceTaxesPercent
+				? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
+				: outlay.providerAddedPriceTaxes
+			), 0
+		) + outlaysTaxesIncludedInBusinessTotalPercent + outlaysTaxesAddedToBusinessTotalPercent %}
+	
+		{% set outlaysPriceOnBusinessTotal = billingConfig.outlays|reduce((acc, outlay) => acc + (
+				outlay.percentOnBusinessTotal * businessTotal
+		), 0) %}
+	
+		{% set outlaysAddedPriceTotalForQuotation = billingConfig.outlays|reduce(
+			(acc, outlay) => acc + ( not outlay.useProviderAddedPriceForBusiness
+			? outlay.providerAddedPrice
+			: 0), 0
+		) %}
+	
+		{# TODO : better namings, quotationTotal might be monwooQuotationTotal ?
+		Need to check priority : Monwoo getting the full money (this includes outlays...)
+		or Monwoo getting it's business Amounts, outlays being other stuff (Monwoo only
+		transfert the money to the provider and register the paiement on the client's name...)
+		#}
+		{% set quotationTotal = businessTotal + licenseWpDisplay + outlaysAddedPriceTotalForQuotation %}
+		{% set totalPriceWithTaxes = quotationTotal
+		+ outlaysPriceOnBusinessTotal
+		+ (outlaysTaxes - outlaysTaxesIncludedInBusinessTotalPercent)
+		%}
+		{% set totalPriceWithoutTaxes = totalPriceWithTaxes - outlaysTaxes %}
+	
+	
+		{% set forseenTotal = totalPriceWithTaxes + outlaysForseenTotal %}
+	
+		{% if viewPart != 'CGV' %}
+			<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;">
+				<tr>
+					<td class="business-logo" style="width:{{ 0.1 * fullWidth }};">
+						<img style="width:{{ 0.1 * fullWidth }};" src="{{ businessLogo }}"/>
+					</td>
+					<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
+																font-weight:bold;color:#11589A;font-size:14pt;">
+						Devis n°{{billingConfig.quotationNumber}}
+					</td>
+					<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
+						<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}"/>
+					</td>
+				</tr>
+			</table>
+			<table class="contacts" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;font-size:10pt;">
+				<tr>
+					<td class="business" style="width:{{ 0.4 * fullWidth }};">
+						{% include 'pdf-billings/pdf-views/business-contact.html.twig' with {
+							'app': app, 'billingConfig': billingConfig
+					} %}
+					</td>
+					<td class="empty-space" style="width:{{ 0.2 * fullWidth }};
+					text-align: center;
+					font-weight:bold;color:#11589A;font-size:16pt;
+					">
+						<div>
+							<span style="color:#000000; font-size:12pt;">Budget :</span><br/>
 							{{ forseenTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
+							<br/>
 							T.T.C.
 						</div>
-					{% endif %} #}
-				</td>
-				<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
-					{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
-            'app': app, 'billingConfig': billingConfig
-        } %}
-				</td>
-			</tr>
-		</table>
-		{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
-				<div class="empty-space" style="height:30;background-color:red;"></div> #}
-		<table class="empty-space" style="font-size:7pt;">
-			<tr>
-				<td></td>
-			</tr>
-		</table>
-
-		{% include 'pdf-billings/pdf-views/business-thanks.html.twig' with {
-			'app': app, 'billingConfig': billingConfig,
-		} %}
-
-		<table class="empty-space" style="font-size:2pt;">
-			<tr>
-				<td></td>
-			</tr>
-		</table>
-
-		{% include 'pdf-billings/pdf-views/business-temporality.html.twig' with {
-			'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
-			'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
-		} %}
-
-		{% block businessAim %}
-			{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
+						{# <div>
+							{{ quotationTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
+							<br/>
+							T.T.C.
+						</div>
+						{% if forseenTotal != quotationTotal %}
+							<div style="font-size:10pt;">
+								Sur budget de :
+								{{ forseenTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
+								T.T.C.
+							</div>
+						{% endif %} #}
+					</td>
+					<td class="client" style="width:{{ 0.4 * fullWidth }};text-align: right;">
+						{% include 'pdf-billings/pdf-views/client-contact.html.twig' with {
+							'app': app, 'billingConfig': billingConfig
+					} %}
+					</td>
+				</tr>
+			</table>
+			{# WARNING : height will not work on DIV for tcpdf, but OK INSIDE td fonts on table...
+					<div class="empty-space" style="height:30;background-color:red;"></div> #}
+			<table class="empty-space" style="font-size:7pt;">
+				<tr>
+					<td></td>
+				</tr>
+			</table>
+	
+			{% include 'pdf-billings/pdf-views/business-thanks.html.twig' with {
+				'app': app, 'billingConfig': billingConfig,
+			} %}
+	
+			<table class="empty-space" style="font-size:2pt;">
+				<tr>
+					<td></td>
+				</tr>
+			</table>
+	
+			{% include 'pdf-billings/pdf-views/business-temporality.html.twig' with {
 				'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
 				'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
 			} %}
-		{% endblock %}
-
-		{% if billingConfig.marginBeforeStartItem ?? null %}
-			<table>
-				<tr>
-					<td class="empty-space" style="height:{{billingConfig.marginBeforeStartItem}};font-size:{{billingConfig.marginBeforeStartItem}};">&nbsp;</td>
-				</tr>
-			</table>
-		{% endif %}
-
-		{% block businessStartItem %}
-			{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
-				'app': app, 'billingConfig': billingConfig,
-				'description': '<strong>Licence</strong> nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
-				'aimTitle': 'Détail de licence :',
-				'aimTitleBis': '(nécessaire)<br/>Monwoo Web Starters <br/>[ Svelte-WP-display ]',
-				'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
-				'quantity': 1,
-				'pricePerUnitWithoutTaxes': licenseWpDisplayPrice,
-				'taxesPercent': 0,
-				'discountPercent': licenseWpDisplayDiscount,
-				'priceWithoutTaxes': licenseWpDisplay,
-				'priceWithTaxes': licenseWpDisplay,
-				'paddingTop': 42,
-				'paddingBottom': 0.1,
-			} %}
-		{% endblock %}
-		{# // TIPS : will break page only if no outlays present (otherwise,
-				outlay can add or remove a before page break to handle alignements ) #}
-		{% for outlay in billingConfig.outlays %}
-			{% set outlayOnBusinessTotal = outlay.percentOnBusinessTotal * businessTotal %}
-			{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
-			{% set outlayPricePUnitWithT = outlay.providerAddedPrice + (
-				outlay.providerAddedPriceTaxesPercent
-				? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
-				: outlay.providerAddedPriceTaxes
-			)
-			+ outlayOnBusinessTotal %}
-			{# TODO : remove computation duplication : use OutlayRepository->computeTaxes ?
-			or extend OutlayEntity as ComputedOutlayEntity
-			(but add model for compute stuff, not so good....) 
-			or add a MwsCompute SERVICE to handles all sub computings on any entities ? #}
-			{% set outlayTaxes = (
-				outlay.providerAddedPriceTaxesPercent
-				? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
-				: outlay.providerAddedPriceTaxes
+	
+			{% block businessAim %}
+				{% include 'pdf-billings/pdf-views/business-aim.html.twig' with {
+					'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
+					'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
+				} %}
+			{% endblock %}
+	
+			{% if billingConfig.marginBeforeStartItem ?? null %}
+				<table>
+					<tr>
+						<td class="empty-space" style="height:{{billingConfig.marginBeforeStartItem}};font-size:{{billingConfig.marginBeforeStartItem}};">&nbsp;</td>
+					</tr>
+				</table>
+			{% endif %}
+	
+			{% block businessStartItem %}
+				{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+					'app': app, 'billingConfig': billingConfig,
+					'description': '<strong>Licence</strong> nécessaires à la production sur 1 nom de domaine de MWS-Svelte-WP-display. Code confidentiel livré une fois par email ou github.',
+					'aimTitle': 'Détail de licence :',
+					'aimTitleBis': '(nécessaire)<br/>Monwoo Web Starters <br/>[ Svelte-WP-display ]',
+					'aimDescription': include('pdf-billings/pdf-views/business-item-wp-display-details.html.twig'),
+					'quantity': 1,
+					'pricePerUnitWithoutTaxes': licenseWpDisplayPrice,
+					'taxesPercent': 0,
+					'discountPercent': licenseWpDisplayDiscount,
+					'priceWithoutTaxes': licenseWpDisplay,
+					'priceWithTaxes': licenseWpDisplay,
+					'paddingTop': 42,
+					'paddingBottom': 0.1,
+				} %}
+			{% endblock %}
+			{# // TIPS : will break page only if no outlays present (otherwise,
+					outlay can add or remove a before page break to handle alignements ) #}
+			{% for outlay in billingConfig.outlays %}
+				{% set outlayOnBusinessTotal = outlay.percentOnBusinessTotal * businessTotal %}
+				{# // TODO : percentOnBusinessTotal for pricePerUnitWithoutTaxes #}
+				{% set outlayPricePUnitWithT = outlay.providerAddedPrice + 
+					outlay.providerAddedPrice * (outlay.providerAddedPriceTaxesPercent)
+					+ outlay.providerAddedPriceTaxes
+					+ outlay.taxesPercentAddedToPercentOnBusinessTotal * outlayOnBusinessTotal
+				+ outlayOnBusinessTotal %}
+				{# TODO : remove computation duplication : use OutlayRepository->computeTaxes ?
+				or extend OutlayEntity as ComputedOutlayEntity
+				(but add model for compute stuff, not so good....) 
+				or add a MwsCompute SERVICE to handles all sub computings on any entities ? #}
+				{% set outlayIncludedTaxes = (
+					outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent
+					+ outlay.providerAddedPriceTaxes
 				) + (outlayOnBusinessTotal - outlayOnBusinessTotal
-				/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal)
-				) + (outlayOnBusinessTotal * outlay.taxesPercentAddedToPercentOnBusinessTotal)
-
-			%}
-				{# {{ outlayPricePUnitWithT }} #}
-
-			{% if outlay.insertPageBreakBefore %}
-				<br pagebreak="true"/>
-			{% endif %}
-			{% include 'pdf-billings/pdf-views/quotation-outlay.html.twig' with {
-				'app': app, 'billingConfig': billingConfig,
-				'description': '<strong>Débours</strong> via ' ~ outlay.providerName,
-				'aimTitle': 'Objectif(s) de la participation :',
-				'aimTitleBis': outlay.providerShortDescription ?? ('Via ' ~ outlay.providerName ),
-				'aimDescription': outlay.providerDetails ?? include('pdf-billings/pdf-views/quotation-outlay-details.html.twig'),
-				'quantity': 1,
-				'pricePerUnitWithoutTaxes': outlayPricePUnitWithT ? outlayPricePUnitWithT - outlayTaxes : 0,
-				'taxesPercent': outlayPricePUnitWithT ? outlayTaxes / (outlayPricePUnitWithT - outlayTaxes) : 0,
-				'discountPercent': 0,
-				'priceWithoutTaxes': outlayPricePUnitWithT ? outlayPricePUnitWithT - outlayTaxes : 0,
-				'priceWithTaxes': outlayPricePUnitWithT,
-				'paddingBottom': 0.1,
-				'providerTotalWithTaxesForseenForClient': outlay.providerTotalWithTaxesForseenForClient,
-			} %}
-			{% if outlay.insertPageBreakAfter %}
-				<br pagebreak="true"/>
-			{% endif %}
-		{% endfor %}
-
-		{# {% if breakAfterOutlays %}
-			<br
-			pagebreak="true"/>
-		// TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" />
-		{% endif %} #}
-
-		<table class="empty-space" style="font-size:10;">
-			<tr>
-				<td></td>
-			</tr>
-		</table>
-
-		{% if billingConfig.marginBeforeEndItem ?? null %}
-			<table>
+				/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal))
+				+ outlayOnBusinessTotal * outlay.taxesPercentAddedToPercentOnBusinessTotal
+				%}
+					{# {{ outlayPricePUnitWithT }} #}
+	
+				{% if outlay.insertPageBreakBefore %}
+					<br pagebreak="true"/>
+				{% endif %}
+				{% include 'pdf-billings/pdf-views/quotation-outlay.html.twig' with {
+					'app': app, 'billingConfig': billingConfig,
+					'description': '<strong>Débours</strong> via ' ~ outlay.providerName,
+					'aimTitle': 'Objectif(s) de la participation :',
+					'aimTitleBis': outlay.providerShortDescription ?? ('Via ' ~ outlay.providerName ),
+					'aimDescription': outlay.providerDetails ?? include('pdf-billings/pdf-views/quotation-outlay-details.html.twig'),
+					'quantity': 1,
+					'pricePerUnitWithoutTaxes': outlayPricePUnitWithT ? outlayPricePUnitWithT - outlayIncludedTaxes : 0,
+					'taxesPercent': outlayPricePUnitWithT ? outlayIncludedTaxes / (outlayPricePUnitWithT - outlayIncludedTaxes) : 0,
+					'discountPercent': 0,
+					'priceWithoutTaxes': outlayPricePUnitWithT ? outlayPricePUnitWithT - outlayIncludedTaxes : 0,
+					'priceWithTaxes': outlayPricePUnitWithT,
+					'paddingBottom': 0.1,
+					'providerTotalWithTaxesForseenForClient': outlay.providerTotalWithTaxesForseenForClient,
+				} %}
+				{% if outlay.insertPageBreakAfter %}
+					<br pagebreak="true"/>
+				{% endif %}
+			{% endfor %}
+	
+			{# {% if breakAfterOutlays %}
+				<br
+				pagebreak="true"/>
+			// TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" />
+			{% endif %} #}
+	
+			<table class="empty-space" style="font-size:10;">
 				<tr>
-					<td class="empty-space" style="height:{{billingConfig.marginBeforeEndItem}};font-size:{{billingConfig.marginBeforeEndItem}};">&nbsp;</td>
+					<td></td>
 				</tr>
 			</table>
-		{% endif %}
-
-		{% block businessEndItem %}
-			{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+	
+			{% if billingConfig.marginBeforeEndItem ?? null %}
+				<table>
+					<tr>
+						<td class="empty-space" style="height:{{billingConfig.marginBeforeEndItem}};font-size:{{billingConfig.marginBeforeEndItem}};">&nbsp;</td>
+					</tr>
+				</table>
+			{% endif %}
+	
+			{% block businessEndItem %}
+				{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+					'app': app, 'billingConfig': billingConfig,
+					'description': '<strong>30 minutes d’expertise Frontend</strong> UI Svelte de votre site web en distancielle.',
+					'aimTitle': 'Objectif(s) de la prestation :',
+					'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
+					'aimDescription': businessWorkloadDetails,
+					'quantity': businessWorkloadHours * 2,
+					'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
+					'taxesPercent': 0,
+					'discountPercent': businessPercentDiscount,
+					'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
+					'priceWithTaxes': businessWorkloadHours * pricePerHour,
+				} %}
+			{% endblock %}
+	
+			{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
+						and div stay bigger than regular font size if no image inside...
+						If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
+							#}
+			<div style="font-size:0px;background-color:#FFD700;">
+				<img style="width:{{ 1 * fullWidth }};" src="{{ quotationSeparator }}"/>
+			</div>
+	
+			{# Simple since no need to handle TVA for micro-BNC status,
+						will need to handle TVA and pdf Cert Sign for bigger structures... #}
+			{% include 'pdf-billings/pdf-views/quotation-total.html.twig' with {
 				'app': app, 'billingConfig': billingConfig,
-				'description': '<strong>30 minutes d’expertise Frontend</strong> UI Svelte de votre site web en distancielle.',
-				'aimTitle': 'Objectif(s) de la prestation :',
-				'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
-				'aimDescription': businessWorkloadDetails,
-				'quantity': businessWorkloadHours * 2,
-				'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
-				'taxesPercent': 0,
-				'discountPercent': businessPercentDiscount,
-				'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
-				'priceWithTaxes': businessWorkloadHours * pricePerHour,
+				'priceWithoutTaxes': quotationTotal,
+				'priceWithTaxes': quotationTotal,
 			} %}
-		{% endblock %}
-
-		{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
-					and div stay bigger than regular font size if no image inside...
-					If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf
-						#}
-		<div style="font-size:0px;background-color:#FFD700;">
-			<img style="width:{{ 1 * fullWidth }};" src="{{ quotationSeparator }}"/>
-		</div>
-
-		{# Simple since no need to handle TVA for micro-BNC status,
-					will need to handle TVA and pdf Cert Sign for bigger structures... #}
-		{% include 'pdf-billings/pdf-views/quotation-total.html.twig' with {
-			'app': app, 'billingConfig': billingConfig,
-			'priceWithoutTaxes': quotationTotal,
-			'priceWithTaxes': quotationTotal,
-		} %}
-
-		{% include 'pdf-billings/pdf-views/quotation-lawful.html.twig' with {
+	
+			{% include 'pdf-billings/pdf-views/quotation-lawful.html.twig' with {
+				'app': app, 'billingConfig': billingConfig,
+				'quotationNumber': billingConfig.quotationNumber,
+			} %}
+	
+			<br pagebreak="true"/>
+	
+		{% endif %}
+	
+	
+		{% include 'pdf-billings/pdf-views/quotation-terms-of-sell.html.twig' with {
 			'app': app, 'billingConfig': billingConfig,
 			'quotationNumber': billingConfig.quotationNumber,
 		} %}
-
-		<br pagebreak="true"/>
-
+	
+	{% else %}
+		Please, submit previous form to update this PDF.
 	{% endif %}
-
-
-	{% include 'pdf-billings/pdf-views/quotation-terms-of-sell.html.twig' with {
-		'app': app, 'billingConfig': billingConfig,
-		'quotationNumber': billingConfig.quotationNumber,
-	} %}
-
-{% else %}
-	Please, submit previous form to update this PDF.
-{% endif %}
+	

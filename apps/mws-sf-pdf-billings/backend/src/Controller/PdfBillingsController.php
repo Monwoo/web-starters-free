@@ -82,11 +82,14 @@ class PdfBillingsController extends AbstractController
             $bConfig->setClientName('______________________________');
             $bConfig->setClientSlug($slug ?? '--');
             $bConfig->setQuotationNumber('________________');
-            $bConfig->setClientEmail('📂@ ______________________________');
-            $bConfig->setClientTel('📞 ______________________________');
+            // $bConfig->setClientEmail('📂@ ______________________________');
+            // $bConfig->setClientTel('📞 ______________________________'); NOP, not having loaded font for it, // TODO : load emoticon fonts ?
+            $bConfig->setClientEmail('______________________________');
+            $bConfig->setClientTel('______________________________');
             $bConfig->setClientSIRET('______________________________');
             $bConfig->setClientTvaIntracom('______________________________');
-            $bConfig->setClientAddressL1('🧭 ______________________________');
+            // $bConfig->setClientAddressL1('🧭 ______________________________');
+            $bConfig->setClientAddressL1('______________________________');
             $bConfig->setClientAddressL2('______________________________');
             $bConfig->setClientWebsite('______________________________');
             $bConfig->setClientLogoUrl('______________________________');
@@ -172,10 +175,15 @@ class PdfBillingsController extends AbstractController
 
             if ('monwoo-04-hybrid-app' === $template) {
                 $defaultOutlay = new Outlay();
-                $defaultOutlay->setProviderName("codeur.com");
+                $defaultOutlay->setProviderName("codeur.com"); 
                 $defaultOutlay->setProviderShortDescription("(contractuel)<br/>Suivi de mission");
                 $defaultOutlay->setPercentOnBusinessTotal(0.04);
-                $defaultOutlay->setTaxesPercentIncludedInPercentOnBusinessTotal(0.2); // 20% de taxes inclus dans comission codeur.com
+                // TODO : SOUND OK if using setTaxesPercentIncludedInPercentOnBusinessTotal OR
+                // settaxesPercentAddedToPercentOnBusinessTotal
+                // BUT using BOTH of them have some wrong TVA Calculation or ok since
+                // tva on Business should include tva in business to compute or not ? 
+                // OK for now if using ONE OR THE other...
+                // $defaultOutlay->setTaxesPercentIncludedInPercentOnBusinessTotal(0.2); // 20% de taxes inclus dans comission codeur.com
                 $defaultOutlay->settaxesPercentAddedToPercentOnBusinessTotal(0.2); // 20% de taxes à rajouter sur comission codeur.com
                 $defaultOutlay->setProviderAddedPriceTaxes(null); // With percent, will precead other value
                 $defaultOutlay->setProviderDetails(
@@ -250,7 +258,7 @@ class PdfBillingsController extends AbstractController
                     "pricePerHourWithoutDiscount" => 60,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig",
                     "licenseWpDisplayPrice" => 40,
-                    "licenseWpDisplayDiscount" => 0.24,
+                    "licenseWpDisplayDiscount" => 0.25,
                 ];
                 break;
         }
