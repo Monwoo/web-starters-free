@@ -1,10 +1,19 @@
 {
     "type": "project",
     "name": "monwoo/mws-sf-pdf-billings",
-    "version": "0.0.5",
-    "license": "Apache-2.0_monwoo",
+    "version": "0.0.1",
+    "license": "PRIVATE and CONFIDENTIAL",
+    "authors": [
+        {
+            "name": "Miguel Monwoo",
+            "email": "service@monwoo.com"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
+    "repositories": [
+        {"type": "path", "url":  "../../packages/mws-sf-pdf-billings-monwoo"}
+    ],
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
@@ -14,6 +23,7 @@
         "doctrine/orm": "^2.14",
         "endroid/qr-code-bundle": "^4.3",
         "lexik/jwt-authentication-bundle": "*",
+        "monwoo/mws-sf-pdf-billings-monwoo-bundle": "0.0.1",
         "qipsius/tcpdf-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/asset": "5.4.*",
