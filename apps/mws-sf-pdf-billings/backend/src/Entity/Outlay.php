@@ -31,9 +31,14 @@ class Outlay
     private ?float $percentOnBusinessTotal = null;
 
     // TODO : doc : used to inform clients about possible taxes on the
-    // Provider services taken on percentage of business total...
+    // Provider services included in the percentage of business total...
     #[ORM\Column(nullable: true)]
     private ?float $taxesPercentIncludedInPercentOnBusinessTotal = null;
+
+    // TODO : doc : used to inform clients about possible taxes on the
+    // Provider services added in the percentage of business total...
+    #[ORM\Column(nullable: true)]
+    private ?float $taxesPercentAddedToPercentOnBusinessTotal = null;
 
     ///////////////////////////////////
     // 🇺🇸🇺🇸 given to the PROVIDER outlay properties :
@@ -312,6 +317,18 @@ class Outlay
     public function setMarginBottom(?string $marginBottom): static
     {
         $this->marginBottom = $marginBottom;
+
+        return $this;
+    }
+
+    public function getTaxesPercentAddedToPercentOnBusinessTotal(): ?float
+    {
+        return $this->taxesPercentAddedToPercentOnBusinessTotal;
+    }
+
+    public function setTaxesPercentAddedToPercentOnBusinessTotal(?float $taxesPercentAddedToPercentOnBusinessTotal): static
+    {
+        $this->taxesPercentAddedToPercentOnBusinessTotal = $taxesPercentAddedToPercentOnBusinessTotal;
 
         return $this;
     }

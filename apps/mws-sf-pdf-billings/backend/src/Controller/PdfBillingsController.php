@@ -155,7 +155,7 @@ class PdfBillingsController extends AbstractController
                 $defaultOutlay->setProviderName("codeur.com");
                 $defaultOutlay->setProviderShortDescription("(contractuel)<br/>Suivi de mission");
                 $defaultOutlay->setPercentOnBusinessTotal(0.04);
-                $defaultOutlay->setTaxesPercentIncludedInPercentOnBusinessTotal(0.2); // 20% de taxes inclus dans comission codeur.com
+                $defaultOutlay->settaxesPercentAddedToPercentOnBusinessTotal(0.2); // 20% de taxes à rajouter sur comission codeur.com
                 $defaultOutlay->setProviderAddedPriceTaxes(null); // With percent, will precead other value
 
                 // TIPS : do template after outlay setup to use it in template...
@@ -176,6 +176,7 @@ class PdfBillingsController extends AbstractController
                 $defaultOutlay->setProviderShortDescription("(contractuel)<br/>Suivi de mission");
                 $defaultOutlay->setPercentOnBusinessTotal(0.04);
                 $defaultOutlay->setTaxesPercentIncludedInPercentOnBusinessTotal(0.2); // 20% de taxes inclus dans comission codeur.com
+                $defaultOutlay->settaxesPercentAddedToPercentOnBusinessTotal(0.2); // 20% de taxes à rajouter sur comission codeur.com
                 $defaultOutlay->setProviderAddedPriceTaxes(null); // With percent, will precead other value
                 $defaultOutlay->setProviderDetails(
                     $twig->render('pdf-billings/pdf-views/quotation-outlay-details-codeur-com.html.twig', [

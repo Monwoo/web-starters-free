@@ -166,8 +166,9 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 			outlay.providerAddedPriceTaxesPercent
 			? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
 			: outlay.providerAddedPriceTaxes
-		), 0
-	) + outlaysTaxesIncludedInBusinessTotalPercent %}
+		), 0 + outlaysTaxesIncludedInBusinessTotalPercent
+	 + outlayOnBusinessTotal * outlay.taxesPercentAddedToPercentOnBusinessTotal
+	 %}
 
 	{% set outlaysPriceOnBusinessTotal = billingConfig.outlays|reduce((acc, outlay) => acc + (
 			outlay.percentOnBusinessTotal * businessTotal
@@ -318,8 +319,10 @@ TCPDF has a very limited CSS support. It doesn't support all attributes.
 				outlay.providerAddedPriceTaxesPercent
 				? (outlay.providerAddedPrice * outlay.providerAddedPriceTaxesPercent)
 				: outlay.providerAddedPriceTaxes
-			) + (outlayOnBusinessTotal - outlayOnBusinessTotal
-			/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal))
+				) + (outlayOnBusinessTotal - outlayOnBusinessTotal
+				/ (1 + outlay.taxesPercentIncludedInPercentOnBusinessTotal)
+				) + (outlayOnBusinessTotal * outlay.taxesPercentAddedToPercentOnBusinessTotal)
+
 			%}
 				{# {{ outlayPricePUnitWithT }} #}
 
