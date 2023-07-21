@@ -729,9 +729,9 @@ class PdfBillingsController extends AbstractController
 
         // 🇺🇸🇺🇸 Header content
         $docHeaderByDocType = [
-            "devis" => "    Devis",
-            "facture" => "  Facture",
-            "proforma" => "  Proforma",
+            "devis" => "       Devis",
+            "facture" => "     Facture",
+            "proforma" => "Proforma",
         ];
         $PDF_HEADER_STRING = "monwoo.com ($packageName v-$packageVersion)"
         . (
@@ -740,7 +740,7 @@ class PdfBillingsController extends AbstractController
             : "   Brouillon à confirmer                            "
         )
         // . "                                   Devis n° " . $bConfig->getQuotationNumber();
-        . "                              "
+        . "                           "
         . $docHeaderByDocType[$bConfig->getDocumentType() ?? 'devis']
         . " n° " . $bConfig->getQuotationNumber();
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
