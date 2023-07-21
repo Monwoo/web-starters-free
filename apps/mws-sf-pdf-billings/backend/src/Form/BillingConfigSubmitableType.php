@@ -20,6 +20,13 @@ class BillingConfigSubmitableType extends BillingConfigType
         // https://stackoverflow.com/questions/74007075/symfony-form-type-extension-for-custom-types
         // https://stackoverflow.com/questions/11237511/multiple-ways-of-calling-parent-method-in-php
         parent::buildForm($builder, $options);
+        $builder->add('documentType', ChoiceType::class, [
+            'choices'  => [
+                'Devis' => 'devis',
+                'Proforma' => 'proforma',
+                'Facture' => 'facture',
+            ],
+        ]);
 
         // $builder->add(
         $builder->add('quotationStartDay',
@@ -64,6 +71,7 @@ class BillingConfigSubmitableType extends BillingConfigType
                 'Monwoo CRM PHP' => 'monwoo-05-php-crm',
                 'Monwoo Etude Analytique' => 'monwoo-06-analytical-study',
                 'Monwoo Maintenance simple' => 'monwoo-07-upkeep',
+                'Monwoo Formation backend fullstack' => 'monwoo-08-backend-learning',
             ],
         ]);
         // https://symfony.com/doc/current/form/form_collections.html

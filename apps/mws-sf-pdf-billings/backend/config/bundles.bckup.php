@@ -12,7 +12,15 @@ $bundles = [
     Endroid\QrCodeBundle\EndroidQrCodeBundle::class => ['all' => true],
     Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
+    MWS\PDFBillingsLvl1Bundle\PDFBillingsLvl1Bundle::class => ['all' => true],
 ];
+
+// Paid or private starter might not be loaded, do lazy loads :
+if (class_exists(MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class)) {
+    $bundles = array_merge($bundles, [
+        MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class => ['all' => true],
+    ]);
+}
 
 // In case of pre-production debugs, we want to get some messages, but still stay closest to the 
 // production context. With that, we can debug without sending the dev debug bundle in production too ;)

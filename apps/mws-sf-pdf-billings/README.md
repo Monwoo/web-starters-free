@@ -138,6 +138,10 @@ vendor var .env .env.local.php
 ## Going further
 
 ```bash
+# TIPS : in DEV ONLY : NEED
+export APP_ENV=dev
+composer install # in case of env change
+
 # usefull :
 php bin/console debug:form
 

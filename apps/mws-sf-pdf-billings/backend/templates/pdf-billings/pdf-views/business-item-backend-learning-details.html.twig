@@ -1,0 +1,25 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+<div class="businsess-item wa-config-workload">
+	Formation d'apprenant(s) pour un backend fullstack en travaux distanciels.<br/>
+	<br/>
+	<strong>Lot 1</strong>
+	: <strong>Backend simple</strong> pour mise en place et étude des domaines des travaux pratiques.<br/>
+	<br/>
+	<strong>Lot 2</strong>
+	: <strong>Backend avancé</strong> pour notions de pré-requis minimum 
+	dans la réalisation d'un backend pour le domaine des travaux pratiques.<br/>
+	<br/>
+	<strong>Lot 3</strong>
+	: <strong>Frontend simple via API</strong> pour tests des domaines validés pour le backend<br/>
+	<br/>
+	<strong>Lot 4</strong>
+	: <strong>Frontend avancé</strong> pour interactions multi-API ou optimisation
+	des interactions utilisateurs.<br/>
+	<br/>
+	Avec
+	{{ (businessWorkloadHours * 1/4)|format_number({fraction_digit: 2}) }}
+	{{ businessWorkloadHours * 1/4 > 1 ? 
+	"heures d'interventions" : "heure d'intervention" }}
+	en moyenne par Lot.
+	<br/>
+</div>

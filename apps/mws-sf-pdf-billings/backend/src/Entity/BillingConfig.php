@@ -28,6 +28,9 @@ class BillingConfig
     private ?string $clientName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $documentType = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $quotationNumber = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -390,6 +393,18 @@ class BillingConfig
     public function setMarginBeforeEndItem(?string $marginBeforeEndItem): static
     {
         $this->marginBeforeEndItem = $marginBeforeEndItem;
+
+        return $this;
+    }
+
+    public function getDocumentType(): ?string
+    {
+        return $this->documentType;
+    }
+
+    public function setDocumentType(?string $documentType): static
+    {
+        $this->documentType = $documentType;
 
         return $this;
     }

@@ -5,40 +5,53 @@
 	<tr>
 		<td class="empty-space" style="font-size:4px;">&nbsp;</td>
 	</tr>
-	<tr>
-		<td style="font-size:11pt;">
-			La signature du présent devis n°{{quotationNumber}}
-			ou un paiement d'acompte avec la référence au devis
-			entraîne l'acceptation sans réserve des
-			conditions générales de vente figurant en annexe
-		</td>
-	</tr>
-	<tr>
-		<td class="empty-space" style="font-size:4px;">&nbsp;</td>
-	</tr>
-	<tr style="text-align:left;color:#666666;">
-		<td style="width:{{ 0.28 * fullWidth }};
-										font-size:11pt;font-weight:bold;color:#11589A;">
-			Fait en _ _ _ exemplaires.</td>
-		<td
-			style="width:{{ 0.72 * fullWidth }};text-align:right;font-size:8pt;">
-			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
-			<div class="empty-space" style="font-size:2.5px">&nbsp;</div>
-			Datez et paraphez chaques pages. Cachet mention "Bon pour accord",
-			cachet de l'entreprise et signature(s) :</td>
-	</tr>
+	{% if billingConfig.documentType == 'devis' %}
+		<tr>
+			<td style="font-size:11pt;">
+				La signature du présent devis n°{{quotationNumber}}
+				ou un paiement d'acompte avec la référence au devis
+				entraîne l'acceptation sans réserve des
+				conditions générales de vente figurant en annexe
+			</td>
+		</tr>
+		<tr>
+			<td class="empty-space" style="font-size:4px;">&nbsp;</td>
+		</tr>
+		<tr style="text-align:left;color:#666666;">
+			<td style="width:{{ 0.28 * fullWidth }};
+											font-size:11pt;font-weight:bold;color:#11589A;">
+				Fait en _ _ _ exemplaires.</td>
+			<td
+				style="width:{{ 0.72 * fullWidth }};text-align:right;font-size:8pt;">
+				{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
+				<div class="empty-space" style="font-size:2.5px">&nbsp;</div>
+				Datez et paraphez chaques pages. Cachet mention "Bon pour accord",
+				cachet de l'entreprise et signature(s) :</td>
+		</tr>	
+	{% elseif billingConfig.documentType == 'proforma' %}
+		<tr>
+			<td style="font-size:11pt;">
+				Un paiement d'acompte avec la référence au proforma
+				entraîne l'acceptation sans réserve des
+				conditions générales de vente figurant en annexe
+			</td>
+		</tr>
+	{% else %}
+	{% endif %}
 	<tr>
 		<td class="empty-space" style="font-size:7px;">&nbsp;</td>
 	</tr>
 	<tr style="text-align:center;font-size:10pt;">
 		<td style="width:{{ 0.50 * fullWidth }};color:#666666;border-color:#666666;border-top-width:0.4px;border-left-width:0.4px;border-right-width:0.4px;">
 			Signature(s) ou cachet(s) de validation Monwoo :</td>
+		{% if billingConfig.documentType == 'devis' %}
 		<td
 			style="width:{{ 0.50 * fullWidth }};text-align:right;color:#11589A;">
 			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
 			Signé le : _ _ _ / _ _ _ / _ _ _ _ _ _ _
 			<br/><br/>
 			Fait à : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _</td>
+		{% endif %}
 	</tr>
 	<tr>
 		<td class="empty-space" style="font-size:7px;border-left-width:0.4px;">&nbsp;</td>
@@ -52,15 +65,17 @@
 				{% if businessSignatureImg ?? null %}
 					<img style="height:64};" src="{{ businessSignatureImg }}"/>
 				{% else %}
-					Devis de démonstration. Merci de l'envoyer sur service@monwoo.com pour obtenir l'accord et le numéro de devis Monwoo.
+					Document de démonstration. Merci de l'envoyer sur service@monwoo.com pour obtenir l'accord et le numéro Monwoo.
 				{% endif %}
 			<div class="empty-space" style="font-size:12px">&nbsp;</div>
 		</td>
-		<td
-			style="width:{{ 0.5 * fullWidth }};font-size:10pt;color:#666666;border:solid 1px black;">
-			{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
-			Signature du client :
-		</td>
+		{% if billingConfig.documentType == 'devis' %}
+			<td
+				style="width:{{ 0.5 * fullWidth }};font-size:10pt;color:#666666;border:solid 1px black;">
+				{# // TIPS : use empty space to vertical align since text-align don't work with tcpdf #}
+				Signature du client :
+			</td>
+		{% endif %}
 	</tr>
 	<tr>
 		<td class="empty-space" style="font-size:4px;border-left-width:0.4px;">&nbsp;</td>

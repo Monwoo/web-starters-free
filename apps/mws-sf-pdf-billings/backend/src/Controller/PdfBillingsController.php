@@ -252,6 +252,15 @@ class PdfBillingsController extends AbstractController
                     "licenseWpDisplayDiscount" => 0,
                 ];
                 break;
+            case 'monwoo-08-backend-learning':
+                return [
+                    "defaultBusinessWorkloadHours" => 15,
+                    "pricePerHourWithoutDiscount" => 100,
+                    "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-backend-learning-details.html.twig",
+                    "licenseWpDisplayPrice" => 0,
+                    "licenseWpDisplayDiscount" => 0,
+                ];
+                break;
             default:
                 return [
                     "defaultBusinessWorkloadHours" => 6,
@@ -574,6 +583,12 @@ class PdfBillingsController extends AbstractController
         ]) ?? $bConfigRepository->findOneBy([
             'clientSlug' => '--', // Default empty client, all fillable by hand version...
         ]) ?? ($this->billingConfigFactory)();
+        $labelByDocType = [
+            "devis" => "Devis",
+            "facture" => "Facture",
+            "proforma" => "Proforma",
+        ];
+        $docTypeLabel = $labelByDocType[$bConfig->getDocumentType() ?? 'devis'];
 
         $template = $bConfig->getQuotationTemplate() ?? 'monwoo';
         // TODO : template data inside config ? make it some optional config form on template changes ?
@@ -655,12 +670,12 @@ class PdfBillingsController extends AbstractController
         Locale::setDefault('fr');
         $pdf->SetAuthor('Miguel Monwoo (service@monwoo.com)');
         $pdf->SetTitle($businessSignatureImg
-            ? 'Devis Monwoo n° ' . $bConfig->getQuotationNumber()
-            : 'Démo Devis Monwoo n° ' . $bConfig->getQuotationNumber()
+            ? "{$docTypeLabel} Monwoo n° " . $bConfig->getQuotationNumber()
+            : "Démo {$docTypeLabel} Monwoo n° " . $bConfig->getQuotationNumber()
         );
         $pdf->SetSubject($businessSignatureImg
-            ? 'Devis Monwoo'
-            : 'Démonstration de Devis Monwoo'
+            ? "{$docTypeLabel} Monwoo"
+            : "Démonstration de {$docTypeLabel} Monwoo"
         );
         $pdf->SetKeywords('Monwoo, PWA, Svelte, PHP, Symfony');
 
@@ -713,13 +728,21 @@ class PdfBillingsController extends AbstractController
 		$pdf->setHeaderFont(['freesans', '', 10]);
 
         // 🇺🇸🇺🇸 Header content
+        $docHeaderByDocType = [
+            "devis" => "    Devis",
+            "facture" => "  Facture",
+            "proforma" => "  Proforma",
+        ];
         $PDF_HEADER_STRING = "monwoo.com ($packageName v-$packageVersion)"
         . (
             $businessSignatureImg
             ? "                                                                   "
             : "   Brouillon à confirmer                            "
         )
-        . "                                   Devis n° " . $bConfig->getQuotationNumber();
+        // . "                                   Devis n° " . $bConfig->getQuotationNumber();
+        . "                              "
+        . $docHeaderByDocType[$bConfig->getDocumentType() ?? 'devis']
+        . " n° " . $bConfig->getQuotationNumber();
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
         // . "E abc@gmail.com\n"
         // . "www.abc.com";
@@ -743,8 +766,11 @@ class PdfBillingsController extends AbstractController
 
         // 🇺🇸🇺🇸 BODY arrangements
         $pdf->AddPage();
+
         // Set some content to print
         $html = $twig->render($templatePath, array_merge([
+            'labelByDocType' => $labelByDocType,
+            'docTypeLabel' => $docTypeLabel,
             'billingConfig' => $bConfig, 'businessSignatureImg' => $businessSignatureImg,
             'viewPart' => $viewPart, 'footprintQrCodeUrl' => $footprintQrCodeUrl,
             'businessLogo' => $businessLogo,
@@ -766,8 +792,8 @@ class PdfBillingsController extends AbstractController
 
         $pdf->lastPage();
         $response = new Response($pdf->Output($businessSignatureImg
-            ? 'DevisMonwoo' . $bConfig->getQuotationNumber() . '.pdf'
-            : 'DemoDevisMonwoo' . $bConfig->getQuotationNumber() . '.pdf'
+            ? "{$docTypeLabel}Monwoo" . $bConfig->getQuotationNumber() . '.pdf'
+            : "Demo{$docTypeLabel}Monwoo" . $bConfig->getQuotationNumber() . '.pdf'
         ));
         $response->headers->set('Content-Type', 'application/pdf');
         $response->headers->set('Cache-Control', 'no-cache');
