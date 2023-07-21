@@ -28,6 +28,9 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass
 export APP_ENV=dev
 composer install
 
+# install with local PRIVATE bundles :
+COMPOSER=composer.private.json composer install
+
 # bootstrap database
 php bin/console doctrine:migrations:migrate
 

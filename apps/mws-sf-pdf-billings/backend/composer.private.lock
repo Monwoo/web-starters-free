@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f54a1debf95e454bac354caa051f7c15",
+    "content-hash": "58c50774f8a2884cc0cc765ff0433371",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2358,16 +2358,28 @@
         {
             "name": "monwoo/mws-sf-pdf-billings-monwoo-bundle",
             "version": "0.0.1",
-            "source": {
+            "dist": {
                 "type": "path",
-                "url": "../../../../packages/mws-sf-pdf-billings-monwoo",
-                "reference": "tags/mws-sf-pdf-billings-monwoo_0_0_1/distribution/"
+                "url": "../../../../mws-sf-pdf-billings-monwoo",
+                "reference": "de242f95ea812c794e96d505a00b07cb5a66599b"
             },
-            "type": "library",
+            "require": {
+                "php": ">=8.1",
+                "phpoffice/phpspreadsheet": "^1.29",
+                "symfony/framework-bundle": "^5.4"
+            },
+            "type": "symfony-bundle",
             "autoload": {
-                "classmap": [
-                    "src/"
-                ]
+                "psr-4": {
+                    "MWS\\PDFBillingsMonwooBundle\\": "src/"
+                }
+            },
+            "license": [
+                "PRIVATE and CONFIDENTIAL"
+            ],
+            "description": "PRIVATE and CONFIDENTIAL Monwoo SF 5 bundle for billings with Monwoo brand",
+            "transport-options": {
+                "relative": true
             }
         },
         {

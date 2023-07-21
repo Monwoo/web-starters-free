@@ -13,6 +13,37 @@
         {
             "type": "path",
             "url": "../../../packages/mws-sf-pdf-billings-lvl1"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "monwoo/mws-sf-pdf-billings-monwoo-bundle",
+                "version": "0.0.1",
+                "source": {
+                    "type": "path",
+                    "url": "../../../../packages/mws-sf-pdf-billings-monwoo",
+                    "reference": "tags/mws-sf-pdf-billings-monwoo_0_0_1/distribution/"
+                },
+                "autoload": {
+                    "classmap": ["src/"]
+                }
+            }
+        },
+        {
+            "_cmt_": "Hacky package failback in case ../../../../packages/mws-sf-pdf-billings-monwoo do not exist",
+            "type": "package",
+            "package": {
+                "name": "monwoo/mws-sf-pdf-billings-monwoo-bundle",
+                "version": "0.0.1",
+                "source": {
+                    "type": "path",
+                    "url": "../../../packages/mws-sf-pdf-billings-lvl1",
+                    "reference": "tags/mws-sf-pdf-billings-monwoo_0_0_1/distribution/"
+                },
+                "autoload": {
+                    "classmap": ["src/"]
+                }
+            }
         }
     ],
     "require": {

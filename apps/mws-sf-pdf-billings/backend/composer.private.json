@@ -13,6 +13,10 @@
         {
             "type": "path",
             "url": "../../../packages/mws-sf-pdf-billings-lvl1"
+        },
+        {
+            "type": "path",
+            "url": "../../../../mws-sf-pdf-billings-monwoo"
         }
     ],
     "require": {
