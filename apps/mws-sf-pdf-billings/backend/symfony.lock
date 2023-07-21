@@ -53,6 +53,9 @@
             "config/packages/lexik_jwt_authentication.yaml"
         ]
     },
+    "monwoo/mws-sf-pdf-billings-lvl1-bundle": {
+        "version": "0.0.1"
+    },
     "phpunit/phpunit": {
         "version": "10.2",
         "recipe": {

@@ -1,19 +1,19 @@
 {
     "type": "project",
     "name": "monwoo/mws-sf-pdf-billings",
-    "version": "0.0.1",
-    "license": "PRIVATE and CONFIDENTIAL",
-    "authors": [
-        {
-            "name": "Miguel Monwoo",
-            "email": "service@monwoo.com"
-        }
-    ],
+    "version": "0.0.6",
+    "license": "Apache-2.0_monwoo",
+    "authors": [{
+        "name": "Miguel Monwoo",
+        "email": "service@monwoo.com"
+    }],
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": [
-        {"type": "path", "url":  "../../packages/mws-sf-pdf-billings-monwoo"}
-    ],
+    "repositories": [{
+        "type": "path",
+        "_cmt_url_example": "../../../../packages/mws-sf-pdf-billings-monwoo",
+        "url": "../../../packages/mws-sf-pdf-billings-lvl1"
+    }],
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
@@ -23,7 +23,7 @@
         "doctrine/orm": "^2.14",
         "endroid/qr-code-bundle": "^4.3",
         "lexik/jwt-authentication-bundle": "*",
-        "monwoo/mws-sf-pdf-billings-monwoo-bundle": "0.0.1",
+        "monwoo/mws-sf-pdf-billings-lvl1-bundle": "0.0.1",
         "qipsius/tcpdf-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/asset": "5.4.*",
@@ -50,7 +50,8 @@
             "composer/package-versions-deprecated": true,
             "symfony/flex": true,
             "symfony/runtime": true,
-            "endroid/installer": true
+            "endroid/installer": true,
+            "symfony/thanks": true
         },
         "optimize-autoloader": true,
         "preferred-install": {
@@ -89,6 +90,13 @@
         "symfony/symfony": "*"
     },
     "extra": {
+        "_cmt_branch-alias": {
+            "dev-main": "0.0.6-dev"
+        },
+        "thanks": {
+            "name": "Monwoo/web-starters-free",
+            "url": "https://github.com/Monwoo/web-starters-free"
+        },
         "symfony": {
             "allow-contrib": false,
             "require": "5.4.*"
@@ -103,6 +111,7 @@
         "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "^6.3",
         "symfony/stopwatch": "5.4.*",
+        "symfony/thanks": "^1.2",
         "symfony/web-profiler-bundle": "5.4.*"
     }
 }
