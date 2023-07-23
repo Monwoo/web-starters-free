@@ -63,10 +63,18 @@
 		<td 
 		style="width:{{ 0.24 * fullWidth }};
 		border-width:1px;border-bottom-width:1px;border-left-width:1px;
-		border-color:black;border-style:solid;">TOTAL Net :</td>
+		border-color:black;border-style:solid;">
+			{% if billingConfig.documentType == 'facture' %}
+				Net à payer :
+			{% else %}
+				TOTAL Net :
+			{% endif %}
+		</td>
 		<td style="width:{{ 0.24 * fullWidth }};text-align: center;
 		border-width:1px;border-bottom-width:1px;border-right-width:1px;
-		border-color:black;border-style:solid;">{{totalPriceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		border-color:black;border-style:solid;">
+			{{totalPriceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}
+		</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
 	</tr>
 	<tr>
@@ -82,7 +90,13 @@
 	</tr>
 	<tr>
 		<td class="aim-label" style="width:{{ fullWidth }};">
-			Dans l'attente de votre retour.
+			{% if billingConfig.documentType == 'facture' %}
+				Facture Net {{
+					(businessSignatureImg ?? null) ? "Monwoo" : "Démo"
+				}} n° {{ billingConfig.quotationNumber }} de : 400€
+			{% else %}
+				Dans l'attente de votre retour.
+			{% endif %}
 		</td>
 	</tr>
 	<tr>
@@ -91,5 +105,13 @@
 </table>
 <table class="aim" style="padding: 0px;border-spacing:{{ (0) * fullWidth }} 0;
 		text-align:right;font-size:10pt;">
-		<tr><td>Merci et à bientôt.</td></tr>
+		<tr><td>
+			{# // TODO : only if no forseen payment,
+			and all transactions fullfill the full quotation... #}
+			{% if billingConfig.documentType == 'facture' %}
+				Merci et à bientôt.
+			{% else %}
+				Merci, vous avez soldé l'opération.
+			{% endif %}
+		</td></tr>
 </table>

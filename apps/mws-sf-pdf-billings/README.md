@@ -166,6 +166,9 @@ php bin/console make:entity Outlay
 rm src/Form/OutlayType.php
 php bin/console make:form OutlayType Outlay
 
+php bin/console make:entity Transaction
+rm src/Form/Transaction.php
+php bin/console make:form Transaction Transaction
 
 # ensure your databse is clean and in sync with existing migration
 # (WARNING : will reset your dev database) :

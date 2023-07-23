@@ -94,6 +94,9 @@ class BillingConfig
     #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist'])]
     private Collection $outlays;
 
+    #[ORM\OneToMany(mappedBy: 'billingConfig', targetEntity: Transaction::class)]
+    private Collection $transactions;
+
     // // TODO : Why is 'specifying' inversedBy make all migration fail on error : 
     // // Column name "id" referenced for relation from App\Entity\BillingConfig
     // // towards App\Entity\Outlay does not exist.
@@ -109,6 +112,7 @@ class BillingConfig
     public function __construct()
     {
         $this->outlays = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function __toString()
@@ -405,6 +409,36 @@ class BillingConfig
     public function setDocumentType(?string $documentType): static
     {
         $this->documentType = $documentType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setBillingConfig($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getBillingConfig() === $this) {
+                $transaction->setBillingConfig(null);
+            }
+        }
 
         return $this;
     }
