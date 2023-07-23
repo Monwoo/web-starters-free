@@ -1,7 +1,7 @@
 {
     "type": "project",
     "name": "monwoo/mws-sf-pdf-billings",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "license": "Apache-2.0_monwoo",
     "authors": [{
         "name": "Miguel Monwoo",
@@ -124,7 +124,7 @@
     },
     "extra": {
         "_cmt_branch-alias": {
-            "dev-main": "0.0.6-dev"
+            "dev-main": "0.0.7-dev"
         },
         "thanks": {
             "name": "Monwoo/web-starters-free",

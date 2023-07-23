@@ -53,13 +53,13 @@
 			</div>
 			<div class="pay-method">
 				- Carte(s) bancaire(s) (VISA, MasterCard, AmericanExpress, PayPal, etc... sur le PayPal Monwoo)
-				ou virement(s) sur le RIB en pied de page. Indiquez la référence au devis : {{ billingConfig.quotationNumber }}.
+				ou virement(s) sur le RIB en pied de page. Indiquez la référence au devis : {{ defaultQuotationSourceNumber }}.
 				Les virements SEPA sont gratuis depuis l'U.E..
 			</div>
 			<div class="pay-method">
 				- Espèces avec reçu dans la limite de 1 000€ par facture,
 				le reste devant être soldé via carte(s) bancaire(s) ou virement(s)
-				avec référence au devis {{ billingConfig.quotationNumber }}.
+				avec référence au devis {{ defaultQuotationSourceNumber }}.
 				<span class="notice" style="font-size:8pt">
 					https://www.service-public.fr/particuliers/vosdroits/F10999
 				</span>
@@ -132,7 +132,7 @@
 			le client pour la présente prestation, et uniquement si le client prouve la 
 			non mise à disposition de moyens adéquats pour la prestation demandée
 			au regard du contexte d'execution de la mission
-			limité par ce devis n°{{ billingConfig.quotationNumber }}.
+			limité par ce devis n°{{ defaultQuotationSourceNumber }}.
 		</td>
 		<td style="width:{{ 0.017 * fullWidth }};" class="empty-space"></td>
 	</tr>
@@ -238,7 +238,7 @@
 			contradictoire de réception n'est rédigé dans les 7 jours. <strong>Sinon le 
 			procès-verbal</strong> de réception <strong>détaillera l'état de la réception</strong>. 
 			Ce Procès-verbal peut être envoyé sur <strong>service@monwoo.com</strong> avec pour
-			objet : <strong>"Réception pour devis Monwoo {{ billingConfig.quotationNumber }}"</strong>
+			objet : <strong>"Réception pour devis Monwoo {{ defaultQuotationSourceNumber }}"</strong>
 			et nous <strong>signerons par</strong> nos <strong>réponses</strong>.
 			Un template "Procès-verbal de réception"
 			vous sera transmis si votre message ne couvre pas tous les points

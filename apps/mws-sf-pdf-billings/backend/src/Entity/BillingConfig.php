@@ -34,6 +34,9 @@ class BillingConfig
     private ?string $quotationNumber = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $quotationSourceNumber = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $clientEmail = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -137,14 +140,14 @@ class BillingConfig
         return $this;
     }
 
-    public function getQuotationNumber(): ?string
+    public function getQuotationSourceNumber(): ?string
     {
-        return $this->quotationNumber;
+        return $this->quotationSourceNumber;
     }
 
-    public function setQuotationNumber(?string $quotationNumber): static
+    public function setQuotationSourceNumber(?string $quotationSourceNumber): static
     {
-        $this->quotationNumber = $quotationNumber;
+        $this->quotationSourceNumber = $quotationSourceNumber;
 
         return $this;
     }
@@ -439,6 +442,18 @@ class BillingConfig
                 $transaction->setBillingConfig(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getQuotationNumber(): ?string
+    {
+        return $this->quotationNumber;
+    }
+
+    public function setQuotationNumber(?string $quotationNumber): static
+    {
+        $this->quotationNumber = $quotationNumber;
 
         return $this;
     }

@@ -81,7 +81,7 @@ class PdfBillingsController extends AbstractController
             // TODO : Setting 'null' from form give error : Expected argument of type "string", "null" given at property path "clientName"...
             $bConfig->setClientName('______________________________');
             $bConfig->setClientSlug($slug ?? '--');
-            $bConfig->setQuotationNumber('________________');
+            $bConfig->setQuotationSourceNumber('________________');
             // $bConfig->setClientEmail('📂@ ______________________________');
             // $bConfig->setClientTel('📞 ______________________________'); NOP, not having loaded font for it, // TODO : load emoticon fonts ?
             $bConfig->setClientEmail('______________________________');
@@ -595,6 +595,11 @@ class PdfBillingsController extends AbstractController
         // $templateData = $bConfig->getTemplateData() ?? $this->defaultTemplateData($template);
         $templateData = $this->getDefaultTemplateData($template);
 
+        $defaultQuotationNumber =
+        $bConfig->getQuotationNumber() ?? $bConfig->getQuotationSourceNumber();
+        $defaultQuotationSourceNumber =
+        $bConfig->getQuotationSourceNumber() ?? $bConfig->getQuotationNumber(); 
+
         // TODO : from config or .env params ?
         $businessSignatureImg = 'file://' . $projectDir . '/var/businessSignature.png';
         // First try png extension (will work with tcpdf bg ? // TODO test...)
@@ -670,8 +675,8 @@ class PdfBillingsController extends AbstractController
         Locale::setDefault('fr');
         $pdf->SetAuthor('Miguel Monwoo (service@monwoo.com)');
         $pdf->SetTitle($businessSignatureImg
-            ? "{$docTypeLabel} Monwoo n° " . $bConfig->getQuotationNumber()
-            : "Démo {$docTypeLabel} Monwoo n° " . $bConfig->getQuotationNumber()
+            ? "{$docTypeLabel} Monwoo n° " . $defaultQuotationNumber
+            : "Démo {$docTypeLabel} Monwoo n° " . $defaultQuotationNumber
         );
         $pdf->SetSubject($businessSignatureImg
             ? "{$docTypeLabel} Monwoo"
@@ -739,14 +744,14 @@ class PdfBillingsController extends AbstractController
             ? "                                                                   "
             : "   Brouillon à confirmer                            "
         )
-        // . "                                   Devis n° " . $bConfig->getQuotationNumber();
+        // . "                                   Devis n° " . $defaultQuotationNumber;
         . "                           "
         . $docHeaderByDocType[$bConfig->getDocumentType() ?? 'devis']
-        . " n° " . $bConfig->getQuotationNumber();
+        . " n° " . $defaultQuotationNumber;
         // $PDF_HEADER_STRING = "Tel 1234567896 Fax 987654321\n"
         // . "E abc@gmail.com\n"
         // . "www.abc.com";
-        // $PDF_HEADER_STRING = "";// "Devis n°" . $bConfig->getQuotationNumber();
+        // $PDF_HEADER_STRING = "";// "Devis n°" . $defaultQuotationNumber;
         $pdf->SetHeaderData(
             $PDF_HEADER_LOGO,
             $PDF_HEADER_LOGO_WIDTH,
@@ -776,6 +781,8 @@ class PdfBillingsController extends AbstractController
             'businessLogo' => $businessLogo,
             'packageVersion' => $packageVersion, 'packageName' => $packageName,
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
+            'defaultQuotationNumber' => $defaultQuotationNumber,
+            'defaultQuotationSourceNumber' => $defaultQuotationSourceNumber,
         ], $templateData));
 
         // https://stackoverflow.com/questions/14495688/how-to-put-html-data-into-header-of-tcpdf
@@ -792,8 +799,8 @@ class PdfBillingsController extends AbstractController
 
         $pdf->lastPage();
         $response = new Response($pdf->Output($businessSignatureImg
-            ? "{$docTypeLabel}Monwoo" . $bConfig->getQuotationNumber() . '.pdf'
-            : "Demo{$docTypeLabel}Monwoo" . $bConfig->getQuotationNumber() . '.pdf'
+            ? "{$docTypeLabel}Monwoo" . $defaultQuotationNumber . '.pdf'
+            : "Demo{$docTypeLabel}Monwoo" . $defaultQuotationNumber . '.pdf'
         ));
         $response->headers->set('Content-Type', 'application/pdf');
         $response->headers->set('Cache-Control', 'no-cache');
