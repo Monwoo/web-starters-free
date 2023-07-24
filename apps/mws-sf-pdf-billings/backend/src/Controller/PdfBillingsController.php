@@ -7,6 +7,7 @@ use App\Entity\BillingConfig;
 use App\Entity\Outlay;
 use App\Form\BillingConfigSubmitableType;
 use App\Repository\BillingConfigRepository;
+use App\Repository\TransactionRepository;
 use App\Services\MwsTCPDF;
 use DateInterval;
 use DateTime;
@@ -563,6 +564,7 @@ class PdfBillingsController extends AbstractController
         // EngineInterface $tplEngine,
         string $projectDir,
         BillingConfigRepository $bConfigRepository,
+        TransactionRepository $transactionRepository,
         Packages $packages,
         // UrlGeneratorInterface $urlGenerator,
     ): Response {
@@ -777,6 +779,8 @@ class PdfBillingsController extends AbstractController
             'labelByDocType' => $labelByDocType,
             'docTypeLabel' => $docTypeLabel,
             'billingConfig' => $bConfig, 'businessSignatureImg' => $businessSignatureImg,
+            'transactionsWithTotals' => $transactionRepository
+            ->findByBConfigIdWithTotal($bConfig->getId()),
             'viewPart' => $viewPart, 'footprintQrCodeUrl' => $footprintQrCodeUrl,
             'businessLogo' => $businessLogo,
             'packageVersion' => $packageVersion, 'packageName' => $packageName,
