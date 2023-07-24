@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TransactionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
@@ -14,6 +15,15 @@ class Transaction
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $paymentMethod = null;
+
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    private ?\DateTimeInterface $receptionDate = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $receptionNumber = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $label = null;
 
@@ -22,9 +32,6 @@ class Transaction
 
     #[ORM\Column(nullable: true)]
     private ?float $addedTaxes = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $paymentMethod = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     private ?BillingConfig $billingConfig = null;
@@ -90,6 +97,30 @@ class Transaction
     public function setBillingConfig(?BillingConfig $billingConfig): static
     {
         $this->billingConfig = $billingConfig;
+
+        return $this;
+    }
+
+    public function getReceptionDate(): ?\DateTimeInterface
+    {
+        return $this->receptionDate;
+    }
+
+    public function setReceptionDate(\DateTimeInterface $receptionDate): static
+    {
+        $this->receptionDate = $receptionDate;
+
+        return $this;
+    }
+
+    public function getReceptionNumber(): ?string
+    {
+        return $this->receptionNumber;
+    }
+
+    public function setReceptionNumber(string $receptionNumber): static
+    {
+        $this->receptionNumber = $receptionNumber;
 
         return $this;
     }

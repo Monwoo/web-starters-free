@@ -12,10 +12,12 @@ class TransactionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('paymentMethod')
+            ->add('receptionDate')
+            ->add('receptionNumber')
             ->add('label')
             ->add('priceWithoutTaxes')
             ->add('addedTaxes')
-            ->add('paymentMethod')
             ->add('billingConfig')
         ;
     }
