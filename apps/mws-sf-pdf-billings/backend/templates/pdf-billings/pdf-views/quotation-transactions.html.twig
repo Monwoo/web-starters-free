@@ -1,14 +1,12 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 
 <style></style>
-{% set transactions = transactionsWithTotals[0:-1] %}
-{% set total = transactionsWithTotals[-1:][0] %}
 
 {# <!-- TODO : for loop on Transactions --> #}
 {% for t in transactions %}
 	<tr style="text-align:right;font-size:10pt;color:#666666;">
 		<td style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;">
-			{{ t.label ?? "Acompte" }} {{ t.receptionNumber }} du {{ t.receptionDate|date("DD/MM/YY") }} :
+			{{ t.label ?? "Acompte" }} {{ t.receptionNumber }} du {{ t.receptionDate|date("d/m/Y") }} :
 		</td>
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">
 			{{((t.priceWithoutTaxes + t.addedTaxes)/totalPriceWithTaxes)
@@ -22,7 +20,7 @@
 			{{t.addedTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}
 		</td>
 		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">
-			{{(total.priceWithoutTaxes + total.addedTaxes)
+			{{(t.priceWithoutTaxes + t.addedTaxes)
 				|format_currency('EUR', {rounding_mode: 'halfeven'})
 			}}
 		</td>
@@ -30,24 +28,45 @@
 	</tr>
 {% endfor %}
 
-<tr style="text-align:right;font-size:10pt;font-weight:bold;color:#666666;">
-	<td style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;">
-		{% if total.priceWithoutTaxes or total.addedTaxes %}
-			Reste à régler :
-		{% else %}
+{% if leftToSettle.total %}
+	<tr style="text-align:right;font-size:10pt;font-weight:bold;color:#000000;">
+		<td style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;">
+				Reste à régler :
+		</td>
+		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">
+			{{leftToSettle.totalPercent
+				|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2})
+			}}
+		</td>
+		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{leftToSettle.totalWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">{{leftToSettle.totalTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">
+			{{leftToSettle.total
+				|format_currency('EUR', {rounding_mode: 'halfeven'})
+			}}
+		</td>
+		<td style="width:{{ 0.12 * fullWidth }};"></td>
+	</tr>
+{% endif %}
 
-		{% endif %}
+<tr style="text-align:right;font-size:10pt;font-weight:normal;color:#666666;">
+	<td style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;">
+			TOTAL :
 	</td>
 	<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">
-		{{((total.priceWithoutTaxes + total.addedTaxes)/totalPriceWithTaxes)
+		{{((transactionTotals.addedTaxes + transactionTotals.priceWithoutTaxes
+		 + leftToSettle.total)/totalPriceWithTaxes)
 			|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2})
 		}}
 	</td>
-	<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{total.priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
-	<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">{{total.addedTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+	<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">
+		{{(transactionTotals.priceWithoutTaxes + leftToSettle.totalWithoutTaxes)|format_currency('EUR', {rounding_mode: 'halfeven'})}}
+	</td>
 	<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">
-		{{(total.priceWithoutTaxes + total.addedTaxes)
-			|format_currency('EUR', {rounding_mode: 'halfeven'})
+		{{(transactionTotals.addedTaxes + leftToSettle.totalTaxes)|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+	<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">
+		{{(transactionTotals.addedTaxes + transactionTotals.priceWithoutTaxes
+			+ leftToSettle.total)|format_currency('EUR', {rounding_mode: 'halfeven'})
 		}}
 	</td>
 	<td style="width:{{ 0.12 * fullWidth }};"></td>

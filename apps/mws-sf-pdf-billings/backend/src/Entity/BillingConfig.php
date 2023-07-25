@@ -97,7 +97,7 @@ class BillingConfig
     #[ORM\ManyToMany(targetEntity: Outlay::class, inversedBy: 'billingConfigs', cascade:['persist'])]
     private Collection $outlays;
 
-    #[ORM\OneToMany(mappedBy: 'billingConfig', targetEntity: Transaction::class)]
+    #[ORM\OneToMany(mappedBy: 'billingConfig', targetEntity: Transaction::class, cascade:["persist"])]
     private Collection $transactions;
 
     // // TODO : Why is 'specifying' inversedBy make all migration fail on error : 

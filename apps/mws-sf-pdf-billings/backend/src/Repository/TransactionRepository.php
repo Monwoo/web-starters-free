@@ -45,6 +45,14 @@ class TransactionRepository extends ServiceEntityRepository
         $total->setLabel("#TOTAL#");
 
         // TODO : sum transactions in total...
+        foreach ($transactions as $t) {
+            $total->setPriceWithoutTaxes(
+                $t->getPriceWithoutTaxes() + $total->getPriceWithoutTaxes()
+            );
+            $total->setAddedTaxes(
+                $t->getAddedTaxes() + $total->getAddedTaxes()
+            );
+        }
 
         $transactions[] = $total;
         return $transactions;

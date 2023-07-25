@@ -109,7 +109,9 @@
 		{# // TODO: empirique way for now, go check pdf default mesure unit ?... #}
 		{% set fullWidth = 569 %}
 		{% set businessPercentDiscount = billingConfig.percentDiscount %}
-	
+		{% set transactions = transactionsWithTotals[0:-1] %}
+		{% set transactionTotals = transactionsWithTotals[-1:][0] %}
+		
 		{# 
 		TIPS : OK, will work in dev, BUT TOO hacky, will messup at prod twig cache level...
 		{% block workloadPriceSetup %}
@@ -204,6 +206,18 @@
 	
 		{% set forseenTotal = totalPriceWithTaxes + outlaysForseenTotal %}
 	
+		{# TODO : modelisation error to fix for outlaysTaxesIncludedInBusinessTotalPercent ? 
+			Substracted at total, but if included, should show up in transaction flow ? #}
+		{% set leftToSettle = {
+			total: totalPriceWithTaxes - transactionTotals.addedTaxes
+			- transactionTotals.priceWithoutTaxes,
+			totalTaxes: outlaysTaxes - transactionTotals.addedTaxes,
+		} %}
+		{% set leftToSettle = leftToSettle|merge({
+			totalPercent: leftToSettle.total / totalPriceWithTaxes,
+			totalWithoutTaxes: leftToSettle.total - leftToSettle.totalTaxes,
+		}) %}
+
 		{% if viewPart != 'CGV' %}
 			<table class="header" style="padding: 0px;border-spacing:{{ (0.3 / 4) * fullWidth }} 0;">
 				<tr>

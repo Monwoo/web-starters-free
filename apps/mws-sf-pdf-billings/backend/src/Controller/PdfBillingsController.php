@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\BillingConfig;
 use App\Entity\Outlay;
+use App\Entity\Transaction;
 use App\Form\BillingConfigSubmitableType;
 use App\Repository\BillingConfigRepository;
 use App\Repository\TransactionRepository;
@@ -195,6 +196,23 @@ class PdfBillingsController extends AbstractController
                 $bConfig->addOutlay($defaultOutlay);
             }
         }
+
+        // TIPS : bellow for quick added transaction check on each page refresh :
+        $defaultTransaction = new Transaction();
+        $defaultTransaction->setPaymentMethod("Test pay way");
+        $defaultTransaction->setReceptionNumber("20230725-R-M00");
+        // https://stackoverflow.com/questions/470617/how-do-i-get-the-current-date-and-time-in-php
+        // $now = new DateTime(null, new DateTimeZone('America/New_York'));
+        // $now->setTimezone(new DateTimeZone('Europe/London'));    // Another way
+        // echo $now->getTimezone();
+        $defaultTransaction->setReceptionDate(new DateTime());
+        $defaultTransaction->setLabel("Reçu");
+        $defaultTransaction->setPriceWithoutTaxes(42);
+
+        $bConfig->addTransaction($defaultTransaction);
+        // Transaction MUST be SAVED to be visible since fetched from db query on ID...
+        $this->em->persist($bConfig);
+        $this->em->flush();
     }
 
     protected function getDefaultTemplateData(string $template) {
