@@ -79,14 +79,6 @@
 {% set tStamp = 'now'|date('U') %}
 
 {% block body %}
-	<div>
-		{# <a href="{{ asset(file.webPath) }}" download="{{ file.downloadFileName }}">
-			Download current billing backup
-		</a> #}
-		<a href="{{ path('app_download_billing', { clientSlug: billingConfig.clientSlug } ) }}" target="_blank">
-			Download current billing backup
-		</a>
-	</div>
 	<div class="billing-config-summary">
 		<p><strong>
 			{% if billingConfig.quotationNumber %}
@@ -111,6 +103,14 @@
 		{% endif %}
 	</div>
 
+	<div>
+		{# <a href="{{ asset(file.webPath) }}" download="{{ file.downloadFileName }}">
+			Download current billing backup
+		</a> #}
+		<a href="{{ path('app_download_billing', { clientSlug: billingConfig.clientSlug } ) }}" target="_blank">
+			Download current billing backup
+		</a>
+	</div>
 
 	{{ form_start(form) }}
 	{# <div class="">

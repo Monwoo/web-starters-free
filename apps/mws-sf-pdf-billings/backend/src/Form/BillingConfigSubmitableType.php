@@ -7,9 +7,11 @@ use App\Entity\BillingConfig;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class BillingConfigSubmitableType extends BillingConfigType
 {
@@ -17,6 +19,44 @@ class BillingConfigSubmitableType extends BillingConfigType
     // =>ovewrite only the 'unique' part of clientSlug for custom validators on it ?
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // https://symfony.com/doc/current/controller/upload_file.html
+        // https://symfony.com/doc/current/reference/constraints/File.html
+        $builder->add('importedUpload', FileType::class, [
+                'label' => 'Import (YAML/JSON/CSV/XML)',
+                // unmapped means that this field is not associated to any entity property
+                'mapped' => false,
+                // make it optional so you don't have to re-upload the PDF file
+                // every time you edit the Product details
+                'required' => false,
+                // unmapped fields can't define their validation using annotations
+                // in the associated entity, so you can use the PHP constraint classes
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            // https://www.iana.org/assignments/media-types/media-types.xhtml
+                            // 'application/pdf', // TODO : import PDF ? qrCode extract and keep md5 linked to all exports somewhere ?
+                            // 'application/x-pdf',
+                            'text/xml',
+                            'application/xml',
+                            'application/json',
+                            'application/yaml',
+                            'application/csv',
+                            'text/csv',
+                            // https://github.com/symfony/symfony/issues/39237
+                            // With php 8 finfo returns application/csv as mime type for csv
+                            // With php 7.4 csv files are recognized as text/plain and the guessed extension is txt
+                            'text/plain', // Will allow Yaml and CSV... (and all textual format...)
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid yaml/json/csv/xml document',
+
+                        // The extensions option was introduced in Symfony 6.2. (recommended way after 6.2....)
+                        // 'extensions' => [ 'yaml', 'yml', 'json', 'csv', 'xml', 'pdf' ],
+                        // 'extensionsMessage' => 'Please upload a valid yaml/json/csv/xml document',
+                    ])
+                ],
+            ]);
+
         // https://stackoverflow.com/questions/74007075/symfony-form-type-extension-for-custom-types
         // https://stackoverflow.com/questions/11237511/multiple-ways-of-calling-parent-method-in-php
         parent::buildForm($builder, $options);

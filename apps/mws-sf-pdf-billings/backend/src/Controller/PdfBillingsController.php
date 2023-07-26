@@ -13,6 +13,7 @@ use App\Services\MwsTCPDF;
 use DateInterval;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,8 +40,12 @@ use Endroid\QrCode\Label\Label;
 use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
+use ReflectionClass;
+use ReflectionProperty;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 # https://symfony.com/doc/6.2/the-fast-track/en/28-intl.html
 # https://symfony.com/doc/5.4/the-fast-track/en/28-intl.html
@@ -413,7 +418,8 @@ class PdfBillingsController extends AbstractController
     #[Route('', name: 'app_pdf_billings')]
     public function index(
         Request $request,
-        BillingConfigRepository $bConfigRepository
+        BillingConfigRepository $bConfigRepository,
+        SluggerInterface $slugger
     ): Response {
         // $clientId = $request->get('clientId');
 
@@ -482,7 +488,104 @@ class PdfBillingsController extends AbstractController
         // var_dump($form->isSubmitted());var_dump($form->isValid()); exit;
 
         if ($form->isSubmitted()) {
+
             if ($form->isValid()) {
+                // https://github.com/symfony/symfony/blob/6.3/src/Symfony/Component/HttpFoundation/File/UploadedFile.php
+                // https://stackoverflow.com/questions/14462390/how-to-declare-the-type-for-local-variables-using-phpdoc-notation
+                /** @var UploadedFile $importedUpload */
+                $importedUpload = $form->get('importedUpload')->getData();
+                if ($importedUpload) {
+                    // $originalFilename = pathinfo($importedUpload->getClientOriginalName(), PATHINFO_FILENAME);
+                    $originalFilename = $importedUpload->getClientOriginalName();
+                    // TIPS : $importedUpload->guessExtension() is based on mime type and may fail
+                    // to be .yaml if text detected... (will be .txt instead of .yaml...)
+                    // $extension = $importedUpload->guessExtension();
+                    $extension = array_slice(explode(".", $originalFilename), -1)[0];
+                    $originalName = implode(".", array_slice(explode(".", $originalFilename), 0, -1));
+                    // this is needed to safely include the file name as part of the URL
+                    $safeFilename = $slugger->slug($originalName);
+                    // $newFilename = $safeFilename.'-'.uniqid().'.'.$importedUpload->guessExtension();
+                    $newFilename = $safeFilename.'_'.uniqid().'.'.$extension;
+                    // TODO : Move the file to the directory where import logs are stored ? or too much data for nothing and gdpr unsafe risk ?
+                    // try {
+                    //     $importedUpload->move(
+                    //         $this->getParameter('imports_directory'), // TODO : setup param...
+                    //         $newFilename
+                    //     );
+                    // } catch (FileException $e) {
+                    //     // ... handle exception if something happens during file upload
+                    // }
+
+                    $importContent = file_get_contents($importedUpload->getPathname());
+                    /** @var BillingConfig */
+                    $bConfigDeserialized = $this->serializer->deserialize($importContent, BillingConfig::class, $extension);
+        
+                    // $this->em->persist($bConfigDeserialized);
+                    // $this->em->refresh($bConfigDeserialized);
+                    // $this->em->merge($bConfigDeserialized);
+
+                    $bConfigImportTarget = $bConfigRepository->findOneBy([
+                        'clientSlug' => $bConfigDeserialized->getClientSlug(), // Default empty client, all fillable by hand version...
+                    ]) ?? ($this->billingConfigFactory)($bConfigDeserialized->getClientSlug());
+
+                    // $var = get_class_vars(BillingConfig::class);
+                    // https://stackoverflow.com/questions/15712201/how-to-get-all-private-var-names-from-a-class-in-php
+                    $reflection = new ReflectionClass($bConfigImportTarget);
+                    $vars = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
+            
+                    foreach($vars as $var) {
+                        $setter = "set" . ucfirst($var->name);
+                        $getter = "get" . ucfirst($var->name);
+                        if (!method_exists($bConfigDeserialized, $getter)) {
+                            // Boolean field do not use 'get' prefix, but 'is' prefix...
+                            $getter = "is" . ucfirst($var->name);
+                        }
+                        if (method_exists($bConfigImportTarget, $setter)) {
+                            $bConfigImportTarget->$setter($bConfigDeserialized->$getter());
+                        } else {
+                            if (method_exists($bConfigImportTarget, $getter)) {
+                                /** @var Collection */
+                                $collection = $bConfigImportTarget->$getter();
+                                if ($collection instanceof Collection) {
+                                    $collection->clear();
+                                    foreach ($bConfigDeserialized->$getter() as $item) {
+                                        // $loadedItem = $outlayRepository->findOneBy([
+                                        //     'clientSlug' => $bConfigDeserialized->getClientSlug(), // Default empty client, all fillable by hand version...
+                                        // ]) ?? ($this->billingConfigFactory)($bConfigDeserialized->getClientSlug());
+                    
+                                        $adder = 'add' . substr(ucfirst($var->name), 0, -1);
+                                        $bConfigImportTarget->$adder($item); // TODO : this one persist some billingConfig with ALL to NULL, WHY ?
+                                        // $collection->add($item);
+                                    }
+                                    // TODO : solve Integrity constraint violation: 19 NOT NULL constraint failed: billing_config.client_slug
+                                    $this->em->flush();
+                                    exit;
+                
+                                }
+                            }
+                        }
+                    }
+                    // var_dump($bConfigImportTarget);exit;
+                    // TODO : above is OK only for simple fields, relations need updates :
+                    // var_dump($bConfigImportTarget->getClientSlug());exit;
+
+                    $this->em->persist($bConfigImportTarget);
+                    $this->em->flush();
+    
+                    // echo $importedUpload->guessExtension();
+                    // echo $importedUpload->getClientOriginalName();
+                    // var_dump($vars);
+                    // echo $importedUpload;
+                    // var_dump($bConfigDeserialized->getOutlays());
+                    // var_dump($bConfigImportTarget->getOutlays());
+                    // exit;
+                    return $this->redirectToRoute('app_pdf_billings', [
+                        "billing_config_submitable" => [
+                            "clientSlug" => $clientSlug
+                        ]
+                    ]);
+                }
+    
                 // var_dump($bConfig); exit;
                 // $bConfig->setComputedValue(...);
                 // https://symfony.com/doc/current/form/form_collections.html#allowing-tags-to-be-removed
@@ -861,7 +964,7 @@ class PdfBillingsController extends AbstractController
         '/download/billing/{clientSlug}/{format}',
         defaults: [
             'clientSlug' => '--',
-            'format' => 'json'
+            'format' => 'yaml'
         ],
         name: 'app_download_billing'
     )]
