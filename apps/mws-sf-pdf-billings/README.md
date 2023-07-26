@@ -367,6 +367,9 @@ php bin/console make:stimulus-controller
 # might be possible with PHP code too :
 # https://symfony.com/doc/current/bundles/extension.html
 
+# https://symfony.com/doc/current/serializer.html
+# https://okazy.github.io/symfony-docs/serializer.html
+composer require symfony/serializer-pack
 ```
 
 ## Useful Links

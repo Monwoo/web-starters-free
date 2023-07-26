@@ -40,6 +40,7 @@ use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 # https://symfony.com/doc/6.2/the-fast-track/en/28-intl.html
 # https://symfony.com/doc/5.4/the-fast-track/en/28-intl.html
@@ -65,7 +66,8 @@ class PdfBillingsController extends AbstractController
     public function __construct(
         LoggerInterface $logger,
         TCPDFController $tcpdf,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        SerializerInterface $serializer
     ) {
         // ob_start();
 
@@ -113,18 +115,21 @@ class PdfBillingsController extends AbstractController
             return $bConfig;
         };
 
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        // $normalizers = [new ObjectNormalizer()];
-        $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, string $format, array $context): string {
-                // return "**" . (string)$object . "**";
-                return "****";
-            },
-        ];
-        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
-        $normalizers = [ $normalizer ];
+        // // TIPS : build your own serializer :
+        // $encoders = [new XmlEncoder(), new JsonEncoder()];
+        // // $normalizers = [new ObjectNormalizer()];
+        // $defaultContext = [
+        //     AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, string $format, array $context): string {
+        //         // return "**" . (string)$object . "**";
+        //         return "****";
+        //     },
+        // ];
+        // $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
+        // $normalizers = [ $normalizer ];
+        // $this->serializer = new Serializer($normalizers, $encoders);
 
-        $this->serializer = new Serializer($normalizers, $encoders);
+        // Or use the default symfony one :
+        $this->serializer = $serializer;
     }
 
     protected function setupBillingConfigDefaults(BillingConfig &$bConfig) {

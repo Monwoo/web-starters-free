@@ -38,3 +38,15 @@ services:
             # public function __invoke(ExceptionEvent $event)
             - { name: kernel.event_listener, event: kernel.exception }
             - { name: kernel.event_listener, event: kernel.request }
+
+    # Register SF Yaml encoder : TIPS :
+    # 'php bin/console debug:container' already show some YamlEncoder for serializer.encoder.yaml...
+    # Symfony\Component\Serializer\Encoder\YamlEncoder:
+    #     tags:
+    #         - { name: serializer.encoder.yaml }
+    #         - { name: serializer.encoder }
+    # 'php bin/console debug:container custom.encoder.yaml'
+    # custom.encoder.yaml: # OK, not needed, was using custom serializer instead of default one...
+    #     class: Symfony\Component\Serializer\Encoder\YamlEncoder
+    #     public: true
+    #     tags: [ serializer.encoder ]

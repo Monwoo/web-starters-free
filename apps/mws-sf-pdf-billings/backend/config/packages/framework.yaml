@@ -19,7 +19,14 @@ framework:
 
     # https://stackoverflow.com/questions/25948853/how-to-install-the-intl-extension-for-twig/28410279#28410279
     default_locale: fr
-
+    serializer:
+        circular_reference_handler: 'App\Serializer\CircularReferenceHandler'
+        enabled: true
+        # https://github.com/symfony/symfony/pull/38542
+        default_context:
+            # vendor/symfony/serializer/Encoder/YamlEncoder.php:65
+            yaml_inline: 7
+            # yaml_indent: 2
 when@test:
     framework:
         test: true
