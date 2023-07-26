@@ -72,6 +72,7 @@ class BillingConfigSubmitableType extends BillingConfigType
                 'Monwoo Etude Analytique' => 'monwoo-06-analytical-study',
                 'Monwoo Maintenance simple' => 'monwoo-07-upkeep',
                 'Monwoo Formation backend fullstack' => 'monwoo-08-backend-learning',
+                'Monwoo template vide' => 'monwoo-09-empty',
             ],
         ]);
         // https://symfony.com/doc/current/form/form_collections.html

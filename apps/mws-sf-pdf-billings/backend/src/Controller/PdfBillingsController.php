@@ -281,6 +281,15 @@ class PdfBillingsController extends AbstractController
                     "licenseWpDisplayDiscount" => 0,
                 ];
                 break;
+            case 'monwoo-09-empty':
+                return [
+                    "defaultBusinessWorkloadHours" => 0,
+                    "pricePerHourWithoutDiscount" => 0,
+                    "businessWorkloadTemplate" => null,//"pdf-billings/pdf-views/business-item-backend-learning-details.html.twig",
+                    "licenseWpDisplayPrice" => 0,
+                    "licenseWpDisplayDiscount" => 0,
+                ];
+                break;    
             default:
                 return [
                     "defaultBusinessWorkloadHours" => 6,

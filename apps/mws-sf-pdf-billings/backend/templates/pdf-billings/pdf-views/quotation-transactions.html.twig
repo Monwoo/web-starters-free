@@ -9,7 +9,7 @@
 			{{ t.label ?? "Acompte" }} {{ t.receptionNumber }} du {{ t.receptionDate|date("d/m/Y") }} :
 		</td>
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">
-			{{((t.priceWithoutTaxes + t.addedTaxes)/totalPriceWithTaxes)
+			{{(totalPriceWithTaxes ? (t.priceWithoutTaxes + t.addedTaxes)/totalPriceWithTaxes : 0)
 				|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2})
 			}}
 		</td>
@@ -58,8 +58,8 @@
 			TOTAL :
 	</td>
 	<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">
-		{{((transactionTotals.addedTaxes + transactionTotals.priceWithoutTaxes
-		 + leftToSettle.total)/totalPriceWithTaxes)
+		{{(totalPriceWithTaxes ? (transactionTotals.addedTaxes + transactionTotals.priceWithoutTaxes
+		 + leftToSettle.total)/totalPriceWithTaxes : 0)
 			|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2})
 		}}
 	</td>

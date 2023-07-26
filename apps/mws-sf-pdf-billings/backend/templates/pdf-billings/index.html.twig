@@ -88,17 +88,19 @@
 		</strong> pour : {{billingConfig.clientName}}</p>
 		<p>Nb d'heures Monwoo : {{billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours}}</p>
 		<p><strong>Template : </strong>{{billingConfig.quotationTemplate}}</p>
-		<p>Détail des heures Monwoo : </p>
-		<div class="workload-details" onclick="const preElt = document.querySelector('.workload-details-pre');
-		preElt.offsetHeight === 0
-		? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
-			billingConfig.businessWorkloadDetails ?? include(businessWorkloadTemplate)
-		)  |striptags(allowedHtmlTags)|raw}}
-		</div>
-		<pre class="workload-details-pre">{{ (
+		{% if businessWorkloadTemplate %}
+			<p>Détail des heures Monwoo : </p>
+			<div class="workload-details" onclick="const preElt = document.querySelector('.workload-details-pre');
+			preElt.offsetHeight === 0
+			? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
 				billingConfig.businessWorkloadDetails ?? include(businessWorkloadTemplate)
-			)  |striptags(allowedHtmlTags)}}
-		</pre>
+			)  |striptags(allowedHtmlTags)|raw}}
+			</div>
+			<pre class="workload-details-pre">{{ (
+					billingConfig.businessWorkloadDetails ?? include(businessWorkloadTemplate)
+				)  |striptags(allowedHtmlTags)}}
+			</pre>
+		{% endif %}
 	</div>
 
 

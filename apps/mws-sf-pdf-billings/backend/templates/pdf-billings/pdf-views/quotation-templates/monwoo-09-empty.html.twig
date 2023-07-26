@@ -2,47 +2,14 @@
 {% extends 'pdf-billings/pdf-views/quotation-templates/monwoo.html.twig' %}
 
 {% block businessAim %}
-	{% include 'pdf-billings/pdf-views/business-aim-08.html.twig' with {
+	{# include 'pdf-billings/pdf-views/business-aim-08.html.twig' with {
 		'app': app, 'billingConfig': billingConfig, 'fullWidth': fullWidth,
 		'quotationStart': quotationStart, 'quotationEnd': quotationEnd,
-	} %}
+	} #}
 {% endblock %}
 
 {% block businessStartItem %}
-	<table>
-		<tr>
-			{% set asMargin = 7 %}
-			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
-		</tr>
-	</table>
 {% endblock %}
 
 {% block businessEndItem %}
-	<table>
-		<tr>
-			{% set asMargin = 0 %}
-			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
-		</tr>
-	</table>
-	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
-		'app': app, 'billingConfig': billingConfig,
-		'description': "<strong>30 minutes d'intervention fullstack backend Monwoo</strong> sur des cours, conseils, technologies ou mises en oeuvre fullstack.",
-		'aimTitle': 'Objectif(s) de la prestation :',
-		'aimTitleBis': '(nécessaire)<br/>PHP Backend<br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
-		'aimDescription': businessWorkloadDetails,
-		'quantity': businessWorkloadHours * 2,
-		'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
-		'taxesPercent': 0,
-		'discountPercent': businessPercentDiscount,
-		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
-		'priceWithTaxes': businessWorkloadHours * pricePerHour,
-	} %}
-	<br pagebreak="true"/>
-	<table>
-		<tr>
-			{% set asMargin = 42 %}
-			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
-		</tr>
-	</table>
-
 {% endblock %}

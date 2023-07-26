@@ -130,8 +130,9 @@
 		
 		{% set businessWorkloadHours = billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours %}
 		{% set businessWorkloadDetails = billingConfig.businessWorkloadDetails
-		?? include(businessWorkloadTemplate,
-		{businessWorkloadHours:businessWorkloadHours}) %}
+		?? (businessWorkloadTemplate
+		  ? include(businessWorkloadTemplate, {businessWorkloadHours:businessWorkloadHours})
+			: null) %}
 		{% set quotationSeparator = 'file://' ~ kernelRootDir ~ '/public/medias/QuotationSeparator.jpg' %}
 		{% set quotationStart = billingConfig.quotationStartDay ? billingConfig.quotationStartDay
 		: ("now"|date) %}
@@ -214,7 +215,7 @@
 			totalTaxes: outlaysTaxes - transactionTotals.addedTaxes,
 		} %}
 		{% set leftToSettle = leftToSettle|merge({
-			totalPercent: leftToSettle.total / totalPriceWithTaxes,
+			totalPercent: totalPriceWithTaxes ? leftToSettle.total / totalPriceWithTaxes : 0,
 			totalWithoutTaxes: leftToSettle.total - leftToSettle.totalTaxes,
 		}) %}
 

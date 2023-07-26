@@ -105,7 +105,7 @@
 					'monwoo', 'monwoo-02-wp-e-com', 'monwoo-03-php-backend',
 					'monwoo-04-hybrid-app', 'monwoo-05-php-crm',
 					'monwoo-06-analytical-study', 'monwoo-07-upkeep',
-					'monwoo-08-backend-learning' ] %}
+					'monwoo-08-backend-learning', 'monwoo-09-empty' ] %}
 				{# TIPS : setup with FULL translated string for extractions 
 				tools to extract translated strings... #}
 				{% set monwooTemplatesTranslatedLabels = {
@@ -117,6 +117,7 @@
 					'monwoo-06-analytical-study' : 'mws.templates.labels.monwoo_06_analyticalStudy'|trans,
 					'monwoo-07-upkeep' : 'mws.templates.labels.monwoo_07_upkeep'|trans,
 					'monwoo-08-backend-learning' : 'mws.templates.labels.monwoo_08_backendLearning'|trans,
+					'monwoo-09-empty' : 'mws.templates.labels.monwoo_09_empty'|trans,
 				} %}
 				{% for monwooTemplate in monwooTemplates %}
 					<a href="{{ path('app_pdf_billings', {
