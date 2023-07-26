@@ -90,6 +90,9 @@ class BillingConfig
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $marginBeforeEndItem = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marginAfterEndItem = null;
+
     #[ORM\Column(nullable: true)]
     private ?bool $hideDefaultOutlaysOnEmptyOutlays = null;
 
@@ -469,6 +472,18 @@ class BillingConfig
     public function setQuotationAmount(?float $quotationAmount): static
     {
         $this->quotationAmount = $quotationAmount;
+
+        return $this;
+    }
+
+    public function getMarginAfterEndItem(): ?string
+    {
+        return $this->marginAfterEndItem;
+    }
+
+    public function setMarginAfterEndItem(?string $marginAfterEndItem): static
+    {
+        $this->marginAfterEndItem = $marginAfterEndItem;
 
         return $this;
     }

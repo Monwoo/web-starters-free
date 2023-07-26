@@ -311,7 +311,9 @@
 				} %}
 			{% endblock %}
 	
-			{% if billingConfig.marginBeforeStartItem ?? null %}
+			{% set haveMarginBeforeStartItem = (billingConfig.marginBeforeStartItem ?? null)
+				and billingConfig.marginBeforeStartItem|length %}
+			{% if haveMarginBeforeStartItem %}
 				<table>
 					<tr>
 						<td class="empty-space" style="height:{{billingConfig.marginBeforeStartItem}};font-size:{{billingConfig.marginBeforeStartItem}};">&nbsp;</td>
@@ -332,7 +334,7 @@
 					'discountPercent': licenseWpDisplayDiscount,
 					'priceWithoutTaxes': licenseWpDisplay,
 					'priceWithTaxes': licenseWpDisplay,
-					'paddingTop': 42,
+					'paddingTop': haveMarginBeforeStartItem ? 0 : 42,
 					'paddingBottom': 0.1,
 				} %}
 			{% endblock %}
@@ -394,7 +396,8 @@
 				</tr>
 			</table>
 	
-			{% if billingConfig.marginBeforeEndItem ?? null %}
+			{% if (billingConfig.marginBeforeEndItem ?? null)
+				and billingConfig.marginBeforeEndItem|length %}
 				<table>
 					<tr>
 						<td class="empty-space" style="height:{{billingConfig.marginBeforeEndItem}};font-size:{{billingConfig.marginBeforeEndItem}};">&nbsp;</td>
@@ -418,6 +421,15 @@
 				} %}
 			{% endblock %}
 	
+			{% if (billingConfig.marginAfterEndItem ?? null)
+				and billingConfig.marginAfterEndItem|length %}
+				<table>
+					<tr>
+						<td class="empty-space" style="height:{{billingConfig.marginAfterEndItem}};font-size:{{billingConfig.marginAfterEndItem}};">&nbsp;</td>
+					</tr>
+				</table>
+			{% endif %}
+
 			{# TIPS : <div>$nbsp;</div> is MANDATORY here (outside of table ?) for tcpdf, otherwise font-size is not changed 
 						and div stay bigger than regular font size if no image inside...
 						If using image inside div, set font-size to 0 to avoid extra line height after image in tcpdf

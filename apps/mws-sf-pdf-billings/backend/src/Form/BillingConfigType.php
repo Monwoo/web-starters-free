@@ -35,6 +35,7 @@ class BillingConfigType extends AbstractType
             ->add('percentDiscount')
             ->add('marginBeforeStartItem')
             ->add('marginBeforeEndItem')
+            ->add('marginAfterEndItem')
             ->add('hideDefaultOutlaysOnEmptyOutlays')
             ->add('outlays')
         ;
