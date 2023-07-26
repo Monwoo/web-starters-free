@@ -53,7 +53,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 // )] => sounds gread, but do not redirect '/' and add wierdy behavior on param checks...
 
 
-#[Route('/{_locale<%app.supported_locales%>}/')]
+#[Route('/{_locale<%app.supported_locales%>}')]
 class PdfBillingsController extends AbstractController
 {
     protected TCPDFController $tcpdf;
@@ -399,6 +399,12 @@ class PdfBillingsController extends AbstractController
         // )->getDataUri();
     }
 
+    protected $labelByDocType = [
+        "devis" => "Devis",
+        "facture" => "Facture",
+        "proforma" => "Proforma",
+    ];
+
     #[Route('', name: 'app_pdf_billings')]
     public function index(
         Request $request,
@@ -613,12 +619,7 @@ class PdfBillingsController extends AbstractController
         ]) ?? $bConfigRepository->findOneBy([
             'clientSlug' => '--', // Default empty client, all fillable by hand version...
         ]) ?? ($this->billingConfigFactory)();
-        $labelByDocType = [
-            "devis" => "Devis",
-            "facture" => "Facture",
-            "proforma" => "Proforma",
-        ];
-        $docTypeLabel = $labelByDocType[$bConfig->getDocumentType() ?? 'devis'];
+        $docTypeLabel = $this->labelByDocType[$bConfig->getDocumentType() ?? 'devis'];
 
         $template = $bConfig->getQuotationTemplate() ?? 'monwoo';
         // TODO : template data inside config ? make it some optional config form on template changes ?
@@ -804,7 +805,7 @@ class PdfBillingsController extends AbstractController
 
         // Set some content to print
         $html = $twig->render($templatePath, array_merge([
-            'labelByDocType' => $labelByDocType,
+            'labelByDocType' => $this->labelByDocType,
             'docTypeLabel' => $docTypeLabel,
             'billingConfig' => $bConfig, 'businessSignatureImg' => $businessSignatureImg,
             'transactionsWithTotals' => $transactionRepository
@@ -849,5 +850,49 @@ class PdfBillingsController extends AbstractController
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/PdfBillingsController.php',
         ]);
+    }
+
+    #[Route(
+        '/download/billing/{clientSlug}/{format}',
+        defaults: [
+            'clientSlug' => '--',
+            'format' => 'json'
+        ],
+        name: 'app_download_billing'
+    )]
+    public function downloadCurrentBilling(
+        string $clientSlug,
+        string $format,
+        BillingConfigRepository $bConfigRepository,
+    )
+    {
+        // https://symfony.com/doc/current/components/serializer.html#the-yamlencoder
+        // https://symfony.com/doc/current/components/serializer.html#the-csvencoder
+        // $request = $this->get('request');
+        // $path = $this->get('kernel')->getRootDir(). "/../web/downloads/";
+        // $content = file_get_contents($path.$filename);
+        $bConfig = $bConfigRepository->findOneBy([
+            'clientSlug' => $clientSlug, // Default empty client, all fillable by hand version...
+        ]) ?? $bConfigRepository->findOneBy([
+            'clientSlug' => '--', // Default empty client, all fillable by hand version...
+        ]) ?? ($this->billingConfigFactory)();
+
+        $defaultQuotationNumber =
+        $bConfig->getQuotationNumber() ?? $bConfig->getQuotationSourceNumber();
+        $docTypeLabel = $this->labelByDocType[$bConfig->getDocumentType() ?? 'devis'];
+        $filename = "{$docTypeLabel}Monwoo{$defaultQuotationNumber}.{$format}"; // . '.pdf';
+
+        $content = $this->serializer->serialize(
+            $bConfig, $format // 'json'
+        );
+
+        $response = new Response();
+
+        //set headers
+        $response->headers->set('Content-Type', 'mime/type');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);
+
+        $response->setContent($content);
+        return $response;
     }
 }
