@@ -552,15 +552,26 @@ class PdfBillingsController extends AbstractController
                                         // $loadedItem = $outlayRepository->findOneBy([
                                         //     'clientSlug' => $bConfigDeserialized->getClientSlug(), // Default empty client, all fillable by hand version...
                                         // ]) ?? ($this->billingConfigFactory)($bConfigDeserialized->getClientSlug());
+
+                                        // TIPS : this one solve Integrity constraint violation: 19 NOT NULL constraint failed: billing_config.client_slug
+                                        if (method_exists($item, "getBillingConfigs")) {
+                                            $item->getBillingConfigs()->clear();
+                                        }
+                                        if (method_exists($item, "getBillingConfig")) {
+                                            $item->setBillingConfig(null);
+                                        }
+                                        
+                                        // TODO : GENERIC WAY ($item->getBillingConfigs() sound ok with clientSlug, but sound like it want to persist some BillingConfig with null stuff not nullable..)
+                                        // => SOUND like for COLLECTIONS : iterate and FETCH by ID (ok for us, orm take care of it...)
                     
                                         $adder = 'add' . substr(ucfirst($var->name), 0, -1);
                                         $bConfigImportTarget->$adder($item); // TODO : this one persist some billingConfig with ALL to NULL, WHY ?
                                         // $collection->add($item);
+                                        // var_dump($item->getBillingConfigs());exit;
                                     }
                                     // TODO : solve Integrity constraint violation: 19 NOT NULL constraint failed: billing_config.client_slug
-                                    $this->em->flush();
-                                    exit;
-                
+                                    // $this->em->flush();
+                                    // exit;                
                                 }
                             }
                         }
