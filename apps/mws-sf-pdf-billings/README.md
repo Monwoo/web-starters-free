@@ -173,6 +173,10 @@ php bin/console make:entity Transaction
 rm src/Form/TransactionType.php
 php bin/console make:form Transaction Transaction
 
+php bin/console make:entity Product
+rm src/Form/ProductType.php
+php bin/console make:form Product Product
+
 # ensure your databse is clean and in sync with existing migration
 # (WARNING : will reset your dev database) :
 rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
