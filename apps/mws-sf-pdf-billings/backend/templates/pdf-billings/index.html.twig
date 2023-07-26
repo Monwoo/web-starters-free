@@ -128,6 +128,11 @@
 	type="button"
 	>Ajouter un débours</button>
 
+	<br/><br/>
+	<button type="button" class="add_transaction_link" data-collection-holder-class="transactions"
+	type="button"
+	>Ajouter une transaction</button>
+
 	{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
 	{# Native way : #}
 	<p style="text-align:right">
@@ -245,9 +250,6 @@
     })
 		addOutlayFormDeleteAllLink(outlaysTarget.parentElement, outlaysItemSelector);
 
-	</script>
-
-	<script>
 		const addTransactionFormDeleteLink = (item) => {
 			const removeFormButton = document.createElement('button');
 			// Type : button: The button has no default behavior, and does nothing
@@ -305,7 +307,7 @@
 			collectionHolder.dataset.index++;
 		};
 
-		document.querySelectorAll('.add_outlay_link').forEach(btn => {
+		document.querySelectorAll('.add_transaction_link').forEach(btn => {
 			btn.addEventListener("click", addTransactionFormToCollection)
 		});
 

@@ -84,11 +84,12 @@
 	<tr>
 		<td class="aim-label" style="width:{{ fullWidth }};">
 			{% if billingConfig.documentType == 'facture' %}
-				Facture T.T.C. {{
+				Facture {{
 					(businessSignatureImg ?? null) ? "Monwoo" : "Démo"
 				}} n° {{ billingConfig.quotationNumber }} de :
 				{{ (billingConfig.quotationAmount ?? 0)
 					|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
+				T.T.C.
 			{% else %}
 				Dans l'attente de votre retour.
 			{% endif %}
