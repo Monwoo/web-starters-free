@@ -338,6 +338,20 @@
 					'paddingBottom': 0.1,
 				} %}
 			{% endblock %}
+
+			{% if billingConfig.pageBreakAfterStartItem %}
+				<br pagebreak="true"/>
+			{% endif %}
+
+			{% if (billingConfig.marginAfterStartItem ?? null)
+				and billingConfig.marginAfterStartItem|length %}
+				<table>
+					<tr>
+						<td class="empty-space" style="height:{{billingConfig.marginAfterStartItem}};font-size:{{billingConfig.marginAfterStartItem}};">&nbsp;</td>
+					</tr>
+				</table>
+			{% endif %}
+
 			{# // TIPS : will break page only if no outlays present (otherwise,
 					outlay can add or remove a before page break to handle alignements ) #}
 			{% for outlay in billingConfig.outlays %}
@@ -421,6 +435,10 @@
 				} %}
 			{% endblock %}
 	
+			{% if billingConfig.pageBreakAfterEndItem %}
+				<br pagebreak="true"/>
+			{% endif %}
+
 			{% if (billingConfig.marginAfterEndItem ?? null)
 				and billingConfig.marginAfterEndItem|length %}
 				<table>

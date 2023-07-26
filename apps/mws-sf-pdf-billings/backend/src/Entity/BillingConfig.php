@@ -88,10 +88,19 @@ class BillingConfig
     private ?string $marginBeforeStartItem = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marginAfterStartItem = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $pageBreakAfterStartItem = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $marginBeforeEndItem = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $marginAfterEndItem = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $pageBreakAfterEndItem = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $hideDefaultOutlaysOnEmptyOutlays = null;
@@ -484,6 +493,42 @@ class BillingConfig
     public function setMarginAfterEndItem(?string $marginAfterEndItem): static
     {
         $this->marginAfterEndItem = $marginAfterEndItem;
+
+        return $this;
+    }
+
+    public function getMarginAfterStartItem(): ?string
+    {
+        return $this->marginAfterStartItem;
+    }
+
+    public function setMarginAfterStartItem(?string $marginAfterStartItem): static
+    {
+        $this->marginAfterStartItem = $marginAfterStartItem;
+
+        return $this;
+    }
+
+    public function isPageBreakAfterStartItem(): ?bool
+    {
+        return $this->pageBreakAfterStartItem;
+    }
+
+    public function setPageBreakAfterStartItem(?bool $pageBreakAfterStartItem): static
+    {
+        $this->pageBreakAfterStartItem = $pageBreakAfterStartItem;
+
+        return $this;
+    }
+
+    public function isPageBreakAfterEndItem(): ?bool
+    {
+        return $this->pageBreakAfterEndItem;
+    }
+
+    public function setPageBreakAfterEndItem(?bool $pageBreakAfterEndItem): static
+    {
+        $this->pageBreakAfterEndItem = $pageBreakAfterEndItem;
 
         return $this;
     }
