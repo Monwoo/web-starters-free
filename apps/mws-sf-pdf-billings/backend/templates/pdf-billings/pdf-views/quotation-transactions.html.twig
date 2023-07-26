@@ -24,7 +24,9 @@
 				|format_currency('EUR', {rounding_mode: 'halfeven'})
 			}}
 		</td>
-		<td style="width:{{ 0.12 * fullWidth }};"></td>
+		<td style="width:{{ 0.12 * fullWidth }};">
+			{{t.paymentMethod}}
+		</td>
 	</tr>
 {% endfor %}
 
@@ -45,7 +47,8 @@
 				|format_currency('EUR', {rounding_mode: 'halfeven'})
 			}}
 		</td>
-		<td style="width:{{ 0.12 * fullWidth }};"></td>
+		<td style="width:{{ 0.12 * fullWidth }};">
+		</td>
 	</tr>
 {% endif %}
 

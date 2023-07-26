@@ -154,6 +154,9 @@ php bin/console list make
 php bin/console make:entity BillingConfig
 
 rm src/Form/BillingConfigType.php
+# might be needed to succed commands
+# (still loading BillingConfigType from cached php files )
+rm -rf var/cache
 # # use below if you have error on missing BillingConfigType :
 # mv src/Form/BillingConfigSubmitableType.php \
 # src/Form/_BillingConfigSubmitableType.php 

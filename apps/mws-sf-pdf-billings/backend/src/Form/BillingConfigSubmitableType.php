@@ -85,6 +85,16 @@ class BillingConfigSubmitableType extends BillingConfigType
             // 'entry_options' => ['label' => false],
         ]);
 
+        $builder->add('transactions', CollectionType::class, [
+            'entry_type' => TransactionType::class,
+            'allow_add' => true,
+            'allow_delete' => true,
+            'by_reference' => false,
+            // 'allow_add' => true,
+            // 'prototype' => true,
+            // 'entry_options' => ['label' => false],
+        ]);
+
         $builder->add('submit', SubmitType::class, ['label' => 'Mettre à jour']);
     }
 

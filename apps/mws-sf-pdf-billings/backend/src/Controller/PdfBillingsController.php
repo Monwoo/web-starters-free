@@ -83,7 +83,8 @@ class PdfBillingsController extends AbstractController
             // TODO : Setting 'null' from form give error : Expected argument of type "string", "null" given at property path "clientName"...
             $bConfig->setClientName('______________________________');
             $bConfig->setClientSlug($slug ?? '--');
-            $bConfig->setQuotationSourceNumber('________________');
+            // $bConfig->setQuotationSourceNumber('________________');
+            $bConfig->setQuotationNumber('________________');
             // $bConfig->setClientEmail('📂@ ______________________________');
             // $bConfig->setClientTel('📞 ______________________________'); NOP, not having loaded font for it, // TODO : load emoticon fonts ?
             $bConfig->setClientEmail('______________________________');
@@ -197,22 +198,22 @@ class PdfBillingsController extends AbstractController
             }
         }
 
-        // TIPS : bellow for quick added transaction check on each page refresh :
-        $defaultTransaction = new Transaction();
-        $defaultTransaction->setPaymentMethod("Test pay way");
-        $defaultTransaction->setReceptionNumber("20230725-R-M00");
-        // https://stackoverflow.com/questions/470617/how-do-i-get-the-current-date-and-time-in-php
-        // $now = new DateTime(null, new DateTimeZone('America/New_York'));
-        // $now->setTimezone(new DateTimeZone('Europe/London'));    // Another way
-        // echo $now->getTimezone();
-        $defaultTransaction->setReceptionDate(new DateTime());
-        $defaultTransaction->setLabel("Reçu");
-        $defaultTransaction->setPriceWithoutTaxes(42);
+        // // TIPS : bellow for quick added transaction check on each page refresh :
+        // $defaultTransaction = new Transaction();
+        // $defaultTransaction->setPaymentMethod("Test pay way");
+        // $defaultTransaction->setReceptionNumber("20230725-R-M00");
+        // // https://stackoverflow.com/questions/470617/how-do-i-get-the-current-date-and-time-in-php
+        // // $now = new DateTime(null, new DateTimeZone('America/New_York'));
+        // // $now->setTimezone(new DateTimeZone('Europe/London'));    // Another way
+        // // echo $now->getTimezone();
+        // $defaultTransaction->setReceptionDate(new DateTime());
+        // $defaultTransaction->setLabel("Reçu");
+        // $defaultTransaction->setPriceWithoutTaxes(42);
 
-        $bConfig->addTransaction($defaultTransaction);
-        // Transaction MUST be SAVED to be visible since fetched from db query on ID...
-        $this->em->persist($bConfig);
-        $this->em->flush();
+        // $bConfig->addTransaction($defaultTransaction);
+        // // Transaction MUST be SAVED to be visible since fetched from db query on ID...
+        // $this->em->persist($bConfig);
+        // $this->em->flush();
     }
 
     protected function getDefaultTemplateData(string $template) {

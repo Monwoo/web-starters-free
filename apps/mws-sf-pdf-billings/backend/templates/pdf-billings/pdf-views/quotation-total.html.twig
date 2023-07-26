@@ -65,8 +65,7 @@
 		<td style="width:{{ 0.24 * fullWidth }};text-align: center;
 		border-width:1px;border-bottom-width:1px;border-right-width:1px;
 		border-color:black;border-style:solid;">
-			{{(transactionTotals.addedTaxes + transactionTotals.priceWithoutTaxes
-				+ leftToSettle.total)|format_currency('EUR', {rounding_mode: 'halfeven'})}}
+			{{(leftToSettle.total)|format_currency('EUR', {rounding_mode: 'halfeven'})}}
 			{# // TODO - sum of transction#}
 		</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
@@ -85,9 +84,11 @@
 	<tr>
 		<td class="aim-label" style="width:{{ fullWidth }};">
 			{% if billingConfig.documentType == 'facture' %}
-				Facture Net {{
+				Facture T.T.C. {{
 					(businessSignatureImg ?? null) ? "Monwoo" : "Démo"
-				}} n° {{ billingConfig.quotationNumber }} de : 400€
+				}} n° {{ billingConfig.quotationNumber }} de :
+				{{ (billingConfig.quotationAmount ?? 0)
+					|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 			{% else %}
 				Dans l'attente de votre retour.
 			{% endif %}

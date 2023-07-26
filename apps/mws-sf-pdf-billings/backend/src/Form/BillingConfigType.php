@@ -17,6 +17,7 @@ class BillingConfigType extends AbstractType
             ->add('documentType')
             ->add('quotationNumber')
             ->add('quotationSourceNumber')
+            ->add('quotationAmount')
             ->add('clientEmail')
             ->add('clientTel')
             ->add('clientSIRET')

@@ -42,6 +42,26 @@
 			font-weight: bold;
 			color: darkblue;
 		}
+		[id="billing_config_submitable_transactions"] > div:nth-child(even) {
+			margin: 12px 4px;
+			padding: 7px;
+			border: solid 1px #CCCCCC;
+			background: #EEEEEE;
+			border-radius: 12px;
+		}
+		/* TODO : not working, add class and get better selectors ? */
+		[id="billing_config_submitable_transactions"] > div:nth-child(odd) {
+			margin: 12px 4px;
+			padding: 7px;
+			border: solid 1px #EEEEEE;
+			background: #CCCCCC;
+			border-radius: 12px;
+		}
+		[id="billing_config_submitable_transactions"] > div > label {
+			font-size: 16pt;
+			font-weight: bold;
+			color: darkblue;
+		}
 		.workload-details {
 			border: solid 1px black;
 			border-radius: 12px;
@@ -92,8 +112,9 @@
 	</div> #}
 
 	{# TIPS : https://symfony.com/doc/current/form/form_collections.html
-		https://symfony.com/doc/current/form/form_themes.html#form-custom-prototype #}
+	https://symfony.com/doc/current/form/form_themes.html#form-custom-prototype #}
 	<ul class="outlays" data-index="{{ form.outlays|length > 0 ? form.outlays|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.outlays.vars.prototype)|e('html_attr') }}"></ul>
+	<ul class="transactions" data-index="{{ form.transactions|length > 0 ? form.transactions|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.transactions.vars.prototype)|e('html_attr') }}"></ul>
 
 	{# <input
 		type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}"> #}
@@ -187,10 +208,10 @@
 		}
 
 		const billingConfigOutlaysSelector = '#billing_config_submitable_outlays';
-		const target = document.querySelector(billingConfigOutlaysSelector);
-		const itemsSelector = '[id^="billing_config_submitable_outlays_"]:not([name])';
+		const outlaysTarget = document.querySelector(billingConfigOutlaysSelector);
+		const outlaysItemSelector = '[id^="billing_config_submitable_outlays_"]:not([name])';
 
-		const addFormToCollection = (e) => {
+		const addOutlayFormToCollection = (e) => {
 			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
 			const item = document.createElement('div');
@@ -208,21 +229,93 @@
 			addOutlayFormDeleteLink(item);
 
 			// collectionHolder.appendChild(item);
-			target.appendChild(item);
+			outlaysTarget.appendChild(item);
 
 			collectionHolder.dataset.index++;
 		};
 
 		document.querySelectorAll('.add_outlay_link').forEach(btn => {
-			btn.addEventListener("click", addFormToCollection)
+			btn.addEventListener("click", addOutlayFormToCollection)
 		});
 
 		document
-		.querySelectorAll(itemsSelector)
+		.querySelectorAll(outlaysItemSelector)
     .forEach((tag) => {
         addOutlayFormDeleteLink(tag)
     })
-		addOutlayFormDeleteAllLink(target.parentElement, itemsSelector);
+		addOutlayFormDeleteAllLink(outlaysTarget.parentElement, outlaysItemSelector);
 
 	</script>
+
+	<script>
+		const addTransactionFormDeleteLink = (item) => {
+			const removeFormButton = document.createElement('button');
+			// Type : button: The button has no default behavior, and does nothing
+			removeFormButton.setAttribute('type', "button");
+			removeFormButton.innerText = 'Supprimer cette transaction';
+			item.append(removeFormButton);
+
+			removeFormButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					// remove the item for the outlay form
+					item.remove();
+			});
+		}
+
+		const addTransactionFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
+			const removeFormButton = document.createElement('button');
+			removeFormButton.setAttribute('type', "button");
+			removeFormButton.innerText = 'Supprimer toutes les transactions';
+
+			appendTo.append(removeFormButton);
+
+			removeFormButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					// remove all items for the transaction form
+					document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
+						item.remove();
+					});
+			});
+		}
+
+		const billingConfigTransactionsSelector = '#billing_config_submitable_transactions';
+		const transactionsTarget = document.querySelector(billingConfigTransactionsSelector);
+		const transactionsItemSelector = '[id^="billing_config_submitable_transactions_"]:not([name])';
+
+		const addTransactionFormToCollection = (e) => {
+			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+			const item = document.createElement('div');
+
+			const idx = collectionHolder.dataset.index;
+			item.innerHTML = collectionHolder
+			.dataset
+			.prototype
+			.replace(
+				/__name__/g,
+				idx
+			);
+			item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
+			// add a delete link to the new form
+			addTransactionFormDeleteLink(item);
+
+			// collectionHolder.appendChild(item);
+			transactionsTarget.appendChild(item);
+
+			collectionHolder.dataset.index++;
+		};
+
+		document.querySelectorAll('.add_outlay_link').forEach(btn => {
+			btn.addEventListener("click", addTransactionFormToCollection)
+		});
+
+		document
+		.querySelectorAll(transactionsItemSelector)
+    .forEach((tag) => {
+        addTransactionFormDeleteLink(tag)
+    })
+		addTransactionFormDeleteAllLink(transactionsTarget.parentElement, transactionsItemSelector);
+
+	</script>
+
 {% endblock %}

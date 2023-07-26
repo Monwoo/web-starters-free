@@ -36,6 +36,9 @@ class BillingConfig
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $quotationSourceNumber = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $quotationAmount = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $clientEmail = null;
 
@@ -454,6 +457,18 @@ class BillingConfig
     public function setQuotationNumber(?string $quotationNumber): static
     {
         $this->quotationNumber = $quotationNumber;
+
+        return $this;
+    }
+
+    public function getQuotationAmount(): ?float
+    {
+        return $this->quotationAmount;
+    }
+
+    public function setQuotationAmount(?float $quotationAmount): static
+    {
+        $this->quotationAmount = $quotationAmount;
 
         return $this;
     }
