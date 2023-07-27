@@ -817,6 +817,15 @@ class PdfBillingsController extends AbstractController
         // $templateData = $bConfig->getTemplateData() ?? $this->defaultTemplateData($template);
         $templateData = $this->getDefaultTemplateData($template);
 
+        // TODO : add some form inputs if $bConfig->[key] = "_______________"
+        // (more than 4 _ only with or without space) ?
+        // https://stackoverflow.com/questions/19285976/tcpdf-is-it-possible-to-make-the-cell-fillable-after-generating-using-tcpdf
+        // => by using same name, it will duplicate values every where insied the doc...
+        // official doc : https://tcpdf.org/examples/example_014/
+        // https://tcpdf.org/examples/example_012/
+        // https://tcpdf.org/examples/example_020/
+        // https://tcpdf.org/examples/
+        // 
         $defaultQuotationNumber =
         $bConfig->getQuotationNumber() ?? $bConfig->getQuotationSourceNumber();
         $defaultQuotationSourceNumber =
@@ -843,6 +852,9 @@ class PdfBillingsController extends AbstractController
         : (file_exists($defaultLogoPrivate) ? $defaultLogoPrivate : $defaultLogoPublic);
         // Warning: get_headers(): This function may only be used against URLs with below :
         // : 'file://' . $projectDir . '/public/medias/LogoMonwooDemo.jpg';
+
+        // // https://stackoverflow.com/questions/30404121/tcpdf-serializetcpdftagparameters
+        // define('K_TCPDF_CALLS_IN_HTML', true); // TOO late, already defined...
 
         /**
          * @var MwsTCPDF $pdf
@@ -996,6 +1008,9 @@ class PdfBillingsController extends AbstractController
         // 🇺🇸🇺🇸 BODY arrangements
         $pdf->AddPage();
 
+        // https://tcpdf.org/examples/example_014/
+        $pdf->setFormDefaultProp(array('lineWidth'=>1, 'borderStyle'=>'solid', 'fillColor'=>array(255, 255, 200), 'strokeColor'=>array(255, 128, 128)));
+
         // Set some content to print
         $html = $twig->render($templatePath, array_merge([
             'labelByDocType' => $this->labelByDocType,
@@ -1012,6 +1027,7 @@ class PdfBillingsController extends AbstractController
             'productsTotals' => $this->getProductsTotals(
                 $bConfig->getProducts(), $bConfig->getPercentDiscount()
             ),
+            'pdf' => $pdf,
         ], $templateData));
 
         // https://stackoverflow.com/questions/14495688/how-to-put-html-data-into-header-of-tcpdf

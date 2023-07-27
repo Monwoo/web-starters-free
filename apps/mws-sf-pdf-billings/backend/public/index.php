@@ -2,6 +2,9 @@
 
 use App\Kernel;
 
+// https://stackoverflow.com/questions/30404121/tcpdf-serializetcpdftagparameters
+define('K_TCPDF_CALLS_IN_HTML', true); // TOO late, already defined...
+
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
 // https://stackoverflow.com/questions/66224775/cors-error-what-is-the-correct-way-to-configure-symfony-5-to-accept-cors

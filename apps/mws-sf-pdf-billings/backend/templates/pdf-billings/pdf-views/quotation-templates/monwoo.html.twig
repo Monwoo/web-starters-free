@@ -234,7 +234,23 @@
 					</td>
 					<td class="quotation-title" style="width:{{ 0.5 * fullWidth }};text-align: center;
 																font-weight:bold;color:#11589A;font-size:14pt;">
-						{{docTypeLabel}} n°{{ defaultQuotationNumber }}
+						{# https://stackoverflow.com/questions/30404121/tcpdf-serializetcpdftagparameters
+							https://tcpdf.org/examples/example_014/
+							#}
+						{{docTypeLabel}} n°
+						{% if false %}
+							{# TIPS : if defaultQuotationNumber matches "/[_ ]{4,}/" #}
+							<tcpdf method="TextField" params="{{
+								pdf.serializeTCPDFtagParameters([
+									'MWS_defaultQuotationNumber', 50, 6.5
+							])}}" />
+							<tcpdf method="TextField" params="{{
+								pdf.serializeTCPDFtagParameters([
+									'MWS_defaultQuotationNumber', 50, 6.5
+							])}}" />
+						{% else %}
+							{{ defaultQuotationNumber }}
+						{% endif %}
 					</td>
 					<td class="client-logo" style="width:{{ 0.1 * fullWidth }};">
 						<img style="width:{{ 0.1 * fullWidth }};" src="{{ billingConfig.clientLogoUrl }}"/>
