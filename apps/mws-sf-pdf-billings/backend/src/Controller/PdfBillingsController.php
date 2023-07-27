@@ -345,7 +345,7 @@ class PdfBillingsController extends AbstractController
         return $totals;
     }
 
-    protected function getQrCodeStamp($data, $logoPath, $label = '© Monwoo') {
+    protected function getQrCodeStamp($data, $logoPath, $request, $label = '© Monwoo') {
         try {
             $this->logger->debug("getQrCodeStamp: " . $data);
             // https://stackoverflow.com/questions/10991035/best-way-to-compress-string-in-php
@@ -397,6 +397,14 @@ class PdfBillingsController extends AbstractController
             // Qr code will try to fetch headers if urls look 
             // like web url for local file due to tcpdf formats...
             $logoPath = str_replace("file://", "", $logoPath);
+            $projectDir = $this->getParameter('kernel.project_dir') . '/public';
+
+            // $baseUrl = $request->getSchemeAndHttpHost() . $request->getBaseURL();
+            // https://stackoverflow.com/questions/8811251/how-to-get-the-full-url-for-an-asset-in-controller
+            $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+            $logoPath = str_replace($baseurl, $projectDir, $logoPath);
+            // var_dump($baseurl);
+            // var_dump("$logoPath");exit;
             // TODO : file starting with html url still in progress....
             $logo = file_exists($logoPath) ? Logo::create($logoPath)
                 ->setResizeToWidth(21)->setPunchoutBackground(true) : null;
@@ -902,8 +910,9 @@ class PdfBillingsController extends AbstractController
         $footprint = $this->serializer->serialize(
             $bConfig, 'yaml', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']]
         );
+        // var_dump("$businessLogo");exit;
         // Sound hard in meta data, new idea from past r&d : use QrCode ;)
-        $footprintQrCodeUrl = $this->getQrCodeStamp($footprint, $businessLogo);
+        $footprintQrCodeUrl = $this->getQrCodeStamp($footprint, $businessLogo, $request);
         // var_dump($footprintQrCodeUrl);exit;
 
         // 🇺🇸🇺🇸 Global page container
