@@ -158,7 +158,7 @@ class PdfBillingsController extends AbstractController
                 // $defaultOutlay->setProviderAddedPriceTaxes(130 * (1 - 1/1.2)); // 20% de taxes
                 $defaultOutlay->setProviderAddedPriceTaxes(null); // 20% de taxes
                 $defaultOutlay->setProviderAddedPriceTaxesPercent(0.2); // 20% de taxes
-                $defaultOutlay->setinsertPageBreakAfter(true);
+                $defaultOutlay->setinsertPageBreakBefore(true);
 
                 // TIPS : do template after outlay setup to use it in template...
                 $defaultOutlay->setProviderDetails(
