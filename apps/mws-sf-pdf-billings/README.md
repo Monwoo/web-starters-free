@@ -179,7 +179,11 @@ php bin/console make:form Product Product
 
 # ensure your databse is clean and in sync with existing migration
 # (WARNING : will reset your dev database) :
-rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
+# rm var/data.db.sqlite && php bin/console doctrine:migrations:migrate -n
+
+# Below MIGHT be ok for little change :
+php bin/console make:migration
+php bin/console doctrine:migrations:migrate -n
 
 php bin/console make:entity --regenerate
 php bin/console make:entity --help

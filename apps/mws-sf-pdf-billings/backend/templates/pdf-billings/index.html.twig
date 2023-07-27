@@ -1,6 +1,7 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends 'base.html.twig' %}
 {% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
+{% set fullWidth = 569 %}
 
 {% block stylesheets %}
 	{{ parent() }}
@@ -92,6 +93,16 @@
 			overflow: hidden;
 			height: 0px;
 		}
+		.business-aim-details {
+			border: solid 1px black;
+			border-radius: 12px;
+			padding: 7px;
+		}
+		.business-aim-details-pre {
+			/* display: pre; */
+			overflow: hidden;
+			height: 0px;
+		}
 
 	</style>
 {% endblock %}
@@ -121,6 +132,18 @@
 				)  |striptags(allowedHtmlTags)}}
 			</pre>
 		{% endif %}
+		<p>Objectifs de l'activité : </p>
+		<div class="business-aim-details" onclick="const preElt = document.querySelector('.business-aim-details-pre');
+		preElt.offsetHeight === 0
+		? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
+			include(businessAimTemplate)
+		)  |striptags(allowedHtmlTags)|raw}}
+		</div>
+		<pre class="business-aim-details-pre">{{ (
+				include(businessAimTemplate)
+			)  |striptags(allowedHtmlTags)}}
+		</pre>
+
 	</div>
 
 	<div>

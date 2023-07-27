@@ -234,6 +234,8 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 4.5,
                     "pricePerHourWithoutDiscount" => 80,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-wa-config-workload-details.html.twig",
+                    // TODO : use it inside template instead of duplications ?
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-02.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -243,6 +245,7 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 15,
                     "pricePerHourWithoutDiscount" => 100,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-php-backend-workload-details.html.twig",
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-03.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -252,6 +255,7 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 18,
                     "pricePerHourWithoutDiscount" => 120,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-hybrid-workload-details.html.twig",
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-04.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -261,6 +265,7 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 18,
                     "pricePerHourWithoutDiscount" => 80,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-php-crm-workload-details.html.twig",
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-05.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -270,6 +275,7 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 2,
                     "pricePerHourWithoutDiscount" => 60,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-analytical-study-workload-details.html.twig",
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-06.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -279,6 +285,7 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 3,
                     "pricePerHourWithoutDiscount" => 60,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-upkeep-workload-details.html.twig",
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-07.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -288,6 +295,7 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 15,
                     "pricePerHourWithoutDiscount" => 100,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-backend-learning-details.html.twig",
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-08.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -297,6 +305,7 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 0,
                     "pricePerHourWithoutDiscount" => 0,
                     "businessWorkloadTemplate" => null,//"pdf-billings/pdf-views/business-item-backend-learning-details.html.twig",
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim-empty.html.twig",
                     "licenseWpDisplayPrice" => 0,
                     "licenseWpDisplayDiscount" => 0,
                 ];
@@ -306,6 +315,8 @@ class PdfBillingsController extends AbstractController
                     "defaultBusinessWorkloadHours" => 6,
                     "pricePerHourWithoutDiscount" => 60,
                     "businessWorkloadTemplate" => "pdf-billings/pdf-views/business-item-svelte-workload-details.html.twig",
+                    // TODO : use it inside template instead of duplications ?
+                    "businessAimTemplate" => "pdf-billings/pdf-views/business-aim.html.twig",
                     "licenseWpDisplayPrice" => 40,
                     "licenseWpDisplayDiscount" => 0.25,
                 ];

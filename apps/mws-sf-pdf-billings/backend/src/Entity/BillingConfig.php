@@ -76,6 +76,9 @@ class BillingConfig
     private ?float $businessWorkloadHours = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $businessAim = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $businessWorkloadDetails = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
@@ -143,6 +146,22 @@ class BillingConfig
     public function __toString()
     {
         return $this->getClientSlug();
+    }
+
+    // For serializer to show app version used to build the data...
+    public function getAppInfos()
+    {
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+        $packageName = array_slice(explode("monwoo/", $rootPackage['name']), -1)[0];
+        $isDev = $rootPackage['dev'] ?? false;
+
+        return [
+            "packageVersion" => $packageVersion,
+            "packageName" => $packageName,
+            "isDev" => $isDev,
+        ];
     }
 
     public function getId(): ?int
@@ -350,6 +369,18 @@ class BillingConfig
     public function setBusinessWorkloadHours(?float $businessWorkloadHours): static
     {
         $this->businessWorkloadHours = $businessWorkloadHours;
+
+        return $this;
+    }
+
+    public function getBusinessAim(): ?string
+    {
+        return $this->businessAim;
+    }
+
+    public function setBusinessAim(?string $businessAim): static
+    {
+        $this->businessAim = $businessAim;
 
         return $this;
     }
