@@ -3,6 +3,9 @@ twig:
     # https://stackoverflow.com/questions/28872529/get-kernel-root-dir-in-twig-template-with-symfony-2
     globals:
         kernelRootDir: "%kernel.project_dir%"
+    number_format:
+        decimals: 4
+
 when@test:
     twig:
         strict_variables: true

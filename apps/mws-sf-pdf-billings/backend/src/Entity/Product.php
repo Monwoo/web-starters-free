@@ -27,11 +27,14 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?float $pricePerUnitWithoutTaxes = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $taxesPercent = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $discountPercent = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $usedForBusinessTotal = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $leftTitle = null;
@@ -45,12 +48,30 @@ class Product
     #[ORM\ManyToMany(targetEntity: BillingConfig::class, inversedBy: 'products', cascade:['persist'])]
     private Collection $billings;
 
+    use ItemLayoutTrait;
+
     public function __construct()
     {
         $this->billings = new ArrayCollection();
     }
 
-    use ItemLayoutTrait;
+    public function getDiscountOfDiscountPercent($discount) {
+        // TIPS : force float conversion to ignore about possible discountPercent null value...
+        // var_dump((1 - (1.0 - ($discount ?? 0.0)) * (1.0 - $this->getDiscountPercent())));
+        return (1 - (1.0 - ($discount ?? 0.0)) * (1.0 - $this->getDiscountPercent()));
+    }
+
+    public function getDiscountOfPriceWithoutTaxes($discount) {
+        // $discount = $this->getDiscountOfDiscountPercent($discount);
+        // var_dump($d); exit;
+        return $this->getPricePerUnitWithoutTaxes() * $this->getQuantity()
+        * (1 - $discount);
+    }
+
+    public function getDiscountOfPriceWithTaxes($discount) {
+        $p = $this->getDiscountOfPriceWithoutTaxes($discount);
+        return $p * (1 + $this->getTaxesPercent());
+    }
 
     public function getId(): ?int
     {
@@ -173,6 +194,18 @@ class Product
     public function removeBilling(BillingConfig $billing): static
     {
         $this->billings->removeElement($billing);
+
+        return $this;
+    }
+
+    public function isUsedForBusinessTotal(): ?bool
+    {
+        return $this->usedForBusinessTotal;
+    }
+
+    public function setUsedForBusinessTotal(?bool $usedForBusinessTotal): static
+    {
+        $this->usedForBusinessTotal = $usedForBusinessTotal;
 
         return $this;
     }

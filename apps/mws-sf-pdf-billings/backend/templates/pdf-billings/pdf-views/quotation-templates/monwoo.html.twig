@@ -152,7 +152,7 @@
 	
 		{# TIPS : businessTotal hold the total HT base of this quotation #}
 		{% set businessTotal = outlaysAddedPriceTotalForBusiness
-		+ businessWorkloadHours * pricePerHour %}
+		+ businessWorkloadHours * pricePerHour + productsTotals.includedInBusinessWithoutTaxes %}
 	
 		{# TODO : remove computation duplication : use OutlayRepository->computeTaxes ?
 		or extend OutlayEntity as ComputedOutlayEntity
@@ -197,10 +197,13 @@
 		or Monwoo getting it's business Amounts, outlays being other stuff (Monwoo only
 		transfert the money to the provider and register the paiement on the client's name...)
 		#}
-		{% set quotationTotal = businessTotal + licenseWpDisplay + outlaysAddedPriceTotalForQuotation %}
+		{% set quotationTotal = businessTotal + productsTotals.addedToBusinessWithoutTaxes
+			 + licenseWpDisplay + outlaysAddedPriceTotalForQuotation %}
 		{% set totalPriceWithTaxes = quotationTotal
-		+ outlaysPriceOnBusinessTotal
-		+ (outlaysTaxes - outlaysTaxesIncludedInBusinessTotalPercent)
+			+ productsTotals.includedInBusinessTaxes
+			+ productsTotals.addedToBusinessTaxes
+			+ outlaysPriceOnBusinessTotal
+			+ (outlaysTaxes - outlaysTaxesIncludedInBusinessTotalPercent)
 		%}
 		{% set totalPriceWithoutTaxes = totalPriceWithTaxes - outlaysTaxes %}
 	
@@ -212,7 +215,7 @@
 		{% set leftToSettle = {
 			total: totalPriceWithTaxes - transactionTotals.addedTaxes
 			- transactionTotals.priceWithoutTaxes,
-			totalTaxes: outlaysTaxes - transactionTotals.addedTaxes,
+			totalTaxes: outlaysTaxes + productsTotals.allTaxes - transactionTotals.addedTaxes,
 		} %}
 		{% set leftToSettle = leftToSettle|merge({
 			totalPercent: totalPriceWithTaxes ? leftToSettle.total / totalPriceWithTaxes : 0,

@@ -188,6 +188,7 @@ php bin/console doctrine:migrations:diff --help
 # If you change your model,
 # you need to generate the associated migrations :
 php bin/console make:migration
+rm var/data.db.sqlite
 php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 

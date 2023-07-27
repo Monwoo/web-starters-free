@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\BillingConfig;
 use App\Entity\Outlay;
+use App\Entity\Product;
 use App\Entity\Transaction;
 use App\Form\BillingConfigSubmitableType;
 use App\Repository\BillingConfigRepository;
@@ -310,6 +311,38 @@ class PdfBillingsController extends AbstractController
                 ];
                 break;
         }
+    }
+
+    // TODO : best fit inside Repository or Entity class ?
+    protected function getProductsTotals(Collection $products, $discount) {
+        $totals = [
+            "includedInBusinessWithoutTaxes" => 0,
+            "includedInBusinessTaxes" => 0,
+            "addedToBusinessWithoutTaxes" => 0,
+            "addedToBusinessTaxes" => 0,
+            "allTaxes" => 0,
+        ];
+        /** @var Product $p */
+        foreach ($products as $p) {
+            $pDiscount = $p->getDiscountOfDiscountPercent($discount);
+            $priceWithoutTaxes = $p->getDiscountOfPriceWithoutTaxes($pDiscount);
+            // $priceWithTaxes = $p->getDiscountOfPriceWithTaxes($pDiscount);
+            $taxes = $priceWithoutTaxes * $p->getTaxesPercent();
+            $isBusiness = $p->isUsedForBusinessTotal();
+            if ($isBusiness) {
+                $totals["includedInBusinessWithoutTaxes"]
+                += $priceWithoutTaxes;    
+                $totals["includedInBusinessTaxes"]
+                += $taxes;// $priceWithTaxes;    
+            } else {
+                $totals["addedToBusinessWithoutTaxes"]
+                += $priceWithoutTaxes;
+                $totals["addedToBusinessTaxes"]
+                += $taxes;
+            }
+            $totals["allTaxes"] += $taxes;
+        };
+        return $totals;
     }
 
     protected function getQrCodeStamp($data, $logoPath, $label = '© Monwoo') {
@@ -937,6 +970,9 @@ class PdfBillingsController extends AbstractController
             'pdfCssStyles' => file_get_contents($projectDir . '/public/pdf-views/theme.css'),
             'defaultQuotationNumber' => $defaultQuotationNumber,
             'defaultQuotationSourceNumber' => $defaultQuotationSourceNumber,
+            'productsTotals' => $this->getProductsTotals(
+                $bConfig->getProducts(), $bConfig->getPercentDiscount()
+            ),
         ], $templateData));
 
         // https://stackoverflow.com/questions/14495688/how-to-put-html-data-into-header-of-tcpdf

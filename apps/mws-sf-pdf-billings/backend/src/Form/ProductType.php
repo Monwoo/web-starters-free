@@ -17,6 +17,7 @@ class ProductType extends AbstractType
             ->add('pricePerUnitWithoutTaxes')
             ->add('taxesPercent')
             ->add('discountPercent')
+            ->add('usedForBusinessTotal')
             ->add('leftTitle')
             ->add('leftDetails')
             ->add('rightDetails')

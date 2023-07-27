@@ -3,10 +3,9 @@
 
 {# // TIPS : force float conversion to ignore about possible discountPercent null value... #}
 {# set discountPercent = (discountPercent ?? 0.0) + product.discountPercent #}
-{% set discountPercent = 1 - (1 - (discountPercent ?? 0.0)) * (1 - product.discountPercent) %}
-{% set priceWithoutTaxes = product.pricePerUnitWithoutTaxes * product.quantity
-	* (1 - discountPercent) %}
-{% set priceWithTaxes = priceWithoutTaxes * (1 + product.taxesPercent) %}
+{% set discountPercent = product.getDiscountOfDiscountPercent(discountPercent ?? null) %}
+{% set priceWithoutTaxes = product.getDiscountOfPriceWithoutTaxes(discountPercent) %}
+{% set priceWithTaxes = product.getDiscountOfPriceWithTaxes(discountPercent) %}
 
 <style></style>
 {% if product.insertPageBreakBefore %}

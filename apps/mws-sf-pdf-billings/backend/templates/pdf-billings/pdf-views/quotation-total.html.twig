@@ -15,7 +15,9 @@
 	<tr style="text-align:right;font-size:9pt;">
 		<td style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;"></td>
 		<td style="width:{{ 0.24 * fullWidth }};">T.V.A. Monwoo :</td>
-		<td style="width:{{ 0.36 * fullWidth }};">{{0|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
+		<td style="width:{{ 0.36 * fullWidth }};">{{(
+			productsTotals.allTaxes
+			)|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};font-weight:bold;"></td>
 	</tr>
 	<tr style="text-align:right;font-size:9pt;">
