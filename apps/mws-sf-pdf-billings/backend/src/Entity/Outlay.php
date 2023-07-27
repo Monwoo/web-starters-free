@@ -154,6 +154,18 @@ class Outlay
         return $this;
     }
 
+    public function getTaxesPercentAddedToPercentOnBusinessTotal(): ?float
+    {
+        return $this->taxesPercentAddedToPercentOnBusinessTotal;
+    }
+
+    public function setTaxesPercentAddedToPercentOnBusinessTotal(?float $taxesPercentAddedToPercentOnBusinessTotal): static
+    {
+        $this->taxesPercentAddedToPercentOnBusinessTotal = $taxesPercentAddedToPercentOnBusinessTotal;
+
+        return $this;
+    }
+
     public function getProviderTotalWithTaxesForseenForClient(): ?float
     {
         return $this->providerTotalWithTaxesForseenForClient;
@@ -261,18 +273,6 @@ class Outlay
         if ($this->billingConfigs->removeElement($billingConfig)) {
             $billingConfig->removeOutlay($this);
         }
-
-        return $this;
-    }
-
-    public function getTaxesPercentAddedToPercentOnBusinessTotal(): ?float
-    {
-        return $this->taxesPercentAddedToPercentOnBusinessTotal;
-    }
-
-    public function setTaxesPercentAddedToPercentOnBusinessTotal(?float $taxesPercentAddedToPercentOnBusinessTotal): static
-    {
-        $this->taxesPercentAddedToPercentOnBusinessTotal = $taxesPercentAddedToPercentOnBusinessTotal;
 
         return $this;
     }

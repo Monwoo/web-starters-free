@@ -42,6 +42,42 @@ class Transaction
         return $this->id;
     }
 
+    public function getPaymentMethod(): ?string
+    {
+        return $this->paymentMethod;
+    }
+
+    public function setPaymentMethod(string $paymentMethod): static
+    {
+        $this->paymentMethod = $paymentMethod;
+
+        return $this;
+    }
+
+    public function getReceptionDate(): ?\DateTimeInterface
+    {
+        return $this->receptionDate;
+    }
+
+    public function setReceptionDate(\DateTimeInterface $receptionDate): static
+    {
+        $this->receptionDate = $receptionDate;
+
+        return $this;
+    }
+
+    public function getReceptionNumber(): ?string
+    {
+        return $this->receptionNumber;
+    }
+
+    public function setReceptionNumber(string $receptionNumber): static
+    {
+        $this->receptionNumber = $receptionNumber;
+
+        return $this;
+    }
+
     public function getLabel(): ?string
     {
         return $this->label;
@@ -78,18 +114,6 @@ class Transaction
         return $this;
     }
 
-    public function getPaymentMethod(): ?string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function setPaymentMethod(string $paymentMethod): static
-    {
-        $this->paymentMethod = $paymentMethod;
-
-        return $this;
-    }
-
     public function getBillingConfig(): ?BillingConfig
     {
         return $this->billingConfig;
@@ -102,27 +126,4 @@ class Transaction
         return $this;
     }
 
-    public function getReceptionDate(): ?\DateTimeInterface
-    {
-        return $this->receptionDate;
-    }
-
-    public function setReceptionDate(\DateTimeInterface $receptionDate): static
-    {
-        $this->receptionDate = $receptionDate;
-
-        return $this;
-    }
-
-    public function getReceptionNumber(): ?string
-    {
-        return $this->receptionNumber;
-    }
-
-    public function setReceptionNumber(string $receptionNumber): static
-    {
-        $this->receptionNumber = $receptionNumber;
-
-        return $this;
-    }
 }

@@ -8,11 +8,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+// use Symfony\Component\Serializer;
 
 #[ORM\Entity(repositoryClass: BillingConfigRepository::class)]
 #[ORM\Index(columns: ['client_slug'], name: 'client_slug_idx')]
 class BillingConfig
 {
+    // #[Serializer\Annotation\Ignore]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,6 +32,9 @@ class BillingConfig
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $documentType = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $quotationTemplate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $quotationNumber = null;
@@ -78,9 +83,6 @@ class BillingConfig
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $quotationEndDay = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $quotationTemplate = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $percentDiscount = null;
@@ -143,9 +145,21 @@ class BillingConfig
         return $this->getClientSlug();
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getClientSlug(): ?string
     {
         return $this->clientSlug;
+    }
+
+    public function setClientSlug(string $clientSlug): static
+    {
+        $this->clientSlug = $clientSlug;
+
+        return $this;
     }
 
     public function getClientName(): ?string
@@ -160,6 +174,42 @@ class BillingConfig
         return $this;
     }
 
+    public function getDocumentType(): ?string
+    {
+        return $this->documentType;
+    }
+
+    public function setDocumentType(?string $documentType): static
+    {
+        $this->documentType = $documentType;
+
+        return $this;
+    }
+
+    public function getQuotationTemplate(): ?string
+    {
+        return $this->quotationTemplate;
+    }
+
+    public function setQuotationTemplate(?string $quotationTemplate): static
+    {
+        $this->quotationTemplate = $quotationTemplate;
+
+        return $this;
+    }
+
+    public function getQuotationNumber(): ?string
+    {
+        return $this->quotationNumber;
+    }
+
+    public function setQuotationNumber(?string $quotationNumber): static
+    {
+        $this->quotationNumber = $quotationNumber;
+
+        return $this;
+    }
+
     public function getQuotationSourceNumber(): ?string
     {
         return $this->quotationSourceNumber;
@@ -168,6 +218,18 @@ class BillingConfig
     public function setQuotationSourceNumber(?string $quotationSourceNumber): static
     {
         $this->quotationSourceNumber = $quotationSourceNumber;
+
+        return $this;
+    }
+
+    public function getQuotationAmount(): ?float
+    {
+        return $this->quotationAmount;
+    }
+
+    public function setQuotationAmount(?float $quotationAmount): static
+    {
+        $this->quotationAmount = $quotationAmount;
 
         return $this;
     }
@@ -328,18 +390,6 @@ class BillingConfig
         return $this;
     }
 
-    public function getQuotationTemplate(): ?string
-    {
-        return $this->quotationTemplate;
-    }
-
-    public function setQuotationTemplate(?string $quotationTemplate): static
-    {
-        $this->quotationTemplate = $quotationTemplate;
-
-        return $this;
-    }
-
     public function getPercentDiscount(): ?float
     {
         return $this->percentDiscount;
@@ -348,6 +398,90 @@ class BillingConfig
     public function setPercentDiscount(?float $percentDiscount): static
     {
         $this->percentDiscount = $percentDiscount;
+
+        return $this;
+    }
+
+    public function getMarginBeforeStartItem(): ?string
+    {
+        return $this->marginBeforeStartItem;
+    }
+
+    public function setMarginBeforeStartItem(?string $marginBeforeStartItem): static
+    {
+        $this->marginBeforeStartItem = $marginBeforeStartItem;
+
+        return $this;
+    }
+
+    public function getMarginAfterStartItem(): ?string
+    {
+        return $this->marginAfterStartItem;
+    }
+
+    public function setMarginAfterStartItem(?string $marginAfterStartItem): static
+    {
+        $this->marginAfterStartItem = $marginAfterStartItem;
+
+        return $this;
+    }
+
+    public function isPageBreakAfterStartItem(): ?bool
+    {
+        return $this->pageBreakAfterStartItem;
+    }
+
+    public function setPageBreakAfterStartItem(?bool $pageBreakAfterStartItem): static
+    {
+        $this->pageBreakAfterStartItem = $pageBreakAfterStartItem;
+
+        return $this;
+    }
+
+    public function getMarginBeforeEndItem(): ?string
+    {
+        return $this->marginBeforeEndItem;
+    }
+
+    public function setMarginBeforeEndItem(?string $marginBeforeEndItem): static
+    {
+        $this->marginBeforeEndItem = $marginBeforeEndItem;
+
+        return $this;
+    }
+
+    public function getMarginAfterEndItem(): ?string
+    {
+        return $this->marginAfterEndItem;
+    }
+
+    public function setMarginAfterEndItem(?string $marginAfterEndItem): static
+    {
+        $this->marginAfterEndItem = $marginAfterEndItem;
+
+        return $this;
+    }
+
+    public function isPageBreakAfterEndItem(): ?bool
+    {
+        return $this->pageBreakAfterEndItem;
+    }
+
+    public function setPageBreakAfterEndItem(?bool $pageBreakAfterEndItem): static
+    {
+        $this->pageBreakAfterEndItem = $pageBreakAfterEndItem;
+
+        return $this;
+    }
+
+    public function isHideDefaultOutlaysOnEmptyOutlays(): ?bool
+    {
+        return $this->hideDefaultOutlaysOnEmptyOutlays;
+    }
+
+    public function setHideDefaultOutlaysOnEmptyOutlays(?bool $hideDefaultOutlaysOnEmptyOutlays): static
+    {
+        $this->hideDefaultOutlaysOnEmptyOutlays = $hideDefaultOutlaysOnEmptyOutlays;
 
         return $this;
     }
@@ -372,66 +506,6 @@ class BillingConfig
     public function removeOutlay(Outlay $outlay): static
     {
         $this->outlays->removeElement($outlay);
-
-        return $this;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setClientSlug(string $clientSlug): static
-    {
-        $this->clientSlug = $clientSlug;
-
-        return $this;
-    }
-
-    public function isHideDefaultOutlaysOnEmptyOutlays(): ?bool
-    {
-        return $this->hideDefaultOutlaysOnEmptyOutlays;
-    }
-
-    public function setHideDefaultOutlaysOnEmptyOutlays(?bool $hideDefaultOutlaysOnEmptyOutlays): static
-    {
-        $this->hideDefaultOutlaysOnEmptyOutlays = $hideDefaultOutlaysOnEmptyOutlays;
-
-        return $this;
-    }
-
-    public function getMarginBeforeStartItem(): ?string
-    {
-        return $this->marginBeforeStartItem;
-    }
-
-    public function setMarginBeforeStartItem(?string $marginBeforeStartItem): static
-    {
-        $this->marginBeforeStartItem = $marginBeforeStartItem;
-
-        return $this;
-    }
-
-    public function getMarginBeforeEndItem(): ?string
-    {
-        return $this->marginBeforeEndItem;
-    }
-
-    public function setMarginBeforeEndItem(?string $marginBeforeEndItem): static
-    {
-        $this->marginBeforeEndItem = $marginBeforeEndItem;
-
-        return $this;
-    }
-
-    public function getDocumentType(): ?string
-    {
-        return $this->documentType;
-    }
-
-    public function setDocumentType(?string $documentType): static
-    {
-        $this->documentType = $documentType;
 
         return $this;
     }
@@ -466,78 +540,6 @@ class BillingConfig
         return $this;
     }
 
-    public function getQuotationNumber(): ?string
-    {
-        return $this->quotationNumber;
-    }
-
-    public function setQuotationNumber(?string $quotationNumber): static
-    {
-        $this->quotationNumber = $quotationNumber;
-
-        return $this;
-    }
-
-    public function getQuotationAmount(): ?float
-    {
-        return $this->quotationAmount;
-    }
-
-    public function setQuotationAmount(?float $quotationAmount): static
-    {
-        $this->quotationAmount = $quotationAmount;
-
-        return $this;
-    }
-
-    public function getMarginAfterEndItem(): ?string
-    {
-        return $this->marginAfterEndItem;
-    }
-
-    public function setMarginAfterEndItem(?string $marginAfterEndItem): static
-    {
-        $this->marginAfterEndItem = $marginAfterEndItem;
-
-        return $this;
-    }
-
-    public function getMarginAfterStartItem(): ?string
-    {
-        return $this->marginAfterStartItem;
-    }
-
-    public function setMarginAfterStartItem(?string $marginAfterStartItem): static
-    {
-        $this->marginAfterStartItem = $marginAfterStartItem;
-
-        return $this;
-    }
-
-    public function isPageBreakAfterStartItem(): ?bool
-    {
-        return $this->pageBreakAfterStartItem;
-    }
-
-    public function setPageBreakAfterStartItem(?bool $pageBreakAfterStartItem): static
-    {
-        $this->pageBreakAfterStartItem = $pageBreakAfterStartItem;
-
-        return $this;
-    }
-
-    public function isPageBreakAfterEndItem(): ?bool
-    {
-        return $this->pageBreakAfterEndItem;
-    }
-
-    public function setPageBreakAfterEndItem(?bool $pageBreakAfterEndItem): static
-    {
-        $this->pageBreakAfterEndItem = $pageBreakAfterEndItem;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Product>
      */
@@ -564,4 +566,5 @@ class BillingConfig
 
         return $this;
     }
+
 }

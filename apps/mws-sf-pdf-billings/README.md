@@ -371,6 +371,11 @@ php bin/console make:stimulus-controller
 # https://symfony.com/doc/current/serializer.html
 # https://okazy.github.io/symfony-docs/serializer.html
 composer require symfony/serializer-pack
+
+man md5
+md5 -q /Users/miguel/Downloads/FactureMonwoo________________.yaml
+# Will give your the backup file md5 hash.
+# That's the same as the url param dataMD5 encoded in the QrCode signature
 ```
 
 ## Useful Links

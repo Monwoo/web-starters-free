@@ -356,7 +356,7 @@ class PdfBillingsController extends AbstractController
             // // $compressed = base64_encode($compressed);
             // $compressed = urlencode($compressed);
             $hash = md5($data);
-
+            // var_dump($hash); exit;
 
             // $this->logger->debug("getQrCodeStamp: compressed :" . $compressed);
             $this->logger->debug("getQrCodeStamp: hash :" . $hash);
@@ -895,9 +895,10 @@ class PdfBillingsController extends AbstractController
         // Will be set to import date if config IS loaded from pdf...
         // + Add last edit date + first édit date...
 
+        // https://lindevs.com/methods-to-ignore-properties-during-serialization-in-symfony
         // Allow pdf meta to hold all inputs data (for reload / debug and certification purpose)
         $footprint = $this->serializer->serialize(
-            $bConfig, 'json'
+            $bConfig, 'yaml', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']]
         );
         // Sound hard in meta data, new idea from past r&d : use QrCode ;)
         $footprintQrCodeUrl = $this->getQrCodeStamp($footprint, $businessLogo);
@@ -1055,7 +1056,7 @@ class PdfBillingsController extends AbstractController
         $filename = "{$docTypeLabel}Monwoo{$defaultQuotationNumber}.{$format}"; // . '.pdf';
 
         $content = $this->serializer->serialize(
-            $bConfig, $format // 'json'
+            $bConfig, $format, [AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']]
         );
 
         $response = new Response();

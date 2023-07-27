@@ -73,6 +73,8 @@ class Product
         return $p * (1 + $this->getTaxesPercent());
     }
 
+    // GENERATED SETTER :
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,7 +121,7 @@ class Product
         return $this->taxesPercent;
     }
 
-    public function setTaxesPercent(float $taxesPercent): static
+    public function setTaxesPercent(?float $taxesPercent): static
     {
         $this->taxesPercent = $taxesPercent;
 
@@ -134,6 +136,18 @@ class Product
     public function setDiscountPercent(?float $discountPercent): static
     {
         $this->discountPercent = $discountPercent;
+
+        return $this;
+    }
+
+    public function isUsedForBusinessTotal(): ?bool
+    {
+        return $this->usedForBusinessTotal;
+    }
+
+    public function setUsedForBusinessTotal(?bool $usedForBusinessTotal): static
+    {
+        $this->usedForBusinessTotal = $usedForBusinessTotal;
 
         return $this;
     }
@@ -198,15 +212,4 @@ class Product
         return $this;
     }
 
-    public function isUsedForBusinessTotal(): ?bool
-    {
-        return $this->usedForBusinessTotal;
-    }
-
-    public function setUsedForBusinessTotal(?bool $usedForBusinessTotal): static
-    {
-        $this->usedForBusinessTotal = $usedForBusinessTotal;
-
-        return $this;
-    }
 }
