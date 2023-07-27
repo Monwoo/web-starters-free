@@ -579,7 +579,22 @@ class PdfBillingsController extends AbstractController
                             if (method_exists($bConfigImportTarget, $getter)) {
                                 /** @var Collection */
                                 $collection = $bConfigImportTarget->$getter();
-                                if ($collection instanceof Collection) {
+                                // if ($collection instanceof Collection) {
+                                if (is_object($collection) && method_exists($collection, "clear")) {
+                                    foreach ($collection as $item) {
+                                        // TODO : remove code duplication, needed to avoid duplication on collection add
+                                        // since simple ->clear to not seem to remove existing products or transaction
+                                        // TIPS : this one solve Integrity constraint violation: 19 NOT NULL constraint failed: billing_config.client_slug
+                                        if (method_exists($item, "getBillingConfigs")) {
+                                            $item->getBillingConfigs()->clear();
+                                        }
+                                        if (method_exists($item, "getBillingConfig")) {
+                                            $item->setBillingConfig(null);
+                                        }
+                                        if (method_exists($item, "getBillings")) {
+                                            $item->getBillings()->clear();
+                                        }
+                                    }
                                     $collection->clear();
                                     foreach ($bConfigDeserialized->$getter() as $item) {
                                         // $loadedItem = $outlayRepository->findOneBy([
