@@ -397,7 +397,8 @@ class PdfBillingsController extends AbstractController
             // Qr code will try to fetch headers if urls look 
             // like web url for local file due to tcpdf formats...
             $logoPath = str_replace("file://", "", $logoPath);
-            $logo = $logoPath ? Logo::create($logoPath)
+            // TODO : file starting with html url still in progress....
+            $logo = file_exists($logoPath) ? Logo::create($logoPath)
                 ->setResizeToWidth(21)->setPunchoutBackground(true) : null;
             // $qrLabel = Label::create('')->setFont(new NotoSans(8));
             return $writer->write(
@@ -407,6 +408,7 @@ class PdfBillingsController extends AbstractController
             )->getDataUri();
         } catch (\Exception $e) {
             $this->logger->error("Fail to generate QRCODE : " . $e, ['err' => $e]);
+            // echo $e->getMessage();exit;
             return null;
         }
 
