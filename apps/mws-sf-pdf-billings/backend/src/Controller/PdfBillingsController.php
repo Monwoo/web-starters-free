@@ -560,6 +560,7 @@ class PdfBillingsController extends AbstractController
                     // }
 
                     $importContent = file_get_contents($importedUpload->getPathname());
+                    unlink($importedUpload->getPathname()); // TIPS : clean as soon as we can...
                     /** @var BillingConfig */
                     $bConfigDeserialized = $this->serializer->deserialize($importContent, BillingConfig::class, $extension);
         
@@ -1012,13 +1013,19 @@ class PdfBillingsController extends AbstractController
         // Print text using writeHTMLCell()
         // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
         $pdf->writeHTML($html, true, false, true, false, '');
-        ob_end_clean(); // TODO : where is it mendatory ? done to avoid error header data already set
 
         $pdf->lastPage();
-        $response = new Response($pdf->Output($businessSignatureImg
+        // $haeInit = $_SERVER['HTTP_ACCEPT_ENCODING'] ?? null;
+        // $_SERVER['HTTP_ACCEPT_ENCODING'] = true; // TIPS : hack to avoid headers by tcpdf
+        $pdf->Output($businessSignatureImg
             ? "{$docTypeLabel}Monwoo" . $defaultQuotationNumber . '.pdf'
             : "Demo{$docTypeLabel}Monwoo" . $defaultQuotationNumber . '.pdf'
-        ));
+        );
+        // $_SERVER['HTTP_ACCEPT_ENCODING'] = $haeInit;
+        $pdfData = ob_get_clean(); // TIPS : remove the failing header setup due to TCPDF echo
+        $response = new Response($pdfData);
+
+        // TIPS : too late after pdf echo...
         $response->headers->set('Content-Type', 'application/pdf');
         $response->headers->set('Cache-Control', 'no-cache');
         $response->headers->set('Pragma', 'no-chache');
