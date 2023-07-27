@@ -220,8 +220,10 @@
 			totalTaxes: outlaysTaxes + productsTotals.allTaxes - transactionTotals.addedTaxes,
 		} %}
 		{% set leftToSettle = leftToSettle|merge({
-			totalPercent: totalPriceWithTaxes ? leftToSettle.total / totalPriceWithTaxes : 0,
-			totalWithoutTaxes: leftToSettle.total - leftToSettle.totalTaxes,
+			totalPercent: totalPriceWithTaxes
+			? (leftToSettle.total + leftToSettle.totalTaxes) / totalPriceWithTaxes
+			: 0,
+			totalWithoutTaxes: leftToSettle.total,
 		}) %}
 
 		{% if viewPart != 'CGV' %}
