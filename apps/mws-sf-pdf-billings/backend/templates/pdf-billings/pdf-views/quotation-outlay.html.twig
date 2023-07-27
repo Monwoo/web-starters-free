@@ -59,7 +59,7 @@
 			{{(aimTitleBis ?? "")|striptags(allowedHtmlTags)|raw}}
 			{% if providerTotalWithTaxesForseenForClient or outlay.providerAddedPrice %}
 				<br/><span>[&nbsp;&nbsp;{{ (providerTotalWithTaxesForseenForClient
-				+ outlay.providerAddedPrice)|format_currency('EUR', {rounding_mode: 'halfeven'}) }}&nbsp;&nbsp;]</span>
+					+ outlay.providerAddedPrice + outlay.providerAddedPriceTaxes)|format_currency('EUR', {rounding_mode: 'halfeven'}) }}&nbsp;&nbsp;]</span>
 			{% endif %}
 			{% if outlay.percentOnBusinessTotal %}
 				{# TIPS : was ONE space wrong alignment, wrapping with 'span' tag did solve the trouble #}
