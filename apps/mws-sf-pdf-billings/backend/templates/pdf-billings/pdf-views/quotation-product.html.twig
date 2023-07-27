@@ -57,9 +57,9 @@
 	</tr>
 	<tr class="sub-data" style="text-align:right;font-size:10pt;">
 		<td class="aim-title" style="width:{{ 0.28 * fullWidth }};text-align:left;font-weight:bold;">
-			<div class="first" style="text-decoration:underline;">
-				{{(product.leftTitle ?? "")|striptags(allowedHtmlTags)|raw}}
-			</div>
+			<div class="first" style="text-decoration:underline;">{{
+				(product.leftTitle ?? "")|striptags(allowedHtmlTags)|raw
+			}}</div>
 			<div class="second" style="text-align:right;">
 			{{(product.leftDetails ?? "")|striptags(allowedHtmlTags)|raw}}
 			</div>
