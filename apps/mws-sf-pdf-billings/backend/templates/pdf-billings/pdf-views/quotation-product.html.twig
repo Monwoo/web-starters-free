@@ -1,0 +1,87 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set allowedHtmlTags = '<b>,<a>,<strong>,<br>,<pre>,<div>' %}
+
+{# // TIPS : force float conversion to ignore about possible discountPercent null value... #}
+{# set discountPercent = (discountPercent ?? 0.0) + product.discountPercent #}
+{% set discountPercent = 1 - (1 - (discountPercent ?? 0.0)) * (1 - product.discountPercent) %}
+{% set priceWithoutTaxes = product.pricePerUnitWithoutTaxes * product.quantity
+	* (1 - discountPercent) %}
+{% set priceWithTaxes = priceWithoutTaxes * (1 + product.taxesPercent) %}
+
+<style></style>
+{% if product.insertPageBreakBefore %}
+	<br pagebreak="true"/>
+{% endif %}
+{% if product.marginTop ?? null %}
+	<table>
+		<tr>
+			<td class="empty-space" style="height:{{product.marginTop}};font-size:{{product.marginTop}};">&nbsp;</td>
+		</tr>
+	</table>
+{% endif %}
+<table class="quotation-product" style="padding: 1px 2px;
+		border-spacing:{{ (0) * fullWidth }} 0;font-size:8pt;">
+	<tr class="header" style="font-weight:bold;text-align:right;">
+		<th class="description" style="width:{{ 0.28 * fullWidth }}">Désignation</th>
+		<th class="quantity" style="width:{{ 0.12 * fullWidth }}">Quantité</th>
+		<th class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }}">P.U. H.T.</th>
+		<th class="taxes-percent" style="width:{{ 0.12 * fullWidth }}">Taux de T.V.A.</th>
+		<th class="discount-percent" style="width:{{ 0.12 * fullWidth }}">% de remise</th>
+		<th class="price-without-taxes" style="width:{{ 0.12 * fullWidth }}">Prix H.T.</th>
+		<th class="price-with-taxes" style="width:{{ 0.12 * fullWidth }}">Prix T.T.C.</th>
+	</tr>
+</table>
+<table class="quotation-product" style="padding: 2px 2px;
+		border-spacing:{{ (0) * fullWidth }} 0;font-size:9pt;">
+	<tr class="data" style="text-align:right;font-size:10pt;">
+		<td class="description" style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;">
+			{{product.label|striptags(allowedHtmlTags)|raw}}
+		</td>
+		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">
+			{{product.quantity|format_number({fraction_digit: 2})}}
+		</td>
+		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">
+			{{product.pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}
+		</td>
+		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">
+			{{ product.taxesPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}
+		</td>
+		<td class="discount-percent" style="width:{{ 0.12 * fullWidth }};">
+			{{discountPercent|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }}
+		</td>
+		<td class="price-without-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">
+			{{priceWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}
+		</td>
+		<td class="price-with-taxes" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">
+			{{priceWithTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}
+		</td>
+	</tr>
+	<tr class="sub-data" style="text-align:right;font-size:10pt;">
+		<td class="aim-title" style="width:{{ 0.28 * fullWidth }};text-align:left;font-weight:bold;">
+			<div class="first" style="text-decoration:underline;">
+				{{(product.leftTitle ?? "")|striptags(allowedHtmlTags)|raw}}
+			</div>
+			<div class="second" style="text-align:right;">
+			{{(product.leftDetails ?? "")|striptags(allowedHtmlTags)|raw}}
+			</div>
+		</td>
+		<td class="aim-description" style="width:{{ 0.60 * fullWidth }};font-weight:normal;text-align:left;">
+			{{(product.rightDetails ?? "")|striptags(allowedHtmlTags)|raw}}
+		</td>
+	</tr>
+	<tr>
+		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td>
+	</tr>
+</table>
+
+{% if product.insertPageBreakAfter %}
+	<br pagebreak="true"/>
+{% endif %}
+
+{% if product.marginBottom ?? null %}
+	<table>
+		<tr>
+			<td class="empty-space" style="height:{{product.marginBottom}};font-size:{{product.marginBottom}};">&nbsp;</td>
+		</tr>
+	</table>
+{% endif %}

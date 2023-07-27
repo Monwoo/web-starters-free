@@ -560,6 +560,9 @@ class PdfBillingsController extends AbstractController
                                         if (method_exists($item, "getBillingConfig")) {
                                             $item->setBillingConfig(null);
                                         }
+                                        if (method_exists($item, "getBillings")) {
+                                            $item->getBillings()->clear();
+                                        }
                                         
                                         // TODO : GENERIC WAY ($item->getBillingConfigs() sound ok with clientSlug, but sound like it want to persist some BillingConfig with null stuff not nullable..)
                                         // => SOUND like for COLLECTIONS : iterate and FETCH by ID (ok for us, orm take care of it...)
@@ -569,7 +572,7 @@ class PdfBillingsController extends AbstractController
                                         // $collection->add($item);
                                         // var_dump($item->getBillingConfigs());exit;
                                     }
-                                    // TODO : solve Integrity constraint violation: 19 NOT NULL constraint failed: billing_config.client_slug
+                                    // TIPS : test with bellow for above TODO error : Integrity constraint violation: 19 NOT NULL constraint failed: billing_config.client_slug
                                     // $this->em->flush();
                                     // exit;                
                                 }
@@ -577,7 +580,6 @@ class PdfBillingsController extends AbstractController
                         }
                     }
                     // var_dump($bConfigImportTarget);exit;
-                    // TODO : above is OK only for simple fields, relations need updates :
                     // var_dump($bConfigImportTarget->getClientSlug());exit;
 
                     $this->em->persist($bConfigImportTarget);

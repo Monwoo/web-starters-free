@@ -24,6 +24,7 @@ class ProductType extends AbstractType
             ->add('marginTop')
             ->add('insertPageBreakAfter')
             ->add('marginBottom')
+            ->add('billings')
         ;
     }
 

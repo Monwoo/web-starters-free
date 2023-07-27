@@ -62,6 +62,26 @@
 			font-weight: bold;
 			color: darkblue;
 		}
+		[id="billing_config_submitable_products"] > div:nth-child(even) {
+			margin: 12px 4px;
+			padding: 7px;
+			border: solid 1px #CCCCCC;
+			background: #EEEEEE;
+			border-radius: 12px;
+		}
+		/* TODO : not working, add class and get better selectors ? */
+		[id="billing_config_submitable_products"] > div:nth-child(odd) {
+			margin: 12px 4px;
+			padding: 7px;
+			border: solid 1px #EEEEEE;
+			background: #CCCCCC;
+			border-radius: 12px;
+		}
+		[id="billing_config_submitable_products"] > div > label {
+			font-size: 16pt;
+			font-weight: bold;
+			color: darkblue;
+		}
 		.workload-details {
 			border: solid 1px black;
 			border-radius: 12px;
@@ -125,6 +145,7 @@
 	https://symfony.com/doc/current/form/form_themes.html#form-custom-prototype #}
 	<ul class="outlays" data-index="{{ form.outlays|length > 0 ? form.outlays|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.outlays.vars.prototype)|e('html_attr') }}"></ul>
 	<ul class="transactions" data-index="{{ form.transactions|length > 0 ? form.transactions|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.transactions.vars.prototype)|e('html_attr') }}"></ul>
+	<ul class="products" data-index="{{ form.products|length > 0 ? form.products|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.products.vars.prototype)|e('html_attr') }}"></ul>
 
 	{# <input
 		type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}"> #}
@@ -143,6 +164,11 @@
 	type="button"
 	>Ajouter une transaction</button>
 
+	<br/><br/>
+	<button type="button" class="add_product_link" data-collection-holder-class="products"
+	type="button"
+	>Ajouter un produit</button>
+	
 	{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
 	{# Native way : #}
 	<p style="text-align:right">
@@ -327,6 +353,74 @@
         addTransactionFormDeleteLink(tag)
     })
 		addTransactionFormDeleteAllLink(transactionsTarget.parentElement, transactionsItemSelector);
+
+		const addProductFormDeleteLink = (item) => {
+			const removeFormButton = document.createElement('button');
+			// Type : button: The button has no default behavior, and does nothing
+			removeFormButton.setAttribute('type', "button");
+			removeFormButton.innerText = 'Supprimer ce produit';
+			item.append(removeFormButton);
+
+			removeFormButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					// remove the item for the outlay form
+					item.remove();
+			});
+		}
+
+		const addProductFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
+			const removeFormButton = document.createElement('button');
+			removeFormButton.setAttribute('type', "button");
+			removeFormButton.innerText = 'Supprimer tous les produits';
+
+			appendTo.append(removeFormButton);
+
+			removeFormButton.addEventListener('click', (e) => {
+					e.preventDefault();
+					// remove all items for the product form
+					document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
+						item.remove();
+					});
+			});
+		}
+
+		const billingConfigProductsSelector = '#billing_config_submitable_products';
+		const productsTarget = document.querySelector(billingConfigProductsSelector);
+		const productsItemSelector = '[id^="billing_config_submitable_products_"]:not([name])';
+
+		const addProductFormToCollection = (e) => {
+			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+			const item = document.createElement('div');
+
+			const idx = collectionHolder.dataset.index;
+			item.innerHTML = collectionHolder
+			.dataset
+			.prototype
+			.replace(
+				/__name__/g,
+				idx
+			);
+			item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
+			// add a delete link to the new form
+			addProductFormDeleteLink(item);
+
+			// collectionHolder.appendChild(item);
+			productsTarget.appendChild(item);
+
+			collectionHolder.dataset.index++;
+		};
+
+		document.querySelectorAll('.add_product_link').forEach(btn => {
+			btn.addEventListener("click", addProductFormToCollection)
+		});
+
+		document
+		.querySelectorAll(productsItemSelector)
+    .forEach((tag) => {
+        addProductFormDeleteLink(tag)
+    })
+		addProductFormDeleteAllLink(productsTarget.parentElement, productsItemSelector);
 
 	</script>
 

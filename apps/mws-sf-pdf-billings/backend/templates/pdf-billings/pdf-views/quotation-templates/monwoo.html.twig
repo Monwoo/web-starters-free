@@ -10,22 +10,22 @@
 		background-color: #11589A;
 		color: white;
 	}
-	.quotation-item .header th, .quotation-outlay .header th {
+	.quotation-product .header {
+		background-color: #11589A;
+		color: #fee6bf;
+	}
+	.quotation-item .header th, .quotation-outlay .header th, .quotation-product .header th {
 		border-left: solid 1px white;
 		border-right: solid 1px white;
 	}
-	
-	.quotation-item .data td, .quotation-outlay .data td {
+	.quotation-item .data td, .quotation-outlay .data td, .quotation-product .data td {
 		border-left: solid 1px black;
 		border-right: solid 1px black;
 	}
-	</style>
-		<style>
-	
 	.empty-space {
 		font-size: 0;
 	}
-	</style>
+</style>
 	
 	{# 
 	https://stackoverflow.com/questions/31451779/tcpdf-adding-a-background-to-a-table-cell-or-div-that-shows-on-pdf
@@ -353,6 +353,28 @@
 				</table>
 			{% endif %}
 
+			{% for product in billingConfig.products %}
+				{% include 'pdf-billings/pdf-views/quotation-product.html.twig' with {
+					'discountPercent': billingConfig.percentDiscount
+				} %}
+			{% endfor %}
+
+			{% block businessEndItem %}
+				{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
+					'app': app, 'billingConfig': billingConfig,
+					'description': '<strong>30 minutes d’expertise Frontend</strong> UI Svelte de votre site web en distancielle.',
+					'aimTitle': 'Objectif(s) de la prestation :',
+					'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
+					'aimDescription': businessWorkloadDetails,
+					'quantity': businessWorkloadHours * 2,
+					'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
+					'taxesPercent': 0,
+					'discountPercent': businessPercentDiscount,
+					'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
+					'priceWithTaxes': businessWorkloadHours * pricePerHour,
+				} %}
+			{% endblock %}
+
 			{# // TIPS : will break page only if no outlays present (otherwise,
 					outlay can add or remove a before page break to handle alignements ) #}
 			{% for outlay in billingConfig.outlays %}
@@ -376,9 +398,6 @@
 				%}
 					{# {{ outlayPricePUnitWithT }} #}
 	
-				{% if outlay.insertPageBreakBefore %}
-					<br pagebreak="true"/>
-				{% endif %}
 				{% include 'pdf-billings/pdf-views/quotation-outlay.html.twig' with {
 					'app': app, 'billingConfig': billingConfig,
 					'description': '<strong>Débours</strong> via ' ~ outlay.providerName,
@@ -394,9 +413,6 @@
 					'paddingBottom': 0.1,
 					'providerTotalWithTaxesForseenForClient': outlay.providerTotalWithTaxesForseenForClient,
 				} %}
-				{% if outlay.insertPageBreakAfter %}
-					<br pagebreak="true"/>
-				{% endif %}
 			{% endfor %}
 	
 			{# {% if breakAfterOutlays %}
@@ -404,12 +420,6 @@
 				pagebreak="true"/>
 			// TIPS : will need K_TCPDF_CALLS_IN_HTML to be true to use stuff like : <tcpdf method="AddPage" />
 			{% endif %} #}
-	
-			<table class="empty-space" style="font-size:10;">
-				<tr>
-					<td></td>
-				</tr>
-			</table>
 	
 			{% if (billingConfig.marginBeforeEndItem ?? null)
 				and billingConfig.marginBeforeEndItem|length %}
@@ -419,22 +429,6 @@
 					</tr>
 				</table>
 			{% endif %}
-	
-			{% block businessEndItem %}
-				{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
-					'app': app, 'billingConfig': billingConfig,
-					'description': '<strong>30 minutes d’expertise Frontend</strong> UI Svelte de votre site web en distancielle.',
-					'aimTitle': 'Objectif(s) de la prestation :',
-					'aimTitleBis': '(nécessaire)<br/>Dev Svelte <br/>[ ' ~ businessWorkloadHours|format_number({fraction_digit: 2}) ~ ' heures ]',
-					'aimDescription': businessWorkloadDetails,
-					'quantity': businessWorkloadHours * 2,
-					'pricePerUnitWithoutTaxes': pricePerHourWithoutDiscount / 2,
-					'taxesPercent': 0,
-					'discountPercent': businessPercentDiscount,
-					'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
-					'priceWithTaxes': businessWorkloadHours * pricePerHour,
-				} %}
-			{% endblock %}
 	
 			{% if billingConfig.pageBreakAfterEndItem %}
 				<br pagebreak="true"/>

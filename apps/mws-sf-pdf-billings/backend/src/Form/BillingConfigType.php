@@ -41,6 +41,7 @@ class BillingConfigType extends AbstractType
             ->add('pageBreakAfterEndItem')
             ->add('hideDefaultOutlaysOnEmptyOutlays')
             ->add('outlays')
+            ->add('products')
         ;
     }
 

@@ -116,6 +116,9 @@ class BillingConfig
     #[ORM\OneToMany(mappedBy: 'billingConfig', targetEntity: Transaction::class, cascade:["persist"])]
     private Collection $transactions;
 
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'billings', cascade:['persist'])]
+    private Collection $products;
+
     // // TODO : Why is 'specifying' inversedBy make all migration fail on error : 
     // // Column name "id" referenced for relation from App\Entity\BillingConfig
     // // towards App\Entity\Outlay does not exist.
@@ -132,6 +135,7 @@ class BillingConfig
     {
         $this->outlays = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function __toString()
@@ -530,6 +534,33 @@ class BillingConfig
     public function setPageBreakAfterEndItem(?bool $pageBreakAfterEndItem): static
     {
         $this->pageBreakAfterEndItem = $pageBreakAfterEndItem;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->addBilling($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            $product->removeBilling($this);
+        }
 
         return $this;
     }

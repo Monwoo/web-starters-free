@@ -5,6 +5,10 @@
 {% set discountPercent = discountPercent ?? 0.0 %}
 
 <style></style>
+{% if outlay.insertPageBreakBefore %}
+	<br pagebreak="true"/>
+{% endif %}
+
 {% if outlay.marginTop ?? null %}
 	<table>
 		<tr>
@@ -59,11 +63,11 @@
 			{% endif %}
 			{% if outlay.percentOnBusinessTotal %}
 				{# TIPS : was ONE space wrong alignment, wrapping with 'span' tag did solve the trouble #}
-				<br/><span>[ {{ ( outlay.percentOnBusinessTotal +
+				<br/><span>[ {{ (businessTotal ? ( outlay.percentOnBusinessTotal +
 					+ outlay.percentOnBusinessTotal * businessTotal
 					* outlay.taxesPercentAddedToPercentOnBusinessTotal
 					/ businessTotal
-				) |format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} T.T.C. sur
+				) : 0) |format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2}) }} T.T.C. sur
 				{{ businessTotal|format_currency('EUR', {rounding_mode: 'halfeven'}) }} ]</span>
 			{% endif %}
 			</div>
@@ -79,6 +83,10 @@
 		<td class="empty-space" style="height:{{paddingBottom ?? 0}};"></td> #}
 	</tr>
 </table>
+{% if outlay.insertPageBreakAfter %}
+	<br pagebreak="true"/>
+{% endif %}
+
 {% if outlay.marginBottom ?? null %}
 	<table>
 		<tr>

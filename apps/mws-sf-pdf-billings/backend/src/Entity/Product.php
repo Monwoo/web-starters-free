@@ -5,6 +5,8 @@ namespace App\Entity;
 
 use App\Entity\Traits\ItemLayoutTrait;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -39,6 +41,14 @@ class Product
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $rightDetails = null;
+
+    #[ORM\ManyToMany(targetEntity: BillingConfig::class, inversedBy: 'products', cascade:['persist'])]
+    private Collection $billings;
+
+    public function __construct()
+    {
+        $this->billings = new ArrayCollection();
+    }
 
     use ItemLayoutTrait;
 
@@ -139,6 +149,30 @@ class Product
     public function setRightDetails(?string $rightDetails): static
     {
         $this->rightDetails = $rightDetails;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BillingConfig>
+     */
+    public function getBillings(): Collection
+    {
+        return $this->billings;
+    }
+
+    public function addBilling(BillingConfig $billing): static
+    {
+        if (!$this->billings->contains($billing)) {
+            $this->billings->add($billing);
+        }
+
+        return $this;
+    }
+
+    public function removeBilling(BillingConfig $billing): static
+    {
+        $this->billings->removeElement($billing);
 
         return $this;
     }
