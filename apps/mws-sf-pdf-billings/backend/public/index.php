@@ -3,7 +3,9 @@
 use App\Kernel;
 
 // https://stackoverflow.com/questions/30404121/tcpdf-serializetcpdftagparameters
-define('K_TCPDF_CALLS_IN_HTML', true); // TOO late, already defined...
+// define('K_TCPDF_CALLS_IN_HTML', true); // TOO late, already defined...
+// https://stackoverflow.com/questions/28700659/how-to-configure-tcpdf-when-installing-with-composer
+// TIPS => done in config/tools/tcpdf_config.php file
 
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 

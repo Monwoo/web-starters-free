@@ -69,7 +69,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
+        },
+        "files": [
+            "config/tools/tcpdf_config.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

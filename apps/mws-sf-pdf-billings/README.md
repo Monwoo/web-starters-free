@@ -380,6 +380,11 @@ man md5
 md5 -q /Users/miguel/Downloads/FactureMonwoo________________.yaml
 # Will give your the backup file md5 hash.
 # That's the same as the url param dataMD5 encoded in the QrCode signature
+
+# https://stackoverflow.com/questions/28700659/how-to-configure-tcpdf-when-installing-with-composer
+rm -rf var/cache
+composer dump-autoload
+
 ```
 
 ## Useful Links
