@@ -6,6 +6,7 @@ namespace App\Entity;
 use App\Repository\TransactionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: '`transaction`')]
@@ -34,6 +35,7 @@ class Transaction
     #[ORM\Column(nullable: true)]
     private ?float $addedTaxes = null;
 
+    #[Serializer\Annotation\Ignore]    
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     private ?BillingConfig $billingConfig = null;
 

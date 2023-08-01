@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer;
 
 #[ORM\Entity(repositoryClass: OutlayRepository::class)]
 class Outlay
@@ -95,6 +96,7 @@ class Outlay
     private ?string $providerDetails = null;
 
     // #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays', cascade:['remove', 'persist'])]
+    #[Serializer\Annotation\Ignore]
     #[ORM\ManyToMany(targetEntity: BillingConfig::class, mappedBy: 'outlays', cascade:['persist'])]
     private Collection $billingConfigs;
 
