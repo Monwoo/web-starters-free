@@ -31,7 +31,7 @@
 	</tr>
 {% endfor %}
 
-{% if leftToSettle.total %}
+{% if leftToSettle.totalWithTaxes %}
 	<tr style="text-align:right;font-size:10pt;font-weight:bold;color:#000000;">
 		<td style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;">
 				Reste à régler :
@@ -44,7 +44,7 @@
 		<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">{{leftToSettle.totalWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">{{leftToSettle.totalTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">
-			{{leftToSettle.total
+			{{leftToSettle.totalWithTaxes
 				|format_currency('EUR', {rounding_mode: 'halfeven'})
 			}}
 		</td>
@@ -59,7 +59,7 @@
 	</td>
 	<td style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;">
 		{{(totalPriceWithTaxes ? (transactionTotals.addedTaxes + transactionTotals.priceWithoutTaxes
-		 + leftToSettle.total)/totalPriceWithTaxes : 0)
+		 + leftToSettle.totalWithTaxes)/totalPriceWithTaxes : 0)
 			|format_percent_number({rounding_mode: 'halfeven', fraction_digit: 2})
 		}}
 	</td>
@@ -70,7 +70,7 @@
 		{{(transactionTotals.addedTaxes + leftToSettle.totalTaxes)|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 	<td style="width:{{ 0.12 * fullWidth }};;border-right:solid 1px black">
 		{{(transactionTotals.addedTaxes + transactionTotals.priceWithoutTaxes
-			+ leftToSettle.total)|format_currency('EUR', {rounding_mode: 'halfeven'})
+			+ leftToSettle.totalWithTaxes)|format_currency('EUR', {rounding_mode: 'halfeven'})
 		}}
 	</td>
 	<td style="width:{{ 0.12 * fullWidth }};"></td>

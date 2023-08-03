@@ -67,7 +67,7 @@
 		<td style="width:{{ 0.24 * fullWidth }};text-align: center;
 		border-width:1px;border-bottom-width:1px;border-right-width:1px;
 		border-color:black;border-style:solid;">
-			{{(leftToSettle.total)|format_currency('EUR', {rounding_mode: 'halfeven'})}}
+			{{(leftToSettle.totalWithTaxes)|format_currency('EUR', {rounding_mode: 'halfeven'})}}
 			{# // TODO - sum of transction#}
 		</td>
 		<td style="width:{{ 0.12 * fullWidth }};"></td>
@@ -92,6 +92,10 @@
 				{{ (billingConfig.quotationAmount ?? 0)
 					|format_currency('EUR', {rounding_mode: 'halfeven'}) }}
 				T.T.C.
+			{# TODO and TIPS : all boolean test on float values must be rounded for false and e^-15 is same as false... #}
+			{% elseif billingConfig.documentType == 'proforma'
+			and not (leftToSettle.totalWithTaxes|round(2)) %}
+				Facture payée.
 			{% else %}
 				Dans l'attente de votre retour.
 			{% endif %}
@@ -106,9 +110,9 @@
 		<tr><td>
 			{# // TODO : only if no forseen payment,
 			and all transactions fullfill the full quotation... #}
-			{% if billingConfig.documentType == 'facture' %}
+			{% if billingConfig.documentType in [ 'facture', 'proforma' ] %}
 				{# Merci, vous avez soldé l'opération. // TODO if solde ok #}
-				{% if leftToSettle.total %}
+				{% if leftToSettle.totalWithTaxes|round(2) %}
 					Merci et à bientôt.
 				{% else %}
 					Merci, vous avez soldé l'opération.

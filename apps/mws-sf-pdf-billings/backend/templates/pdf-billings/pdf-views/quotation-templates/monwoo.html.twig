@@ -215,15 +215,15 @@
 		{# TODO : modelisation error to fix for outlaysTaxesIncludedInBusinessTotalPercent ? 
 			Substracted at total, but if included, should show up in transaction flow ? #}
 		{% set leftToSettle = {
-			total: totalPriceWithTaxes - transactionTotals.addedTaxes
-			- transactionTotals.priceWithoutTaxes,
+			totalWithoutTaxes: totalPriceWithTaxes
+			- transactionTotals.priceWithoutTaxes - outlaysTaxes,
 			totalTaxes: outlaysTaxes + productsTotals.allTaxes - transactionTotals.addedTaxes,
 		} %}
 		{% set leftToSettle = leftToSettle|merge({
 			totalPercent: totalPriceWithTaxes
-			? (leftToSettle.total + leftToSettle.totalTaxes) / totalPriceWithTaxes
+			? (leftToSettle.totalWithoutTaxes + leftToSettle.totalTaxes) / totalPriceWithTaxes
 			: 0,
-			totalWithoutTaxes: leftToSettle.total,
+			totalWithTaxes: leftToSettle.totalWithoutTaxes + leftToSettle.totalTaxes,
 		}) %}
 
 		{% if viewPart != 'CGV' %}

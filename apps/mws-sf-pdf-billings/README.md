@@ -385,6 +385,12 @@ md5 -q /Users/miguel/Downloads/FactureMonwoo________________.yaml
 rm -rf var/cache
 composer dump-autoload
 
+# TIPS Axelo : use Vite Inspector
+# https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/config.md#inspector
+# [23:36, 01/08/2023] Axelo: svelte.config
+# [23:37, 01/08/2023] Axelo: "@sveltejs/vite-plugin-svelte": "^2.4.2"
+# [23:37, 01/08/2023] Axelo: "vite": "^4.3.9",
+
 ```
 
 ## Useful Links
