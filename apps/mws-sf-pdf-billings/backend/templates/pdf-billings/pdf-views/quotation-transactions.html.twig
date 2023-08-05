@@ -31,7 +31,7 @@
 	</tr>
 {% endfor %}
 
-{% if leftToSettle.totalWithTaxes %}
+{% if leftToSettle.totalWithTaxes|round(2) %}
 	<tr style="text-align:right;font-size:10pt;font-weight:bold;color:#000000;">
 		<td style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;">
 				Reste à régler :
