@@ -28,19 +28,24 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass
 export APP_ENV=dev
 composer install
 
+# Use SYMFONY dev server (not same as php builtin or bin/console)
+wget https://get.symfony.com/cli/installer -O - | bash
+alias symfony="~/.symfony5/bin/symfony"
+symfony server:start
+
 # install with local PRIVATE bundles :
 COMPOSER=composer.private.json composer install
+# if already installed and did update package composer.json :
+COMPOSER=composer.private.json composer update
+# + You might need to restart symfony dev server, relaunch :
+symfony server:start
+
 
 # bootstrap database
 php bin/console doctrine:migrations:migrate
 
 # use php builtin
 # (TODO : php router and missing .htaccess checks ok ?)
-
-# Use SYMFONY dev server (not same as php builtin or bin/console)
-wget https://get.symfony.com/cli/installer -O - | bash
-alias symfony="~/.symfony5/bin/symfony"
-symfony server:start
 
 # All is ready for your PDF edition (TODO : dev in progres...)
 # TODO : Just fill the form or pre-fill by json POST request...

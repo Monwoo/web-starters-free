@@ -4,6 +4,7 @@
 
 namespace MWS\PDFBillingsLvl1Bundle;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -11,5 +12,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class PDFBillingsLvl1Bundle extends Bundle
 {
-
+  public function build(ContainerBuilder $container)
+  {
+    // echo("BundleBuild");exit;
+  }
 }

@@ -21,6 +21,11 @@ if (class_exists(MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class)) {
         MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class => ['all' => true],
     ]);
 }
+if (class_exists(MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class)) {
+    $bundles = array_merge($bundles, [
+        MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class => ['all' => true],
+    ]);
+}
 
 // In case of pre-production debugs, we want to get some messages, but still stay closest to the 
 // production context. With that, we can debug without sending the dev debug bundle in production too ;)
