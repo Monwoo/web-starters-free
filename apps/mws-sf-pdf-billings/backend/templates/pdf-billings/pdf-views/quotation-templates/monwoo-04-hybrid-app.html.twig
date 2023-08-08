@@ -9,21 +9,9 @@
 {% endblock %}
 
 {% block businessStartItem %}
-	<table>
-		<tr>
-			{% set asMargin = 42 %}
-			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
-		</tr>
-	</table>
 {% endblock %}
 
 {% block businessEndItem %}
-	<table>
-		<tr>
-			{% set asMargin = 0 %}
-			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
-		</tr>
-	</table>
 	{% include 'pdf-billings/pdf-views/quotation-item.html.twig' with {
 		'app': app, 'billingConfig': billingConfig,
 		'description': '<strong>30 minutes de conseils et modifications</strong> de votre backend PHP ou Symfony 5 sur mesures en télétravail.',
@@ -37,12 +25,4 @@
 		'priceWithoutTaxes': businessWorkloadHours * pricePerHour,
 		'priceWithTaxes': businessWorkloadHours * pricePerHour,
 	} %}
-	<br pagebreak="true"/>
-	<table>
-		<tr>
-			{% set asMargin = 42 %}
-			<td class="empty-space" style="height:{{asMargin}};font-size:{{asMargin}};">&nbsp;</td>
-		</tr>
-	</table>
-
 {% endblock %}

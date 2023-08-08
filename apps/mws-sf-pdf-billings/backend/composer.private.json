@@ -7,7 +7,7 @@
         "name": "Miguel Monwoo",
         "email": "service@monwoo.com"
     }],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": [
         {
@@ -16,7 +16,8 @@
         },
         {
             "type": "path",
-            "url": "../../../../mws-sf-pdf-billings-monwoo"
+            "url": "../../../../mws-sf-pdf-billings-lvl2",
+            "_cmt_url": "../../../packages/mws-sf-pdf-billings-lvl2"
         }
     ],
     "require": {
@@ -29,22 +30,28 @@
         "endroid/qr-code-bundle": "^4.3",
         "lexik/jwt-authentication-bundle": "*",
         "monwoo/mws-sf-pdf-billings-lvl1-bundle": "0.0.1",
-        "monwoo/mws-sf-pdf-billings-monwoo-bundle": "0.0.1",
+        "monwoo/mws-sf-pdf-billings-lvl2-bundle": "0.0.1",
+        "phpdocumentor/reflection-docblock": "^5.3",
+        "phpstan/phpdoc-parser": "^1.23",
         "qipsius/tcpdf-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/asset": "5.4.*",
         "symfony/console": "5.4.*",
         "symfony/dotenv": "5.4.*",
+        "symfony/expression-language": "5.4.*",
         "symfony/flex": "^1.17|^2",
         "symfony/form": "5.4.*",
         "symfony/framework-bundle": "5.4.*",
-        "symfony/maker-bundle": "*",
+        "symfony/mime": "5.4.*",
         "symfony/monolog-bundle": "^3.8",
+        "symfony/property-access": "5.4.*",
+        "symfony/property-info": "5.4.*",
         "symfony/runtime": "5.4.*",
         "symfony/security-bundle": "5.4.*",
         "symfony/serializer": "5.4.*",
         "symfony/translation": "5.4.*",
         "symfony/twig-bundle": "5.4.*",
+        "symfony/validator": "5.4.*",
         "symfony/yaml": "5.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3.6",
@@ -68,7 +75,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
+        },
+        "files": [
+            "config/tools/tcpdf_config.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -114,6 +124,7 @@
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
         "symfony/debug-bundle": "5.4.*",
+        "symfony/maker-bundle": "*",
         "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "^6.3",
         "symfony/stopwatch": "5.4.*",

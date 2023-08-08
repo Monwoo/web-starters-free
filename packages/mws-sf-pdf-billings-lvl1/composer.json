@@ -4,6 +4,12 @@
     "description": "Open Source Monwoo SF 5 bundle for level 1 billings with Monwoo mws-sf-pdf-billings tool",
     "type": "symfony-bundle",
     "license": "Apache-2.0_monwoo",
+    "authors": [
+        {
+            "name": "Miguel Monwoo",
+            "email": "service@monwoo.com"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
