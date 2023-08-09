@@ -476,7 +476,7 @@ class PdfBillingsController extends AbstractController
         SluggerInterface $slugger
     ): Response {
         // $clientId = $request->get('clientId');
-
+        $respStatus = null;
         // https://stackoverflow.com/questions/21124450/how-to-use-curl-multipart-form-data-to-post-array-field-from-command-line
 
         $rawBillingConfigFromGET = $request->query->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request if not in POST mode ;)
@@ -541,9 +541,12 @@ class PdfBillingsController extends AbstractController
         $form->handleRequest($request);
         // var_dump($form->isSubmitted());var_dump($form->isValid()); exit;
 
+        $this->logger->debug("Succed to handle Request");
         if ($form->isSubmitted()) {
+            $this->logger->debug("Succed to use submitted form");
 
             if ($form->isValid()) {
+                $this->logger->debug("Succed to use valid form");
                 // https://github.com/symfony/symfony/blob/6.3/src/Symfony/Component/HttpFoundation/File/UploadedFile.php
                 // https://stackoverflow.com/questions/14462390/how-to-declare-the-type-for-local-variables-using-phpdoc-notation
                 /** @var UploadedFile $importedUpload */
@@ -655,6 +658,8 @@ class PdfBillingsController extends AbstractController
                     $this->em->persist($bConfigImportTarget);
                     $this->em->flush();
     
+                    $this->logger->debug("Succed to import data file: " . $originalFilename);
+
                     // echo $importedUpload->guessExtension();
                     // echo $importedUpload->getClientOriginalName();
                     // var_dump($vars);
@@ -741,6 +746,7 @@ class PdfBillingsController extends AbstractController
     
                 // TIPS : un-comment below if you want to redirect to full PDF view at form submit
                 // return $this->redirectToRoute('app_pdf_billings_view', [], Response::HTTP_SEE_OTHER);
+                $this->logger->debug("Succed to use form data for: " . $clientSlug);
 
                 // TIPS : redirect to self view with GET client ID to force data db refresh
                 //       after embedded form edits not reflected in validated form...
@@ -755,6 +761,8 @@ class PdfBillingsController extends AbstractController
                     'Form submit errors : '
                         . $form->getErrors(true)->__toString()
                 );
+                //https://stackoverflow.com/questions/7939137/what-http-status-code-should-be-used-for-wrong-input
+                $respStatus = 422;
             }
         }
         // ob_end_clean();
@@ -763,13 +771,17 @@ class PdfBillingsController extends AbstractController
 
         // return $this->render('pdf-billings/index.html.twig', [
         //     'form' => $form->createView(),
-        return $this->renderForm('pdf-billings/index.html.twig', array_merge($templateData, [
+        $resp = $this->renderForm('pdf-billings/index.html.twig', array_merge($templateData, [
             'businessWorkloadHours' => $bConfig->getBusinessWorkloadHours()
             ?? $templateData['defaultBusinessWorkloadHours'],
             'billingConfig' => $bConfig,
             'form' => $form,
             'title' => 'MWS SF PDF Billings - Index'
         ]));
+        if ($respStatus) {
+            $resp->setStatusCode($respStatus);
+        }
+        return $resp;
     }
 
     // https://symfony.com/doc/current/routing.html
