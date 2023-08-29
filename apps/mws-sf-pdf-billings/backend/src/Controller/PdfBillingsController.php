@@ -473,7 +473,7 @@ class PdfBillingsController extends AbstractController
     public function index(
         Request $request,
         BillingConfigRepository $bConfigRepository,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
     ): Response {
         // $clientId = $request->get('clientId');
         $respStatus = null;

@@ -67,14 +67,15 @@ cd apps/mws-sf-pdf-billings/backend
 rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
 
 # Clean possible dev configs (if no previous prod builds...)
-mkdir -p config-disabled/packages config-disabled/routes
-mv config/routes/web_profiler.yaml config-disabled/routes/
-mv config/packages/debug.yaml config/packages/web_profiler.yaml \
-config-disabled/packages/
+# mkdir -p config-disabled/packages config-disabled/routes
+# mv config/routes/web_profiler.yaml config-disabled/routes/
+# mv config/packages/debug.yaml config/packages/web_profiler.yaml \
+# config-disabled/packages/
 
 echo 'APP_ENV=prod' > .env
 export APP_ENV=prod
 
+cp .env.dev.dist .env.prod # put your private info inside...
 # Build for prodution
 mkdir config/jwt
 # WARNING : use hard pass other than : jwt_test (and setup accordingly in .env.prod)
