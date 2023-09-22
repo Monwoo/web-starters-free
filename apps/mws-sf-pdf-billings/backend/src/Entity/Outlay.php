@@ -14,6 +14,8 @@ use Symfony\Component\Serializer;
 #[ORM\Entity(repositoryClass: OutlayRepository::class)]
 class Outlay
 {
+    use ItemLayoutTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -89,8 +91,6 @@ class Outlay
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $providerShortDescription = null;
-
-    use ItemLayoutTrait;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $providerDetails = null;

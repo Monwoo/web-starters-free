@@ -45,6 +45,7 @@ use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -1134,6 +1135,54 @@ class PdfBillingsController extends AbstractController
 
         $this->setupBillingConfigDefaults($bConfig);
 
+        $toFloatNorm = function (
+            $innerObject,
+            $outerObject,
+            string $attributeName,
+            string $format = null,
+            array $context = []
+        ): string {
+            // dd($innerObject);
+            // return $innerObject instanceof \DateTime ? $innerObject->format(\DateTime::ISO8601) : '';
+            // TIPS : transform rule for bad formated column hard to fix with tableur :
+            // $in = str_replace(["'"," ","€"], "", $innerObject);
+            // $in = str_replace(" ", "", $innerObject);
+            // $in = str_replace(" ", "", $innerObject);
+            // $in = str_replace("€", "", $in);
+            $in = preg_replace('/[^0-9,.]/', '', $innerObject);
+            $in = str_replace(",", ".", $in);
+            // dd($in);
+            return floatval($in);
+        };
+
+        $normalizerContext = [ // TIPS : no effect here...
+            'providerAddedPrice' => $toFloatNorm,
+        ];
+        $normalizers = [
+            new ObjectNormalizer(
+                null, null, null,
+                null, null, null, $normalizerContext
+            ),
+            new ArrayDenormalizer(),
+        ];
+        // Custom serializer :
+        $serializer = new Serializer($normalizers, [new JsonEncoder()]);
+
+        $outlaysData = json_encode($urlGetParams->get('outlays'));
+        if ($outlaysData) {
+            $outlays = $serializer->deserialize(
+                $outlaysData, Outlay::class . "[]", 'json', [
+                    // AbstractNormalizer::IGNORED_ATTRIBUTES => ['providerAddedPrice'],
+                    AbstractNormalizer::CALLBACKS => [ // TIPS : no effect here...
+                        'providerAddedPrice' => $toFloatNorm,
+                    ],        
+                ]
+            );
+            foreach ($outlays as $outlay) {
+                $bConfig->addOutlay($outlay);
+            }
+        }
+
         $projectUrl = $urlGetParams->get('projectUrl');
 
         if ($projectUrl) {
@@ -1147,6 +1196,7 @@ class PdfBillingsController extends AbstractController
             );    
         }
 
+        // dd($bConfig);
 
         $this->em->persist($bConfig);
         $this->em->flush();
