@@ -795,9 +795,9 @@ class PdfBillingsController extends AbstractController
         name: 'app_pdf_billings_view'
     )]
     public function view(
-        Request $request,
         string $clientSlug,
         string $viewPart,
+        Request $request,
         // EngineInterface $tplEngine,
         string $projectDir,
         BillingConfigRepository $bConfigRepository,
@@ -1071,6 +1071,90 @@ class PdfBillingsController extends AbstractController
         $response->headers->set('Expires', '0');
 
         return $response;
+    }
+
+    #[Route('/auto-load', name: 'app_pdf_billings_auto_load')]
+    public function autoLoad(
+        Request $request,
+        BillingConfigRepository $bConfigRepository,
+    ): Response
+    {
+        // part of templates to show if configured
+        // in target billing template
+        $viewPart = '';
+        $urlGetParams = $request->query;
+        // dd($urlGetParams);
+
+        $clientSlug = $urlGetParams->get('clientSlug') ?? '--';
+
+        $bConfig = $bConfigRepository->findOneBy([
+            'clientSlug' => $clientSlug,
+        ]) ?? null;
+        if ($bConfig) {
+            // Clean possible clash
+            $this->em->remove($bConfig);
+            $this->em->flush();
+        }
+        $bConfig = new BillingConfig();
+
+        $sync = function($path) use ($urlGetParams, $bConfig) {
+            $set = 'set' . ucfirst($path);
+            $bConfig->$set($urlGetParams->get($path));
+        };
+        $bConfig->setClientSlug($clientSlug);
+        $sync('clientName');
+        $sync('clientEmail');
+        $sync('clientTel');
+        $sync('clientSIRET');
+        $sync('clientTvaIntracom');
+        $sync('clientAddressL1');
+        $sync('clientAddressL2');
+        $sync('clientWebsite');
+        $sync('clientLogoUrl');
+
+        $sync('documentType');
+        $sync('quotationTemplate');
+        $sync('quotationNumber');
+        $sync('quotationSourceNumber');
+        $sync('quotationAmount');
+        $sync('businessLogo');
+        $sync('businessWorkloadHours');
+        $sync('businessAim');
+        $sync('businessWorkloadDetails');
+        $sync('quotationStartDay');
+        $sync('quotationEndDay');
+        $sync('percentDiscount');
+        $sync('marginBeforeStartItem');
+        $sync('marginAfterStartItem');
+        $sync('pageBreakAfterStartItem');
+        $sync('marginBeforeEndItem');
+        $sync('marginAfterEndItem');
+        $sync('pageBreakAfterEndItem');
+        $sync('hideDefaultOutlaysOnEmptyOutlays');
+
+        $this->setupBillingConfigDefaults($bConfig);
+
+        $projectUrl = $urlGetParams->get('projectUrl');
+
+        if ($projectUrl) {
+            $bConfig->setBusinessAim(
+                $bConfig->getBusinessAim() ?? ''
+                . "
+                    <div class='description' style=''>
+                        $projectUrl
+                    </div>
+                "
+            );    
+        }
+
+
+        $this->em->persist($bConfig);
+        $this->em->flush();
+
+        return $this->redirectToRoute('app_pdf_billings_view', [
+            "clientSlug" => $clientSlug,
+            "viewPart" => $viewPart,
+        ]);
     }
 
     #[Route('/pdf/billings/ID', name: 'app_pdf_billings_preview')]

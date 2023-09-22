@@ -10,13 +10,13 @@ php bin/console debug:twig --filter=price
 
 // Biblio :
 // https://symfony.com/doc/5.3/templating/twig_extension.html
-namespace AppBundle\Twig;
+namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
 
-class AppExtension extends AbstractExtension implements GlobalsInterface
+class AppEnvExtension extends AbstractExtension implements GlobalsInterface
 {
     // public function getFilters()
     // {
