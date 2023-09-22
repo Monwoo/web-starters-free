@@ -1,3 +1,6 @@
+# 🌖🌖 Copyright Monwoo 2022 🌖🌖, re-build by Miguel Monwoo for AtoutConseil,
+# service@monwoo.com
+
 # https://gist.github.com/alch/7766993
 # https://stackoverflow.com/questions/6840578/getting-the-base-url-of-the-website-and-globally-passing-it-to-twig-in-symfony-2
 
@@ -7,71 +10,109 @@
 
 allow from all
 
+# AddHandler "proxy:unix:/....../php8.1.socket|fcgi://" .php
 
 # Use the front controller as index file.
 DirectoryIndex index.php
 
-# Uncomment the following line if you install assets as symlinks or if you 
-# experience problems related to symlinks when compiling LESS/Sass/CoffeScript.
-# Options +FollowSymlinks
+RewriteEngine On
+# RewriteBase /demos/sf-pdf-billings/
 
-# Disabling MultiViews prevents unwanted negotiation, e.g. "/index" should not resolve
-# to the front controller "/index.php" but be rewritten to "/index.php/index".
-<IfModule mod_negotiation.c>
-    Options -MultiViews
-</IfModule>
+# Force https
+RewriteCond %{HTTP:X-Forwarded-Proto} =http
+RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-<IfModule mod_rewrite.c>
-    RewriteEngine On
+# # auth token headers on redirects
+# RewriteCond %{HTTP:Authorization} .
+# RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Force https :
-    RewriteCond %{HTTP:X-Forwarded-Proto} !https
-    RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+# # SF App :
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# # RewriteCond %{REQUEST_URI} !^/index.php
+# RewriteRule ^(.*) index.php/$1 [L,QSA]
+# # RewriteRule ^(.*)$ index.php$1 [QSA,L]
 
-    # This RewriteRule is used to dynamically discover the RewriteBase path.
-    # See https://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewriterule
-    # Here we will compare the stripped per-dir path *relative to the filesystem
-    # path where the .htaccess file is read from* with the URI of the request.
-    # 
-    # If a match is found, the prefix path is stored into an ENV var that is later 
-    # used to properly prefix the URI of the front controller index.php.
-    # This is what makes it possible to host a Symfony application under a subpath,
-    # such as example.com/subpath
+#RewriteBase /atoutconseil/
+#
+#RewriteCond %{THE_REQUEST} /public/([^\s?]*) [NC]
+#RewriteRule ^ %1 [L,NE,R=302]
+#
+#RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
 
-    # The convoluted rewrite condition means:
-    #   1. Match all current URI in the RewriteRule and backreference it using $0
-    #   2. Strip the request uri the per-dir path and use ir as REQUEST_URI.
-    #      This is documented in https://bit.ly/3zDm3SI ("What is matched?")
-    #   3. Evaluate the RewriteCond, assuming your DocumentRoot is /var/www/html,
-    #      this .htaccess is in the /var/www/html/public dir and your request URI
-    #      is /public/hello/world:
-    #      * strip per-dir prefix: /var/www/html/public/hello/world -> hello/world
-    #      * applying pattern '.*' to uri 'hello/world'
-    #      * RewriteCond: input='/public/hello/world::hello/world' pattern='^(/.+)/(.*)::\\2$' => matched
-    #   4. Execute the RewriteRule:
-    #      * The %1 in the RewriteRule flag E=BASE:%1 refers to the first group captured in the RewriteCond ^(/.+)/(.*)
-    #      * setting env variable 'BASE' to '/public'
-    RewriteCond %{REQUEST_URI}::$0 ^(/.+)/(.*)::\2$
-    RewriteRule .* - [E=BASE:%1]
+# Redirect to URI without front controller to prevent duplicate content
+# (with and without `/app.php`). Only do this redirect on the initial
+# rewrite by Apache and not on subsequent cycles. Otherwise we would get an
+# endless redirect loop (request -> rewrite to front controller ->
+# redirect -> request -> ...).
+# So in case you get a "too many redirects" error or you always get redirected
+# to the startpage because your Apache does not expose the REDIRECT_STATUS
+# environment variable, you have 2 choices:
+# - disable this feature by commenting the following 2 lines or
+# - use Apache >= 2.3.9 and replace all L flags by END flags and remove the
+#   following RewriteCond (best solution)
+# RewriteCond %{ENV:REDIRECT_STATUS} ^$
+# RewriteRule ^index\.php(/(.*)|$) %{CONTEXT_PREFIX}/$2 [R=301,L]
 
-    # Sets the HTTP_AUTHORIZATION header removed by Apache
-    RewriteCond %{HTTP:Authorization} .+
-    RewriteRule ^ - [E=HTTP_AUTHORIZATION:%0]
+# # If the requested filename exists, simply serve it.
+# # We only want to let Apache serve files and not directories.
+# RewriteCond %{REQUEST_FILENAME} -f
+# RewriteRule .? - [L]
 
-    # Removes the /index.php/ part from a URL, if present
-    RewriteCond %{ENV:REDIRECT_STATUS} =""
-    RewriteRule ^index\.php(?:/(.*)|$) %{ENV:BASE}/$1 [R=301,L]
+# cache-bust assets url rewrite
+# Example format: /cpv-10/js/test123.js -> /js/test123.js
+# This allows us to change the asset version and "bust" intermediate caches (like varnish)
+# See http://symfony.com/doc/current/reference/configuration/framework.html#ref-framework-assets-version
+# See http://symfony.com/doc/current/reference/configuration/framework.html#assets-version-format
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^cpv-\d+\/(.+)$ $1 [L]
 
-    # If the requested filename exists, simply serve it.
-    # Otherwise rewrite all other queries to the front controller.
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ %{ENV:BASE}/index.php [L]
-</IfModule>
+# # The following rewrites all other queries to the front controller. The
+# # condition ensures that if you are using Apache aliases to do mass virtual
+# # hosting, the base path will be prepended to allow proper resolution of the
+# # app.php file; it will work in non-aliased environments as well, providing
+# # a safe, one-size fits all solution.
+# RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
+# RewriteRule ^(.*) - [E=BASE:%1]
+# RewriteRule .? %{ENV:BASE}index.php [L]
 
-<IfModule !mod_rewrite.c>
-    <IfModule mod_alias.c>
-        # When mod_rewrite is not available, we instruct a temporary redirect 
-        # to the front controller explicitly so that the website
-        RedirectMatch 307 ^/$ /index.php/
-    </IfModule>
-</IfModule>
+# Redirect to URI without front controller to prevent duplicate content
+# (with and without `/app.php`). Only do this redirect on the initial
+# rewrite by Apache and not on subsequent cycles. Otherwise we would get an
+# endless redirect loop (request -> rewrite to front controller ->
+# redirect -> request -> ...).
+# So in case you get a "too many redirects" error or you always get redirected
+# to the startpage because your Apache does not expose the REDIRECT_STATUS
+# environment variable, you have 2 choices:
+# - disable this feature by commenting the following 2 lines or
+# - use Apache >= 2.3.9 and replace all L flags by END flags and remove the
+#   following RewriteCond (best solution)
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^index\.php(/(.*)|$) %{CONTEXT_PREFIX}/$2 [R=301,L]
+
+# If the requested filename exists, simply serve it.
+# We only want to let Apache serve files and not directories.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule .? - [L]
+
+# cache-bust assets url rewrite
+# Example format: /cpv-10/js/test123.js -> /js/test123.js
+# This allows us to change the asset version and "bust" intermediate caches (like varnish)
+# See http://symfony.com/doc/current/reference/configuration/framework.html#ref-framework-assets-version
+# See http://symfony.com/doc/current/reference/configuration/framework.html#assets-version-format
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^cpv-\d+\/(.+)$ $1 [L]
+
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# The following rewrites all other queries to the front controller. The
+# condition ensures that if you are using Apache aliases to do mass virtual
+# hosting, the base path will be prepended to allow proper resolution of the
+# app.php file; it will work in non-aliased environments as well, providing
+# a safe, one-size fits all solution.
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
+RewriteRule .? %{ENV:BASE}index.php [L]
