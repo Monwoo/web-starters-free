@@ -1098,9 +1098,23 @@ class PdfBillingsController extends AbstractController
         }
         $bConfig = new BillingConfig();
 
-        $sync = function($path) use ($urlGetParams, $bConfig) {
+        $toFloat = function($v) {
+            if (!$v) return null;
+            $v = preg_replace('/[^0-9,.]/', '', $v);
+            $v = str_replace(",", ".", $v);
+            return floatval($v);
+        };
+        $toDate = function($v) {
+            return $v ? new DateTime($v) : null;
+        };
+        $sync = function($path, $transformer = null)
+        use ($urlGetParams, $bConfig) {
             $set = 'set' . ucfirst($path);
-            $bConfig->$set($urlGetParams->get($path));
+            $v = $urlGetParams->get($path);
+            if ($transformer) {
+                $v = $transformer($v);
+            }
+            $bConfig->$set($v);
         };
         $bConfig->setClientSlug($clientSlug);
         $sync('clientName');
@@ -1117,19 +1131,19 @@ class PdfBillingsController extends AbstractController
         $sync('quotationTemplate');
         $sync('quotationNumber');
         $sync('quotationSourceNumber');
-        $sync('quotationAmount');
+        $sync('quotationAmount', $toFloat);
         $sync('businessLogo');
-        $sync('businessWorkloadHours');
+        $sync('businessWorkloadHours', $toFloat);
         $sync('businessAim');
         $sync('businessWorkloadDetails');
-        $sync('quotationStartDay');
-        $sync('quotationEndDay');
-        $sync('percentDiscount');
-        $sync('marginBeforeStartItem');
-        $sync('marginAfterStartItem');
-        $sync('pageBreakAfterStartItem');
-        $sync('marginBeforeEndItem');
-        $sync('marginAfterEndItem');
+        $sync('quotationStartDay', $toDate);
+        $sync('quotationEndDay', $toDate);
+        $sync('percentDiscount', $toFloat);
+        $sync('marginBeforeStartItem', $toFloat);
+        $sync('marginAfterStartItem', $toFloat);
+        $sync('pageBreakAfterStartItem', $toFloat);
+        $sync('marginBeforeEndItem', $toFloat);
+        $sync('marginAfterEndItem', $toFloat);
         $sync('pageBreakAfterEndItem');
         $sync('hideDefaultOutlaysOnEmptyOutlays');
 
@@ -1169,7 +1183,7 @@ class PdfBillingsController extends AbstractController
         $serializer = new Serializer($normalizers, [new JsonEncoder()]);
 
         $outlaysData = json_encode($urlGetParams->get('outlays'));
-        if ($outlaysData) {
+        if ($outlaysData && $outlaysData != 'null') {
             $outlays = $serializer->deserialize(
                 $outlaysData, Outlay::class . "[]", 'json', [
                     // AbstractNormalizer::IGNORED_ATTRIBUTES => ['providerAddedPrice'],
