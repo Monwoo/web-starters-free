@@ -75,7 +75,7 @@ rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
 echo 'APP_ENV=prod' > .env
 export APP_ENV=prod
 
-cp .env.dev.dist .env.prod # put your private info inside...
+cp .env.prod.dist .env.prod # put your private info inside...
 # Build for prodution
 mkdir config/jwt
 # WARNING : use hard pass other than : jwt_test (and setup accordingly in .env.prod)

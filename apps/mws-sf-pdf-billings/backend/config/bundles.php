@@ -13,6 +13,7 @@ $bundles = [
     Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     MWS\PDFBillingsLvl1Bundle\PDFBillingsLvl1Bundle::class => ['all' => true],
+    MWS\MoonManagerBundle\MoonManagerBundle::class => ['all' => true],
 ];
 
 // Paid or private starter might not be loaded, do lazy loads :

@@ -1,0 +1,35 @@
+{
+    "name": "monwoo/mws-moon-manager-bundle",
+    "version": "2.0.0",
+    "description": "Open Source Monwoo MoonManager time tracking tool",
+    "type": "symfony-bundle",
+    "license": "Apache-2.0_monwoo",
+    "authors": [
+        {
+            "name": "Miguel Monwoo",
+            "email": "service@monwoo.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.1",
+        "phpoffice/phpspreadsheet": "^1.29",
+        "symfony/framework-bundle": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "MWS\\MoonManagerBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "thanks": {
+            "name": "Monwoo/web-starters-free",
+            "url": "https://github.com/Monwoo/web-starters-free"
+        },
+        "symfony": {
+            "allow-contrib": false,
+            "require": "5.4.*"
+        }
+    }
+}
