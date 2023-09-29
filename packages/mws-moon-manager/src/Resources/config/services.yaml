@@ -1,0 +1,23 @@
+# https://stackoverflow.com/questions/61059875/controller-has-no-container-set-did-you-forget-to-define-it-as-a-service-subscr
+# calls:
+#     - [setContainer, ["@service_container"]]
+# TIPS : Declaring the controller as autowire: true will also invisibly add the setContainer.
+#        It solved the problem in my case.
+services:
+    # apps/mws-sf-pdf-billings/backend/vendor/endroid/qr-code-bundle/src/Resources/config/services.yaml
+    # Endroid\QrCodeBundle\Controller\:
+    #     resource: '../../Controller'
+    #     tags: ['controller.service_arguments']
+    # Endroid\QrCodeBundle\Twig\QrCodeExtension: ~
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    MWS\MoonManagerBundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+      
+
+# controllers:
+#   resource: ../../src/Controller/
+#   type: annotation

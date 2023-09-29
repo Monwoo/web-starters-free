@@ -26,3 +26,11 @@ Open source Apache-2.0 with copyright to Monwoo.
 - https://symfony.com/doc/current/bundles/prepend_extension.html
 - https://symfony.com/doc/current/bundles/override.html
 - https://symfony.com/doc/current/bundles/best_practices.html
+- https://symfonycasts.com/screencast/symfony-bundle/bundle-services
+- https://github.com/FriendsOfSymfony/FOSUserBundle/tree/master
+
+```bash
+### TIPS ###
+# https://stackoverflow.com/questions/9990961/how-do-i-get-a-list-of-bundles-in-symfony2-symfony3
+php bin/console config:dump-reference
+```
