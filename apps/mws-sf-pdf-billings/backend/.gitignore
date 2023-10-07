@@ -31,3 +31,9 @@ cookies.txt
 
 mws-sf-pdf-billings.zip
 mws-sf-pdf-billings*.zip
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###

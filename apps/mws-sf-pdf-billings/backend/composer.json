@@ -51,6 +51,7 @@
         "symfony/translation": "5.4.*",
         "symfony/twig-bundle": "5.4.*",
         "symfony/validator": "5.4.*",
+        "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "5.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3.6",
@@ -118,7 +119,10 @@
         }
     },
     "require-dev": {
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-doctrine2": "^3.0",
         "codeception/module-symfony": "^3.1",
+        "codeception/module-webdriver": "^3.2",
         "dbrekelmans/bdi": "^1.0",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "5.4.*",

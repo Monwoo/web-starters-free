@@ -18,6 +18,7 @@
 			{% endif %}
 		</title>
 		{% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
 			{# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
 			{# https://www.javatpoint.com/css-transition-opacity
 			transition: opacity 0.3s linear 2s; // effect on 0.3 millisecond   #}
