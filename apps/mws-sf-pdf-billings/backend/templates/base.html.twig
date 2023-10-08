@@ -18,7 +18,7 @@
 			{% endif %}
 		</title>
 		{% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
+			{{ encore_entry_link_tags('app') }}
 			{# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
 			{# https://www.javatpoint.com/css-transition-opacity
 			transition: opacity 0.3s linear 2s; // effect on 0.3 millisecond   #}
@@ -146,10 +146,11 @@
 			<script>
 				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
 			</script>
+	    {{ encore_entry_script_tags('app') }}
 
 			{# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}
-			        <script src="{{ asset('libs/pdfjs-3.7.107/pdf.js') }}"></script>
-			    {% endif %} #}
+				<script src="{{ asset('libs/pdfjs-3.7.107/pdf.js') }}"></script>
+			{% endif %} #}
 		{% endblock %}
 	</body>
 </html>

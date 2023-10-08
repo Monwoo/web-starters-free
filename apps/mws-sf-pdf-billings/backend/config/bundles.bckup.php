@@ -14,6 +14,7 @@ $bundles = [
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     MWS\PDFBillingsLvl1Bundle\PDFBillingsLvl1Bundle::class => ['all' => true],
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
+    MWS\MoonManagerBundle\MoonManagerBundle::class => ['all' => true],
 ];
 
 // Paid or private starter might not be loaded, do lazy loads :
