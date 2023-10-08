@@ -1,3 +1,7 @@
+import { registerSvelteControllerComponents } from '@symfony/ux-svelte';
+import './bootstrap.js';
+// 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -6,6 +10,8 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+import './styles/app.scss';
 
 alert("OK from app");
+
+registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));

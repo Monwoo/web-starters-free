@@ -133,6 +133,8 @@
 			<br/>
 			</p>
 
+			<div {{ svelte_component('Hello', { 'name': "From Svelte component ;)" }) }}></div>
+
 			{% block body %}{% endblock %}
 
 			{% if app.request.attributes.get('_route') != 'app_login' %}
