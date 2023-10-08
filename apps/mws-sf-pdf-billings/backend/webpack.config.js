@@ -90,4 +90,13 @@ Encore
     //.autoProvidejQuery()
 ;
 
-module.exports = Encore.getWebpackConfig();
+let config = Encore.getWebpackConfig();
+// config.resolve.alias = {
+//     'local': path.resolve(__dirname, './resources/src')
+// };
+
+// https://github.com/sveltejs/svelte-loader#resolveconditionnames
+// https://github.com/sveltejs/svelte-loader#usage
+config.resolve.conditionNames = ['svelte', 'browser', 'import'];
+
+module.exports = config;
