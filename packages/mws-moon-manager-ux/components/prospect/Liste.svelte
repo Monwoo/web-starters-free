@@ -1,4 +1,8 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
+  import Base from "mws-moon-manager-ux/components/layout/Base.svelte";
+
 </script>
+
+<Base />

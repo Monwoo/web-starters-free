@@ -256,6 +256,9 @@ importers:
       eslint-config-svelte:
         specifier: workspace:*
         version: link:../svelte-eslint-config
+      mws-moon-manager-ux:
+        specifier: workspace:*
+        version: 'link:'
       sass:
         specifier: ^1.62.0
         version: 1.62.0

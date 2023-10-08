@@ -17,6 +17,7 @@
     "svelte-loading-spinners": "^0.3.4"
   },
   "devDependencies": {
+    "mws-moon-manager-ux": "workspace:*",
     "eslint-config-svelte": "workspace:*",
     "sass": "^1.62.0",
     "svelte": "^3.9.2"
