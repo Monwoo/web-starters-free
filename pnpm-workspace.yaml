@@ -9,4 +9,5 @@
 
 packages:
   - "apps/*"
+  - "apps/mws-sf-pdf-billings/backend"
   - "packages/*"

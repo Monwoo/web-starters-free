@@ -1,0 +1,24 @@
+{
+  "name": "mws-moon-manager-ux",
+  "version": "0.0.0",
+  "description": "Styles and components for use in Monwoo MoonManager frontends",
+  "type": "module",
+  "module": "index.ts",
+  "svelte": "index.ts",
+  "license": "Apache-2.0_monwoo",
+  "scripts": {
+    "lint": "prettier --check --ignore-path=../../packages/svelte-eslint-config/.prettierignore --config=../../packages/svelte-eslint-config/.prettierrc . && eslint \".\"",
+    "format": "prettier --write --ignore-path=../../packages/svelte-eslint-config/.prettierignore --config=../../packages/svelte-eslint-config/.prettierrc ."
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "svelte-awesome-color-picker": "^2.4.1",
+    "svelte-i18n": "^3.6.0",
+    "svelte-loading-spinners": "^0.3.4"
+  },
+  "devDependencies": {
+    "eslint-config-svelte": "workspace:*",
+    "sass": "^1.62.0",
+    "svelte": "^3.9.2"
+  }
+}
