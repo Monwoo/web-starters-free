@@ -61,7 +61,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 // )] => sounds gread, but do not redirect '/' and add wierdy behavior on param checks...
 
 
-#[Route('/{_locale<%app.supported_locales%>}')]
+#[Route('/{_locale<%app.supported_locales%>}/billings')]
 class PdfBillingsController extends AbstractController
 {
     protected TCPDFController $tcpdf;

@@ -6,9 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/{_locale<%app.supported_locales%>}/moon-manager')]
 class MoonManagerController extends AbstractController
 {
-    #[Route('/moon-manager', name: 'app_moon_manager')]
+    #[Route('/', name: 'mws_moon_manager')]
     public function index(): Response
     {
         return $this->render('@MoonManager/index.html.twig', [
