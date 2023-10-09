@@ -1,43 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}{{ 'mws.home.title'|trans }}{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    <div class="nav-item dropdown">Billings :
-        {{ app.request.locale|locale_name(app.request.locale)|u.title }}
-        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
-                <li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'en'}) }}">
-                {{ 'en'|locale_name('en')|u.title }}
-                </a></li>
-                <li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'fr'}) }}">
-                {{ 'fr'|locale_name('fr')|u.title }}
-                </a></li>
-        </ul>
-    </div>
-    <div class="nav-item dropdown">Moon Manager :
-        {{ app.request.locale|locale_name(app.request.locale)|u.title }}
-        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
-                <li><a class="dropdown-item" href="{{ path('mws_moon_manager', {_locale: 'en'}) }}">
-                {{ 'en'|locale_name('en')|u.title }}
-                </a></li>
-                <li><a class="dropdown-item" href="{{ path('mws_moon_manager', {_locale: 'fr'}) }}">
-                {{ 'fr'|locale_name('fr')|u.title }}
-                </a></li>
-        </ul>
-    </div>
-
-    {# // TODO : pre-render for SEO #}
     <div {{ svelte_component('Home', {
         'copyright': 'mws.copyright'|trans,
-    }) }}></div>
+        'title': block('title'),
+        'currentLanguage' : app.request.locale|locale_name(app.request.locale)|u.title,
+        'billingsLocales' : [
+            {
+                label: 'en'|locale_name('en')|u.title,
+                path: path('app_pdf_billings', {_locale: 'en'})
+            }, {
+                label: 'fr'|locale_name('fr')|u.title,
+                path: path('app_pdf_billings', {_locale: 'fr'})
+            }
+        ],
+        'moonManagerLocales' : [
+            {
+                label: 'en'|locale_name('en')|u.title,
+                path: path('mws_moon_manager', {_locale: 'en'})
+            }, {
+                label: 'fr'|locale_name('fr')|u.title,
+                path: path('mws_moon_manager', {_locale: 'fr'})
+            }
+        ],
+    }) }}>
+        {# // TODO : pre-render for SEO #}
+        {# // TODO : below is hard coded seo content : #}
+        <h1>{{ block('title') }}</h1>
+        <div class="nav-item dropdown">Billings :
+            {{ app.request.locale|locale_name(app.request.locale)|u.title }}
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
+                    <li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'en'}) }}">
+                    {{ 'en'|locale_name('en')|u.title }}
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'fr'}) }}">
+                    {{ 'fr'|locale_name('fr')|u.title }}
+                    </a></li>
+            </ul>
+        </div>
+        <div class="nav-item dropdown">Moon Manager :
+            {{ app.request.locale|locale_name(app.request.locale)|u.title }}
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
+                    <li><a class="dropdown-item" href="{{ path('mws_moon_manager', {_locale: 'en'}) }}">
+                    {{ 'en'|locale_name('en')|u.title }}
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ path('mws_moon_manager', {_locale: 'fr'}) }}">
+                    {{ 'fr'|locale_name('fr')|u.title }}
+                    </a></li>
+            </ul>
+        </div>
+    </div>
 
-</div>
 {% endblock %}

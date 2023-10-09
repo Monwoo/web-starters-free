@@ -1,7 +1,13 @@
 <script>
-    export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+    // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+    import Landing from "mws-moon-manager-ux/components/home/Landing.svelte";
+    export let title = null;
+    export let currentLanguage = null;
+    export let billingsLocales = [];
+    export let moonManagerLocales = [];
 </script>
 
-<p> Home page by
-    { copyright }
-</p>
+<Landing
+{title} {currentLanguage}
+{billingsLocales} {moonManagerLocales}
+></Landing>
