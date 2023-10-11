@@ -30,7 +30,10 @@ cookies.txt
 .env.prod
 
 mws-sf-pdf-billings.zip
-mws-sf-pdf-billings*.zip
+mws-sf-pdf-billings*.zip 
+/bckup
+
+
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/

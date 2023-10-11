@@ -3,13 +3,14 @@
 
 namespace MWS\MoonManagerBundle\Entity;
 
-use App\Repository\UserRepository;
+// use App\Repository\UserRepository;
+use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Entity(repositoryClass: MwsUserRepository::class)]
 class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -17,7 +18,7 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type:"string", length:180, unique:true)]
+    #[ORM\Column(type:"string", length:180, unique:true, nullable:true)]
     private $email;
 
     #[ORM\Column(type:"string", length:25, unique:true)]

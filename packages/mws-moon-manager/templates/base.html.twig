@@ -1,3 +1,52 @@
-{% block body %}
- BASE template
-{% endblock %}
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set route = app.request.attributes.get('_route') %}
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- plz dont cache this page -->
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<title>
+      {% block title %}
+        {{ title ?? "" }}
+      {% endblock %}
+		</title>
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+	</head>
+
+	<body>
+		{% block body %}
+		{% endblock %}
+
+		{% block footer %}
+			<footer
+			class="footer"
+			{{ svelte_component('Footer', {
+				'copyright': 'mws.copyright'|trans,
+			}) }}>
+				{# // For SEO, will be replaced by js...
+				// TODO : prefill with some pre-rendering of js controller
+				//  at assets 'watch' and/or 'build' phase #}
+				<p>{{'mws.copyright'|trans}}</p>
+			</footer>
+		{% endblock %}
+
+		{% block javascript %}
+			<script>
+				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
+			</script>
+	    {{ encore_entry_script_tags('app') }}
+
+			{# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}
+        <!-- (or extend javascript block in specific child view/base...) -->
+				<script src="{{ asset('libs/pdfjs-3.7.107/pdf.js') }}"></script>
+			{% endif %} #}
+		{% endblock %}
+	</body>
+</html>

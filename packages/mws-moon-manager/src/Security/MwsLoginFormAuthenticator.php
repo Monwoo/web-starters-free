@@ -9,7 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+// use Symfony\Component\Security\Core\Security; // Depreciated
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
@@ -17,6 +20,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
+// https://symfony.com/doc/current/security/custom_authenticator.html
 class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
@@ -41,18 +45,24 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         // return $request->isMethod('POST') && $this->getLoginUrl($request) === $request->getPathInfo();
         // To allow login check on subfolders,
         // $this->getLoginUrl($request) if full url whereas $request->getPathInfo() is subpath url...
+        // dump($request->isMethod('POST'));
+        // dump($this->getLoginUrl($request));
+        // dd($request->getRequestUri());
         return $request->isMethod('POST') && $this->getLoginUrl($request) === $request->getRequestUri();
     }
 
     public function authenticate(Request $request): Passport
     {
-        $username = $request->request->get('username', '');
+        $username = $request->request->get('_username', '');
         $this->logger->debug("[MwsLoginFormAuthenticator] will try authenticate for $username");
         $request->getSession()->set(Security::LAST_USERNAME, $username);
 
         return new Passport(
             new UserBadge($username),
-            new PasswordCredentials($request->request->get('password', '')),
+            // new UserBadge($username, function ($userIdentifier) {
+            //     return $this->mwsUserRepository->findOneBy(['email' => $userIdentifier]);
+            // }),        
+            new PasswordCredentials($request->request->get('_password', '')),
             [
                 new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
             ]
@@ -62,6 +72,9 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $this->logger->debug("[MwsLoginFormAuthenticator] onAuthenticationSuccess");
+        // // on success, let the request continue
+        // return null;
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
@@ -69,6 +82,18 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         return new RedirectResponse($this->urlGenerator->generate(self::SUCCESS_LOGIN_ROUTE));
     }
 
+    // public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
+    // {
+    //     $data = [
+    //         // you may want to customize or obfuscate the message first
+    //         'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
+
+    //         // or to translate this message
+    //         // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
+    //     ];
+
+    //     return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+    // }
     protected function getLoginUrl(Request $request): string
     {
         $this->logger->debug("[MwsLoginFormAuthenticator] getLoginUrl for {$request->getRequestUri()} at {$request->getBaseUrl()}");
