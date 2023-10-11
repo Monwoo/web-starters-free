@@ -21,7 +21,7 @@ class MwsMoonManagerController extends AbstractController
     #[Route('/', name: 'mws_moon_manager')]
     public function index(): Response
     {
-        return $this->render('@MoonManager/index.html.twig', [
+        return $this->render('@MoonManager/mws-moon-manager/index.html.twig', [
             'controller_name' => 'MoonManagerController',
         ]);
     }
