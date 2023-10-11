@@ -51,7 +51,7 @@ class MwsAccessDeniedSubscriber implements EventSubscriberInterface
 
         // add a custom flash message and redirect to the login page
         $request = $this->requestStack->getCurrentRequest();
-        $request->getSession()->getFlashBag()->add('note', 'You have to login in order to access this page.');
+        $request->getSession()->getFlashBag()->add('notice', 'You have to login in order to access this page.');
 
         $event->setResponse(new RedirectResponse($this->urlGenerator->generate(
             MwsLoginFormAuthenticator::LOGIN_ROUTE

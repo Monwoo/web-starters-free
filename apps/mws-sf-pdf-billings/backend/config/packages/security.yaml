@@ -36,11 +36,12 @@ security:
   password_hashers:
     Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-  encoders:
-    App\Entity\User:
-      algorithm: bcrypt
-    MWS\MoonManagerBundle\Entity\MwsUser:
-      algorithm: bcrypt
+  # https://symfonycasts.com/screencast/symfony6-upgrade/password-hashers
+  # encoders: For previous SF version only, using password_hashers now
+  #   App\Entity\User:
+  #     algorithm: bcrypt
+  #   MWS\MoonManagerBundle\Entity\MwsUser:
+  #     algorithm: bcrypt
 
   providers:
     app_user_provider:
@@ -71,9 +72,12 @@ security:
       pattern: ^/api
       stateless: true
       provider: app_user_provider
-      guard:
-        authenticators:
-        - lexik_jwt_authentication.jwt_token_authenticator
+      # https://symfony.com/bundles/LexikJWTAuthenticationBundle/current/index.html#symfony-5-3-and-higher
+      jwt: ~
+      # https://symfonycasts.com/screencast/symfony6-upgrade/authenticator-upgrade#guard-gt-custom-authenticator-conversion
+      # guard: # Before SF 5.3
+      #   authenticators:
+      #   - lexik_jwt_authentication.jwt_token_authenticator
 
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/

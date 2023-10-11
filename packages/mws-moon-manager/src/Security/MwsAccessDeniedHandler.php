@@ -22,7 +22,7 @@ class MwsAccessDeniedHandler implements AccessDeniedHandlerInterface
     public function handle(Request $request, AccessDeniedException $accessDeniedException): ?Response
     {
         // add a custom flash message and redirect to the login page
-        $request->getSession()->getFlashBag()->add('note', 'You have to login with another account in order to access this page.');
+        $request->getSession()->getFlashBag()->add('notice', 'You have to login with another account in order to access this page.');
 
         return new RedirectResponse($this->urlGenerator->generate(
           MwsLoginFormAuthenticator::LOGIN_ROUTE

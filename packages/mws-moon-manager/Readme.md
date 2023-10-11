@@ -18,6 +18,7 @@ Open source Apache-2.0 with copyright to Monwoo.
 ```bash
 
 # https://symfony.com/doc/current/bundles.html
+php bin/console assets:install --symlink public
 
 ```
 

@@ -6,7 +6,7 @@
 services:
   # apps/mws-sf-pdf-billings/backend/vendor/endroid/qr-code-bundle/src/Resources/config/services.yaml
   # Endroid\QrCodeBundle\Controller\:
-  #     resource: '../../Controller'
+  #     resource: '../src/Controller'
   #     tags: ['controller.service_arguments']
   # Endroid\QrCodeBundle\Twig\QrCodeExtension: ~
   _defaults:
@@ -14,16 +14,16 @@ services:
     autoconfigure: true
     public: false
   MWS\MoonManagerBundle\Controller\:
-    resource: '../../Controller'
+    resource: '../src/Controller'
     tags: ['controller.service_arguments']
   MWS\MoonManagerBundle\Security\:
-    resource: '../../Security'
+    resource: '../src/Security'
   MWS\MoonManagerBundle\EventSubscriber\:
-    resource: '../../EventSubscriber'
+    resource: '../src/EventSubscriber'
     tags:
     # - {name: kernel.event_listener, event: kernel.exception,}
     - {name: kernel.event_listener,}
 
 # controllers:
-#   resource: ../../src/Controller/
+#   resource: ../src/src/Controller/
 #   type: annotation

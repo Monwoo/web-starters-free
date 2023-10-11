@@ -27,6 +27,7 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass
 
 export APP_ENV=dev
 composer install
+php bin/console assets:install --symlink public
 
 # Use SYMFONY dev server (not same as php builtin or bin/console)
 wget https://get.symfony.com/cli/installer -O - | bash

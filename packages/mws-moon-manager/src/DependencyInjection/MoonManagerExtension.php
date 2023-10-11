@@ -16,7 +16,7 @@ class MoonManagerExtension extends Extension implements PrependExtensionInterfac
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('services.yaml');
         // dd($configs);
         // https://stackoverflow.com/questions/72350032/extend-security-configuration-from-symfony-bundle
@@ -30,7 +30,7 @@ class MoonManagerExtension extends Extension implements PrependExtensionInterfac
     public function prepend(ContainerBuilder $container)
     {
         // I recommend using FileLocator here 
-        $thirdPartyBundlesViewFileLocator = (new FileLocator(__DIR__ . '/../Resources/views/bundles'));
+        $thirdPartyBundlesViewFileLocator = (new FileLocator(__DIR__ . '/../../templates/bundles'));
 
         // dd($thirdPartyBundlesViewFileLocator->locate('TwigBundle'));
         $container->loadFromExtension('twig', [
