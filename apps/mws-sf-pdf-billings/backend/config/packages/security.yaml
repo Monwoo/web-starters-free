@@ -31,63 +31,92 @@
 #         # - { path: ^/profile, roles: ROLE_USER }
 
 security:
-    enable_authenticator_manager: true
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
-    password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+  enable_authenticator_manager: true
+  # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-    encoders:
-        App\Entity\User:
-            algorithm: bcrypt
+  encoders:
+    App\Entity\User:
+      algorithm: bcrypt
+    MWS\MoonManagerBundle\Entity\MwsUser:
+      algorithm: bcrypt
 
-    providers:
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: username
-    firewalls:
-        register:
-            pattern: ^/api/register
-            stateless: true
-            # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
-        login:
-            pattern:  ^/api/login
-            stateless: true
-            # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
-            json_login:
-                check_path:               /api/login_check
-                success_handler:          lexik_jwt_authentication.handler.authentication_success
-                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+  providers:
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: username
+    mws_user_provider:
+      entity:
+        class: MWS\MoonManagerBundle\Entity\MwsUser:
+        property: username
+  firewalls:
+    register:
+      pattern: ^/api/register
+      provider: app_user_provider
+      stateless: true
+      # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
+    login:
+      pattern: ^/api/login
+      provider: app_user_provider
+      stateless: true
+      # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
+      json_login:
+        check_path: /api/login_check
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-        api:
-            pattern:   ^/api
-            stateless: true
-            provider: app_user_provider
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
+    api:
+      pattern: ^/api
+      stateless: true
+      provider: app_user_provider
+      guard:
+        authenticators:
+        - lexik_jwt_authentication.jwt_token_authenticator
 
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
+    mws_secured_area:
+      pattern: ^/mws/
+      # encoders:
+      #   Symfony\Component\Security\Core\User\User:
+      #     algorithm: bcrypt
+      #     cost: 12
+      lazy: true
+      provider: mws_user_provider
+      custom_authenticator: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
+      entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
+      access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
+      # access_denied_url: /login
 
+      logout:
+        path: mws_user_logout
+        # where to redirect after logout
+        target: mws_user_login
+      # form_login:
+      #   # "app_login" is the name of the route created previously
+      #   login_path: mws_login
+      #   check_path: mws_login
+      #   enable_csrf: true
 
-    access_control:
-        - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }        
+  access_control:
+  - {path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+  - {path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+  - {path: ^/api, roles: IS_AUTHENTICATED_FULLY,}
 
 when@test:
-    security:
-        password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+  security:
+    password_hashers:
+      # By default, password hashers are resource intensive and take time. This is
+      # important to generate secure password hashes. In tests however, secure hashes
+      # are not important, waste resources and increase test times. The following
+      # reduces the work factor to the lowest possible values.
+      Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+        algorithm: auto
+        cost: 4 # Lowest possible value for bcrypt
+        time_cost: 3 # Lowest possible value for argon
+        memory_cost: 10 # Lowest possible value for argon

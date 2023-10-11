@@ -4,49 +4,49 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.supported_locales: 'fr|en'
+  app.supported_locales: 'fr|en'
 
 services:
-    # default configuration for services in *this* file
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        bind:
-            # pass this value to any $projectDir argument for any service
-            # that's created in this file (including controller arguments)
-            string $projectDir: '%kernel.project_dir%'
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    bind:
+      # pass this value to any $projectDir argument for any service
+      # that's created in this file (including controller arguments)
+      string $projectDir: '%kernel.project_dir%'
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    App\:
-        resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: '../src/'
+    exclude:
+    - '../src/DependencyInjection/'
+    - '../src/Entity/'
+    - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-    Qipsius\TCPDFBundle\Controller\TCPDFController: '@qipsius.tcpdf'
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
+  Qipsius\TCPDFBundle\Controller\TCPDFController: '@qipsius.tcpdf'
 
-    # Register our listeners :
-    # https://symfony.com/doc/current/event_dispatcher.html
-    App\EventListener\GdprSentinelListener:
-        tags:
-            # php bin/console debug:event-dispatcher
-            # - { name: kernel.event_listener } # OK if you type Listener methode like : 
-            # public function __invoke(ExceptionEvent $event)
-            - { name: kernel.event_listener, event: kernel.exception }
-            - { name: kernel.event_listener, event: kernel.request }
+  # Register our listeners :
+  # https://symfony.com/doc/current/event_dispatcher.html
+  App\EventListener\GdprSentinelListener:
+    tags:
+    # php bin/console debug:event-dispatcher
+    # - { name: kernel.event_listener } # OK if you type Listener methode like : 
+    # public function __invoke(ExceptionEvent $event)
+    - {name: kernel.event_listener, event: kernel.exception}
+    - {name: kernel.event_listener, event: kernel.request,}
 
-    # Register SF Yaml encoder : TIPS :
-    # 'php bin/console debug:container' already show some YamlEncoder for serializer.encoder.yaml...
-    # Symfony\Component\Serializer\Encoder\YamlEncoder:
-    #     tags:
-    #         - { name: serializer.encoder.yaml }
-    #         - { name: serializer.encoder }
-    # 'php bin/console debug:container custom.encoder.yaml'
-    # custom.encoder.yaml: # OK, not needed, was using custom serializer instead of default one...
-    #     class: Symfony\Component\Serializer\Encoder\YamlEncoder
-    #     public: true
-    #     tags: [ serializer.encoder ]
+  # Register SF Yaml encoder : TIPS :
+  # 'php bin/console debug:container' already show some YamlEncoder for serializer.encoder.yaml...
+  # Symfony\Component\Serializer\Encoder\YamlEncoder:
+  #     tags:
+  #         - { name: serializer.encoder.yaml }
+  #         - { name: serializer.encoder }
+  # 'php bin/console debug:container custom.encoder.yaml'
+  # custom.encoder.yaml: # OK, not needed, was using custom serializer instead of default one...
+  #     class: Symfony\Component\Serializer\Encoder\YamlEncoder
+  #     public: true
+  #     tags: [ serializer.encoder ]

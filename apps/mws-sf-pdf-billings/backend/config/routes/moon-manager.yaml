@@ -8,8 +8,10 @@
 # https://symfonycasts.com/screencast/micro-symfony/app-bundle-annotations
 # TODO : auto add from recipe
 moon_manager_controllers:
-    resource: "@MoonManagerBundle/Controller/"
-    type: annotation
-    # https://stackoverflow.com/questions/61059875/controller-has-no-container-set-did-you-forget-to-define-it-as-a-service-subscr
-    options:
-        autowire: true
+  resource: "@MoonManagerBundle/Controller/"
+  # https://stackoverflow.com/questions/48120939/symfony-4-global-route-prefix
+  prefix: mws
+  type: annotation
+  # https://stackoverflow.com/questions/61059875/controller-has-no-container-set-did-you-forget-to-define-it-as-a-service-subscr
+  options:
+    autowire: true

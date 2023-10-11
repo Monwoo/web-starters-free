@@ -4,19 +4,25 @@
 # TIPS : Declaring the controller as autowire: true will also invisibly add the setContainer.
 #        It solved the problem in my case.
 services:
-    # apps/mws-sf-pdf-billings/backend/vendor/endroid/qr-code-bundle/src/Resources/config/services.yaml
-    # Endroid\QrCodeBundle\Controller\:
-    #     resource: '../../Controller'
-    #     tags: ['controller.service_arguments']
-    # Endroid\QrCodeBundle\Twig\QrCodeExtension: ~
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: false
-    MWS\MoonManagerBundle\Controller\:
-        resource: '../../Controller'
-        tags: ['controller.service_arguments']
-      
+  # apps/mws-sf-pdf-billings/backend/vendor/endroid/qr-code-bundle/src/Resources/config/services.yaml
+  # Endroid\QrCodeBundle\Controller\:
+  #     resource: '../../Controller'
+  #     tags: ['controller.service_arguments']
+  # Endroid\QrCodeBundle\Twig\QrCodeExtension: ~
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+  MWS\MoonManagerBundle\Controller\:
+    resource: '../../Controller'
+    tags: ['controller.service_arguments']
+  MWS\MoonManagerBundle\Security\:
+    resource: '../../Security'
+  MWS\MoonManagerBundle\EventSubscriber\:
+    resource: '../../EventSubscriber'
+    tags:
+    # - {name: kernel.event_listener, event: kernel.exception,}
+    - {name: kernel.event_listener,}
 
 # controllers:
 #   resource: ../../src/Controller/
