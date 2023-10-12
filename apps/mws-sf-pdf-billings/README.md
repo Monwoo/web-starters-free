@@ -28,6 +28,7 @@ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass
 export APP_ENV=dev
 composer install
 php bin/console assets:install --symlink public
+php bin/console fos:js-routing:dump
 
 # Use SYMFONY dev server (not same as php builtin or bin/console)
 wget https://get.symfony.com/cli/installer -O - | bash
@@ -91,6 +92,12 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 # bootstrap database
 APP_ENV=prod php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
+
+# php bin/console fos:js-routing:dump
+bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
+
+# bootstrap one user ONLY to let it be change and do wiziwig updates :
+php bin/console mws:add-user -c 1
 
 APP_ENV=prod composer dump-env prod
 rm -rf var/cache var/log 

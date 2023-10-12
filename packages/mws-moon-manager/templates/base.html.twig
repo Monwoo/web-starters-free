@@ -41,7 +41,11 @@
 			<script>
 				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
 			</script>
+			{# TOO early for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}
+			{# WARNING : order counts for routes loads, manually done inside mwsMoonManager for now #}
+	    {{ encore_entry_script_tags('mwsMoonManager') }}
 	    {{ encore_entry_script_tags('app') }}
+			{# TOO late for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}
 
 			{# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}
         <!-- (or extend javascript block in specific child view/base...) -->

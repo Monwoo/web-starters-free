@@ -8,13 +8,13 @@
     export let moonManagerLocales = [];
     export let moonManagerUserLocales = [
         {
-            label: 'en',
-            path: Routing.generate('mws_moon_manager', {
+            label: 'Users list in english',
+            path: Routing.generate('mws_user', {
                 _locale: 'en'
             })
         }, {
-            label: 'fr',
-            path: Routing.generate('mws_moon_manager', {
+            label: 'Liste des utilisateurs en anglais',
+            path: Routing.generate('mws_user', {
                 _locale: 'fr'
             })
         }

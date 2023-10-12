@@ -17,10 +17,10 @@ Open source Apache-2.0 with copyright to Monwoo.
 
 ```bash
 
+export APP_ENV=dev
 # https://symfony.com/doc/current/bundles.html
 php bin/console assets:install --symlink public
 
-export APP_ENV=dev
 php bin/console mws:add-user
 
 ```

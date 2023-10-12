@@ -1,7 +1,5 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
-    # https://symfony.com/doc/5.4/reference/configuration/framework.html#ide
-    ide: '%env(resolve:CODE_EDITOR)%'
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
     http_method_override: false
@@ -29,6 +27,12 @@ framework:
             # vendor/symfony/serializer/Encoder/YamlEncoder.php:65
             yaml_inline: 7
             # yaml_indent: 2
+
+when@dev:
+    framework:
+        # https://symfony.com/doc/5.4/reference/configuration/framework.html#ide
+        ide: '%env(resolve:CODE_EDITOR)%'
+
 when@test:
     framework:
         test: true

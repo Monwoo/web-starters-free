@@ -22,7 +22,21 @@ class MwsUserController extends AbstractController
     ){
     }
 
-    #[Route('/login', name: 'mws_user_login')]
+    #[Route('/',
+        name: 'mws_user',
+        options: ['expose' => true],
+    )]
+    public function index(): Response
+    {
+        return $this->render('@MoonManager/mws-user/index.html.twig', [
+            'controller_name' => 'UserController',
+        ]);
+    }
+
+    #[Route('/login',
+        name: 'mws_user_login',
+        options: ['expose' => true],
+    )]
     public function login(
         Request $request,
         AuthenticationUtils $authenticationUtils
@@ -46,9 +60,13 @@ class MwsUserController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'mws_user_logout')]
+    #[Route('/logout',
+        name: 'mws_user_logout',
+        options: ['expose' => true],
+    )]
     public function logout(): Response
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
+
 }
