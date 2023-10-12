@@ -19,7 +19,15 @@ use Symfony\Component\Routing\Annotation\Route;
 )]
 class MwsMoonManagerController extends AbstractController
 {
-    #[Route('/', name: 'mws_moon_manager')]
+    // TIPS :
+    // Route will be available JS side thanks to fos:js-routing
+    // and options: ['expose' => true],
+    // Check with :
+    // php bin/console fos:js-routing:debug
+    #[Route('/',
+        name: 'mws_moon_manager',
+        options: ['expose' => true],
+    )]
     public function index(): Response
     {
         return $this->render('@MoonManager/mws-moon-manager/index.html.twig', [

@@ -28,7 +28,10 @@
         "symfony/twig-bundle": "6.3.*",
         "twig/extra-bundle": "^3.7",
         "twig/intl-extra": "^3.7",
-        "twig/string-extra": "^3.7"
+        "twig/string-extra": "^3.7",
+        "symfony/stimulus-bundle": "^2.12",
+        "symfony/webpack-encore-bundle": "^2.1",
+        "friendsofsymfony/jsrouting-bundle": "^3.3"
     },
     "autoload": {
         "psr-4": {

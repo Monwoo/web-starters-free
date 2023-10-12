@@ -1,3 +1,7 @@
+// TODO : MoonManagerBundle recipe + factorize integration... hard coded for now :
+// TIPS : use encore or webpack path configs instead ? @moon-manger/...
+// import '../../../../packages/mws-moon-manager/assets/app.js';
+
 import { registerSvelteControllerComponents } from '@symfony/ux-svelte';
 import './bootstrap.js';
 // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
@@ -13,5 +17,6 @@ import './bootstrap.js';
 import './styles/app.scss';
 
 // alert("OK from app");
+
 
 registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));

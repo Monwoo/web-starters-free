@@ -1,5 +1,3 @@
-// 🌖🌖 Copyright Monwoo 2023 🌖🌖, improved by Miguel Monwoo, service@monwoo.com
-
 const Encore = require('@symfony/webpack-encore');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
@@ -7,14 +5,6 @@ const Encore = require('@symfony/webpack-encore');
 if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
-
-var dotenv = require('dotenv');
-const env = dotenv.config();
-
-// TODO : doc : Not starting with : "/"
-const baseHref = env.parsed?.BASE_HREF ?? ""; 
-// starting with : "/"
-const baseHrefFull = env.parsed?.BASE_HREF_FULL ?? ""; // TODO : duplication ? remove ? easy hack for now...
 
 Encore
     // directory where compiled assets will be stored
@@ -30,17 +20,10 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    // TODO : add from mwsMoonManager recipe ?
-    .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/assets/app.js')
     .addEntry('app', './assets/app.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
-
-    .enableSvelte()
-
-    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
-    .enableStimulusBridge('./assets/controllers.json')
 
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
@@ -59,12 +42,6 @@ Encore
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
-    .configureDefinePlugin(options => {
-        options['process.env'] = options['process.env'] ?? {};
-        options['process.env'].BASE_HREF = JSON.stringify(baseHref);
-        options['process.env'].BASE_HREF_FULL = JSON.stringify(baseHrefFull);
-    })
-
     // configure Babel
     // .configureBabel((config) => {
     //     config.plugins.push('@babel/a-babel-plugin');
@@ -78,13 +55,6 @@ Encore
 
     // enables Sass/SCSS support
     //.enableSassLoader()
-    .enableSassLoader((options)=>{
-        options.additionalData = `
-            $baseHref: "${baseHref}";
-        `;
-        // don't forget the ;
-        // now, the var 'faa' can be used in scss files
-    })
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
@@ -100,13 +70,4 @@ Encore
     //.autoProvidejQuery()
 ;
 
-let config = Encore.getWebpackConfig();
-// config.resolve.alias = {
-//     'local': path.resolve(__dirname, './resources/src')
-// };
-
-// https://github.com/sveltejs/svelte-loader#resolveconditionnames
-// https://github.com/sveltejs/svelte-loader#usage
-config.resolve.conditionNames = ['svelte', 'browser', 'import'];
-
-module.exports = config;
+module.exports = Encore.getWebpackConfig();
