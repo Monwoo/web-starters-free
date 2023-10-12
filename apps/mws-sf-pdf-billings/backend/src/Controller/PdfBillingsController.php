@@ -43,6 +43,7 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use ReflectionClass;
 use ReflectionProperty;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
@@ -480,8 +481,22 @@ class PdfBillingsController extends AbstractController
         $respStatus = null;
         // https://stackoverflow.com/questions/21124450/how-to-use-curl-multipart-form-data-to-post-array-field-from-command-line
 
-        $rawBillingConfigFromGET = $request->query->get('billing_config_submitable'); // This way : will LOAD in GET, set in POST request if not in POST mode ;)
-        $rawBillingConfigFromPOST = $request->request->get('billing_config_submitable'); // To read from POST ONLY
+        // https://www.drupal.org/project/drupal/issues/3254250
+        // [Symfony 6] Retrieving a non-string value from 
+        // "Symfony\Component\HttpFoundation\InputBag::get()" is deprecated
+        // Use $request->query->all(...) when retrieving an array.
+        // Use $request->query->get(...) when retrieving a scalar.
+        //  Use $request->query->all()[...] when retrieving either an array or scalar and the subsequent code can handle both types.
+        $rawBillingConfigFromGET = $request->query->all()['billing_config_submitable'] ?? null; // This way : will LOAD in GET, set in POST request if not in POST mode ;)
+        $rawBillingConfigFromPOST = $request->request->all()['billing_config_submitable'] ?? null; // To read from POST ONLY            
+        // $rawBillingConfigFromPOST = null;
+        // try {
+        //     $rawBillingConfigFromPOST = $request->request->get('billing_config_submitable'); // To read from POST ONLY            
+        // } catch (BadRequestException $e) {
+        //     $this->logger->warning('Exception :' . $this->serializer->serialize(
+        //         $e, 'json'
+        //     ));
+        // }
         $rawBillingConfig = $rawBillingConfigFromPOST ?? $rawBillingConfigFromGET;
         $clientSlug = $rawBillingConfig
             ? ($rawBillingConfig['clientSlug'] ?? null) : null;
