@@ -5,6 +5,9 @@ twig:
         kernelRootDir: "%kernel.project_dir%"
     number_format:
         decimals: 4
+    # https://symfony.com/doc/current/the-fast-track/en/22-encore.html#leveraging-bootstrap
+    # https://symfony.com/doc/current/form/tailwindcss.html
+    form_themes: ['tailwind_2_layout.html.twig']
 
 when@test:
     twig:

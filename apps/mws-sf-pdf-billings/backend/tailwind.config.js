@@ -22,6 +22,9 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    // https://github.com/tailwindlabs/tailwindcss-forms
+    require('@tailwindcss/forms'),
+  ],
 }
 
