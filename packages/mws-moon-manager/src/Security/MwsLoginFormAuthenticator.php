@@ -27,6 +27,8 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'mws_user_login';
     public const SUCCESS_LOGIN_ROUTE = 'mws_moon_manager';
+    public const t_failToGrantAccess = 'MwsLoginFormAuthenticator.failToGrandAccess';
+    public const t_accessDenied = 'MwsLoginFormAuthenticator.accessDenied';
 
     private UrlGeneratorInterface $urlGenerator;
 

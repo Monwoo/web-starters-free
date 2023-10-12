@@ -15,10 +15,12 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MwsAccessDeniedSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+        protected TranslatorInterface $translator,
         protected RequestStack $requestStack,
         protected UrlGeneratorInterface $urlGenerator,
     ) {
@@ -51,11 +53,13 @@ class MwsAccessDeniedSubscriber implements EventSubscriberInterface
 
         // add a custom flash message and redirect to the login page
         $request = $this->requestStack->getCurrentRequest();
-        $request->getSession()->getFlashBag()->add('notice', 'You have to login in order to access this page.');
+        $request->getSession()->getFlashBag()->add(
+            'notice',
+            $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
+        );
 
         $event->setResponse(new RedirectResponse($this->urlGenerator->generate(
             MwsLoginFormAuthenticator::LOGIN_ROUTE
         )));
-        
     }
 }

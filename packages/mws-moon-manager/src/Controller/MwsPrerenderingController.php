@@ -11,19 +11,20 @@ use Symfony\Component\Routing\Annotation\Route;
 // https://symfony.com/bundles/SensioFrameworkExtraBundle/current/annotations/security.html
 //     "is_granted('ROLE_USER') and is_granted('ROLE_MWS_USER')",
 // TODO : translated annotation ? otherwise use messages IDs...
-#[Route('/{_locale<%app.supported_locales%>}/moon-manager')]
+#[Route('/{_locale<%app.supported_locales%>}/prerendering')]
 #[Security(
-    "is_granted('ROLE_USER')",
+    "is_granted('ROLE_USER') and is_granted('ROLE_ADMIN')",
     statusCode: 401,
     message: MwsLoginFormAuthenticator::t_failToGrantAccess
 )]
-class MwsMoonManagerController extends AbstractController
+class MwsPrerenderingController extends AbstractController
 {
-    #[Route('/', name: 'mws_moon_manager')]
+    #[Route('/', name: 'mws_prerendering')]
     public function index(): Response
     {
-        return $this->render('@MoonManager/mws-moon-manager/index.html.twig', [
-            'controller_name' => 'MoonManagerController',
+        // TODO : list all pre-rendered elements (+ allow detail view on click ?)
+        return $this->render('@MoonManager/prerendering/index.html.twig', [
+
         ]);
     }
 }

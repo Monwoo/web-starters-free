@@ -9,10 +9,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MwsAuthenticationEntryPoint implements AuthenticationEntryPointInterface
 {
     public function __construct(
+        protected TranslatorInterface $translator,
         private UrlGeneratorInterface $urlGenerator,
     ) {
     }
@@ -20,10 +22,13 @@ class MwsAuthenticationEntryPoint implements AuthenticationEntryPointInterface
     public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {
         // add a custom flash message and redirect to the login page
-        $request->getSession()->getFlashBag()->add('notice', 'You have to login in order to access this page.');
+        $request->getSession()->getFlashBag()->add(
+            'notice',
+            $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
+        );
 
         return new RedirectResponse($this->urlGenerator->generate(
-          MwsLoginFormAuthenticator::LOGIN_ROUTE
+            MwsLoginFormAuthenticator::LOGIN_ROUTE
         ));
     }
 }

@@ -15,11 +15,15 @@
     "require": {
         "php": ">=8.1",
         "phpoffice/phpspreadsheet": "^1.29",
-        "symfony/framework-bundle": "^6.3"
+        "symfony/framework-bundle": "^6.3",
+        "symfony/flex": "^2.3",
+        "symfony/console": "6.3.*",
+        "symfony/runtime": "6.3.*"
     },
     "autoload": {
         "psr-4": {
-            "MWS\\MoonManagerBundle\\": "src/"
+            "MWS\\MoonManagerBundle\\": "src/",
+            "App\\": "app/"
         }
     },
     "extra": {
@@ -30,6 +34,18 @@
         "symfony": {
             "allow-contrib": false,
             "require": "6.3.*"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true,
+            "symfony/runtime": true
+        }
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         }
     }
 }

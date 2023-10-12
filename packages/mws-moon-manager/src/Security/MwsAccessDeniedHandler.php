@@ -11,10 +11,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MwsAccessDeniedHandler implements AccessDeniedHandlerInterface
 {
     public function __construct(
+        protected TranslatorInterface $translator,
         private UrlGeneratorInterface $urlGenerator,
     ) {
     }
@@ -22,10 +24,13 @@ class MwsAccessDeniedHandler implements AccessDeniedHandlerInterface
     public function handle(Request $request, AccessDeniedException $accessDeniedException): ?Response
     {
         // add a custom flash message and redirect to the login page
-        $request->getSession()->getFlashBag()->add('notice', 'You have to login with another account in order to access this page.');
+        $request->getSession()->getFlashBag()->add(
+            'notice',
+            $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
+        );
 
         return new RedirectResponse($this->urlGenerator->generate(
-          MwsLoginFormAuthenticator::LOGIN_ROUTE
+            MwsLoginFormAuthenticator::LOGIN_ROUTE
         ));
 
         // TODO : will need to warn if missing role issue ?
