@@ -24,7 +24,10 @@ class MwsAuthenticationEntryPoint implements AuthenticationEntryPointInterface
         // add a custom flash message and redirect to the login page
         $request->getSession()->getFlashBag()->add(
             'notice',
-            $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
+            $this->translator->trans(
+                MwsLoginFormAuthenticator::t_accessDenied,
+                [], 'mws-moon-manager'
+            )
         );
 
         return new RedirectResponse($this->urlGenerator->generate(

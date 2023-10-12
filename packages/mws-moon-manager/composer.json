@@ -13,17 +13,21 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "phpoffice/phpspreadsheet": "^1.29",
         "symfony/framework-bundle": "^6.3",
         "symfony/flex": "^2.3",
         "symfony/console": "6.3.*",
-        "symfony/runtime": "6.3.*"
+        "symfony/runtime": "6.3.*",
+        "symfony/yaml": "6.3.*",
+        "doctrine/doctrine-bundle": "^2.10",
+        "doctrine/orm": "^2.16",
+        "symfony/security-bundle": "6.3.*",
+        "symfony/translation": "6.3.*"
     },
     "autoload": {
         "psr-4": {
-            "MWS\\MoonManagerBundle\\": "src/",
-            "App\\": "app/"
+            "MWS\\MoonManagerBundle\\": "src/"
         }
     },
     "extra": {
