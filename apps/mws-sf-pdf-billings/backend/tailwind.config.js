@@ -1,0 +1,27 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./assets/**/*.js",
+
+    "./assets/**/*.svelte",
+    "./assets/**/*.ts",
+
+    "./templates/**/*.html.twig",
+
+    // TODO : inject with bundle recipe ? or webpack bundle local build ?
+    // Symfony Bundle
+    "../../../packages/mws-moon-manager/assets/**/*.js",
+    "../../../packages/mws-moon-manager/assets/**/*.svelte",
+    "../../../packages/mws-moon-manager/assets/**/*.ts",
+    "../../../packages/mws-moon-manager/templates/**/*.html.twig",
+    // Svelte UX package
+    "../../../packages/mws-moon-manager-ux/components/**/*.js",
+    "../../../packages/mws-moon-manager-ux/components/**/*.svelte",
+    "../../../packages/mws-moon-manager-ux/components/**/*.ts",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+

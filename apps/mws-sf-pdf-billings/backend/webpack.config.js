@@ -28,6 +28,8 @@ Encore
     // https://github.com/FriendsOfSymfony/FOSJsRoutingBundle/blob/master/Resources/doc/usage.rst
     // .addPlugin(new FosRouting()) // SOUND messed up with bundle load...
 
+    .enablePostCssLoader()
+
     /*
      * ENTRY CONFIG
      *
@@ -36,6 +38,7 @@ Encore
      */
     // TODO : add from mwsMoonManager recipe ?
     .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/assets/app.js')
+    // .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/public/build/app.js')
     .addEntry('app', './assets/app.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.

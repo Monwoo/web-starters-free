@@ -14,7 +14,7 @@
       </slot>
     </header>
     <main class="flex-1 overflow-y-auto p-5">
-      <slot name="mws-body">
+      <slot>
         many web sites still in their infancy. Various versions have evolved
         over the years, sometimes by accident, sometimes on purpose (injected
         humour and the like). Where does it come from? Contrary to popular

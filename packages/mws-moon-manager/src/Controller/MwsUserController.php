@@ -29,7 +29,6 @@ class MwsUserController extends AbstractController
     public function index(): Response
     {
         return $this->render('@MoonManager/mws-user/index.html.twig', [
-            'controller_name' => 'UserController',
         ]);
     }
 
