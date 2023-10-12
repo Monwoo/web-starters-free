@@ -8,16 +8,18 @@ mws:
         checkIsMissing: 'Vérification GDPR manquante.'
         endUserWarning: "Heure du serveur : { currentTime }. <strong>ATTENTION\_: La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le\_: { gdprNextCleanDate }. (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le\_: { gdprLastCleanDate }.)"
         sentinelIsMissing: 'Sentinelle GDPR manquante, veuillez vérifier le service pour apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php'
-    resetAppToFactory: 'Réinitialiser l''application aux données d''usine'
+    resetAppToFactory: "Réinitialiser l'application aux données d'usine"
     templates:
         availableListLabel: "<strong>Modèles disponibles :</strong>&nbsp; (veuillez supprimer toutes les dépenses appelées 'débours' avant de changer de modèle pour être sûr d'avoir les dépenses par défaut et non celle que vous venez d'enregistrer...)"
         labels:
-            monwoo_01_WpDisplay: Monwoo Wp Display (PWA Svelte Frontend pour WordPress)
-            monwoo_02_WpWaConfigECom: Monwoo Wa Config E-com (WooCommerce basique par Monwoo)
-            monwoo_03_PhpBackend: Monwoo Backend PHP 
-            monwoo_04_hybridApp: Monwoo Application hybrides
-            monwoo_05_PhpCrm: Monwoo CRM en PHP
-            monwoo_06_analyticalStudy: Monwoo Etude Analytique
-            monwoo_07_upkeep: Monwoo maintenances
-            monwoo_08_backendLearning: Monwoo formation backend Fullstack
-            monwoo_09_empty: Monwoo template vide
+            monwoo_01_WpDisplay: 'Monwoo Wp Display (PWA Svelte Frontend pour WordPress)'
+            monwoo_02_WpWaConfigECom: 'Monwoo Wa Config E-com (WooCommerce basique par Monwoo)'
+            monwoo_03_PhpBackend: 'Monwoo Backend PHP'
+            monwoo_04_hybridApp: 'Monwoo Application hybrides'
+            monwoo_05_PhpCrm: 'Monwoo CRM en PHP'
+            monwoo_06_analyticalStudy: 'Monwoo Etude Analytique'
+            monwoo_07_upkeep: 'Monwoo maintenances'
+            monwoo_08_backendLearning: 'Monwoo formation backend Fullstack'
+            monwoo_09_empty: 'Monwoo template vide'
+    home:
+        title: mws_mws.home.title

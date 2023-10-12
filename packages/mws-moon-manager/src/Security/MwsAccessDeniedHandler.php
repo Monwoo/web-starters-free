@@ -27,6 +27,7 @@ class MwsAccessDeniedHandler implements AccessDeniedHandlerInterface
         $request->getSession()->getFlashBag()->add(
             'notice',
             $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
+            // $this->translator->trans('MwsLoginFormAuthenticator.accessDenied', [], 'mws-moon-manager')
         );
 
         return new RedirectResponse($this->urlGenerator->generate(

@@ -28,7 +28,7 @@
 			<footer
 			class="footer"
 			{{ svelte_component('Footer', {
-				'copyright': 'mws.copyright'|trans,
+				'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 			}) }}>
 				{# // For SEO, will be replaced by js...
 				// TODO : prefill with some pre-rendering of js controller

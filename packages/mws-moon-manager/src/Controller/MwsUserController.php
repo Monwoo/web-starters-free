@@ -10,15 +10,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/{_locale<%app.supported_locales%>}/mws-user')]
 class MwsUserController extends AbstractController
 {
-    private $em;
 
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->em = $em;
+    public function __construct(
+        protected TranslatorInterface $translator,
+        protected EntityManagerInterface $em
+    ){
     }
 
     #[Route('/login', name: 'mws_user_login')]
@@ -26,6 +27,8 @@ class MwsUserController extends AbstractController
         Request $request,
         AuthenticationUtils $authenticationUtils
     ): Response {
+        // $this->translator->trans('MwsLoginFormAuthenticator.accessDenied', [], 'mws-moon-manager');
+
         // new FlashBag();
         $flashBag = $request->getSession()->getFlashBag();
         if ($this->getUser() && !count($flashBag->keys())) {

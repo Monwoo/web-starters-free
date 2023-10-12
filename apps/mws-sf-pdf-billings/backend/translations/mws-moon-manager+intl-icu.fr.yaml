@@ -1,0 +1,5 @@
+MwsLoginFormAuthenticator:
+    accessDenied: 'Accès refusé.'
+    failToGrantAccess: 'Accès refusé, autorisations insuffisantes.'
+mws:
+    copyright: __mws.copyright

@@ -18,7 +18,7 @@
 	{% endif %}
 	{% for notice in app.flashes('notice') %}
 		<p>
-			{{ notice }}
+			{{ notice|trans({}, 'mws-moon-manager') }}
 		</p>
 	{% endfor %}
 	<div class="content" style="margin-top:4rem; padding-bottom:0em;">

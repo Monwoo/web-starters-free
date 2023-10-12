@@ -19,6 +19,35 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+// TODO : how to use 'trans' with function notation inside const ?
+function trans(...$args) {
+    // TIPS : only for text string extractor to work,
+    // dummy function for i18n simple extractions
+    return $args[0] ?? null;
+}
+// define('trans', function (...$args) {
+//     // TIPS : only for text string extractor to work,
+//     // dummy function for i18n simple extractions
+//     return $args[0] ?? null;
+// });
+
+// But below will need php pre-processings, so avoid class constant for translations msgs :
+// https://www.sitepoint.com/php-macros-for-fun-and-profit/
+// macro {
+//     unless (···condition) { ···body }
+// } >> {
+//     if (!(···condition)) { ···body }
+// }
+
+// BELOW const, juste for translator extractor to detect them :
+define('t_MwsLoginFormAuthenticator_failToGrantAccess', 
+    trans('MwsLoginFormAuthenticator.failToGrantAccess', [], 'mws-moon-manager')
+);
+define('t_MwsLoginFormAuthenticator_accessDenied', 
+    trans('MwsLoginFormAuthenticator.accessDenied', [], 'mws-moon-manager')
+);
 
 // https://symfony.com/doc/current/security/custom_authenticator.html
 class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
@@ -27,12 +56,13 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'mws_user_login';
     public const SUCCESS_LOGIN_ROUTE = 'mws_moon_manager';
-    public const t_failToGrantAccess = 'MwsLoginFormAuthenticator.failToGrandAccess';
-    public const t_accessDenied = 'MwsLoginFormAuthenticator.accessDenied';
+    public const t_failToGrantAccess = t_MwsLoginFormAuthenticator_failToGrantAccess;
+    public const t_accessDenied = t_MwsLoginFormAuthenticator_accessDenied;
 
     private UrlGeneratorInterface $urlGenerator;
 
     public function __construct(
+        protected TranslatorInterface $translator,
         protected LoggerInterface $logger,
         UrlGeneratorInterface $urlGenerator,
     )
