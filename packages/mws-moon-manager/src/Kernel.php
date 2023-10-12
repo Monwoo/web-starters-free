@@ -6,7 +6,7 @@
 // default generated file are with 'App' namespace
 // namespace App;
 // But our source directory is build with :
-namespace MWS\MoonManagerBundle\App;
+namespace MWS\MoonManagerBundle;
 
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;

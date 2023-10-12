@@ -2545,12 +2545,21 @@
             "dist": {
                 "type": "path",
                 "url": "../../../packages/mws-moon-manager",
-                "reference": "0fc17830a1acac0db7c0cff872054b53308330ca"
+                "reference": "88d8a9d5241c79e5ca2f52d2825c3527a2bc875a"
             },
             "require": {
+                "doctrine/doctrine-bundle": "^2.10",
+                "doctrine/orm": "^2.16",
                 "php": ">=8.1",
                 "phpoffice/phpspreadsheet": "^1.29",
-                "symfony/framework-bundle": "^6.3"
+                "symfony/console": "6.3.*",
+                "symfony/flex": "^2.3",
+                "symfony/framework-bundle": "^6.3",
+                "symfony/runtime": "6.3.*",
+                "symfony/security-bundle": "6.3.*",
+                "symfony/translation": "6.3.*",
+                "symfony/yaml": "6.3.*",
+                "twig/twig": "^3.7"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -2566,6 +2575,12 @@
             "autoload": {
                 "psr-4": {
                     "MWS\\MoonManagerBundle\\": "src/"
+                }
+            },
+            "scripts": {
+                "auto-scripts": {
+                    "cache:clear": "symfony-cmd",
+                    "assets:install %PUBLIC_DIR%": "symfony-cmd"
                 }
             },
             "license": [

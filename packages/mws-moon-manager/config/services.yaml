@@ -32,6 +32,10 @@ services:
           # - {name: kernel.event_listener, event: kernel.exception,}
           - {name: kernel.event_listener,}
 
+    # Remove PHP warnings like translation.extractor.php is depreciated :
+    # TODO : remove this hack and look for package dependencies version upgrades (should have miss some package upgrades ?)
+    translation.extractor.php: "@translation.extractor.php_ast"
+
 # controllers:
 #   resource: ../src/src/Controller/
 #   type: annotation
