@@ -25,18 +25,43 @@ $mws-background-light-rgb: 242, 234, 145;
     --mws-background-light-rgb: #{$mws-background-light-rgb};
 }
 
-body {
+html {
     // background-color: gold;
     // TIPS : Use UPPERCASE to avoid SCSS rbg function and use the CSS rgb syntax
     background-color: RGB($mws-background-rgb);
     background-color: RGB(var(--mws-background-rgb));
     // to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C
-    background : linear-gradient(
-        to right,
-        RGB(var(--mws-background-rgb)),
-        RGB(var(--mws-background-light-rgb)),
-        RGB(var(--mws-background-rgb)),
-    );
+    // TIPS : can't be there, will be rewrite by js for background scroll bounce colors
+    // background : linear-gradient(
+    //     to right,
+    //     RGB(var(--mws-background-rgb)),
+    //     RGB(var(--mws-background-light-rgb)),
+    //     RGB(var(--mws-background-rgb))
+    // );
+    body {
+        background : linear-gradient(
+            to right,
+            RGB(var(--mws-background-rgb)),
+            RGB(var(--mws-background-light-rgb)),
+            RGB(var(--mws-background-rgb))
+        );
+    }
+
+    // https://stackoverflow.com/questions/68552282/give-different-color-to-top-and-bottom-of-the-webpage-body-overscroll
+    // overscroll-behavior-y: none;
+    // body {
+    //     overscroll-behavior-y: none;
+    // }
+    // TIPS : no need to remove, if you have JS access, cf :
+    // apps/mws-sf-pdf-billings/backend/assets/app.js
+
+    // height:100%;
+    // // should be html, body, and some inside div wrapper or js event to really theme it
+    // overflow: hidden;
+    // body {
+    //     overflow: auto;
+    //     height: initial;
+    // }
 }
 
 // https://v1.tailwindcss.com/components/buttons

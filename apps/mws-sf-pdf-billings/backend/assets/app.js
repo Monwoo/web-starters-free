@@ -16,6 +16,18 @@ import './bootstrap.js';
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.scss';
 
+// TIPS : 
+// https://stackoverflow.com/questions/68552282/give-different-color-to-top-and-bottom-of-the-webpage-body-overscroll
+// TIPS : gradient do not sound to work with scroll bg color, need to be unique color ?
+// document.documentElement.style.background = `linear-gradient(to right, rgb(var(--mws-background-rgb)), rgb(var(--mws-background-light-rgb)), rgb(var(--mws-background-rgb)))`;
+// document.documentElement.style.background = `linear-gradient(
+//   to right,
+//   RGB(var(--mws-background-rgb)),
+//   RGB(var(--mws-background-light-rgb)),
+//   RGB(var(--mws-background-rgb))
+// )`;
+document.documentElement.style.background = `RGB(var(--mws-background-rgb))`;
+
 // alert("OK from app");
 
 
