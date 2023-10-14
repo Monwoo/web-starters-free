@@ -22,19 +22,24 @@
 
 	<body>
 		{% block body %}
-		{% endblock %}
+			{% block header %}
+			{% endblock %}
 
-		{% block footer %}
-			<footer
-			class="footer hidden"
-			{{ svelte_component('Footer', {
-				'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
-			}) }}>
-				{# // For SEO, will be replaced by js...
-				// TODO : prefill with some pre-rendering of js controller
-				//  at assets 'watch' and/or 'build' phase #}
-				<p>{{'mws.copyright'|trans({}, 'mws-moon-manager')}}</p>
-			</footer>
+			{% block content %}
+			{% endblock %}
+
+			{% block footer %}
+				<footer
+				class="footer hidden"
+				{{ svelte_component('Footer', {
+					'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+				}) }}>
+					{# // For SEO, will be replaced by js...
+					// TODO : prefill with some pre-rendering of js controller
+					//  at assets 'watch' and/or 'build' phase #}
+					<p>{{'mws.copyright'|trans({}, 'mws-moon-manager')}}</p>
+				</footer>
+			{% endblock %}
 		{% endblock %}
 
 		{% block javascript %}
