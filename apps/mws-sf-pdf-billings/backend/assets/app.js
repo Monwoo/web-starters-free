@@ -26,7 +26,9 @@ import './styles/app.scss';
 //   RGB(var(--mws-background-light-rgb)),
 //   RGB(var(--mws-background-rgb))
 // )`;
-document.documentElement.style.background = `RGB(var(--mws-background-rgb))`;
+// document.documentElement.style.background = `RGB(var(--mws-background-rgb))`;
+// document.documentElement.style.background = `black`;
+document.documentElement.style.background = `RGB(var(--mws-background-over-scroll-rgb))`;
 
 // alert("OK from app");
 

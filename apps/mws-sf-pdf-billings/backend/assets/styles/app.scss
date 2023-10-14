@@ -19,10 +19,13 @@ $mws-background-rgb: 219, 181, 112;
 // $mws-background-light-rgb: 252, 246, 186;
 $mws-background-light-rgb: 242, 234, 145;
 
+$mws-background-over-scroll-rgb: 44, 42, 24;
+
 :root {
     // TODO : scss macro or mixin on variables starting with "mws-" ? instead of copy/past...
     --mws-background-rgb: #{$mws-background-rgb};
     --mws-background-light-rgb: #{$mws-background-light-rgb};
+    --mws-background-over-scroll-rgb: #{$mws-background-over-scroll-rgb};
 }
 
 html {
