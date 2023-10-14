@@ -14,9 +14,16 @@
 // 🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥
 // Base theme adjustments
 ///////////////////////
+$mws-background-rgb: 219, 181, 112;
+
+:root {
+    --mws-background-rgb: $mws-background-rgb;
+}
 
 body {
-    background-color: gold;
+    // background-color: gold;
+    background-color: $mws-background-rgb;
+    background-color: var(--mws-background-rgb);
 }
 
 // https://v1.tailwindcss.com/components/buttons
@@ -28,6 +35,10 @@ body {
 button, button[type] { // OK, all button and all button with type attributes
     @apply font-bold py-2 px-4 rounded;
     @apply bg-blue-500 text-white;
+}
+
+a {
+    text-decoration: underline;
 }
 
 ///////////////////////
