@@ -15,15 +15,28 @@
 // Base theme adjustments
 ///////////////////////
 $mws-background-rgb: 219, 181, 112;
+// http://www.brandgradients.com/gold-gradient/
+// $mws-background-light-rgb: 252, 246, 186;
+$mws-background-light-rgb: 242, 234, 145;
 
 :root {
-    --mws-background-rgb: $mws-background-rgb;
+    // TODO : scss macro or mixin on variables starting with "mws-" ? instead of copy/past...
+    --mws-background-rgb: #{$mws-background-rgb};
+    --mws-background-light-rgb: #{$mws-background-light-rgb};
 }
 
 body {
     // background-color: gold;
-    background-color: $mws-background-rgb;
-    background-color: var(--mws-background-rgb);
+    // TIPS : Use UPPERCASE to avoid SCSS rbg function and use the CSS rgb syntax
+    background-color: RGB($mws-background-rgb);
+    background-color: RGB(var(--mws-background-rgb));
+    // to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C
+    background : linear-gradient(
+        to right,
+        RGB(var(--mws-background-rgb)),
+        RGB(var(--mws-background-light-rgb)),
+        RGB(var(--mws-background-rgb)),
+    );
 }
 
 // https://v1.tailwindcss.com/components/buttons
