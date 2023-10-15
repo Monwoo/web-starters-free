@@ -1,0 +1,27 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set model = {
+  description: "Rechercher"|trans,
+  completeText: {
+    en: "User lookup",
+    fr: "Rechercher un utilisateur",
+  },
+  "__CMT__showPrevButton": true,
+  showQuestionNumbers: false,
+  elements: [{
+      name: "searchKeyword",
+      title: "Mot(s) clef(s)",
+      type: "text",
+      validators: [],
+      minWidth: "20%",
+      isRequired: true,
+  },]
+} %}
+{#
+elements: [{
+    type: "html",
+    name: "info",
+    html: "..."
+    minWidth: "20%",
+  },
+#}
+{{ model|serialize('json') }}

@@ -6,10 +6,25 @@
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let users = [];
+  export let filterForm = ''; // injected raw html
   export let paginator = ''; // injected raw html
+
+  // https://stackoverflow.com/questions/5796718/html-entity-decode
+  // const decodeHtml = (html:string) => { // TODO : fail to load typescript syntax ? only modern js ?
+  const decodeHtml = (html) => {
+      var txt = document.createElement("textarea");
+      txt.innerHTML = html;
+      return txt.value;
+  }
+
+  // filterForm = decodeURI(filterForm);f
+  filterForm = decodeHtml(filterForm);
+  paginator = decodeHtml(paginator);
+  console.log(filterForm);
 </script>
 
 <Base>
+  <div>{@html filterForm }</div>
   <div>{@html paginator }</div>
   <div>
     TODO : list users

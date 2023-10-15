@@ -40,7 +40,7 @@ importers:
         version: file:apps/mws-sf-pdf-billings/backend/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@3.59.2)
       '@symfony/webpack-encore':
         specifier: ^4.4.0
-        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
+        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(ts-loader@9.5.0)(typescript@4.9.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
       '@tailwindcss/forms':
         specifier: ^0.5.6
         version: 0.5.6(tailwindcss@3.3.3)
@@ -70,7 +70,7 @@ importers:
         version: 8.4.31
       postcss-loader:
         specifier: ^7.3.3
-        version: 7.3.3(postcss@8.4.31)(webpack@5.74.0)
+        version: 7.3.3(postcss@8.4.31)(typescript@4.9.5)(webpack@5.74.0)
       regenerator-runtime:
         specifier: ^0.13.9
         version: 0.13.11
@@ -86,6 +86,9 @@ importers:
       tailwindcss:
         specifier: ^3.3.3
         version: 3.3.3
+      ts-loader:
+        specifier: ^9.5.0
+        version: 9.5.0(typescript@4.9.5)(webpack@5.74.0)
       webpack:
         specifier: ^5.74.0
         version: 5.74.0(webpack-cli@4.10.0)
@@ -272,7 +275,7 @@ importers:
         version: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@3.59.2)
       '@symfony/webpack-encore':
         specifier: ^4.0.0
-        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
+        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(ts-loader@9.5.0)(typescript@4.9.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
       core-js:
         specifier: ^3.23.0
         version: 3.23.0
@@ -512,7 +515,7 @@ packages:
       '@babel/helper-validator-option': 7.21.0
       browserslist: 4.21.5
       lru-cache: 5.1.1
-      semver: 6.3.0
+      semver: 6.3.1
 
   /@babel/helper-compilation-targets@7.22.15:
     resolution: {integrity: sha512-y6EEzULok0Qvz8yyLkCvVX+02ic+By2UdOhylwUOvOn9dvYc9mKICJuuU1n1XBI02YWsNsnrY1kc6DVbjcXbtw==}
@@ -2328,7 +2331,7 @@ packages:
       schema-utils: 3.3.0
     dev: true
 
-  /@symfony/webpack-encore@4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0):
+  /@symfony/webpack-encore@4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(ts-loader@9.5.0)(typescript@4.9.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0):
     resolution: {integrity: sha512-p3n2Z16sGV6odZ3ihIU+gupYc55KfrfCt62+Gppe8MUo6QuT5Bk2cXXjR4Hb89KvCRDHnjYEWVfnewRsfE8TRQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
@@ -2434,7 +2437,7 @@ packages:
       mini-css-extract-plugin: 2.7.6(webpack@5.74.0)
       pkg-up: 3.1.0
       postcss: 8.4.31
-      postcss-loader: 7.3.3(postcss@8.4.31)(webpack@5.74.0)
+      postcss-loader: 7.3.3(postcss@8.4.31)(typescript@4.9.5)(webpack@5.74.0)
       pretty-error: 4.0.0
       resolve-url-loader: 5.0.0
       sass-loader: 13.3.2(node-sass@9.0.0)(webpack@5.74.0)
@@ -2444,6 +2447,8 @@ packages:
       tapable: 2.2.1
       terser-webpack-plugin: 5.3.9(webpack@5.74.0)
       tmp: 0.2.1
+      ts-loader: 9.5.0(typescript@4.9.5)(webpack@5.74.0)
+      typescript: 4.9.5
       webpack: 5.74.0(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack@5.74.0)
       webpack-dev-server: 4.15.1(webpack-cli@4.10.0)(webpack@5.74.0)
@@ -3345,7 +3350,7 @@ packages:
       '@babel/compat-data': 7.21.4
       '@babel/core': 7.21.4
       '@babel/helper-define-polyfill-provider': 0.2.4(@babel/core@7.21.4)
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3806,7 +3811,7 @@ packages:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
     dev: true
 
-  /cosmiconfig@8.3.6:
+  /cosmiconfig@8.3.6(typescript@4.9.5):
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -3819,6 +3824,7 @@ packages:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
+      typescript: 4.9.5
     dev: true
 
   /cross-spawn@7.0.3:
@@ -4662,7 +4668,7 @@ packages:
       minimatch: 3.1.2
       object.values: 1.1.6
       resolve: 1.22.2
-      semver: 6.3.0
+      semver: 6.3.1
       tsconfig-paths: 3.14.2
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
@@ -4692,7 +4698,7 @@ packages:
       minimatch: 3.1.2
       object.entries: 1.1.6
       object.fromentries: 2.0.6
-      semver: 6.3.0
+      semver: 6.3.1
     dev: false
 
   /eslint-plugin-react-hooks@4.6.0(eslint@7.32.0):
@@ -7132,14 +7138,14 @@ packages:
       yaml: 2.3.2
     dev: true
 
-  /postcss-loader@7.3.3(postcss@8.4.31)(webpack@5.74.0):
+  /postcss-loader@7.3.3(postcss@8.4.31)(typescript@4.9.5)(webpack@5.74.0):
     resolution: {integrity: sha512-YgO/yhtevGO/vJePCQmTxiaEwER94LABZN0ZMT4A0vsak9TpO+RvKRs7EmJ8peIlB9xfXCsS7M8LjqncsUZ5HA==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       postcss: ^7.0.0 || ^8.0.1
       webpack: ^5.0.0
     dependencies:
-      cosmiconfig: 8.3.6
+      cosmiconfig: 8.3.6(typescript@4.9.5)
       jiti: 1.20.0
       postcss: 8.4.31
       semver: 7.5.0
@@ -7933,7 +7939,6 @@ packages:
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
-    dev: true
 
   /semver@7.5.0:
     resolution: {integrity: sha512-+XC0AD/R7Q2mPSRuy2Id0+CGTZ98+8f+KvwirxOKIEyid+XSx6HbC63p+O4IndTHuX5Z+JxQ0TghCkO5Cg/2HA==}
@@ -8774,6 +8779,22 @@ packages:
 
   /ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
+    dev: true
+
+  /ts-loader@9.5.0(typescript@4.9.5)(webpack@5.74.0):
+    resolution: {integrity: sha512-LLlB/pkB4q9mW2yLdFMnK3dEHbrBjeZTYguaaIfusyojBgAGf5kF+O6KcWqiGzWqHk0LBsoolrp4VftEURhybg==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      typescript: '*'
+      webpack: ^5.0.0
+    dependencies:
+      chalk: 4.1.2
+      enhanced-resolve: 5.15.0
+      micromatch: 4.0.5
+      semver: 7.5.0
+      source-map: 0.7.4
+      typescript: 4.9.5
+      webpack: 5.74.0(webpack-cli@4.10.0)
     dev: true
 
   /tsconfig-paths@3.14.2:

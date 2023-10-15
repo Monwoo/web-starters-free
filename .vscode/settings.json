@@ -1,5 +1,6 @@
 {
-  "intelephense.environment.phpVersion": "8.2",
+  "intelephense.environment.phpVersion": "8.3",
+  "php.validate.executablePath": "/usr/local/bin/php",
   "workbench.colorCustomizations": {
     "statusBar.noFolderBackground": "#DAA520",
     "statussBar.prominentBackground": "#DAA520"

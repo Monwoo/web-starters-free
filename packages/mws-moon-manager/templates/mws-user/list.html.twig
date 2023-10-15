@@ -1,0 +1,42 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block title %}Hello UserController!
+{% endblock %}
+
+{% block body %}
+	<div class="mws-user-index" {{ svelte_component('MwsUserList', {
+		'filterForm': block('filterFormBlock')|e('html_attr'),
+		'paginator': block('paginatorBlock')|e('html_attr'),
+		'users': [ 'hello', 'world'],
+	} ) }}>
+		{% block filterFormBlock %}
+			<div>
+					{{ form_start(filterForm, { 'attr' : { 'class': 'd-flex flex-wrap' } }) }}
+					{{ form_end(filterForm) }}
+			</div>
+		{% endblock %}
+		{% block paginatorBlock %}
+			<div class="count">
+					[ {{ pagination.getTotalItemCount }} éléments]
+			</div>
+			<div class="navigation">
+					{{ knp_pagination_render(pagination) }}
+			</div>
+		{% endblock %}
+
+		{% if app.user %}
+			<a href="{{ path('mws_user_logout') }}">
+				<u>Logout from
+					{{ app.user.username }}</u>
+			</a>
+		{% endif %}
+
+		<div class="example-wrapper">
+			<h1>Hello
+				{{ block('title') }}! ✅</h1>
+		</div>
+
+	</div>
+
+{% endblock %}

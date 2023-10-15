@@ -15,6 +15,10 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        # TODO : inject DQL string_functions from composer recipe for MoonManager OR from bundle loads ?
+        dql:
+            string_functions:
+                REPLACE: MWS\MoonManagerBundle\Query\Replace
 
 when@test:
     doctrine:

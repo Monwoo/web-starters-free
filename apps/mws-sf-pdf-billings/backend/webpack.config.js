@@ -93,8 +93,14 @@ Encore
         // now, the var 'faa' can be used in scss files
     })
 
+    // https://symfony.com/doc/current/frontend/encore/typescript.html
     // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+    .enableTypeScriptLoader()
+
+    // optionally enable forked type script for faster builds
+    // https://www.npmjs.com/package/fork-ts-checker-webpack-plugin
+    // requires that you have a tsconfig.json file that is setup correctly.
+    //.enableForkedTypeScriptTypesChecking()
 
     // uncomment if you use React
     //.enableReactPreset()

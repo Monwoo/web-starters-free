@@ -5,6 +5,7 @@ namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
@@ -38,15 +39,21 @@ class MwsUserController extends AbstractController
         name: 'mws_user',
         options: ['expose' => true],
     )]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // TODO : depending of roles : will show user profile or list of editable profiles
-        return $this->render('@MoonManager/mws-user/index.html.twig', [
-        ]);
+        return $this->redirectToRoute(
+            'mws_user_list',
+            array_merge($request->query->all(), [
+                // "filterTags" => $filterTags,
+                // "keyword" => $keyword
+            ]),
+            Response::HTTP_SEE_OTHER
+        );
     }
 
     #[Route('/list/{filterTags}',
-        name: 'user_list',
+        name: 'mws_user_list',
         methods: ['GET', 'POST'],
         defaults: [
             'filterTags' => null,
@@ -63,10 +70,12 @@ class MwsUserController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            return $this->json([
-                "status" => "ko",
-                "comment" => "Nop, rien ici",
-            ], 401);
+            return $this->redirectToRoute('mws_user_login');
+        
+            // return $this->json([
+            //     "status" => "ko",
+            //     "comment" => "Nop, rien ici",
+            // ], 401);
         }
 
         $filterTagsTokens = explode("_", $filterTags);
@@ -83,9 +92,14 @@ class MwsUserController extends AbstractController
         // USE CUSTOM form filters instead of knp simple ones
 
         $lastSearch = [
-            "searchKeyword" => $keyword,
+            "jsonResult" => json_encode([
+                "searchKeyword" => $keyword,
+            ]),
+            "surveyJsModel" => $this->renderView(
+                "@MoonManager/mws-user/survey-js-models/MwsUserFilterType.json.twig"
+            ),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
-        $filterForm = $this->createForm(UserFilterType::class, $lastSearch);
+        $filterForm = $this->createForm(MwsUserFilterType::class, $lastSearch);
         $filterForm->handleRequest($request);
 
         if ($filterForm->isSubmitted()) {
@@ -96,7 +110,7 @@ class MwsUserController extends AbstractController
 
                 $keyword = $filterForm->get('searchKeyword')->getData();
                 return $this->redirectToRoute(
-                    'user_list',
+                    'mws_user_list',
                     array_merge($request->query->all(), [
                         "filterTags" => $filterTags,
                         "keyword" => $keyword
@@ -149,8 +163,9 @@ class MwsUserController extends AbstractController
             10 /*limit per page*/
         );
 
-        $this->logger->debug("Succeed to index users");
-        return $this->renderForm('user/index.html.twig', [
+        $this->logger->debug("Succeed to list users");
+        // return $this->renderForm('@MoonManager/mws-user/list.html.twig', [ // TODO : depreciated
+        return $this->render('@MoonManager/mws-user/list.html.twig', [
             'title' => 'Utilisateurs',
             'filterForm' => $filterForm,
             'pagination' => $pagination,

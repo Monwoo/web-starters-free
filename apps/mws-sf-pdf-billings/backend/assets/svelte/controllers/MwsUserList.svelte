@@ -9,7 +9,8 @@
     import Liste from "mws-moon-manager-ux/components/user/Liste.svelte";
     
     export let users;
+    export let filterForm;
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Liste {users}></Liste>
+<Liste {users} {filterForm}></Liste>

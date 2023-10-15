@@ -24,6 +24,8 @@ services:
     MWS\MoonManagerBundle\Repository\:
         resource: '../src/Repository'
         tags: ['doctrine.repository_service']
+    MWS\MoonManagerBundle\Form\:
+        resource: '../src/Form'
     MWS\MoonManagerBundle\Security\:
         resource: '../src/Security'
     MWS\MoonManagerBundle\EventSubscriber\:
