@@ -93,11 +93,14 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 APP_ENV=prod php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
+# bootstrap one user ONLY to let it be change and do wiziwig updates :
+php bin/console mws:add-user -c 1
+
 # php bin/console fos:js-routing:dump
 bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
 
-# bootstrap one user ONLY to let it be change and do wiziwig updates :
-php bin/console mws:add-user -c 1
+# rebuild assets for production :
+pnpm run build
 
 APP_ENV=prod composer dump-env prod
 rm -rf var/cache var/log 
@@ -141,10 +144,43 @@ composer install
 php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
-zip -r mws-sf-pdf-billings.zip .env.prod \
+# bootstrap one user ONLY to let it be change and do wiziwig updates :
+php bin/console mws:add-user -c 1
+
+# build assets for dev :
+pnpm run dev
+
+zip -r mws-sf-pdf-billings.zip .env.dev \
 .htaccess composer.json config public src \
 templates translations \
-vendor var .env .env.local.php
+vendor var .env
+
+```
+
+<div style="page-break-before: always;"></div>
+
+## Launching Tests for debugs
+
+```bash
+alias composer="php -d memory_limit=2G '$PWD/composer.phar'"
+cd apps/mws-sf-pdf-billings/backend
+
+export APP_ENV=dev
+composer install
+
+# Re-do manually if you change some routes path :
+bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
+
+# watch assets for code changes to work
+# on full page reloads without caches
+# (keep it running in new terminal) :
+pnpm run watch
+
+# TODO : doc for e2e tests
+# alias symfony="~/.symfony5/bin/symfony"
+alias symfony="~/.symfony6/bin/symfony"
+symfony server:start
+
 ```
 
 <div style="page-break-before: always;"></div>
@@ -404,6 +440,13 @@ composer dump-autoload
 # [23:36, 01/08/2023] Axelo: svelte.config
 # [23:37, 01/08/2023] Axelo: "@sveltejs/vite-plugin-svelte": "^2.4.2"
 # [23:37, 01/08/2023] Axelo: "vite": "^4.3.9",
+
+
+# php bin/console fos:js-routing:dump
+bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
+
+# bootstrap one user ONLY to let it be change and do wiziwig updates :
+php bin/console mws:add-user -c 1
 
 ```
 
