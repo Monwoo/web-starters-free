@@ -13,8 +13,7 @@ class MwsSurveyJsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('jsonResult', HiddenType::class, [
-            'mapped' => false,
-            // 'mapped' => true, // NEEDED if want it to be sync with input data...
+            'mapped' => true, // NEEDED if want it to be sync with input data...
             'required' => true,
             // 'constraints' => [
             // ],
@@ -24,8 +23,7 @@ class MwsSurveyJsType extends AbstractType
         ]);
 
         $builder->add('surveyJsModel', HiddenType::class, [
-            'mapped' => false,
-            // 'mapped' => true, // NEEDED if want it to be sync with input data...
+            'mapped' => true, // NEEDED if want it to be sync with input data...
             'required' => true,
             // 'constraints' => [
             // ],

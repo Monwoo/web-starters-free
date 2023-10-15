@@ -48,6 +48,8 @@
 			</script>
 			{# TOO early for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}
 			{# WARNING : order counts for routes loads, manually done inside mwsMoonManager for now #}
+			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		  <script type="text/javascript" src="https://unpkg.com/survey-jquery"></script>
 	    {{ encore_entry_script_tags('mwsMoonManager') }}
 	    {{ encore_entry_script_tags('app') }}
 			{# TOO late for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}

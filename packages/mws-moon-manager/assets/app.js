@@ -20,10 +20,146 @@ const routes = require('../../../apps/mws-sf-pdf-billings/backend/assets/fos-rou
 console.log(routes);
 Routing.setRoutingData(routes);
 
-import { registerSvelteControllerComponents } from '@symfony/ux-svelte';
+import {
+  registerSvelteControllerComponents
+} from '@symfony/ux-svelte';
 import './bootstrap.js';
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.scss';
 
 registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));
+
+// // TODO : remove code duplication and put this in some 'mws-utils' package ?
+// // https://stackoverflow.com/questions/5796718/html-entity-decode
+// // const decodeHtml = (html:string) => { // TODO : fail to load typescript syntax ? only modern js ?
+// const decodeHtml = (html) => {
+//   var txt = document.createElement("textarea");
+//   txt.innerHTML = html;
+//   return txt.value;
+// }
+
+
+// Connect SurveyJs via JQuery and add to client window context :
+////////////////////////////////////////
+import * as jQuery from "jquery";
+import {
+  inputmask
+} from "surveyjs-widgets";
+import dayjs from 'dayjs';
+
+const $ = window.$ ?? jQuery;
+window.$ = $;
+window.dayjs = dayjs;
+
+// TODO : un-comment below will be same as JS CDN injection in base.html.twig ?
+// import "survey-jquery";
+
+// https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/32182004
+// $('div').is(':offscreen');
+$.expr.filters.offscreen = function (el) {
+  var rect = el.getBoundingClientRect();
+  const dx = 0;
+  const dy = 100;
+  return (
+    (rect.x + rect.width) < dx ||
+    (rect.y + rect.height) < dy ||
+    (rect.x > (window.innerWidth - dx) || rect.y > (window.innerHeight - dy))
+  );
+};
+
+// XPath selection outside of chrome console :
+// $x is used by chrome console only, document.evaluate is more generic
+// https://stackoverflow.com/questions/6453269/jquery-select-element-by-xpath
+window.$x = (STR_XPATH) => {
+  var xresult = document.evaluate(STR_XPATH, document, null, XPathResult.ANY_TYPE, null);
+  var xnodes = [];
+  var xres;
+  while (xres = xresult.iterateNext()) {
+    xnodes.push(xres);
+  }
+  return xnodes;
+}
+
+// TODO : below fail on SOURCE map or postCss issue ? ...
+// import "survey-core/defaultV2.css";
+import "survey-core/survey.i18n.js";
+
+// Using JQuery styles
+import "survey-jquery/defaultV2.min.css";
+import * as Survey from "survey-core";
+import {
+  surveyTheme
+} from './survey-js/_theme.json.js';
+// const Survey = window.Survey; // use Survey from CDN ?
+
+const surveyFactory = (surveyForm, dataModel) => {
+  Survey
+    .StylesManager
+    .applyTheme("modern");
+
+  // https://surveyjs.io/form-library/examples/control-data-entry-formats-with-input-masks/jquery#content-code
+  // window['surveyjs-widgets'].inputmask(Survey);
+  // https://surveyjs.io/form-library/examples/control-data-entry-formats-with-input-masks/vuejs#content-code
+  // https://surveyjs.io/form-library/examples/questiontype-matrixdropdown/vuejs
+  inputmask(Survey);
+  console.debug("Survey dataModel :", dataModel);
+  const surveyData = JSON.parse(
+    $('[name$="[jsonResult]"]', surveyForm).val()
+  );
+
+  const surveyModel = new Survey.Model(dataModel);
+  surveyModel.applyTheme(surveyTheme({}));
+  // TODO: below from dataModel ? default if not in dataModel ?
+  surveyModel.locale = 'fr';
+  surveyModel.sendResultOnPageNext = true;
+  surveyModel.showCompletedPage = false;
+  surveyModel.onComplete.add((sender, options) => {
+    const responseData = JSON.stringify(sender.data, null, 3);
+    console.log("Will sync response :", responseData);
+
+  });
+  surveyModel.data = surveyData;
+
+  let surveyWrapper = $(".survey-js-wrapper", surveyForm);
+  if (!surveyWrapper.length) {
+    surveyWrapper = $("<div class='survey-js-wrapper'></div>");
+    surveyForm.prepend(surveyWrapper);
+  }
+  surveyWrapper.Survey({
+    model: surveyModel
+  });
+  console.debug("Survey surveyWrapper :", surveyWrapper, surveyModel);
+  return surveyWrapper;
+}
+
+$(() => { // Wait for page load
+  // Connect all page surveys :
+  setTimeout(() => { // TODO : Why survey js not loaded ? controller view output still not ready ?
+    $('.mws-survey-js-form').each((idx, htmlSurveyForm) => {
+      // WARNING : $(this) will work with js function, not lambda function...
+      // const surveyForm = $(this);
+      const surveyForm = $(htmlSurveyForm);
+      const surveyModel = $('[name$="[surveyJsModel]"]', surveyForm).val();
+      // surveyFactory(surveyForm, JSON.parse(decodeHtml(surveyModel)));
+      // TIPS : use '|raw' filter js side to avoid html entities decode
+      const surveyWrapper = surveyFactory(surveyForm, JSON.parse(surveyModel));
+    });
+
+  }, 200);
+})
+
+// // TODO : Highlight search keyworkds :
+// import Mark from 'mark.js';
+// if (searchKeyword) {
+//   let markFactory = new Mark(filterMarkTarget); // HTML target element
+//   // markFactory.mark(keyword [, options]);
+//   // Mark do not goes over multiple words with space, so did remove
+//   // those for highlight to work :
+//   markFactory.mark(searchKeyword.replace(" ", ""), {
+//     accuracy: 'partially',
+//     separateWordSearch: false, // if space, do not split highlight, highlight all match from start to end...
+//     // TODO : can't highlight over multiples spaces...
+//     // ok Query side, but will display all phone NUMBER without space to avoid missing highlight on spaced phone numbers...
+//   });
+// }

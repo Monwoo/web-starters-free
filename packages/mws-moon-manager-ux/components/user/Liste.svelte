@@ -9,6 +9,7 @@
   export let filterForm = ''; // injected raw html
   export let paginator = ''; // injected raw html
 
+  // TODO : remove code duplication and put this in some 'mws-utils' package ?
   // https://stackoverflow.com/questions/5796718/html-entity-decode
   // const decodeHtml = (html:string) => { // TODO : fail to load typescript syntax ? only modern js ?
   const decodeHtml = (html) => {

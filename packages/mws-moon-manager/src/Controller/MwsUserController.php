@@ -106,9 +106,13 @@ class MwsUserController extends AbstractController
             $this->logger->debug("Did to submit search form");
 
             if ($filterForm->isValid()) {
-                $this->logger->debug("Succeed to valid search form");
+                $this->logger->debug("Search form ok");
+                // dd($filterForm);
 
-                $keyword = $filterForm->get('searchKeyword')->getData();
+                $surveyAnswers = json_decode(
+                    $filterForm->get('jsonResult')->getData(), true
+                );
+                $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 return $this->redirectToRoute(
                     'mws_user_list',
                     array_merge($request->query->all(), [
