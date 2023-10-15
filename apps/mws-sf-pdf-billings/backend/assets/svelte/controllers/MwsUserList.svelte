@@ -10,7 +10,8 @@
     
     export let users;
     export let filterForm;
+    export let paginator;
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Liste {users} {filterForm}></Liste>
+<Liste {users} {filterForm} {paginator}></Liste>

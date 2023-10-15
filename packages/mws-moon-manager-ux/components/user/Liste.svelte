@@ -21,6 +21,7 @@
   filterForm = decodeHtml(filterForm);
   paginator = decodeHtml(paginator);
   console.log(filterForm);
+  console.log(paginator);
 </script>
 
 <Base>
