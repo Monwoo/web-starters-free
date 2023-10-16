@@ -4,6 +4,9 @@
 namespace MWS\MoonManagerBundle\Entity;
 
 // use App\Repository\UserRepository;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -34,7 +37,18 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type:"string")]
     private $password;
 
-    
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'teamOwners')]
+    private $teamMembers;
+
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'teamMembers')]
+    private $teamOwners;
+
+    public function __construct()
+    {
+        $this->teamMembers = new ArrayCollection();
+        $this->teamOwners = new ArrayCollection();
+    }
+
     /*
     That's why in Symfony 5.3 we've decided to avoid this confusion and we've renamed "username" 
     to "user identifier". This might require some changes in your application code 
@@ -147,4 +161,56 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
+        /**
+     * @return Collection|self[]
+     */
+    public function getTeamMembers(): Collection
+    {
+        return $this->teamMembers;
+    }
+
+    public function addTeamMember(self $teamMember): self
+    {
+        if (!$this->teamMembers->contains($teamMember)) {
+            $this->teamMembers[] = $teamMember;
+        }
+
+        return $this;
+    }
+
+    public function removeTeamMember(self $teamMember): self
+    {
+        $this->teamMembers->removeElement($teamMember);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getTeamOwners(): Collection
+    {
+        return $this->teamOwners;
+    }
+
+    public function addTeamOwner(self $teamOwner): self
+    {
+        if (!$this->teamOwners->contains($teamOwner)) {
+            $this->teamOwners[] = $teamOwner;
+            $teamOwner->addTeamMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeamOwner(self $teamOwner): self
+    {
+        if ($this->teamOwners->removeElement($teamOwner)) {
+            $teamOwner->removeTeamMember($this);
+        }
+
+        return $this;
+    }
+
 }
