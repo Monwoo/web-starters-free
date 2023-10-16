@@ -15,6 +15,21 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+                # https://stackoverflow.com/questions/32317033/symfony-gedmo-blameable-not-working
+                # TODO : below have no effect, php bin/console mws:add-user -c 1 will fail if not setting up updatedAt etc...
+                # gedmo_tree:
+                #     type: annotation
+                #     prefix: Gedmo\Tree\Entity
+                #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
+                #     alias: GedmoTree
+                #     is_bundle: false
+                # gedmo_sortable:
+                #     type: annotation
+                #     prefix: Gedmo\Sortable\Entity
+                #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Sortable/Entity"
+                #     alias: GedmoTree
+                #     is_bundle: false
+
         # TODO : inject DQL string_functions from composer recipe for MoonManager OR from bundle loads ?
         dql:
             string_functions:

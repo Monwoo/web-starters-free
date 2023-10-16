@@ -7,13 +7,19 @@ namespace MWS\MoonManagerBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer;
+// use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MwsUserRepository::class)]
+#[ORM\Index(columns: ['username'])]
+#[ORM\Index(columns: ['email'])]
+#[ORM\Index(columns: ['roles'])]
 class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -21,11 +27,17 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type:"string", length:180, unique:true, nullable:true)]
-    private $email;
-
     #[ORM\Column(type:"string", length:25, unique:true)]
-    private $username;
+    private string $username;
+
+    #[ORM\Column(type:"string", length:180, unique:true, nullable:true)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $phone = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     #[ORM\Column(type:"json")]
     private $roles = [];
@@ -38,15 +50,47 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'teamOwners')]
-    private $teamMembers;
+    private Collection $teamMembers;
 
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'teamMembers')]
-    private $teamOwners;
+    private Collection $teamOwners;
+
+    #[ORM\ManyToMany(targetEntity: MwsCalendarEvent::class, mappedBy: 'clients')]
+    #[ORM\JoinTable(name: 'mws_client_event_mws_user')]
+    private Collection $mwsClientEvents;
+
+    #[ORM\ManyToMany(targetEntity: MwsCalendarEvent::class, mappedBy: 'observers')]
+    #[ORM\JoinTable(name: 'mws_observer_event_mws_user')]
+    private Collection $mwsObserverEvents;
+
+    #[ORM\ManyToMany(targetEntity: MwsCalendarEvent::class, mappedBy: 'owners')]
+    #[ORM\JoinTable(name: 'mws_owner_event_mws_user')]
+    private Collection $mwsOwnerEvents;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsCalendarTracking::class)]
+    private Collection $mwsCalendarTrackings;
+
+    use TimestampableEntity;
+    // https://symfonycasts.com/screencast/symfony5-doctrine/bad-migrations
+
+    // // Instead of :
+    // #[ORM\Column(type: 'datetime_immutable')]
+    // // #[Gedmo\Timestampable(on: 'change', field: ["createAt", "id"])]
+    // #[Gedmo\Timestampable(on: 'update')]
+    // private ?\DateTimeImmutable $updatedAt = null;
+
+    // #[ORM\Column(type: 'datetime_immutable')]
+    // #[Gedmo\Timestampable(on: 'create')]
+    // private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
     {
         $this->teamMembers = new ArrayCollection();
         $this->teamOwners = new ArrayCollection();
+        $this->mwsClientEvents = new ArrayCollection();
+        $this->mwsObserverEvents = new ArrayCollection();
+        $this->mwsOwnerEvents = new ArrayCollection();
+        $this->mwsCalendarTrackings = new ArrayCollection();
     }
 
     /*
@@ -162,24 +206,24 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-        /**
-     * @return Collection|self[]
+    /**
+     * @return Collection<int, self>
      */
     public function getTeamMembers(): Collection
     {
         return $this->teamMembers;
     }
 
-    public function addTeamMember(self $teamMember): self
+    public function addTeamMember(self $teamMember): static
     {
         if (!$this->teamMembers->contains($teamMember)) {
-            $this->teamMembers[] = $teamMember;
+            $this->teamMembers->add($teamMember);
         }
 
         return $this;
     }
 
-    public function removeTeamMember(self $teamMember): self
+    public function removeTeamMember(self $teamMember): static
     {
         $this->teamMembers->removeElement($teamMember);
 
@@ -187,24 +231,24 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|self[]
+     * @return Collection<int, self>
      */
     public function getTeamOwners(): Collection
     {
         return $this->teamOwners;
     }
 
-    public function addTeamOwner(self $teamOwner): self
+    public function addTeamOwner(self $teamOwner): static
     {
         if (!$this->teamOwners->contains($teamOwner)) {
-            $this->teamOwners[] = $teamOwner;
+            $this->teamOwners->add($teamOwner);
             $teamOwner->addTeamMember($this);
         }
 
         return $this;
     }
 
-    public function removeTeamOwner(self $teamOwner): self
+    public function removeTeamOwner(self $teamOwner): static
     {
         if ($this->teamOwners->removeElement($teamOwner)) {
             $teamOwner->removeTeamMember($this);
@@ -213,4 +257,138 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, MwsCalendarEvent>
+     */
+    public function getMwsClientEvents(): Collection
+    {
+        return $this->mwsClientEvents;
+    }
+
+    public function addMwsClientEvent(MwsCalendarEvent $mwsClientEvent): static
+    {
+        if (!$this->mwsClientEvents->contains($mwsClientEvent)) {
+            $this->mwsClientEvents->add($mwsClientEvent);
+            $mwsClientEvent->addClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsClientEvent(MwsCalendarEvent $mwsClientEvent): static
+    {
+        if ($this->mwsClientEvents->removeElement($mwsClientEvent)) {
+            $mwsClientEvent->removeClient($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsCalendarEvent>
+     */
+    public function getMwsObserverEvents(): Collection
+    {
+        return $this->mwsObserverEvents;
+    }
+
+    public function addMwsObserverEvent(MwsCalendarEvent $mwsObserverEvent): static
+    {
+        if (!$this->mwsObserverEvents->contains($mwsObserverEvent)) {
+            $this->mwsObserverEvents->add($mwsObserverEvent);
+            $mwsObserverEvent->addObserver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsObserverEvent(MwsCalendarEvent $mwsObserverEvent): static
+    {
+        if ($this->mwsObserverEvents->removeElement($mwsObserverEvent)) {
+            $mwsObserverEvent->removeObserver($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsCalendarEvent>
+     */
+    public function getMwsOwnerEvents(): Collection
+    {
+        return $this->mwsOwnerEvents;
+    }
+
+    public function addMwsOwnerEvent(MwsCalendarEvent $mwsOwnerEvent): static
+    {
+        if (!$this->mwsOwnerEvents->contains($mwsOwnerEvent)) {
+            $this->mwsOwnerEvents->add($mwsOwnerEvent);
+            $mwsOwnerEvent->addOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsOwnerEvent(MwsCalendarEvent $mwsOwnerEvent): static
+    {
+        if ($this->mwsOwnerEvents->removeElement($mwsOwnerEvent)) {
+            $mwsOwnerEvent->removeOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsCalendarTracking>
+     */
+    public function getMwsCalendarTrackings(): Collection
+    {
+        return $this->mwsCalendarTrackings;
+    }
+
+    public function addMwsCalendarTracking(MwsCalendarTracking $mwsCalendarTracking): static
+    {
+        if (!$this->mwsCalendarTrackings->contains($mwsCalendarTracking)) {
+            $this->mwsCalendarTrackings->add($mwsCalendarTracking);
+            $mwsCalendarTracking->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsCalendarTracking(MwsCalendarTracking $mwsCalendarTracking): static
+    {
+        if ($this->mwsCalendarTrackings->removeElement($mwsCalendarTracking)) {
+            // set the owning side to null (unless already changed)
+            if ($mwsCalendarTracking->getOwner() === $this) {
+                $mwsCalendarTracking->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
 }

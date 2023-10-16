@@ -24,19 +24,19 @@ class BillingConfigRepository extends ServiceEntityRepository
 
     public function save(BillingConfig $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->persist($entity);
+        $this->getObjectManager()->persist($entity);
 
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->getObjectManager()->flush();
         }
     }
 
     public function remove(BillingConfig $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getObjectManager()->remove($entity);
 
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->getObjectManager()->flush();
         }
     }
 

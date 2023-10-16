@@ -16,12 +16,15 @@ Open source Apache-2.0 with copyright to Monwoo.
 # Dev logs
 
 ```bash
-
-export APP_ENV=dev
+TODO : doc in progress...
+echo 'APP_ENV=dev' > .env.local
+# or : export APP_ENV=dev
 # https://symfony.com/doc/current/bundles.html
 php bin/console assets:install --symlink public
 
 php bin/console mws:add-user
+
+APP_ENV=dev php bin/console -vvv make:entity MwsCalendarEvent
 
 ```
 

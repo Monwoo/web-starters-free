@@ -229,7 +229,7 @@ class MwsUserController extends AbstractController
             'shouldAddNew' => false,
             'targetUser' => $mwsUser,
         ]);
-        // $formPwd = $this->createForm(UpdateUserPasswordType::class, $mwsUser);
+        $formPwd = $this->createForm(UpdateMwsUserPasswordType::class, $mwsUser);
 
         $formUser->handleRequest($request);
         if ($formUser->isSubmitted() && $formUser->isValid()) {

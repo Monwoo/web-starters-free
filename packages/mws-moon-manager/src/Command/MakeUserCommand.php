@@ -3,6 +3,8 @@
 // build by Miguel Monwoo, service@monwoo.com
 namespace MWS\MoonManagerBundle\Command;
 
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsUser;
@@ -50,6 +52,53 @@ class MakeUserCommand extends Command
 
     protected function addUser($output, $config) {
         $pass = $config['password'];
+        $user = new MwsUser();
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $pass
+        );
+
+        $userData = $config['data'];
+        
+        $userData["password"] = $hashedPassword;
+
+        $sync = function($path, $transformer = null)
+        use ($userData, $user) {
+            $set = 'set' . ucfirst($path);
+            $v = $userData[$path] ?? null;
+            if ($transformer) {
+                $v = $transformer($v);
+            }
+            if ($v) {
+                $user->$set($v);
+            }
+        };
+        $sync("email");
+        $sync("password");
+        $sync("username");
+        $sync("roles");
+        // TODO : WYH NEEDED ? Gdemo not working for commands ? config issue ?
+        // TODO : using Trait or explicit, still the same... issue with configs ?
+        $user->setUpdatedAt(new DateTime());
+        $user->setCreatedAt(new DateTime());
+
+        $this->em->persist($user);
+        $this->em->flush();
+
+        $output->writeln(
+            "[" . get_class($user) . "] New MWS user inserted OK."
+        );
+        $output->writeln([
+            "<info>Did save MWS USER as : {$user->getUserIdentifier()}</>",
+        ]);
+        $output->writeln([
+            "<info>With password : {$pass}</>",
+        ]);
+    }
+
+    // TIPS : ok, but will fail with updatedAt ORM triggers... :
+    protected function addRawUser($output, $config) {
+        $pass = $config['password'];
         $connection = $this->registry->getConnection();
         $hashedPassword = $this->passwordHasher->hashPassword(
             new MwsUser(),
@@ -58,6 +107,7 @@ class MakeUserCommand extends Command
 
         $userData = $config['data'];
         $userData["password"] = $hashedPassword;
+        $userData["roles"] = json_encode($userData["roles"]);
 
         $resp = $connection->insert('mws_user', $userData);
         // $connection->prepare('COMMIT;')->execute();
@@ -120,7 +170,7 @@ class MakeUserCommand extends Command
                 // "lastname" => $this->userLogin,
                 // "firstname" => $this->userLogin,
                 // "created_at" => date("Y-m-d H:i:s"),
-                "roles" => json_encode([  ]),
+                "roles" => [  ],
             ],
         ];
         $this->addUser($output, $config);
