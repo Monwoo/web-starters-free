@@ -32,7 +32,7 @@
   <div>
     TODO : list users
     {#each users as u}
-      { u }
+      { JSON.stringify(u) }
       {@debug u}
     {/each}
     yes

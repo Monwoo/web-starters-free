@@ -4,12 +4,12 @@
 {% block title %}Hello UserController!
 {% endblock %}
 
-{% block content %}
+{% block body %}
 	<div class="mws-user-index" {{ svelte_component('MwsUserList', {
 		'filterForm': block('filterFormBlock')|e('html_attr'),
 		'paginator': block('paginatorBlock')|e('html_attr'),
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
-		'users': [ 'hello', 'world'],
+		'users': pagination|serialize('json')|e('html_attr'),
 	} ) }}>
 		{% block filterFormBlock %}
 			<div>
