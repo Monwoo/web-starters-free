@@ -1,13 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./assets/**/*.{js,json,svelte,ts}",
+    "./assets/**/*.{js,json,svelte,ts,scss}",
 
     "./templates/**/*.html.twig",
     "./src/**/*.php",
 
     // TODO : inject with bundle recipe ? or webpack bundle local build ?
     // Symfony Bundle
+    "../../../packages/mws-moon-manager/assets/**/*.scss",
     "../../../packages/mws-moon-manager/assets/**/*.js",
     "../../../packages/mws-moon-manager/assets/**/*.svelte",
     "../../../packages/mws-moon-manager/assets/**/*.ts",

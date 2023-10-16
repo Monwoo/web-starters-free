@@ -43,18 +43,19 @@ registerSvelteControllerComponents(require.context('./svelte/controllers', true,
 // Connect SurveyJs via JQuery and add to client window context :
 ////////////////////////////////////////
 import * as jQuery from "jquery";
+const $ = window.$ ?? jQuery;
+window.$ = $;
+
+// TODO : un-comment below will NOT be same as JS CDN injection
+//in base.html.twig... WHY ?
+import "survey-jquery";
+
 import {
   inputmask
 } from "surveyjs-widgets";
 import dayjs from 'dayjs';
 
-const $ = window.$ ?? jQuery;
-window.$ = $;
 window.dayjs = dayjs;
-
-// TODO : un-comment below will NOT be same as JS CDN injection
-//in base.html.twig... WHY ?
-// import "survey-jquery";
 
 // https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/32182004
 // $('div').is(':offscreen');

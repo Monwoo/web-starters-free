@@ -20,7 +20,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/{_locale<%app.supported_locales%>}/mws-user')]
+#[Route('/{_locale<%app.supported_locales%>}/mws-user',
+    options: ['expose' => true],
+)]
 class MwsUserController extends AbstractController
 {
     public static $userRolesByFilterTag = [
@@ -40,7 +42,6 @@ class MwsUserController extends AbstractController
 
     #[Route('/',
         name: 'mws_user',
-        options: ['expose' => true],
     )]
     public function index(Request $request): Response
     {
@@ -182,7 +183,11 @@ class MwsUserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/voir/{viewTemplate?}', name: 'user_show', methods: ['GET'])]
+    #[Route('/{id}/show/{viewTemplate?}',
+        name: 'mws_user_show',
+        methods: ['GET'],
+
+    )]
     public function show(MwsUser $mwsUser, $viewTemplate): Response
     {
         $user = $this->getUser();
@@ -192,7 +197,7 @@ class MwsUserController extends AbstractController
             return $this->redirectToRoute('mws_user_login');
         }
 
-        return $this->render('user/show.html.twig', [
+        return $this->render('@MoonManager/mws-user/show.html.twig', [
             'user' => $mwsUser,
             'viewTemplate' => $viewTemplate,
             'title' => 'Utilisateur'
@@ -282,7 +287,6 @@ class MwsUserController extends AbstractController
 
     #[Route('/login',
         name: 'mws_user_login',
-        options: ['expose' => true],
     )]
     public function login(
         Request $request,
@@ -309,7 +313,6 @@ class MwsUserController extends AbstractController
 
     #[Route('/logout',
         name: 'mws_user_logout',
-        options: ['expose' => true],
     )]
     public function logout(): Response
     {

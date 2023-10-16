@@ -1,3 +1,14 @@
 body {
     background-color: lightblue;
 }
+
+// TODO @apply post css NOT working anymore in sub scss ?
+// cf  apps/mws-sf-pdf-billings/backend/assets/styles/app.scss
+// .mws-user-show {
+//     .label {
+//         @apply md:w-1/4 lg:w-1/4 text-right;
+//     }
+//     .detail {
+//         @apply md:w-1/4 lg:w-1/4 text-left;
+//     }
+// }

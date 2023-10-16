@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="mws-user-index" {{ svelte_component('MwsUserList', {
+	<div class="mws-user-list" {{ svelte_component('MwsUserList', {
 		'filterForm': block('filterFormBlock')|e('html_attr'),
 		'paginator': block('paginatorBlock')|e('html_attr'),
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),

@@ -89,6 +89,18 @@ a {
     text-decoration: underline;
 }
 
+// TODO : why post css not working from 
+// packages/mws-moon-manager/assets/styles/app.scss
+.mws-user-show {
+    .label {
+        @apply w-full md:w-1/4 lg:w-1/6 md:text-right font-bold pl-1 p-3;
+    }
+    .detail {
+        @apply w-full md:w-1/4 lg:w-1/6 md:text-left p-1 self-center;
+    }
+}
+
+
 ///////////////////////
 // 🏰🏰🏰🏰🏰🏰🏰🏰🏰🏰🏰🏰
 // Custom domains or component classes

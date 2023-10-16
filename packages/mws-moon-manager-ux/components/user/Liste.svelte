@@ -50,13 +50,13 @@
           <!-- { JSON.stringify(u) } -->
           <!-- {@debug u} -->
           <td>
-            <a href="{ Routing.generate('user_show', {
+            <a href="{ Routing.generate('mws_user_show', {
               'id': u.id,
               'viewTemplate': filterTags,
             }) }">
               <button class="btn btn-outline-primary p-1">Voir</button>
             </a>
-            <a href="{ Routing.generate('user_edit', {
+            <a href="{ Routing.generate('mws_user_edit', {
                 'id': u.id,
                 'viewTemplate': filterTags
             }) }">
