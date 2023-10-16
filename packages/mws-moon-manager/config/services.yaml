@@ -12,27 +12,40 @@ services:
     #     resource: '../src/Controller'
     #     tags: ['controller.service_arguments']
     # Endroid\QrCodeBundle\Twig\QrCodeExtension: ~
+    # default configuration for services in *this* file
     _defaults:
-        autowire: true
-        autoconfigure: true
-        public: false
-    MWS\MoonManagerBundle\Command\:
-        resource: '../src/Command'
-    MWS\MoonManagerBundle\Controller\:
-        resource: '../src/Controller'
-        tags: ['controller.service_arguments']
-    MWS\MoonManagerBundle\Repository\:
-        resource: '../src/Repository'
-        tags: ['doctrine.repository_service']
-    MWS\MoonManagerBundle\Form\:
-        resource: '../src/Form'
-    MWS\MoonManagerBundle\Security\:
-        resource: '../src/Security'
-    MWS\MoonManagerBundle\EventSubscriber\:
-        resource: '../src/EventSubscriber'
-        tags:
-          # - {name: kernel.event_listener, event: kernel.exception,}
-          - {name: kernel.event_listener,}
+        autowire: true # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        # bind:
+        #     # pass this value to any $projectDir argument for any service
+        #     # that's created in this file (including controller arguments)
+        #     string $projectDir: '%kernel.project_dir%'
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    MWS\MoonManagerBundle\:
+        resource: '../src/'
+        exclude:
+          - '../src/DependencyInjection/'
+          - '../src/Entity/'
+          - '../src/Kernel.php'
+    # MWS\MoonManagerBundle\Command\:
+    #     resource: '../src/Command'
+    # MWS\MoonManagerBundle\Controller\:
+    #     resource: '../src/Controller'
+    #     tags: ['controller.service_arguments']
+    # MWS\MoonManagerBundle\Repository\:
+    #     resource: '../src/Repository'
+    #     tags: ['doctrine.repository_service']
+    # MWS\MoonManagerBundle\Form\:
+    #     resource: '../src/Form'
+    # MWS\MoonManagerBundle\Security\:
+    #     resource: '../src/Security'
+    # MWS\MoonManagerBundle\EventSubscriber\:
+    #     resource: '../src/EventSubscriber'
+    #     tags:
+    #       # - {name: kernel.event_listener, event: kernel.exception,}
+    #       - {name: kernel.event_listener,}
 
     # Remove PHP warnings like translation.extractor.php is depreciated :
     # TODO : remove this hack and look for package dependencies version upgrades (should have miss some package upgrades ?)

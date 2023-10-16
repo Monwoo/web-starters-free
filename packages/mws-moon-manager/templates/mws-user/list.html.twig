@@ -10,6 +10,7 @@
 		'paginator': block('paginatorBlock')|e('html_attr'),
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'users': pagination|serialize('json')|e('html_attr'),
+		'filterTags' : filterTags,
 	} ) }}>
 		{% block filterFormBlock %}
 			<div>

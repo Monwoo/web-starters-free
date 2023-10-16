@@ -5,6 +5,8 @@ namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use MWS\MoonManagerBundle\Entity\MwsUser;
+use MWS\MoonManagerBundle\Form\MwsUserAdminType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
@@ -12,6 +14,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -179,6 +182,103 @@ class MwsUserController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/voir/{viewTemplate?}', name: 'user_show', methods: ['GET'])]
+    public function show(MwsUser $mwsUser, $viewTemplate): Response
+    {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            return $this->redirectToRoute('mws_user_login');
+        }
+
+        return $this->render('user/show.html.twig', [
+            'user' => $mwsUser,
+            'viewTemplate' => $viewTemplate,
+            'title' => 'Utilisateur'
+        ]);
+    }
+
+    #[Route('/{id}/modifier/{viewTemplate}',
+        name: 'mws_user_edit',
+        methods: ['GET', 'POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function edit(
+        string|null $viewTemplate,
+        Request $request,
+        MwsUser $mwsUser,
+        EntityManagerInterface $entityManager,
+        MwsUserRepository $mwsUserRepository, 
+        UserPasswordHasherInterface $hasher
+    ): Response
+    {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            return $this->redirectToRoute('mws_user_login');
+        }
+
+        $fType = MwsUserAdminType::class;
+        // $previousOwners = $mwsUser->getTeamOwners()->toArray();
+        // dd($viewTemplate);
+        $formUser = $this->createForm($fType, $mwsUser, [
+            'shouldAddNew' => false,
+            'targetUser' => $mwsUser,
+        ]);
+        // $formPwd = $this->createForm(UpdateUserPasswordType::class, $mwsUser);
+
+        $formUser->handleRequest($request);
+        if ($formUser->isSubmitted() && $formUser->isValid()) {
+            // dd($mwsUser);
+            foreach ($mwsUser->getTeamOwners() as $key => $owner) {
+                // https://www.doctrine-project.org/projects/doctrine-orm/en/2.16/reference/unitofwork-associations.html#important-concepts
+                $owner->addTeamMember($mwsUser); // TODO : strange, not from setter ? maybe doctrine do not use setter ?
+                $entityManager->persist($owner);
+                // dd($owner);
+            }
+
+            $entityManager->persist($mwsUser);
+            $entityManager->flush();
+            // TODO : not updating password too ?
+            return $this->redirectToRoute('mws_user_list', [
+                "filterTag" => $viewTemplate
+            ], Response::HTTP_SEE_OTHER);
+        }
+
+        $formPwd->handleRequest($request);
+        if($formPwd->isSubmitted() && $formPwd->isValid()){
+            $pwd = $formPwd->get('password')->getData();
+            $orighinal_pwd = $formPwd->get('tok_pwd')->getData();
+
+            $mwsUser->setPassword($orighinal_pwd);
+            
+            if($pwd && strlen($pwd)){
+                $password = $hasher->hashPassword($mwsUser, $pwd);
+                $mwsUser->setPassword($password);
+            }
+            $entityManager->persist($mwsUser);
+            foreach ($mwsUser->getTeamOwners() as $key => $owner) {
+                // https://www.doctrine-project.org/projects/doctrine-orm/en/2.16/reference/unitofwork-associations.html#important-concepts
+                $entityManager->persist($owner);
+            }
+            $entityManager->flush();
+            return $this->redirectToRoute('mws_user_list', [
+                "filterTag" => $viewTemplate
+            ], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('@MoonManager/mws-user/edit.html.twig', [
+            'user' => $mwsUser,
+            'formUser' => $formUser,
+            'formPwd' => $formPwd,
+            'viewTemplate' => $viewTemplate,
+            'title' => 'Modifier l\'utilisateur'
+        ]);
+    }
 
     #[Route('/login',
         name: 'mws_user_login',
