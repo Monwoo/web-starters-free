@@ -8,6 +8,7 @@
   export let users = [];
   export let filterForm = ''; // injected raw html
   export let paginator = ''; // injected raw html
+  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
 
   // TODO : remove code duplication and put this in some 'mws-utils' package ?
   // https://stackoverflow.com/questions/5796718/html-entity-decode
@@ -25,7 +26,7 @@
   console.log(paginator);
 </script>
 
-<Base>
+<Base {copyright}>
   <div>{@html filterForm }</div>
   <div>{@html paginator }</div>
   <div>

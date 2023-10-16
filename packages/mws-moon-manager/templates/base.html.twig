@@ -22,24 +22,33 @@
 
 	<body>
 		{% block body %}
-			{% block header %}
-			{% endblock %}
+		  <div class="flex flex-col h-screen">
+				{% block header %}
+					{# // TODO : pre-rendering system instead of hard coded UI sync ? #}
+					<header class="py-5 bg-gray-700 text-white text-center"
+					{{ svelte_component('MwsHeader', {
 
-			{% block content %}
-			{% endblock %}
-
-			{% block footer %}
-				<footer
-				class="footer hidden"
-				{{ svelte_component('Footer', {
-					'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
-				}) }}>
-					{# // For SEO, will be replaced by js...
-					// TODO : prefill with some pre-rendering of js controller
-					//  at assets 'watch' and/or 'build' phase #}
-					<p>{{'mws.copyright'|trans({}, 'mws-moon-manager')}}</p>
-				</footer>
-			{% endblock %}
+					}) }}>
+						Sticky Header and Footer with Tailwind
+					</header>
+				{% endblock %}
+		    <main class="flex-1 overflow-y-auto p-5">
+					{% block content %}
+					{% endblock %}
+				</main>
+				{% block footer %}
+					<footer
+					class="py-5 bg-gray-700 text-center text-white"
+					{{ svelte_component('MwsFooter', {
+						'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+					}) }}>
+						{# // For SEO, will be replaced by js...
+						// TODO : prefill with some pre-rendering of js controller
+						//  at assets 'watch' and/or 'build' phase #}
+						<p>{{'mws.copyright'|trans({}, 'mws-moon-manager')}}</p>
+					</footer>
+				{% endblock %}
+			</div>
 		{% endblock %}
 
 		{% block javascript %}

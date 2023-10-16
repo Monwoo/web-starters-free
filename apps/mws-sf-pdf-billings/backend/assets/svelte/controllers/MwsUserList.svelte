@@ -11,7 +11,8 @@
     export let users;
     export let filterForm;
     export let paginator;
+    export let copyright = "© Monwoo 2023 (service@monwoo.com)";
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Liste {users} {filterForm} {paginator}></Liste>
+<Liste {users} {filterForm} {paginator} {copyright}></Liste>

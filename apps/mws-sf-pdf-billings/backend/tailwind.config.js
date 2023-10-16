@@ -4,6 +4,7 @@ module.exports = {
     "./assets/**/*.{js,json,svelte,ts}",
 
     "./templates/**/*.html.twig",
+    "./src/**/*.php",
 
     // TODO : inject with bundle recipe ? or webpack bundle local build ?
     // Symfony Bundle
@@ -11,6 +12,7 @@ module.exports = {
     "../../../packages/mws-moon-manager/assets/**/*.svelte",
     "../../../packages/mws-moon-manager/assets/**/*.ts",
     "../../../packages/mws-moon-manager/templates/**/*.html.twig",
+    "../../../packages/mws-moon-manager/src/**/*.php",
     // Svelte UX package
     "../../../packages/mws-moon-manager-ux/components/**/*.js",
     "../../../packages/mws-moon-manager-ux/components/**/*.svelte",
