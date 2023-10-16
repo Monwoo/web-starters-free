@@ -79,7 +79,7 @@ html {
 // done by '@tailwind base;' to overwrite without '!important' extra rule like :
 // button, [type='button'], [type='reset'], [type='submit'] {
 // button, [type] { // TIPS : will apply to all div etc....
-button, button[type] { // OK, all button and all button with type attributes
+button, button[type], [type="button"] { // OK, all button and all button with type attributes
     @apply font-bold py-2 px-4 rounded;
     @apply bg-blue-500 text-white;
     background-color: RGB(var(--mws-primary-rgb));;

@@ -52,7 +52,8 @@ const $ = window.$ ?? jQuery;
 window.$ = $;
 window.dayjs = dayjs;
 
-// TODO : un-comment below will be same as JS CDN injection in base.html.twig ?
+// TODO : un-comment below will NOT be same as JS CDN injection
+//in base.html.twig... WHY ?
 // import "survey-jquery";
 
 // https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/32182004
@@ -87,11 +88,12 @@ import "survey-core/survey.i18n.js";
 
 // Using JQuery styles
 import "survey-jquery/defaultV2.min.css";
-import * as Survey from "survey-core";
+import * as SurveyLib from "survey-core";
 import {
   surveyTheme
 } from './survey-js/_theme.json.js';
-// const Survey = window.Survey; // use Survey from CDN ?
+const Survey = window.Survey ?? SurveyLib; // use Survey from CDN ?
+window.Survey = Survey;
 
 const surveyFactory = (surveyForm, dataModel) => {
   Survey
@@ -104,8 +106,10 @@ const surveyFactory = (surveyForm, dataModel) => {
   // https://surveyjs.io/form-library/examples/questiontype-matrixdropdown/vuejs
   inputmask(Survey);
   console.debug("Survey dataModel :", dataModel);
+  const surveyDataInput = $('[name$="[jsonResult]"]', surveyForm);
+
   const surveyData = JSON.parse(
-    $('[name$="[jsonResult]"]', surveyForm).val()
+    surveyDataInput.val()
   );
 
   const surveyModel = new Survey.Model(dataModel);
@@ -117,11 +121,14 @@ const surveyFactory = (surveyForm, dataModel) => {
   surveyModel.onComplete.add((sender, options) => {
     const responseData = JSON.stringify(sender.data, null, 3);
     console.log("Will sync response :", responseData);
-
+    surveyDataInput.val(responseData);
+    surveyForm.submit();
   });
   surveyModel.data = surveyData;
 
-  let surveyWrapper = $(".survey-js-wrapper", surveyForm);
+  // let surveyWrapper = $(".survey-js-wrapper", surveyForm);
+  let surveyWrapper = $("#hack-test-sjs", surveyForm);
+
   if (!surveyWrapper.length) {
     surveyWrapper = $("<div class='survey-js-wrapper'></div>");
     surveyForm.prepend(surveyWrapper);
@@ -135,18 +142,17 @@ const surveyFactory = (surveyForm, dataModel) => {
 
 $(() => { // Wait for page load
   // Connect all page surveys :
-  setTimeout(() => { // TODO : Why survey js not loaded ? controller view output still not ready ?
-    $('.mws-survey-js-form').each((idx, htmlSurveyForm) => {
-      // WARNING : $(this) will work with js function, not lambda function...
-      // const surveyForm = $(this);
-      const surveyForm = $(htmlSurveyForm);
-      const surveyModel = $('[name$="[surveyJsModel]"]', surveyForm).val();
-      // surveyFactory(surveyForm, JSON.parse(decodeHtml(surveyModel)));
-      // TIPS : use '|raw' filter js side to avoid html entities decode
-      const surveyWrapper = surveyFactory(surveyForm, JSON.parse(surveyModel));
-    });
-
-  }, 200);
+  // setTimeout(() => { // TODO : Why survey js not loaded ? controller view output still not ready ?
+  $('.mws-survey-js-form').each((idx, htmlSurveyForm) => {
+    // WARNING : $(this) will work with js function, not lambda function...
+    // const surveyForm = $(this);
+    const surveyForm = $(htmlSurveyForm);
+    const surveyModel = $('[name$="[surveyJsModel]"]', surveyForm).val();
+    // surveyFactory(surveyForm, JSON.parse(decodeHtml(surveyModel)));
+    // TIPS : use '|raw' filter twig side to avoid html entities decode
+    const surveyWrapper = surveyFactory(surveyForm, JSON.parse(surveyModel));
+  });
+  // }, 200);
 })
 
 // // TODO : Highlight search keyworkds :

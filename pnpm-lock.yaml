@@ -50,24 +50,12 @@ importers:
       core-js:
         specifier: ^3.23.0
         version: 3.23.0
-      dayjs:
-        specifier: ^1.11.10
-        version: 1.11.10
       dotenv:
         specifier: ^16.3.1
         version: 16.3.1
       fos-router:
         specifier: file:vendor/friendsofsymfony/jsrouting-bundle/Resources
         version: file:apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources(webpack@5.74.0)
-      inputmask:
-        specifier: ^5.0.8
-        version: 5.0.8
-      jquery:
-        specifier: ^3.7.1
-        version: 3.7.1
-      mark.js:
-        specifier: ^8.11.1
-        version: 8.11.1
       mws-moon-manager-ux:
         specifier: workspace:*
         version: link:../../../packages/mws-moon-manager-ux
@@ -86,15 +74,6 @@ importers:
       sass-loader:
         specifier: ^13.3.2
         version: 13.3.2(node-sass@9.0.0)(webpack@5.74.0)
-      survey-core:
-        specifier: ^1.9.112
-        version: 1.9.112
-      survey-jquery:
-        specifier: ^1.9.112
-        version: 1.9.112
-      surveyjs-widgets:
-        specifier: ^1.9.112
-        version: 1.9.112
       svelte:
         specifier: ^3.59.2
         version: 3.59.2

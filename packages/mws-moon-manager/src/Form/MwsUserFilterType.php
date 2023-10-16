@@ -24,11 +24,11 @@ class MwsUserFilterType extends MwsSurveyJsType
     //     'help_attr': {'class': 'CUSTOM_LABEL_CLASS'}
     // }) }}
 
-    $builder->add('submit', SubmitType::class, [
-      'label' => 'Rechercher dans les utilisateurs',
-      'row_attr' => [
-        'class' => 'md:w-1/4 justify-center self-end'
-      ],
-    ]);
+    // $builder->add('submit', SubmitType::class, [
+    //   'label' => 'Rechercher dans les utilisateurs',
+    //   'row_attr' => [
+    //     'class' => 'md:w-1/4 justify-center self-end'
+    //   ],
+    // ]);
   }
 }
