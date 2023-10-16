@@ -3,16 +3,16 @@
 
 namespace MWS\MoonManagerBundle\Form;
 
-use App\Repository\UserRepository;
+use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+// use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class MwsUserFilterType extends MwsSurveyJsType
 {
   public function __construct(
     protected Security $security,
-    protected UserRepository $userRepository,
+    protected MwsUserRepository $mwsUserRepository,
   ) {
   }
 

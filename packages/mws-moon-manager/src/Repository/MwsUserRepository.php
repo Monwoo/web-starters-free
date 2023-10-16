@@ -4,6 +4,7 @@
 namespace MWS\MoonManagerBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -20,9 +21,54 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class MwsUserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    public $teamMemberschoiceLabelHandler = null;
+    public $teamMembersQuery = null;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, MwsUser::class);
+
+        $this->teamMemberschoiceLabelHandler = function ($user) { // TODO : remove code duplication betwen user types
+            $roles = $user->getRoles();
+            return $user->__toString()
+            . implode(", ", $roles);
+        };
+        $repo = $this;
+        $this->teamMembersQuery = function ($roles, $targetUser = null)
+        use ($repo) : QueryBuilder {
+            $qb = $repo->createQueryBuilder('m')
+            ->orderBy('m.username', 'ASC');
+            // ->addOrderBy('m.email', 'ASC');
+            $orRoles = '';
+            foreach($roles ?? [] as $idx => $role) {
+                $orRoles .= ($idx > 0 ? ' OR ' : '')
+                . "m.roles LIKE :role$idx";
+                $qb->setParameter("role$idx", "%$role%");
+            }
+            if (strlen($orRoles)) {
+                $qb->AndWhere($orRoles);
+            }
+            if ($targetUser) {
+                $qb->AndWhere('m.id != :selfId');
+                $qb->setParameter("selfId", $targetUser->getId());    
+            }
+
+            return $qb;
+        };
+
+    }
+
+    public function getAvailableRoles() {
+        // TODO : better user-role archi ? use frameworks ? or servie
+        // => todo sync with src/Form/UpdateUserType.php:38
+        return [
+            'ROLE_MWS_ADMIN' => 'Administrateur',
+            'ROLE_MWS_DIRECTOR' => 'Gérant',
+            'ROLE_MWS_COMMERCIAL' => 'Commercial',
+            'ROLE_MWS_PROSPECTOR' => 'Prospecteur',
+            'ROLE_MWS_SUPPLIER' => 'Fournisseur',
+            'ROLE_MWS_CLIENT' => 'Client',
+        ];
     }
 
     public function add(MwsUser $entity, bool $flush = false): void

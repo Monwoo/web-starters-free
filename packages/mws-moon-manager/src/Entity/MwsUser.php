@@ -3,8 +3,6 @@
 
 namespace MWS\MoonManagerBundle\Entity;
 
-// use App\Repository\UserRepository;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -22,6 +20,14 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Index(columns: ['roles'])]
 class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public static $ROLE_USER = 'ROLE_USER';
+    public static $ROLE_ADMIN = 'ROLE_MWS_ADMIN';
+    public static $ROLE_DIRECTOR = 'ROLE_MWS_DIRECTOR';
+    public static $ROLE_COMMERCIAL = 'ROLE_MWS_COMMERCIAL';
+    public static $ROLE_PROSPECTOR = 'ROLE_MWS_PROSPECTOR';
+    public static $ROLE_SUPPLIER = 'ROLE_MWS_SUPPLIER';
+    public static $ROLE_CLIENT = 'ROLE_MWS_CLIENT';
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -91,6 +97,11 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->mwsObserverEvents = new ArrayCollection();
         $this->mwsOwnerEvents = new ArrayCollection();
         $this->mwsCalendarTrackings = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return ucfirst($this->username);
     }
 
     /*

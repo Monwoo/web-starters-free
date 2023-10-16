@@ -8,6 +8,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsUserAdminType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
+use MWS\MoonManagerBundle\Form\MwsUserPasswordUpdateType;
 use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
@@ -188,7 +189,7 @@ class MwsUserController extends AbstractController
         methods: ['GET'],
 
     )]
-    public function show(MwsUser $mwsUser, $viewTemplate): Response
+    public function show(MwsUser $mwsTargetUser, $viewTemplate): Response
     {
         $user = $this->getUser();
         // TIPS : firewall, middleware or security guard can also
@@ -198,13 +199,13 @@ class MwsUserController extends AbstractController
         }
 
         return $this->render('@MoonManager/mws-user/show.html.twig', [
-            'user' => $mwsUser,
+            'targetUser' => $mwsTargetUser,
             'viewTemplate' => $viewTemplate,
             'title' => 'Utilisateur'
         ]);
     }
 
-    #[Route('/{id}/modifier/{viewTemplate}',
+    #[Route('/{id}/edit/{viewTemplate}',
         name: 'mws_user_edit',
         methods: ['GET', 'POST'],
         defaults: [
@@ -214,7 +215,7 @@ class MwsUserController extends AbstractController
     public function edit(
         string|null $viewTemplate,
         Request $request,
-        MwsUser $mwsUser,
+        MwsUser $mwsTargetUser,
         EntityManagerInterface $entityManager,
         MwsUserRepository $mwsUserRepository, 
         UserPasswordHasherInterface $hasher
@@ -228,25 +229,25 @@ class MwsUserController extends AbstractController
         }
 
         $fType = MwsUserAdminType::class;
-        // $previousOwners = $mwsUser->getTeamOwners()->toArray();
+        // $previousOwners = $mwsTargetUser->getTeamOwners()->toArray();
         // dd($viewTemplate);
-        $formUser = $this->createForm($fType, $mwsUser, [
+        $formUser = $this->createForm($fType, $mwsTargetUser, [
             'shouldAddNew' => false,
-            'targetUser' => $mwsUser,
+            'targetUser' => $mwsTargetUser,
         ]);
-        $formPwd = $this->createForm(UpdateMwsUserPasswordType::class, $mwsUser);
+        $formPwd = $this->createForm(MwsUserPasswordUpdateType::class, $mwsTargetUser);
 
         $formUser->handleRequest($request);
         if ($formUser->isSubmitted() && $formUser->isValid()) {
-            // dd($mwsUser);
-            foreach ($mwsUser->getTeamOwners() as $key => $owner) {
+            // dd($mwsTargetUser);
+            foreach ($mwsTargetUser->getTeamOwners() as $key => $owner) {
                 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.16/reference/unitofwork-associations.html#important-concepts
-                $owner->addTeamMember($mwsUser); // TODO : strange, not from setter ? maybe doctrine do not use setter ?
+                $owner->addTeamMember($mwsTargetUser); // TODO : strange, not from setter ? maybe doctrine do not use setter ?
                 $entityManager->persist($owner);
                 // dd($owner);
             }
 
-            $entityManager->persist($mwsUser);
+            $entityManager->persist($mwsTargetUser);
             $entityManager->flush();
             // TODO : not updating password too ?
             return $this->redirectToRoute('mws_user_list', [
@@ -256,17 +257,14 @@ class MwsUserController extends AbstractController
 
         $formPwd->handleRequest($request);
         if($formPwd->isSubmitted() && $formPwd->isValid()){
-            $pwd = $formPwd->get('password')->getData();
-            $orighinal_pwd = $formPwd->get('tok_pwd')->getData();
-
-            $mwsUser->setPassword($orighinal_pwd);
-            
+            $pwd = $formPwd->get('newPassword')->getData();
+            dd($pwd);            
             if($pwd && strlen($pwd)){
-                $password = $hasher->hashPassword($mwsUser, $pwd);
-                $mwsUser->setPassword($password);
+                $password = $hasher->hashPassword($mwsTargetUser, $pwd);
+                $mwsTargetUser->setPassword($password);
             }
-            $entityManager->persist($mwsUser);
-            foreach ($mwsUser->getTeamOwners() as $key => $owner) {
+            $entityManager->persist($mwsTargetUser);
+            foreach ($mwsTargetUser->getTeamOwners() as $key => $owner) {
                 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.16/reference/unitofwork-associations.html#important-concepts
                 $entityManager->persist($owner);
             }
@@ -277,7 +275,7 @@ class MwsUserController extends AbstractController
         }
 
         return $this->render('@MoonManager/mws-user/edit.html.twig', [
-            'user' => $mwsUser,
+            'targetUser' => $mwsTargetUser,
             'formUser' => $formUser,
             'formPwd' => $formPwd,
             'viewTemplate' => $viewTemplate,

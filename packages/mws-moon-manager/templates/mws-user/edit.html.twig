@@ -1,14 +1,20 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends '@MoonManager/base.html.twig' %}
 
-{% block title %}Hello {{ app.user.username }}
+{% block title %}Edit {{ app.user.username }}
 {% endblock %}
 
 {% block body %}
-	<div class="mws-user-show" {{ svelte_component('MwsUserShow', {
+	<div class="mws-user-show" {{ svelte_component('MwsUserEdit', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
 		'user': targetUser|serialize('json')|e('html_attr'),
+		'editForm': (form_start(formUser)
+		~ form_widget(formUser)
+		~ form_end(formUser))|e('html_attr'),
+		'passwordResetForm': (form_start(formPwd)
+		~ form_widget(formPwd)
+		~ form_end(formPwd))|e('html_attr'),
 		'viewTemplate' : viewTemplate,
 	} ) }}>
 		{% if app.user %}
@@ -17,6 +23,14 @@
 					{{ app.user.username }}</u>
 			</a>
 		{% endif %}
+		{# {% block editForm %}
+			<div>
+					{{ form_start(formUser, { 'attr' : {
+						'class': 'd-flex flex-wrap'
+					} }) }}
+					{{ form_end(formUser) }}
+			</div>
+		{% endblock %} #}
 
 		<div class="example-wrapper">
 			<h1>{{ block('title') }}! ✅</h1>
