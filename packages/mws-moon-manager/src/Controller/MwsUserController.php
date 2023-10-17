@@ -97,7 +97,7 @@ class MwsUserController extends AbstractController
         // USE CUSTOM form filters instead of knp simple ones
 
         $lastSearch = [
-            // TIPS urlencode() will use '+' to replace ' '
+            // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
             ])),

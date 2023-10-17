@@ -1,0 +1,41 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set model = {
+  description: "Rechercher"|trans,
+  completeText: {
+    en: "Seek in offers",
+    fr: "Rechercher dans les offres"
+  },
+  "__CMT__showPrevButton": true,
+  showQuestionNumbers: false,
+  elements: [{
+      name: "searchKeyword",
+      title: "Mot(s) clef(s)",
+      type: "text",
+      validators: [],
+      minWidth: "20%",
+      isRequired: false,
+  },{
+      name: "sourceRootLookupUrl",
+      title: "Url source page",
+      type: "text",
+      validators: [],
+      minWidth: "20%",
+      isRequired: false,
+  },{
+      name: "nextLookupUrlSelector",
+      title: "Css selector for next page url",
+      type: "text",
+      validators: [],
+      minWidth: "20%",
+      isRequired: false,
+  },{
+      name: "offersLookupUrlSelector",
+      title: "Css selector for offers urls",
+      type: "text",
+      validators: [],
+      minWidth: "20%",
+      isRequired: false,
+  },
+  ]
+} %}
+{{ model|serialize('json')|raw }}

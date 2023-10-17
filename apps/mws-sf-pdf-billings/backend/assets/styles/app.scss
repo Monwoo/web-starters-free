@@ -89,8 +89,15 @@ a {
     text-decoration: underline;
 }
 
+.sv-page.sv-body__page {
+    @apply flex;
+    .sv-row {
+        @apply p-1;
+    }
+}
+
 // TODO : why post css not working from 
-// packages/mws-moon-manager/assets/styles/app.scss
+// packages/mws-moon-manager/assets/styles/app.scss ?
 .mws-user-show {
     .label {
         @apply w-full md:w-1/4 lg:w-1/6 md:text-right font-bold pl-1 p-3;

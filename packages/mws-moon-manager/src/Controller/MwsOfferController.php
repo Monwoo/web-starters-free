@@ -4,6 +4,7 @@ namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use Psr\Log\LoggerInterface;
@@ -40,7 +41,7 @@ class MwsOfferController extends AbstractController
             Response::HTTP_SEE_OTHER
         );
     }
-
+    
     #[Route('/lookup/{viewTemplate?}', name: 'mws_offer_lookup')]
     public function lookup(
         $viewTemplate,
@@ -55,28 +56,23 @@ class MwsOfferController extends AbstractController
             return $this->redirectToRoute('mws_user_login');
         }
 
-        $qb = $mwsOfferRepository->createQueryBuilder('u');
-        $query = $qb->getQuery();
-        // dd($query->getResult());    
-        $offers = $paginator->paginate(
-            $query, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
-        );
+        $keyword = $request->query->get('keyword', null);
+        $sourceRootLookupUrl = $request->query->get('sourceRootLookupUrl', null);
+        
 
-        $this->logger->debug("Succeed to list users");
+        $qb = $mwsOfferRepository->createQueryBuilder('u');
 
         $lastSearch = [
-            // TIPS urlencode() will use '+' to replace ' '
+            // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
-                // "searchKeyword" => $keyword,
-                "searchKeyword" => null,
+                "searchKeyword" => $keyword,
+                "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/mws-user/survey-js-models/MwsUserFilterType.json.twig"
+                "@MoonManager/mws-user/survey-js-models/MwsOfferLookupType.json.twig"
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
-        $filterForm = $this->createForm(MwsUserFilterType::class, $lastSearch);
+        $filterForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
         $filterForm->handleRequest($request);
 
         if ($filterForm->isSubmitted()) {
@@ -91,23 +87,70 @@ class MwsOfferController extends AbstractController
                     true
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
                 return $this->redirectToRoute(
-                    'mws_user_list',
+                    'mws_offer_lookup',
                     array_merge($request->query->all(), [
-                        "filterTags" => $filterTags,
-                        "keyword" => $keyword
+                        "viewTemplate" => $viewTemplate,
+                        "keyword" => $keyword,
+                        "sourceRootLookupUrl" => $sourceRootLookupUrl,
                     ]),
                     Response::HTTP_SEE_OTHER
                 );
             }
         }
 
+        if ($keyword) {
+            $qb
+            ->andWhere("
+                LOWER(REPLACE(u.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(u.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(u.contact2, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(u.contact3, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+            ")
+            ->setParameter('keyword', '%' . $keyword . '%');
+        }
 
+        $query = $qb->getQuery();
+        // dd($query->getResult());    
+        $offers = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
+        $this->logger->debug("Succeed to list offers");
 
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
             'offers' => $offers,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,
         ]);
+    }
+
+    #[Route('/fetch-root-url', name: 'mws_offer_fetchRootUrl')]
+    public function fetchRootUrl(
+        Request $request,
+    ): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('mws_user_login');
+        }
+
+        $url = $request->query->get('url', null);
+        $this->logger->debug("Will fetch url : $url");
+
+        // Or use : https://symfony.com/doc/current/http_client.html
+        $respData = file_get_contents($url);
+        $response = new Response($respData);
+
+        // TIPS : too late after pdf echo...
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Cache-Control', 'no-cache');
+        $response->headers->set('Pragma', 'no-chache');
+        $response->headers->set('Expires', '0');
+        return $response;
     }
 }

@@ -8,11 +8,12 @@
 	<div class="mws-user-edit" {{ svelte_component('Mws/Offer/Lookup', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
-        'offers': offers,
+        'offers': offers|serialize('json')|e('html_attr'),
         'offersPaginator': block('offersPaginator'),
 		'lookup': lookupForm.vars.value|serialize('json')|e('html_attr'),
-		'lookupForm': (form_start(lookupForm)
-		~ form_widget(lookupForm)
+		'lookupForm': (form_start(lookupForm, { 'attr' : {
+            'class': 'd-flex flex-wrap mws-survey-js-form'
+        } }) ~ form_widget(lookupForm)
 		~ form_end(lookupForm))|e('html_attr'),
 		'viewTemplate' : viewTemplate,
 	} ) }}>

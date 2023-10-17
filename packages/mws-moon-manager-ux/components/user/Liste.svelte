@@ -21,7 +21,6 @@
     return txt.value;
   };
 
-  // filterForm = decodeURI(filterForm);f
   filterForm = decodeHtml(filterForm);
   paginator = decodeHtml(paginator);
   console.log(filterForm);

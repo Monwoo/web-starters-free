@@ -3,6 +3,7 @@
   import Routing from "fos-router";
   // TODO : namespace
   import Base from "../layout/Base.svelte";
+    import { onMount } from "svelte";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
@@ -19,6 +20,22 @@
   console.debug(offersPaginator);
   console.debug(viewTemplate);
   console.debug(lookupForm);
+
+  const jsonResult = JSON.parse(decodeURIComponent(lookup.jsonResult));
+  console.debug('jsonResult :', jsonResult);
+  // TODO : basehref ?
+  const baseHref = '/mws';
+  const respUrl = `${baseHref}/${locale}/mws-offer/fetch-root-url?url=`
+  + encodeURIComponent(jsonResult.sourceRootLookupUrl);
+
+  onMount(async () => {
+    const htmlResp = await fetch(respUrl);
+    console.debug(htmlResp);
+    // const win = window.open(jsonResult.sourceRootLookupUrl, "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+    const win = window.open('', "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+    // win.document.body.innerHTML = "HTML";
+    win.document.body.innerHTML = await htmlResp.text();
+  });
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
