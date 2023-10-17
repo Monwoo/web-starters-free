@@ -12,3 +12,13 @@ body {
 //         @apply md:w-1/4 lg:w-1/4 text-left;
 //     }
 // }
+
+// TODO : below fail on SOURCE map or postCss issue ? ...
+// @import "~survey-core/defaultV2.css";
+.mws-classic-survey-js {
+    // TODO https://sass-lang.com/documentation/at-rules/import/ + sound
+    // like @import get written to css output instead of scss interpretation ?
+    // @use "~survey-core/defaultV2.min.css";
+    @import "~survey-core/defaultV2.min.css";
+    @import "~survey-jquery/defaultV2.min.css";    
+}

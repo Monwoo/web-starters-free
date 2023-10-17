@@ -46,6 +46,10 @@ import * as jQuery from "jquery";
 const $ = window.$ ?? jQuery;
 window.$ = $;
 
+import * as SurveyLib from "survey-core";
+const Survey = window.Survey ?? SurveyLib; // use Survey from CDN ?
+window.Survey = Survey;
+
 // TODO : un-comment below will NOT be same as JS CDN injection
 //in base.html.twig... WHY ?
 import "survey-jquery";
@@ -84,17 +88,13 @@ window.$x = (STR_XPATH) => {
 }
 
 // TODO : below fail on SOURCE map or postCss issue ? ...
-// import "survey-core/defaultV2.css";
+// import "survey-core/defaultV2.css"; // TIPS : better inside app.scss
+// import "survey-jquery/defaultV2.min.css";
 import "survey-core/survey.i18n.js";
 
-// Using JQuery styles
-import "survey-jquery/defaultV2.min.css";
-import * as SurveyLib from "survey-core";
 import {
   surveyTheme
 } from './survey-js/_theme.json.js';
-const Survey = window.Survey ?? SurveyLib; // use Survey from CDN ?
-window.Survey = Survey;
 
 const surveyFactory = (surveyForm, dataModel) => {
   Survey
@@ -110,7 +110,7 @@ const surveyFactory = (surveyForm, dataModel) => {
   const surveyDataInput = $('[name$="[jsonResult]"]', surveyForm);
 
   const surveyData = JSON.parse(
-    surveyDataInput.val()
+    decodeURIComponent(surveyDataInput.val())
   );
 
   const surveyModel = new Survey.Model(dataModel);
@@ -122,7 +122,7 @@ const surveyFactory = (surveyForm, dataModel) => {
   surveyModel.onComplete.add((sender, options) => {
     const responseData = JSON.stringify(sender.data, null, 3);
     console.log("Will sync response :", responseData);
-    surveyDataInput.val(responseData);
+    surveyDataInput.val(encodeURIComponent(responseData));
     surveyForm.submit();
   });
   surveyModel.data = surveyData;
@@ -148,7 +148,7 @@ $(() => { // Wait for page load
     // WARNING : $(this) will work with js function, not lambda function...
     // const surveyForm = $(this);
     const surveyForm = $(htmlSurveyForm);
-    const surveyModel = $('[name$="[surveyJsModel]"]', surveyForm).val();
+    const surveyModel = decodeURIComponent($('[name$="[surveyJsModel]"]', surveyForm).val());
     // surveyFactory(surveyForm, JSON.parse(decodeHtml(surveyModel)));
     // TIPS : use '|raw' filter twig side to avoid html entities decode
     const surveyWrapper = surveyFactory(surveyForm, JSON.parse(surveyModel));

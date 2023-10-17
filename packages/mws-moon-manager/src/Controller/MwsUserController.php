@@ -97,12 +97,13 @@ class MwsUserController extends AbstractController
         // USE CUSTOM form filters instead of knp simple ones
 
         $lastSearch = [
-            "jsonResult" => json_encode([
+            // TIPS urlencode() will use '+' to replace ' '
+            "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
-            ]),
-            "surveyJsModel" => $this->renderView(
+            ])),
+            "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/mws-user/survey-js-models/MwsUserFilterType.json.twig"
-            ),
+            )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $filterForm = $this->createForm(MwsUserFilterType::class, $lastSearch);
         $filterForm->handleRequest($request);
@@ -115,7 +116,8 @@ class MwsUserController extends AbstractController
                 // dd($filterForm);
 
                 $surveyAnswers = json_decode(
-                    $filterForm->get('jsonResult')->getData(), true
+                    urldecode($filterForm->get('jsonResult')->getData()),
+                    true
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 return $this->redirectToRoute(
@@ -280,6 +282,57 @@ class MwsUserController extends AbstractController
             'formPwd' => $formPwd,
             'viewTemplate' => $viewTemplate,
             'title' => 'Modifier l\'utilisateur'
+        ]);
+    }
+
+    #[Route('/add/{viewTemplate}',
+        name: 'mws_user_new',
+        methods: ['GET', 'POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function new(
+        string|null $viewTemplate,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $hasher
+    ): Response {
+        $user = new MwsUser();
+
+        $fType = MwsUserAdminType::class;
+        // dd($viewTemplate);
+        $form = $this->createForm($fType, $user, [
+            'targetUser' => $user,
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $pwd = $form->get('newPassword')->getData();
+            // $user = $form->getData(); dd($user);
+            // dd($_POST);
+            $user->setUsername(ucfirst($user->getUserIdentifier()));
+            $password = $hasher->hashPassword($user, $pwd);
+            $user->setPassword($password);
+            foreach ($user->getTeamOwners() as $key => $owner) {
+                // https://www.doctrine-project.org/projects/doctrine-orm/en/2.16/reference/unitofwork-associations.html#important-concepts
+                $entityManager->persist($owner);
+            }
+
+            // TODO : track why SELF is/can be inside confirmator user ?
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('mws_user_list', [
+                'filterTag' => $viewTemplate
+            ], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render("@MoonManager/mws-user/new.html.twig", [
+            'user' => $user,
+            'form' => $form,
+            'viewTemplate' => $viewTemplate,
+            'title' => 'Nouvel utilisateur'
         ]);
     }
 

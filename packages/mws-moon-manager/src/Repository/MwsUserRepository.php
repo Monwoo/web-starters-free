@@ -27,13 +27,19 @@ class MwsUserRepository extends ServiceEntityRepository implements PasswordUpgra
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, MwsUser::class);
-
-        $this->teamMemberschoiceLabelHandler = function ($user) { // TODO : remove code duplication betwen user types
-            $roles = $user->getRoles();
-            return $user->__toString()
-            . implode(", ", $roles);
-        };
         $repo = $this;
+        $availableRoles = $repo->getAvailableRoles();
+
+        $this->teamMemberschoiceLabelHandler = function ($user)
+        use ($availableRoles) { // TODO : remove code duplication betwen user types
+            $roles = $user->getRoles();
+            return $user->__toString() . ' [ '
+            . implode(", ", array_map(function($r) use($availableRoles) {
+                return $availableRoles[$r] ?? $r;
+            }, array_filter($roles, function($r) {
+                return $r !== MwsUser::$ROLE_USER;
+            }))) . ' ]';
+        };
         $this->teamMembersQuery = function ($roles, $targetUser = null)
         use ($repo) : QueryBuilder {
             $qb = $repo->createQueryBuilder('m')

@@ -24,10 +24,13 @@
     export let editForm;
     export let passwordResetForm;
 
+    user = decodeHtml(user);
+    editForm = decodeHtml(editForm);
+    passwordResetForm = decodeHtml(passwordResetForm);
     console.debug(user);
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Edit user={JSON.parse(decodeHtml(user))} {copyright}
+<Edit user={JSON.parse(user)} {copyright}
 {locale} {viewTemplate} {editForm} {passwordResetForm}
 ></Edit>

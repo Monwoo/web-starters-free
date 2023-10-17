@@ -43,7 +43,10 @@ class MwsUserAdminType extends MwsUserBaseType
 
         parent::buildForm($builder, $options);
 
-        $builder->remove('password'); // no need to edit hashed password
+        // no need to edit hashed password, createdAt or updatedAt
+        $builder->remove('password')
+        ->remove('createdAt')
+        ->remove('updatedAt');
 
         if ($shouldAddNew) {
             $builder->add('newPassword', RepeatedType::class, [

@@ -6,7 +6,7 @@
     //     "../../../../packages/mws-moon-manager/assets/svelte/controllers/MwsUserList.svelte"
     // ]
 
-    import Liste from "mws-moon-manager-ux/components/user/Liste.svelte";
+    import New from "mws-moon-manager-ux/components/user/New.svelte";
     
     // TODO : remove code duplication and put this in some 'mws-utils' package ?
     // https://stackoverflow.com/questions/5796718/html-entity-decode
@@ -17,15 +17,18 @@
     return txt.value;
     }
 
-    export let users = '[]';
-    export let filterForm;
-    export let paginator;
     export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+    export let locale;
+    export let user = '{}';
+    export let viewTemplate;
+    export let form;
 
-    users = decodeHtml(users);
-    filterForm = decodeHtml(filterForm);
-    paginator = decodeHtml(paginator);
+    user = decodeHtml(user);
+    form = decodeHtml(form);
+    console.debug(user);
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Liste users={JSON.parse(users)} {filterForm} {paginator} {copyright}></Liste>
+<New user={JSON.parse(user)} {copyright}
+{locale} {viewTemplate} {form}
+></New>

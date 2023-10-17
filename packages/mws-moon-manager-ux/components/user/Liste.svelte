@@ -30,6 +30,13 @@
 </script>
 
 <Base {copyright}>
+  <div class="p-3">
+    <a href="{ Routing.generate('mws_user_new', {
+        'viewTemplate': filterTags
+    }) }">
+      <button class="btn btn-outline-success p-1">Nouvel utilisateur</button>
+    </a>
+  </div>
   <div>{@html filterForm}</div>
   <div>{@html paginator}</div>
   <div class="overflow-y-auto">
@@ -49,22 +56,24 @@
           {@const u = uBulk[0]}
           <!-- { JSON.stringify(u) } -->
           <!-- {@debug u} -->
-          <td>
-            <a href="{ Routing.generate('mws_user_show', {
-              'id': u.id,
-              'viewTemplate': filterTags,
-            }) }">
-              <button class="btn btn-outline-primary p-1">Voir</button>
-            </a>
-            <a href="{ Routing.generate('mws_user_edit', {
+          <tr>
+            <td>
+              <a href="{ Routing.generate('mws_user_show', {
                 'id': u.id,
-                'viewTemplate': filterTags
-            }) }">
-              <button class="btn btn-outline-success p-1">Modifier</button>
-            </a>
-          </td>
-          <th scope="row">{u.id}</th>
-          <td>{u.username}</td>
+                'viewTemplate': filterTags,
+              }) }">
+                <button class="btn btn-outline-primary p-1">Voir</button>
+              </a>
+              <a href="{ Routing.generate('mws_user_edit', {
+                  'id': u.id,
+                  'viewTemplate': filterTags
+              }) }">
+                <button class="btn btn-outline-success p-1">Modifier</button>
+              </a>
+            </td>
+            <th scope="row">[{u.id}] {u.roles.join(',')}</th>
+            <td>{u.username}</td>
+          </tr>
         {/each}
       </tbody>
     </table>
