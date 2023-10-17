@@ -7,12 +7,14 @@
   //        (and standalone component export....)
   import Header from "./Header.svelte";
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let locale;
+  export let viewTemplate;
 </script>
 
 <slot name="mws-body">
   <div class="flex flex-col h-screen">
     <header class="py-5 bg-gray-700 text-white text-center">
-      <Header>
+      <Header {locale} {viewTemplate}>
         <slot name="mws-header">
             Sticky Header and Footer with Tailwind 😎
         </slot>

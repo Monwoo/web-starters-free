@@ -76,6 +76,9 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsCalendarTracking::class)]
     private Collection $mwsCalendarTrackings;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsOfferTracking::class)]
+    private Collection $mwsOfferTrackings;
+
     use TimestampableEntity;
     // https://symfonycasts.com/screencast/symfony5-doctrine/bad-migrations
 
@@ -97,6 +100,7 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->mwsObserverEvents = new ArrayCollection();
         $this->mwsOwnerEvents = new ArrayCollection();
         $this->mwsCalendarTrackings = new ArrayCollection();
+        $this->mwsOfferTrackings = new ArrayCollection();
     }
 
     public function __toString()
@@ -397,6 +401,36 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($mwsCalendarTracking->getOwner() === $this) {
                 $mwsCalendarTracking->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsOfferTracking>
+     */
+    public function getMwsOfferTrackings(): Collection
+    {
+        return $this->mwsOfferTrackings;
+    }
+
+    public function addMwsOfferTracking(MwsOfferTracking $mwsOfferTracking): static
+    {
+        if (!$this->mwsOfferTrackings->contains($mwsOfferTracking)) {
+            $this->mwsOfferTrackings->add($mwsOfferTracking);
+            $mwsOfferTracking->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsOfferTracking(MwsOfferTracking $mwsOfferTracking): static
+    {
+        if ($this->mwsOfferTrackings->removeElement($mwsOfferTracking)) {
+            // set the owning side to null (unless already changed)
+            if ($mwsOfferTracking->getOwner() === $this) {
+                $mwsOfferTracking->setOwner(null);
             }
         }
 

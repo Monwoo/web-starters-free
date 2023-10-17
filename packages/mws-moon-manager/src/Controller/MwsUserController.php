@@ -298,6 +298,13 @@ class MwsUserController extends AbstractController
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $hasher
     ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            return $this->redirectToRoute('mws_user_login');
+        }
+
         $user = new MwsUser();
 
         $fType = MwsUserAdminType::class;

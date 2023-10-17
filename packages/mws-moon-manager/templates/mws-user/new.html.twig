@@ -1,11 +1,11 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends '@MoonManager/base.html.twig' %}
 
-{% block title %}Edit {{ app.user.username }}
+{% block title %}New user
 {% endblock %}
 
 {% block body %}
-	<div class="mws-user-show" {{ svelte_component('MwsUserNew', {
+	<div class="mws-user-new" {{ svelte_component('MwsUserNew', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
 		'form': (form_start(form)

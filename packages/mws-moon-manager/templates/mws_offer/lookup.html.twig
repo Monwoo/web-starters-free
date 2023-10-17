@@ -1,0 +1,31 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block title %}Search offers
+{% endblock %}
+
+{% block body %}
+	<div class="mws-user-edit" {{ svelte_component('Mws/Offer/Lookup', {
+		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+		'locale': app.locale,
+        'offers': offers,
+        'offersPaginator': block('offersPaginator'),
+		'lookup': lookupForm.vars.value|serialize('json')|e('html_attr'),
+		'lookupForm': (form_start(lookupForm)
+		~ form_widget(lookupForm)
+		~ form_end(lookupForm))|e('html_attr'),
+		'viewTemplate' : viewTemplate,
+	} ) }}>
+        {{ block('header') }}
+        {% block offersPaginator %}
+			<div class="count">
+					[ {{ offers.getTotalItemCount }} éléments]
+			</div>
+			<div class="navigation">
+					{{ knp_pagination_render(offers) }}
+			</div>
+		{% endblock %}
+        {{ block('content') }}
+        {{ block('footer') }}
+	</div>
+{% endblock %}
