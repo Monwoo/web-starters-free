@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block body %}
-	<div class="mws-user-edit" {{ svelte_component('Mws/Offer/Lookup', {
+  {# TODO : subpath controller give hard debug time since components have same
+	name as the moon-manager-ux package one, all debug link go to wrong file... #}
+	<div class="mws-offer-lookup" {{ svelte_component('Mws/Offer/Lookup', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
         'offers': offers|serialize('json')|e('html_attr'),

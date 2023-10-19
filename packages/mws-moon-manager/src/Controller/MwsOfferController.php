@@ -5,6 +5,7 @@ namespace MWS\MoonManagerBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsOffer;
+use MWS\MoonManagerBundle\Form\MwsOfferImportType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
@@ -71,7 +72,7 @@ class MwsOfferController extends AbstractController
                 "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/mws-user/survey-js-models/MwsOfferLookupType.json.twig"
+                "@MoonManager/mws_user/survey-js-models/MwsOfferLookupType.json.twig"
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $filterForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
@@ -156,14 +157,16 @@ class MwsOfferController extends AbstractController
         return $response;
     }
 
-    #[Route('/import/{format}',
+    #[Route('/import/{viewTemplate}/{format}',
         name: 'mws_offer_import',
         methods: ['GET','POST'],
         defaults: [
+            'viewTemplate' => null,
             'format' => 'monwoo-extractor-export',
         ],
     )]
     public function import(
+        string|null $viewTemplate,
         string $format,
         Request $request,
         MwsOfferRepository $mwsOfferRepository,
@@ -319,9 +322,11 @@ class MwsOfferController extends AbstractController
             'csv' => "Comma-separated values (CSV)",
             'json' => "JavaScript Object Notation (JSON)",            
         ];
-        return $this->render('mws-offer/import.html.twig', [
+        return $this->render('@MoonManager/mws_offer/import.html.twig', [
             'reportSummary' => $reportSummary,
-            'form' => $form,
+            'format' => $format,
+            'uploadForm' => $form,
+            'viewTemplate' => $viewTemplate,
             'title' => 'Importer les offres via ' . ($formatToText[$format] ?? $format)
         ]);
     }

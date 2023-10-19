@@ -1,0 +1,23 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block title %}Search offers
+{% endblock %}
+
+{% block body %}
+	<div class="mws-offer-import" {{ svelte_component('MwsOfferImport', {
+		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+		'locale': app.locale,
+		'reportSummary': reportSummary,
+		'format': format,
+		'uploadForm': (form_start(uploadForm, { 'attr' : {
+            'class': 'd-flex flex-wrap'
+        } }) ~ form_widget(uploadForm)
+		~ form_end(uploadForm))|e('html_attr'),
+		'viewTemplate' : viewTemplate,
+	} ) }}>
+        {{ block('header') }}
+        {{ block('content') }}
+        {{ block('footer') }}
+	</div>
+{% endblock %}

@@ -23,7 +23,7 @@
 
   const jsonResult = JSON.parse(decodeURIComponent(lookup.jsonResult));
   console.debug('jsonResult :', jsonResult);
-  // TODO : basehref ?
+  // TODO : basehref ? => NOP, use Routing from fos-routing instead...
   const baseHref = '/mws';
   const respUrl = `${baseHref}/${locale}/mws-offer/fetch-root-url?url=`
   + encodeURIComponent(jsonResult.sourceRootLookupUrl);
@@ -37,13 +37,16 @@
     // // win.document.body.innerHTML = "HTML";
     // win.document.body.innerHTML = await htmlResp.text();
   });
+
+  console.log(Routing.generate('mws_offer_import'));
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
   <div>
-    <a href="{ Routing.generate('mws_offer_import', {
+    <a href={ Routing.generate('mws_offer_import', {
       '_locale': locale ?? '',
-    }) }">
+      'viewTemplate': viewTemplate ?? '',
+    }) }>
       <button class="btn btn-outline-primary p-1">Importer des offres.</button>
     </a>    
   </div>

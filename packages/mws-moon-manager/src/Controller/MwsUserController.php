@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/{_locale<%app.supported_locales%>}/mws-user',
+#[Route('/{_locale<%app.supported_locales%>}/mws_user',
     options: ['expose' => true],
 )]
 class MwsUserController extends AbstractController
@@ -102,7 +102,7 @@ class MwsUserController extends AbstractController
                 "searchKeyword" => $keyword,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/mws-user/survey-js-models/MwsUserFilterType.json.twig"
+                "@MoonManager/mws_user/survey-js-models/MwsUserFilterType.json.twig"
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $filterForm = $this->createForm(MwsUserFilterType::class, $lastSearch);
@@ -175,8 +175,8 @@ class MwsUserController extends AbstractController
         );
 
         $this->logger->debug("Succeed to list users");
-        // return $this->renderForm('@MoonManager/mws-user/list.html.twig', [ // TODO : depreciated
-        return $this->render('@MoonManager/mws-user/list.html.twig', [
+        // return $this->renderForm('@MoonManager/mws_user/list.html.twig', [ // TODO : depreciated
+        return $this->render('@MoonManager/mws_user/list.html.twig', [
             'title' => 'Utilisateurs',
             'filterForm' => $filterForm,
             'pagination' => $pagination,
@@ -200,7 +200,7 @@ class MwsUserController extends AbstractController
             return $this->redirectToRoute('mws_user_login');
         }
 
-        return $this->render('@MoonManager/mws-user/show.html.twig', [
+        return $this->render('@MoonManager/mws_user/show.html.twig', [
             'targetUser' => $mwsTargetUser,
             'viewTemplate' => $viewTemplate,
             'title' => 'Utilisateur'
@@ -276,7 +276,7 @@ class MwsUserController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('@MoonManager/mws-user/edit.html.twig', [
+        return $this->render('@MoonManager/mws_user/edit.html.twig', [
             'targetUser' => $mwsTargetUser,
             'formUser' => $formUser,
             'formPwd' => $formPwd,
@@ -335,7 +335,7 @@ class MwsUserController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render("@MoonManager/mws-user/new.html.twig", [
+        return $this->render("@MoonManager/mws_user/new.html.twig", [
             'user' => $user,
             'form' => $form,
             'viewTemplate' => $viewTemplate,
@@ -363,7 +363,7 @@ class MwsUserController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-        return $this->render('@MoonManager/mws-user/login.html.twig', [
+        return $this->render('@MoonManager/mws_user/login.html.twig', [
             'last_username' => $lastUsername,
             'error'         => $error,
         ]);
