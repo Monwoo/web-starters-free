@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 
 #[ORM\Entity(repositoryClass: MwsOfferRepository::class)]
@@ -40,12 +41,28 @@ class MwsOffer
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $currentStatusSlug = null;
 
-    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: MwsOfferTracking::class)]
+    #[ORM\OneToMany(mappedBy: 'offer', targetEntity: MwsOfferTracking::class, cascade: ['persist'])]
     private Collection $mwsOfferTrackings;
+
+    // cascade: ['persist', 'remove']
+    #[ORM\ManyToMany(targetEntity: MwsContact::class, inversedBy: 'mwsOffers', cascade: ['persist'])]
+    private Collection $contacts;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $sourceName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $sourceDetail = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
+    use TimestampableEntity;
 
     public function __construct()
     {
         $this->mwsOfferTrackings = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +192,66 @@ class MwsOffer
                 $mwsOfferTracking->setOffer(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsContact>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(MwsContact $contact): static
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(MwsContact $contact): static
+    {
+        $this->contacts->removeElement($contact);
+
+        return $this;
+    }
+
+    public function getSourceName(): ?string
+    {
+        return $this->sourceName;
+    }
+
+    public function setSourceName(?string $sourceName): static
+    {
+        $this->sourceName = $sourceName;
+
+        return $this;
+    }
+
+    public function getSourceDetail(): ?array
+    {
+        return $this->sourceDetail;
+    }
+
+    public function setSourceDetail(?array $sourceDetail): static
+    {
+        $this->sourceDetail = $sourceDetail;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

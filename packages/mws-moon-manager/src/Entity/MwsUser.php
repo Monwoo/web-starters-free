@@ -79,6 +79,12 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsOfferTracking::class)]
     private Collection $mwsOfferTrackings;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsContactTracking::class)]
+    private Collection $mwsContactTrackings;
+
+    #[ORM\ManyToMany(targetEntity: MwsContact::class, inversedBy: 'mwsUsers')]
+    private Collection $comingFrom;
+
     use TimestampableEntity;
     // https://symfonycasts.com/screencast/symfony5-doctrine/bad-migrations
 
@@ -101,6 +107,8 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->mwsOwnerEvents = new ArrayCollection();
         $this->mwsCalendarTrackings = new ArrayCollection();
         $this->mwsOfferTrackings = new ArrayCollection();
+        $this->mwsContactTrackings = new ArrayCollection();
+        $this->comingFrom = new ArrayCollection();
     }
 
     public function __toString()
@@ -433,6 +441,60 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
                 $mwsOfferTracking->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsContactTracking>
+     */
+    public function getMwsContactTrackings(): Collection
+    {
+        return $this->mwsContactTrackings;
+    }
+
+    public function addMwsContactTracking(MwsContactTracking $mwsContactTracking): static
+    {
+        if (!$this->mwsContactTrackings->contains($mwsContactTracking)) {
+            $this->mwsContactTrackings->add($mwsContactTracking);
+            $mwsContactTracking->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsContactTracking(MwsContactTracking $mwsContactTracking): static
+    {
+        if ($this->mwsContactTrackings->removeElement($mwsContactTracking)) {
+            // set the owning side to null (unless already changed)
+            if ($mwsContactTracking->getOwner() === $this) {
+                $mwsContactTracking->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsContact>
+     */
+    public function getComingFrom(): Collection
+    {
+        return $this->comingFrom;
+    }
+
+    public function addComingFrom(MwsContact $comingFrom): static
+    {
+        if (!$this->comingFrom->contains($comingFrom)) {
+            $this->comingFrom->add($comingFrom);
+        }
+
+        return $this;
+    }
+
+    public function removeComingFrom(MwsContact $comingFrom): static
+    {
+        $this->comingFrom->removeElement($comingFrom);
 
         return $this;
     }

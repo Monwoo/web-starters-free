@@ -4,7 +4,10 @@ namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use MWS\MoonManagerBundle\Entity\MwsContact;
+use MWS\MoonManagerBundle\Entity\MwsContactTracking;
 use MWS\MoonManagerBundle\Entity\MwsOffer;
+use MWS\MoonManagerBundle\Entity\MwsOfferTracking;
 use MWS\MoonManagerBundle\Form\MwsOfferImportType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
@@ -223,14 +226,18 @@ class MwsOfferController extends AbstractController
                     unlink($importedUpload->getPathname());
                     // $reportSummary = $importContent;
                     /** @var MwsOffer[] */
-                    $offersDeserialized = $this->deserializeOffers($importContent, $format);
+                    $offersDeserialized = $this->deserializeOffers(
+                        $user, $importContent, $format, $newFilename
+                    );
                     // dd($offersDeserialized);
 
                     $savedCount = 0;
                     /** @var MwsOffer $offer */
                     foreach ($offersDeserialized as $idx => $offer) {
-                        $email = $offer->getEmail();
-                        $phone = $offer->getPhone();
+                        $sourceName = $offer->getSourceName();
+                        $slug = $offer->getSlug();
+                        $email = $offer->getContact1();
+                        $phone = $offer->getContact2();
 
                         // TODO : add Tracking logs
 
@@ -239,8 +246,10 @@ class MwsOfferController extends AbstractController
                         $qb = $mwsOfferRepository
                         ->createQueryBuilder('o')
                         // ->where('upper(p.username) = upper(:username)')
-                        ->where('o.username = :username')
-                        ->setParameter('username', trim(ucfirst(strtolower($username))));
+                        ->where('o.slug = :slug')
+                        ->andWhere('o.sourceName = :sourceName')
+                        ->setParameter('slug', $slug)
+                        ->setParameter('sourceName', $sourceName);
                         if ($email && strlen($email)) {
                             $qb->andWhere('p.email = :email')
                             ->setParameter('email', trim(strtolower($email)));
@@ -259,7 +268,7 @@ class MwsOfferController extends AbstractController
                         // var_dump($allDuplicates);exit;
                         if ($allDuplicates && count($allDuplicates)) {
                             if ($forceRewrite) {
-                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$source ?, $username, $email, $phone]\n";
+                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug, $email, $phone]\n";
                                 $inputOffer = $offer;
                                 // $offer = $allDuplicates[0];
                                 $offer = array_shift($allDuplicates);
@@ -273,14 +282,14 @@ class MwsOfferController extends AbstractController
                                     }
                                 };
                                 // TODO : factorize code with serializer service ? factorize to same location...
-                                $sync('username');
-                                $sync('leadStart');
-                                $sync('adress');
-                                $sync('postalCode');
-                                $sync('phone');
-                                $sync('email');
-                                $sync('comment');
-                                $sync('currentStatus');
+                                $sync('clientUsername');
+                                $sync('contact1');
+                                $sync('contact2');
+                                $sync('contact3');
+                                $sync('sourceUrl');
+                                $sync('clientUrl');
+                                $sync('currentBillingNumber');
+                                $sync('sourceDetail');
                                 // dump($inputOffer);
                                 // dd($offer);
                                 // CLEAN all possible other duplicates :
@@ -301,9 +310,11 @@ class MwsOfferController extends AbstractController
                         // }
 
                         // Default auto compute values :
-                        if (!$offer->getCurrentStatus()) {
+                        /** @var MwsOffer $offer */
+                        if (!$offer->getCurrentStatusSlug()) {
                             // TODO : from .env config file ? or from DB ? (status with tags for default selections ?)
-                            $offer->setCurrentStatus('a-relancer');
+                            $offerStatusSlug = "a-relancer"; // TODO : load from status DB or config DB...
+                            $offer->setCurrentStatusSlug($offerStatusSlug);
                             // dd($offer);    
                         }
 
@@ -332,41 +343,95 @@ class MwsOfferController extends AbstractController
     }
 
     // TODO : inside some Services helper class instead ?
+    public function offerSlugToSourceUrlTransformer($sourceName) {
+        return [ // TODO : from configs or services ?
+            'source.test.localhost' => function ($oSlug) {
+                return "http://source.test.localhost/projets/$oSlug";
+            },
+        ][$sourceName];
+    }
+    public function usernameToClientUrlTransformer($sourceName) {
+        return [ // TODO : from configs or services ?
+            'source.test.localhost' => function ($username) {
+                return "http://source.test.localhost/-$username";
+            },
+        ][$sourceName];
+    }
+
     // TODO : more like 'loadOffers' than deserialize,
     //        will save in db too for code factorisation purpose...
-    public function deserializeOffers($data, $format, $sourceId = null) {
+    public function deserializeOffers($user, $data, $format, $sourceId = null, $sourceFile = null) {
         /** @param MwsOffer[] **/
         $out = null;
         // TODO : add custom serializer format instead of if switch ?
         if ($format === 'monwoo-extractor-export') {
             $data = json_decode($data, true);
+            $out = [];
 
             $sources = array_keys($data);
             foreach ($data as $sourceSlug => $board) {
                 // foreach ($board['users'] as $contactSlug => $c) {
                 //     # TODO : add contacts (how to send back ? inside _contact props ?)
                 // }
-                $contactIndex = $board['users'];
-                foreach ($board['projects'] as $offerSlug => $o) {
+                // dump($board);
+                $contactIndex = $board['users'] ?? [];
+                foreach (($board['projects'] ?? []) as $offerSlug => $o) {
                     $offer = new MwsOffer();
+                    $offerStatusSlug = "a-relancer"; // TODO : load from status DB or config DB...
 
                     $userId = $o["uId"] ?? null;
+                    $contactBusinessUrl = $this
+                    ->usernameToClientUrlTransformer($sourceSlug)($userId);
+                    $offer->setSlug($offerSlug);
                     $offer->setClientUsername($userId);
+                    $offer->setContact1($o["email"]);
+                    $offer->setContact2($o["tel"]);
+                    // $offer->setContact3($o["..."]);
+                    $offer->setSourceUrl(
+                        $this->offerSlugToSourceUrlTransformer($sourceSlug)($offerSlug)
+                    );
+                    $offer->setClientUrl($contactBusinessUrl);
+                    $offer->setCurrentStatusSlug($offerStatusSlug);
                     // $offer->setTitle($o['title']);
+                    $offer->setSourceName($sourceId);
+                    $offer->setSourceDetail($o);
 
                     // TODO : getClientSlug that ensure contact unicity ?
 
                     $c = $contactIndex[$userId] ?? [];
                     // TODO : contactSlug = $c .... ; => unicity check in db before creating new one...
+                    // TODO : from repo ? need update if exist or keep existing ?
                     $contact = new MwsContact();
-                    $contact->setSourceId(
-                        $sourceId
-                    );
-                    $contact->setSourceDetail(
-                        json_encode($c)
-                    );
 
-                    $offer->setClientContact($contact[]);
+                    // TODO : from ORM update listeners instead of hard coded ? but how to inject comments etc... ?
+                    $traking = new MwsContactTracking();
+                    $traking->setContact($contact);
+                    $traking->setOwner($user);
+                    $traking->setComment("Imported from : $sourceFile");
+                    $contact->addMwsContactTracking($traking);
+                    
+                    $contact->setUsername($userId);
+                    $contact->setStatus($c['status']);
+                    $contact->setPostalCode($c['adresseL2_CP']);
+                    $contact->setCity($c['adresseL2_ville']);
+                    $contact->setAvatarUrl($c['photoUrl']);
+                    $contact->setEmail($c['email']); // TODO : data check and re-transform, tel might switch with email in source file...
+                    $contact->setPhone($c['tel']);
+                    $contact->setBusinessUrl($contactBusinessUrl);
+                    $contact->setSourceName($sourceId);
+                    $contact->setSourceDetail($c);
+
+                    $offer->addContact($contact);
+
+                    // TODO : from ORM update listeners instead of hard coded ?
+                    $traking = new MwsOfferTracking();
+                    $traking->setOffer($offer);
+                    $traking->setOwner($user);
+                    $traking->setComment("Imported from : $sourceFile");
+                    $traking->setOfferStatusSlug($offerStatusSlug);
+                    $offer->addMwsOfferTracking($traking);
+
+                    $out[] = $offer;
                 }
             }
         } else {
