@@ -29,16 +29,24 @@
   + encodeURIComponent(jsonResult.sourceRootLookupUrl);
 
   onMount(async () => {
-    const htmlResp = await fetch(respUrl);
-    console.debug(htmlResp);
-    // const win = window.open(jsonResult.sourceRootLookupUrl, "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
-    const win = window.open('', "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
-    // win.document.body.innerHTML = "HTML";
-    win.document.body.innerHTML = await htmlResp.text();
+    // // NOP, not common, will have security errors this way :
+    // const htmlResp = await fetch(respUrl);
+    // console.debug(htmlResp);
+    // // const win = window.open(jsonResult.sourceRootLookupUrl, "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+    // const win = window.open('', "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+    // // win.document.body.innerHTML = "HTML";
+    // win.document.body.innerHTML = await htmlResp.text();
   });
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
+  <div>
+    <a href="{ Routing.generate('mws_offer_import', {
+      '_locale': locale ?? '',
+    }) }">
+      <button class="btn btn-outline-primary p-1">Importer des offres.</button>
+    </a>    
+  </div>
   <div class="flex flex-wrap">
     <div class="label">
       Recherche d'une offre via :

@@ -1,0 +1,48 @@
+{
+  "source.test.localhost": {
+    "users": {
+      "someUserName": {
+        "userName": "someUserName",
+        "status": "",
+        "adresseL2_CP": null,
+        "adresseL2_ville": "  Paris",
+        "photoUrl": "",
+        "nbProjects": " 1  projet",
+        "membershipStart": "Mai  2023",
+        "email": "someUserEmail@test.localhost",
+        "tel": null
+      }
+    },
+    "projects": {
+      "336397": {
+        "uId": "someUserName",
+        "title": "Création, enregistrement de tutoriels vidéos",
+        "description": "2000 € HT la formation en vidéos de 2h minimum, 4h maximum. \n(la formation est composée de vidéos qui doivent durer 3 min en moyenne sur la totalité de la formation)\n\nVous avez une expertise reconnue sur un logiciel précis ? (suites Microsoft, Adobe, Autodesk, Nemetschek, Avid, Steinberg, etc.... ) \n\n- vous nous proposer le sujet avec un court extrait \n- on travaille ensemble un plan qui détaille les différents étapes\n- vous nous livrer les vidéos \n- si conforme à l'attendu -> 2000 € HT (TVA selon votre statut) sous 15 jours ",
+        "projectStatus": " Fermé",
+        "projectViews": 619,
+        "projectOffers": 24,
+        "projectInteractions": 47,
+        "projectBudget": "1 000 € à 10 000 €",
+        "projectPublicationDate": "12 avril 2022 à 09h02",
+        "projectOffersViewed": 22,
+        "projectOffersAnswered": 16,
+        "projectOffersProfileViewed": 7,
+        "monwooOfferId": "offer_xxxxx",
+        "monwooMsgViewedAt": "Le client a vu votre message le 05 juil. à 15:57.",
+        "monwooClientAnswerAt": null,
+        "monwooProfileViewedAt": null,
+        "monwooOfferAmount": "124,80 € TTC",
+        "monwooOfferDelay": "  3 jours",
+        "projectIsUrgent": 0,
+        "email": null,
+        "tel": null,
+        "messages": [
+          "<div class=\"flex\"><div><div class=\"relative inline-block no-underline group w-11 h-11\"><div class=\"overflow-hidden h-full w-full flex items-center justify-center rounded-full border-2 border-white shadow-md\"><img width=\"44\" height=\"44\" src=\"/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBM2djR2c9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--23cf5dbbb66e7fc6e15a0711791c3601379aac12/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RW5KbGMybDZaVjkwYjE5bWFYUmJCMmw5YVgwPSIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--6141e6d98a23b29587fc67b56a414429a8296dc4/avatar.jpg\"> </div></div></div><div class=\"ml-3\"><div><span class=\"font-bold\">Moi</span><span class=\"text-gray-500 ml-1\" data-controller=\"from-now-tooltip\" data-from-now-tooltip-date-value=\"2023-06-29T23:17:26+02:00\"><span data-v-beb22c1d=\"\"><span data-v-beb22c1d=\"\" data-controller=\"tooltip\" title=\"\" class=\"from-now mb-0\" data-bs-original-title=\"29 juin 2023 à 23:17\"> 19 jours </span></span></span><span class=\"ml-2 read-status read\"><span title=\"\" data-controller=\"tooltip\" data-bs-original-title=\"Message lu par someUserName le 05/07/23 à 15:57\" aria-label=\"Message lu par someUserName le 05/07/23 à 15:57\"><svg class=\"svg-inline--fa fa-check-circle fa-w-16 fa-xs text-gray-500\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"check-circle\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" data-fa-i2svg=\"\"><path fill=\"currentColor\" d=\"M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z\"></path></svg><!-- <i class=\"fas fa-check-circle fa-xs text-gray-500\"></i> Font Awesome fontawesome.com --></span></span></div><div><p>Bonsoir,</p>\n\n<p>Expert fullstack polyvalent depuis plus de 10 ans, j'ai plusieurs solutions pour vos besoins.</p>\n\n<p>Nous pouvons commencer par une étude analytique de projet(s) par sessions de 20 minutes en distanciels dès 124,80 € (en analysant vos besoins et devis reçus par exemple).</p>\n\n<p>Vous pouvez modifier ce devis et/ou voir certains autre des devis type que nous pouvons mettre en œuvre immédiatement via :\n<br>- <a href=\"http://mws.monwoo.com/demos/sf-pdf-billings/public/?billing_config_submitable%5BclientSlug%5D=--&amp;billing_config_submitable%5BquotationTemplate%5D=monwoo-06-analytical-study\" target=\"_blank\" rel=\"ugc\">http://mws.monwoo.com/demos/sf-pdf-billings/public/?billing_config_submitable%5BclientSlug%5D=--&amp;billing_config_submitable%5BquotationTemplate%5D=monwoo-06-analytical-study</a></p>\n\n<p>Discutons-en pour un devis plus affiné.\n<br>Souhaitant une agréable semaine à tous.</p>\n\n<p>--\n<br>Miguel Monwoo\n<br><a href=\"mailto:service@monwoo.com\" target=\"_blank\" rel=\"ugc\">service@monwoo.com</a></p></div></div></div>",
+          "<div class=\"flex\"><div><div class=\"message-block\"><div class=\"bg-warning w-11 h-11 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl text-white\"><svg class=\"svg-inline--fa fa-times fa-w-10 fa-xs\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fal\" data-icon=\"times\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 320 512\" data-fa-i2svg=\"\"><path fill=\"currentColor\" d=\"M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z\"></path></svg><!-- <i class=\"fal fa-xs fa-times\"></i> Font Awesome fontawesome.com --></div></div></div><div class=\"ml-3\"><div><span class=\"font-bold\"><span class=\"text-warning\">Projet fermé</span></span><span class=\"text-gray-500 ml-1\" data-controller=\"from-now-tooltip\" data-from-now-tooltip-date-value=\"2023-07-15T05:00:09+02:00\"><span data-v-beb22c1d=\"\"><span data-v-beb22c1d=\"\" data-controller=\"tooltip\" title=\"\" class=\"from-now mb-0\" data-bs-original-title=\"15 juillet 2023 à 05:00\"> 4 jours </span></span></span></div><div><p>Le projet est maintenant fermé</p></div></div></div>"
+        ],
+        "failUserImport": null
+      }
+    }    
+  },
+  "test": "hello world, fake data that should not break imports..."
+}
