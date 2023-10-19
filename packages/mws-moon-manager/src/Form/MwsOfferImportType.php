@@ -19,7 +19,7 @@ class MwsOfferImportType extends AbstractType
             'required' => false,
             'constraints' => [
                 new File([
-                    'maxSize' => '40M',
+                    'maxSize' => '100M',
                     'mimeTypes' => [
                         'application/json',
                         'text/json',

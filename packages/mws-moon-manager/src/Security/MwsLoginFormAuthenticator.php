@@ -59,16 +59,15 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public const t_failToGrantAccess = t_MwsLoginFormAuthenticator_failToGrantAccess;
     public const t_accessDenied = t_MwsLoginFormAuthenticator_accessDenied;
 
-    private UrlGeneratorInterface $urlGenerator;
 
     public function __construct(
         protected TranslatorInterface $translator,
         protected LoggerInterface $logger,
-        UrlGeneratorInterface $urlGenerator,
+        protected UrlGeneratorInterface $urlGenerator,
+        // protected string $firewallName,
     )
     {
         $this->logger->debug("[MwsLoginFormAuthenticator] DID construct");
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function supports(Request $request): bool
@@ -88,6 +87,14 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $username = $request->request->get('_username', '');
         $this->logger->debug("[MwsLoginFormAuthenticator] will try authenticate for $username");
         $request->getSession()->set(Security::LAST_USERNAME, $username);
+
+        // TODO : exceptions listeners are breaking regular exception last path stuff ?
+        // https://github.com/symfony/security-http/blob/6.3/Firewall/ExceptionListener.php#L195
+        // session isn't required when using HTTP basic authentication mechanism for example
+        // TODO : missing redirect to non-granted pages after successful login...
+        // if ($request->hasSession() && $request->isMethodSafe() && !$request->isXmlHttpRequest()) {
+        //     $this->saveTargetPath($request->getSession(), $this->firewallName, $request->getUri());
+        // }
 
         return new Passport(
             new UserBadge($username),

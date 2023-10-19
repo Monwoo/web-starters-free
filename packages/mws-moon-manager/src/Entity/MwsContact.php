@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsContactRepository;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsContactRepository::class)]
 class MwsContact
@@ -48,12 +49,15 @@ class MwsContact
     private ?string $businessUrl = null;
 
     #[ORM\OneToMany(mappedBy: 'contact', targetEntity: MwsContactTracking::class, cascade: ['persist'])]
+    #[Serializer\Ignore]
     private Collection $mwsContactTrackings;
 
     #[ORM\ManyToMany(targetEntity: MwsOffer::class, mappedBy: 'contacts')]
+    #[Serializer\Ignore]
     private Collection $mwsOffers;
 
     #[ORM\ManyToMany(targetEntity: MwsUser::class, mappedBy: 'comingFrom')]
+    #[Serializer\Ignore]
     private Collection $mwsUsers;
 
     use TimestampableEntity;

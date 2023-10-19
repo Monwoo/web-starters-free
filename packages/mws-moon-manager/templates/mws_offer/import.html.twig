@@ -1,9 +1,6 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends '@MoonManager/base.html.twig' %}
 
-{% block title %}Search offers
-{% endblock %}
-
 {% block body %}
 	<div class="mws-offer-import" {{ svelte_component('MwsOfferImport', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),

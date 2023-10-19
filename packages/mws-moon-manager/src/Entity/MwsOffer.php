@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsOfferRepository::class)]
 class MwsOffer
@@ -42,6 +43,7 @@ class MwsOffer
     private ?string $currentStatusSlug = null;
 
     #[ORM\OneToMany(mappedBy: 'offer', targetEntity: MwsOfferTracking::class, cascade: ['persist'])]
+    #[Serializer\Ignore]
     private Collection $mwsOfferTrackings;
 
     // cascade: ['persist', 'remove']

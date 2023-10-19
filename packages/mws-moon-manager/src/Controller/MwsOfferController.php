@@ -264,7 +264,7 @@ class MwsOfferController extends AbstractController
                         // var_dump($allDuplicates);exit;
                         if ($allDuplicates && count($allDuplicates)) {
                             if ($forceRewrite) {
-                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug, $email, $phone]<br/>";
+                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
                                 $inputOffer = $offer;
                                 // $offer = $allDuplicates[0];
                                 $offer = array_shift($allDuplicates);
@@ -342,16 +342,20 @@ class MwsOfferController extends AbstractController
     public function offerSlugToSourceUrlTransformer($sourceName) {
         return [ // TODO : from configs or services ?
             'source.test.localhost' => function ($oSlug) {
-                return "http://source.test.localhost/projets/$oSlug";
+                return "http://source.test.localhost/offers/$oSlug";
             },
-        ][$sourceName];
+        ][$sourceName] ?? function($oSlug) use ($sourceName) {
+            return "https://$sourceName/projets/$oSlug";
+        };
     }
     public function usernameToClientUrlTransformer($sourceName) {
         return [ // TODO : from configs or services ?
             'source.test.localhost' => function ($username) {
                 return "http://source.test.localhost/-$username";
             },
-        ][$sourceName];
+        ][$sourceName] ?? function($oSlug) use ($sourceName) {
+            return "https://$sourceName/-$oSlug";
+        };
     }
 
     // TODO : more like 'loadOffers' than deserialize,
@@ -411,8 +415,13 @@ class MwsOfferController extends AbstractController
                     $contact->setPostalCode($c['adresseL2_CP']);
                     $contact->setCity($c['adresseL2_ville']);
                     $contact->setAvatarUrl($c['photoUrl']);
-                    $contact->setEmail($c['email']); // TODO : data check and re-transform, tel might switch with email in source file...
-                    $contact->setPhone($c['tel']);
+                    // TODO : data check and re-transform, tel might switch with email in source file...
+                    if ($c['email'] ?? null) {
+                        $contact->setEmail($c['email']);
+                    }
+                    if ($c['tel'] ?? null) {
+                        $contact->setPhone($c['tel']);
+                    }
                     $contact->setBusinessUrl($contactBusinessUrl);
                     $contact->setSourceName($sourceSlug);
                     $contact->setSourceDetail($c);
