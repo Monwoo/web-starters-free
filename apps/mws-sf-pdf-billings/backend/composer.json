@@ -28,6 +28,7 @@
         "doctrine/orm": "^2.14",
         "endroid/qr-code-bundle": "^4.3",
         "friendsofsymfony/jsrouting-bundle": "^3.3",
+        "gedmo/doctrine-extensions": "^3.13",
         "knplabs/knp-paginator-bundle": "^5.9",
         "lexik/jwt-authentication-bundle": "*",
         "monwoo/mws-moon-manager-bundle": "^2.0",

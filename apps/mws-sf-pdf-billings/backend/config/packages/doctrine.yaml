@@ -52,7 +52,6 @@ doctrine:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
 
-D
         # TODO : inject DQL string_functions from composer recipe for MoonManager OR from bundle loads ?
         dql:
             string_functions:
