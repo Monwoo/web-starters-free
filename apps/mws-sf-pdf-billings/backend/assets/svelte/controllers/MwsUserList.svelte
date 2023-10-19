@@ -19,13 +19,15 @@
 
     export let users = '[]';
     export let filterForm;
+    export let headers = '{}'; // injected raw html
     export let paginator;
     export let copyright = "© Monwoo 2023 (service@monwoo.com)";
 
-    users = decodeHtml(users);
+    users = JSON.parse(decodeHtml(users));
     filterForm = decodeHtml(filterForm);
     paginator = decodeHtml(paginator);
+    headers = JSON.parse(decodeHtml(headers));
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Liste users={JSON.parse(users)} {filterForm} {paginator} {copyright}></Liste>
+<Liste {users} {filterForm} {paginator} {headers} {copyright}></Liste>

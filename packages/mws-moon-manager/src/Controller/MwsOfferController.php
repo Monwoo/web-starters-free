@@ -66,7 +66,7 @@ class MwsOfferController extends AbstractController
         $sourceRootLookupUrl = $request->query->get('sourceRootLookupUrl', null);
         
 
-        $qb = $mwsOfferRepository->createQueryBuilder('u');
+        $qb = $mwsOfferRepository->createQueryBuilder('o');
 
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
@@ -109,10 +109,10 @@ class MwsOfferController extends AbstractController
         if ($keyword) {
             $qb
             ->andWhere("
-                LOWER(REPLACE(u.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(u.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(u.contact2, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(u.contact3, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(o.contact2, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(o.contact3, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
             ")
             ->setParameter('keyword', '%' . $keyword . '%');
         }

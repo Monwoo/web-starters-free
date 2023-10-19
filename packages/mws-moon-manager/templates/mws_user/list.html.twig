@@ -8,6 +8,9 @@
 	<div class="mws-user-list" {{ svelte_component('MwsUserList', {
 		'filterForm': block('filterFormBlock')|e('html_attr'),
 		'paginator': block('paginatorBlock')|e('html_attr'),
+		'headers': {
+			'username' : knp_pagination_sortable(pagination, 'Login', 'username'),
+		}|serialize('json')|e('html_attr'),
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'users': pagination|serialize('json')|e('html_attr'),
 		'filterTags' : filterTags,

@@ -7,11 +7,16 @@
 {% block body %}
   {# TODO : subpath controller give hard debug time since components have same
 	name as the moon-manager-ux package one, all debug link go to wrong file... #}
-	<div class="mws-offer-lookup" {{ svelte_component('Mws/Offer/Lookup', {
+	<div class="mws-offer-lookup" {{ svelte_component('MwsOfferLookup', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
-        'offers': offers|serialize('json')|e('html_attr'),
-        'offersPaginator': block('offersPaginator'),
+		'offers': offers|serialize('json')|e('html_attr'),
+		'offersPaginator': block('offersPaginator'),
+		'offersHeaders': {
+		'clientUsername' : knp_pagination_sortable(offers, 'Nom du client', 'o.clientUsername'),
+		'contact1' : knp_pagination_sortable(offers, 'Contact', 'o.contact1'),
+		'contact2' : knp_pagination_sortable(offers, 'Contact bis', 'o.contact2'),
+		}|serialize('json')|e('html_attr'),
 		'lookup': lookupForm.vars.value|serialize('json')|e('html_attr'),
 		'lookupForm': (form_start(lookupForm, { 'attr' : {
             'class': 'd-flex flex-wrap mws-survey-js-form'

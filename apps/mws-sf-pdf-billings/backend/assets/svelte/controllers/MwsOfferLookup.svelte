@@ -13,6 +13,7 @@
   export let lookup = '{}';
   export let offers;
   export let offersPaginator;
+  export let offersHeaders = '{}'; // injected raw html
   export let viewTemplate;
   export let lookupForm;
 
@@ -25,15 +26,16 @@
     return txt.value;
   }
 
-  lookup = decodeHtml(lookup);
-  offers = decodeHtml(offers);
+  lookup = JSON.parse(decodeHtml(lookup));
+  offers = JSON.parse(decodeHtml(offers));
+  offersHeaders = JSON.parse(decodeHtml(offersHeaders));
   offersPaginator = decodeHtml(offersPaginator);
   lookupForm = decodeHtml(lookupForm);
   console.debug(lookup);
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Lookup lookup={JSON.parse(lookup)} {copyright}
+<Lookup {lookup} {copyright}
 {locale} {viewTemplate} {lookupForm} {offers}
-{offersPaginator}
+{offersPaginator} {offersHeaders}
 ></Lookup>

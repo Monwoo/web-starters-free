@@ -3,7 +3,8 @@
   import Routing from "fos-router";
   // TODO : namespace
   import Base from "../layout/Base.svelte";
-    import { onMount } from "svelte";
+  import ListCard from "./lookup/ListCard.svelte";
+  import { onMount } from "svelte";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
@@ -11,6 +12,7 @@
   export let lookup;
   export let offers;
   export let offersPaginator;
+  export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
 
@@ -60,7 +62,36 @@
   </div>
   {@html offersPaginator}
 
-  { JSON.stringify(offers) }
+  <!-- { JSON.stringify(offers) } -->
+  <div class="overflow-y-auto">
+    <table>
+      <thead>
+        <tr class="users-table-info">
+          <th scope="col">Actions</th>
+          <th scope="col">[Id] Status</th>
+          <th scope="col">
+            {@html offersHeaders.clientUsername ?? "Nom du client"}
+          </th>
+          <th scope="col">
+            {@html offersHeaders.contact1 ?? "Contact"}
+          </th>
+          <th scope="col">
+            {@html offersHeaders.contact2 ?? "Contact bis"}
+          </th>
+          <th scope="col">Titre</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each offers as offer}
+          <!-- { JSON.stringify(offer) } -->
+          <!-- {@debug offer} -->
+          <ListCard {offer}></ListCard>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+  <div>{@html offersPaginator}</div>
 </Base>
 
 <!-- <style lang="scss">
