@@ -236,39 +236,35 @@ class MwsOfferController extends AbstractController
                     foreach ($offersDeserialized as $idx => $offer) {
                         $sourceName = $offer->getSourceName();
                         $slug = $offer->getSlug();
-                        $email = $offer->getContact1();
-                        $phone = $offer->getContact2();
+                        // $email = $offer->getContact1();
+                        // $phone = $offer->getContact2();
 
-                        // TODO : add Tracking logs
-
-                        // TIPS : case insensitive search instead of findBy
                         // TODO : add as repository method ?
                         $qb = $mwsOfferRepository
                         ->createQueryBuilder('o')
-                        // ->where('upper(p.username) = upper(:username)')
                         ->where('o.slug = :slug')
                         ->andWhere('o.sourceName = :sourceName')
                         ->setParameter('slug', $slug)
                         ->setParameter('sourceName', $sourceName);
-                        if ($email && strlen($email)) {
-                            $qb->andWhere('p.email = :email')
-                            ->setParameter('email', trim(strtolower($email)));
-                        }
-                        if ($phone && strlen($phone)) {
-                            $qb->andWhere('p.phone = :phone')
-                            ->setParameter('phone', trim(strtolower($phone)));
-                        }
+                        // if ($email && strlen($email)) {
+                        //     $qb->andWhere('p.email = :email')
+                        //     ->setParameter('email', trim(strtolower($email)));
+                        // }
+                        // if ($phone && strlen($phone)) {
+                        //     $qb->andWhere('p.phone = :phone')
+                        //     ->setParameter('phone', trim(strtolower($phone)));
+                        // }
                         $query = $qb->getQuery();
 
                         // dd($query->getDQL());
-                        // dump($query);
+                        // dd($query);
                         $allDuplicates = $query->execute();
                         
                         // dd($allDuplicates);
                         // var_dump($allDuplicates);exit;
                         if ($allDuplicates && count($allDuplicates)) {
                             if ($forceRewrite) {
-                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug, $email, $phone]\n";
+                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug, $email, $phone]<br/>";
                                 $inputOffer = $offer;
                                 // $offer = $allDuplicates[0];
                                 $offer = array_shift($allDuplicates);
@@ -297,9 +293,9 @@ class MwsOfferController extends AbstractController
                                     $em->remove($otherDups);
                                 }
                             } else {
-                                $reportSummary .= "<strong>Ignore le doublon : </strong> [$lastName,  $firstName, $email, $phone]\n";
-                                continue;    
-                            }    
+                                $reportSummary .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
+                                continue;
+                            }
                         }
 
                         // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
@@ -322,7 +318,7 @@ class MwsOfferController extends AbstractController
                         $em->flush();
                         $savedCount++;
                     }
-                    $reportSummary .= "\n\nEnregistrement de $savedCount offres OK \n";
+                    $reportSummary .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
 
                     // var_dump($extension);var_dump($importContent);var_dump($offersDeserialized); exit;
                 }
@@ -360,7 +356,7 @@ class MwsOfferController extends AbstractController
 
     // TODO : more like 'loadOffers' than deserialize,
     //        will save in db too for code factorisation purpose...
-    public function deserializeOffers($user, $data, $format, $sourceId = null, $sourceFile = null) {
+    public function deserializeOffers($user, $data, $format, $sourceFile = null) {
         /** @param MwsOffer[] **/
         $out = null;
         // TODO : add custom serializer format instead of if switch ?
@@ -368,7 +364,7 @@ class MwsOfferController extends AbstractController
             $data = json_decode($data, true);
             $out = [];
 
-            $sources = array_keys($data);
+            // $sources = array_keys($data);
             foreach ($data as $sourceSlug => $board) {
                 // foreach ($board['users'] as $contactSlug => $c) {
                 //     # TODO : add contacts (how to send back ? inside _contact props ?)
@@ -393,7 +389,7 @@ class MwsOfferController extends AbstractController
                     $offer->setClientUrl($contactBusinessUrl);
                     $offer->setCurrentStatusSlug($offerStatusSlug);
                     // $offer->setTitle($o['title']);
-                    $offer->setSourceName($sourceId);
+                    $offer->setSourceName($sourceSlug);
                     $offer->setSourceDetail($o);
 
                     // TODO : getClientSlug that ensure contact unicity ?
@@ -418,7 +414,7 @@ class MwsOfferController extends AbstractController
                     $contact->setEmail($c['email']); // TODO : data check and re-transform, tel might switch with email in source file...
                     $contact->setPhone($c['tel']);
                     $contact->setBusinessUrl($contactBusinessUrl);
-                    $contact->setSourceName($sourceId);
+                    $contact->setSourceName($sourceSlug);
                     $contact->setSourceDetail($c);
 
                     $offer->addContact($contact);

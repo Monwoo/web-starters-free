@@ -31,7 +31,7 @@
       {@html uploadForm}
     </div>
     <div>
-      {reportSummary}
+      {@html reportSummary}
     </div>
   </div>
 </Base>
