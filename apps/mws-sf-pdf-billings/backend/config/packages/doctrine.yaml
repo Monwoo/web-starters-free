@@ -6,7 +6,7 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         server_version: '15'
     orm:
-        auto_generate_proxy_classes: true
+        auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
@@ -15,21 +15,44 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
-                # https://stackoverflow.com/questions/32317033/symfony-gedmo-blameable-not-working
-                # TODO : below have no effect, php bin/console mws:add-user -c 1 will fail if not setting up updatedAt etc...
-                # gedmo_tree:
-                #     type: annotation
-                #     prefix: Gedmo\Tree\Entity
-                #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
-                #     alias: GedmoTree
-                #     is_bundle: false
-                # gedmo_sortable:
-                #     type: annotation
-                #     prefix: Gedmo\Sortable\Entity
-                #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Sortable/Entity"
-                #     alias: GedmoTree
-                #     is_bundle: false
+            # https://stackoverflow.com/questions/32317033/symfony-gedmo-blameable-not-working
+            # TODO : below have no effect, php bin/console mws:add-user -c 1 will fail if not setting up updatedAt etc...
+            # gedmo_tree:
+            #     type: annotation
+            #     prefix: Gedmo\Tree\Entity
+            #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
+            #     alias: GedmoTree
+            #     is_bundle: false
+            # gedmo_sortable:
+            #     type: annotation
+            #     prefix: Gedmo\Sortable\Entity
+            #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Sortable/Entity"
+            #     alias: GedmoTree
+            #     is_bundle: false
 
+            # TODO : inject from composer recipe for MoonManager OR from bundle loads ?
+            # https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/symfony.md
+            translatable:
+                type: attribute # or annotation or xml
+                alias: Gedmo
+                prefix: Gedmo\Translatable\Entity
+                # make sure vendor library location is correct
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
+            loggable:
+                type: attribute # or annotation or xml
+                alias: Gedmo
+                prefix: Gedmo\Loggable\Entity
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
+            tree:
+                type: attribute # or annotation or xml
+                alias: Gedmo
+                prefix: Gedmo\Tree\Entity
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+
+D
         # TODO : inject DQL string_functions from composer recipe for MoonManager OR from bundle loads ?
         dql:
             string_functions:
