@@ -6,7 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/{_locale<%app.supported_locales%>}')]
+#[Route('/{_locale<%app.supported_locales%>}',
+    options: ['expose' => true],
+)]
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]

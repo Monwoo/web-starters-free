@@ -16,7 +16,7 @@ const env = dotenv.config();
 const baseHref = env.parsed?.BASE_HREF ?? ""; 
 // starting with : "/"
 const baseHrefFull = env.parsed?.BASE_HREF_FULL ?? ""; // TODO : duplication ? remove ? easy hack for now...
-
+const baseHrefPort = env.parsed?.BASE_HREF_PORT ?? null;
 Encore
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
@@ -70,6 +70,11 @@ Encore
         options['process.env'] = options['process.env'] ?? {};
         options['process.env'].BASE_HREF = JSON.stringify(baseHref);
         options['process.env'].BASE_HREF_FULL = JSON.stringify(baseHrefFull);
+        options['process.env'].BASE_HREF_PORT = JSON.stringify(baseHrefPort);
+        // TODO : strange : why below is having trouble to work ? :
+        // options['process.env'].BASE_HREF = baseHref;
+        // options['process.env'].BASE_HREF_FULL = baseHrefFull;
+        // options['process.env'].BASE_HREF_PORT = baseHrefPort;
     })
 
     // configure Babel

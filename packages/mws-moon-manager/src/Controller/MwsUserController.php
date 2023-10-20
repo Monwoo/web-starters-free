@@ -171,7 +171,7 @@ class MwsUserController extends AbstractController
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
+            $request->query->getInt('pageLimit', 10), /*page number*/
         );
 
         $this->logger->debug("Succeed to list users");

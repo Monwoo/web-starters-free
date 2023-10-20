@@ -12,6 +12,7 @@ use MWS\MoonManagerBundle\Form\MwsOfferImportType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
+use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -122,7 +123,7 @@ class MwsOfferController extends AbstractController
         $offers = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
+            $request->query->getInt('pageLimit', 10), /*page number*/
         );
 
         $this->logger->debug("Succeed to list offers");
@@ -130,6 +131,86 @@ class MwsOfferController extends AbstractController
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
             'offers' => $offers,
             'lookupForm' => $filterForm,
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    // Tags are status AND category of status (a category is also a status...)
+    #[Route('/tags/{viewTemplate?}', name: 'mws_offer_tags')]
+    public function tags(
+        $viewTemplate,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
+        PaginatorInterface $paginator,
+        Request $request,
+    ): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('mws_user_login');
+        }
+
+        $keyword = $request->query->get('keyword', null);
+        
+        $qb = $mwsOfferStatusRepository->createQueryBuilder('t');
+
+        $lastSearch = [
+            // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
+            "jsonResult" => rawurlencode(json_encode([
+                "searchKeyword" => $keyword,
+            ])),
+            "surveyJsModel" => rawurlencode($this->renderView(
+                "@MoonManager/mws_user/survey-js-models/MwsOfferStatusLookupType.json.twig"
+            )),
+        ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
+        $filtersForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
+        $filtersForm->handleRequest($request);
+
+        if ($filtersForm->isSubmitted()) {
+            $this->logger->debug("Did submit search form");
+
+            if ($filtersForm->isValid()) {
+                $this->logger->debug("Search form ok");
+                // dd($filtersForm);
+
+                $surveyAnswers = json_decode(
+                    urldecode($filtersForm->get('jsonResult')->getData()),
+                    true
+                );
+                $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                return $this->redirectToRoute(
+                    'mws_offer_tags',
+                    array_merge($request->query->all(), [
+                        "viewTemplate" => $viewTemplate,
+                        "keyword" => $keyword,
+                    ]),
+                    Response::HTTP_SEE_OTHER
+                );
+            }
+        }
+
+        if ($keyword) {
+            $qb
+            ->andWhere("
+                LOWER(REPLACE(t.slug, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(t.label, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+            ")
+            ->setParameter('keyword', '%' . $keyword . '%');
+        }
+
+        $query = $qb->getQuery();
+        // dd($query->getResult());    
+        $offers = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            $request->query->getInt('pageLimit', 10), /*page number*/
+        );
+
+        $this->logger->debug("Succeed to list offers");
+
+        return $this->render('@MoonManager/mws_offer/tags.html.twig', [
+            'offers' => $offers,
+            'filtersForm' => $filtersForm,
             'viewTemplate' => $viewTemplate,
         ]);
     }

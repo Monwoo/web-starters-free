@@ -1,17 +1,14 @@
 <script>
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-  import Routing from "fos-router";
+  import NavBar from "../menu/NavBar.svelte";
 
   export let locale;
   export let viewTemplate;
+
+  // TODO : select navBar depending of User roles....
 </script>
 
 <!-- TODO : menu on roles, or menu items on roles or both or simple button menu ? -->
-<a href="{ Routing.generate('mws_offer_lookup', {
-  '_locale': locale ?? '',
-  'viewTemplate': viewTemplate ?? '',
-}) }">
-  <button class="btn btn-outline-primary p-1">Rechercher une offre</button>
-</a>
-
-<slot />
+<NavBar {locale} {viewTemplate}>
+  <slot />
+</NavBar>

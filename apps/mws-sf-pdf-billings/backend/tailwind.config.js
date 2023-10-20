@@ -18,6 +18,8 @@ module.exports = {
     "../../../packages/mws-moon-manager-ux/components/**/*.js",
     "../../../packages/mws-moon-manager-ux/components/**/*.svelte",
     "../../../packages/mws-moon-manager-ux/components/**/*.ts",
+    // https://flowbite.com/docs/getting-started/quickstart/
+    "./node_modules/flowbite/**/*.js",
   ],
   theme: {
     extend: {},
@@ -25,6 +27,7 @@ module.exports = {
   plugins: [
     // https://github.com/tailwindlabs/tailwindcss-forms
     require('@tailwindcss/forms'),
+    require('flowbite/plugin'),
   ],
 }
 

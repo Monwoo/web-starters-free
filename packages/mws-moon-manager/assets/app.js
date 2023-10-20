@@ -7,11 +7,16 @@
 
 // TODO : integrate with some 'app' encore existing builds and configs... best way to extend ?
 
+// import 'flowbite/dist/flowbite.min.js';
+// import 'flowbite/dist/flowbite.js';
+import 'flowbite';
+// TODO : improve flowbite integration :
+// https://flowbite.com/docs/getting-started/svelte/
+
 // TIPS : should be init BEFORE registerSvelteControllerComponents that use it
 import Routing from 'fos-router';
-const baseUrlFull = process.env.BASE_HREF_FULL;
-Routing.setBaseUrl(baseUrlFull);
 
+// TIPS : load ROUTES BEFORE adjustment, or will be rewrite by json content....
 // <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 // <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 // Above not working... trying the JSON way :
@@ -19,6 +24,16 @@ Routing.setBaseUrl(baseUrlFull);
 const routes = require('../../../apps/mws-sf-pdf-billings/backend/assets/fos-routes.json');
 console.log(routes);
 Routing.setRoutingData(routes);
+
+// TODO : no need to unparse ? done by webpack ?
+// const baseUrlFull = JSON.parse(process.env.BASE_HREF_FULL ?? "null");
+const baseUrlFull = process.env.BASE_HREF_FULL ?? null;
+Routing.setBaseUrl(baseUrlFull);
+// const baseUrlPort = JSON.parse(process.env.BASE_HREF_PORT ?? "null");
+const baseUrlPort = process.env.BASE_HREF_PORT ?? null;
+if (baseUrlPort) { // TIPS : for absolute url to work in dev
+  Routing.setPort(baseUrlPort);
+}
 
 import {
   registerSvelteControllerComponents

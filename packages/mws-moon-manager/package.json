@@ -30,5 +30,8 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "flowbite": "^1.8.1"
     }
 }

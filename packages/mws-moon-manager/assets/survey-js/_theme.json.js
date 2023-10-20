@@ -8,8 +8,9 @@
 // https://surveyjs.io/form-library/documentation/get-started-jquery#link-surveyjs-resources
 // https://surveyjs.io/form-library/documentation/manage-default-themes-and-styles#switch-between-themes
 
-// const baseUrl = process.env.BASE_HREF;
-const baseUrlFull = process.env.BASE_HREF_FULL;
+const baseUrl = process.env.BASE_HREF;
+// TODO : why no need to jsonParse ? auto done by webpack ?
+// const baseUrlFull = JSON.parse(process.env.BASE_HREF_FULL ?? "null") ?? null;
 
 export const surveyTheme = ({
 
