@@ -20,6 +20,7 @@
 			{% endif %}
 		</title>
 		{% block stylesheets %}
+			{{ encore_entry_link_tags('mwsMoonManager') }}
 			{{ encore_entry_link_tags('app') }}
 			{# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
 			{# https://www.javatpoint.com/css-transition-opacity
@@ -35,6 +36,16 @@
 	</head>
 
 	<body>
+		{% block storesInit %}
+			<div
+			class="hidden"
+			{{ svelte_component('MwsReduxSync', {
+				'stateUpdate': {
+					'packageName': packageName,
+					'packageVersion': packageVersion,
+				}|serialize('json')|e('html_attr'),
+			}) }}></div>
+		{% endblock %}
 
 		<div
 			class="m-3 page-flex">
@@ -150,6 +161,7 @@
 			<script>
 				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
 			</script>
+	    {{ encore_entry_script_tags('mwsMoonManager') }}
 	    {{ encore_entry_script_tags('app') }}
 
 			{# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}

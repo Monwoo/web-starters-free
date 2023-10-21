@@ -12,5 +12,5 @@
     }
   })
 
-  console.debug('Did update mws redux with : ', stateUpdate);
+  console.debug('Did update MWS ReduxStorage with : ', stateUpdate);
 </script>

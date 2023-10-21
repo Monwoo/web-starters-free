@@ -22,6 +22,17 @@
 	</head>
 
 	<body>
+		{% block storesInit %}
+			<div
+			class="hidden"
+			{{ svelte_component('MwsReduxSync', {
+				'stateUpdate': {
+					'packageName': packageName,
+					'packageVersion': packageVersion,
+				}|serialize('json')|e('html_attr'),
+			}) }}></div>
+		{% endblock %}
+
 		{% block body %}
 		  <div class="flex flex-col h-screen">
 				{% block header %}
@@ -70,15 +81,6 @@
 		{% endblock %}
 
 		{% block javascript %}
-			<div
-			class="hidden"
-			{{ svelte_component('MwsReduxSync', {
-				'stateUpdate': {
-					'packageName': packageName,
-					'packageVersion': packageVersion,
-				}|serialize('json')|e('html_attr'),
-			}) }}/>
-
 			<script>
 				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
 			</script>

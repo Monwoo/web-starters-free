@@ -11,7 +11,7 @@
         txt.innerHTML = html;
         return txt.value;
     }
-    console.debug('MwsReduxSync', stateUpdate);
+    // console.debug('MwsReduxSync', stateUpdate);
     stateUpdate = JSON.parse(decodeHtml(stateUpdate || 'null'));
 </script>
 <ReduxStorage {stateUpdate} />
