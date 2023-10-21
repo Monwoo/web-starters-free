@@ -23,7 +23,7 @@
     <main class="flex-1 overflow-y-auto p-5">
       <slot />
     </main>
-    <footer class="py-5 bg-gray-700 text-center text-white">
+    <footer class="py-5 bg-gray-700 text-gray-300 text-center text-white">
       <Footer {copyright}>
         <slot name="mws-footer" />
       </Footer>

@@ -19,6 +19,12 @@
 
   // TODO : format leadAt date with dayJs ?
   console.debug(offer);
+
+  // TODO : configurable services, use generic data connectors instead of :
+  // TODO : remove code duplication :
+  let myOfferId = offer.sourceDetail?.monwooOfferId ?? null;
+  myOfferId = myOfferId ? 'offers/' + myOfferId.split('_').slice(-1)[0] : null;
+
 </script>
 
 <tr>
@@ -44,6 +50,14 @@
     {dayjs(offer.leadStart).format('YYYY/MM/DD h:mm')}
   </td>
   <td>{offer.budget ?? ''}</td>
-  <td>{offer.sourceDetail?.title ?? ''}</td>
+  <td>
+    {#if myOfferId && offer.sourceUrl}
+      <a href="{`${offer.sourceUrl}/${myOfferId}`}" target="_blank" rel="noreferrer">
+        {offer.sourceDetail?.title ?? 'Voir les messages'}
+      </a>
+    {:else }
+      {offer.sourceDetail?.title ?? ''}
+    {/if}
+  </td>
   <td>{offer.sourceDetail?.description ?? ''}</td>
 </tr>

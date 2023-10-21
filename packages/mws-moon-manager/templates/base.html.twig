@@ -49,20 +49,36 @@
 				</main>
 				{% block footer %}
 					<footer
-					class="py-5 bg-gray-700 text-center text-white"
+					class="py-5 bg-gray-700 text-gray-300 text-center text-white"
 					{{ svelte_component('MwsFooter', {
 						'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+						'packageName': packageName,
+						'packageVersion': packageVersion,
 					}) }}>
 						{# // For SEO, will be replaced by js...
 						// TODO : prefill with some pre-rendering of js controller
 						//  at assets 'watch' and/or 'build' phase #}
-						<p>{{'mws.copyright'|trans({}, 'mws-moon-manager')}}</p>
+						<p>
+						  <a href="https://www.monwoo.com" target="_blank" rel="noopener">
+								{{'mws.copyright'|trans({}, 'mws-moon-manager')}}
+							</a>
+						</p>
+						<p class="text-right px-3 text-gray-400">[ {{packageName}} v-{{packageVersion}} ]</p>
 					</footer>
 				{% endblock %}
 			</div>
 		{% endblock %}
 
 		{% block javascript %}
+			<div
+			class="hidden"
+			{{ svelte_component('MwsReduxSync', {
+				'stateUpdate': {
+					'packageName': packageName,
+					'packageVersion': packageVersion,
+				}|serialize('json')|e('html_attr'),
+			}) }}/>
+
 			<script>
 				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
 			</script>
