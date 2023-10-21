@@ -47,6 +47,7 @@ class MwsOfferController extends AbstractController
         return $this->redirectToRoute(
             'mws_offer_list',
             array_merge($request->query->all(), [
+                "page" => 1,
                 // "filterTags" => $filterTags,
                 // "keyword" => $keyword
             ]),
@@ -105,6 +106,7 @@ class MwsOfferController extends AbstractController
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
+                        "page" => 1,
                         "sourceRootLookupUrl" => $sourceRootLookupUrl,
                     ]),
                     Response::HTTP_SEE_OTHER
@@ -114,16 +116,18 @@ class MwsOfferController extends AbstractController
 
         if ($keyword) {
             $qb
+            // LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+            // OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
             ->andWhere("
-                LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(o.contact2, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(o.contact3, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(o.title, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(o.description, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(o.budget, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE :keyword
+                OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE :keyword
+                OR LOWER(REPLACE(o.contact2, ' ', '')) LIKE :keyword
+                OR LOWER(REPLACE(o.contact3, ' ', '')) LIKE :keyword
+                OR LOWER(REPLACE(o.title, ' ', '')) LIKE :keyword
+                OR LOWER(REPLACE(o.description, ' ', '')) LIKE :keyword
+                OR LOWER(REPLACE(o.budget, ' ', '')) LIKE :keyword
             ")
-            ->setParameter('keyword', '%' . $keyword . '%');
+            ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
         }
 
         $query = $qb->getQuery();
@@ -135,7 +139,7 @@ class MwsOfferController extends AbstractController
         );
 
         $this->logger->debug("Succeed to list offers");
-
+        // dd($offers);
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
             'offers' => $offers,
             'lookupForm' => $filterForm,
@@ -191,6 +195,7 @@ class MwsOfferController extends AbstractController
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
+                        "page" => 1,
                     ]),
                     Response::HTTP_SEE_OTHER
                 );
@@ -472,16 +477,35 @@ class MwsOfferController extends AbstractController
                     $offer = new MwsOffer();
                     $offerStatusSlug = "a-relancer"; // TODO : load from status DB or config DB...
 
+                    $cleanUp = function($val) {
+                        // NO-BREAK SPACE (U+A0)
+                        // https://stackoverflow.com/questions/150033/regular-expression-to-match-non-ascii-characters
+                        // https://stackoverflow.com/questions/55904971/regex-in-php-returning-preg-match-compilation-failed-pcre-does-not-support
+                        // https://stackoverflow.com/questions/40724543/how-to-replace-decoded-non-breakable-space-nbsp/40724830#40724830
+                        // return $val;
+                        // return trim(preg_replace('/[\s\xc2\xa0]+/', ' ', $val));
+                        return trim(
+                            // NO-BREAK SPACE (U+A0)
+                            preg_replace('/(\xc2\xa0)+/', ' ',
+                                // preg_replace('/\s+/', ' ', $val)
+                                // https://stackoverflow.com/questions/3469080/match-whitespace-but-not-newlines
+                                // preg_replace('/\h+/', ' ', $val)
+                                preg_replace('/[^\S\r\n]+/', ' ', $val)
+                                // $val
+                            )
+                        );
+                        // return trim(preg_replace('/[\s\xc2-\xa0]+/', ' ', $val));
+                    };
                     $userId = $o["uId"] ?? null;
                     $contactBusinessUrl = $this
                     ->usernameToClientUrlTransformer($sourceSlug)($userId);
                     $offer->setSlug($offerSlug);
                     $offer->setClientUsername($userId);
-                    $offer->setContact1($o["email"]);
-                    $offer->setContact2($o["tel"]);
-                    $offer->setTitle($o["title"]);
-                    $offer->setDescription($o["description"]);
-                    $offer->setBudget($o["projectBudget"]);
+                    $offer->setContact1($cleanUp($o["email"]));
+                    $offer->setContact2($cleanUp($o["tel"]));
+                    $offer->setTitle($cleanUp($o["title"]));
+                    $offer->setDescription($cleanUp($o["description"]));
+                    $offer->setBudget($cleanUp($o["projectBudget"]));
                     $leadStartRaw = $o["projectPublicationDate"];
                     // fix possible tipings issues
                     $leadStartRaw = trim(preg_replace('/\s+/', ' ', $leadStartRaw));

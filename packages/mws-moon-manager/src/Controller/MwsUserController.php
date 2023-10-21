@@ -52,6 +52,7 @@ class MwsUserController extends AbstractController
             array_merge($request->query->all(), [
                 // "filterTags" => $filterTags,
                 // "keyword" => $keyword
+                "page" => 1,
             ]),
             Response::HTTP_SEE_OTHER
         );
@@ -124,7 +125,8 @@ class MwsUserController extends AbstractController
                     'mws_user_list',
                     array_merge($request->query->all(), [
                         "filterTags" => $filterTags,
-                        "keyword" => $keyword
+                        "keyword" => $keyword,
+                        "page" => 1,
                     ]),
                     Response::HTTP_SEE_OTHER
                 );

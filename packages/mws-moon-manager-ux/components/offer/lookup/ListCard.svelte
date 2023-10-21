@@ -37,6 +37,7 @@
     <!-- https://day.js.org/docs/en/display/format -->
     {dayjs(offer.leadStart).format('YYYY/MM/DD h:mm')}
   </td>
+  <td>{offer.budget ?? ''}</td>
   <td>{offer.sourceDetail?.title ?? ''}</td>
   <td>{offer.sourceDetail?.description ?? ''}</td>
 </tr>

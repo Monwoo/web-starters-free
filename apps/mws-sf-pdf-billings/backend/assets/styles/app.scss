@@ -107,6 +107,13 @@ a {
     }
 }
 
+table {
+    @apply border-separate border-spacing-2 border border-slate-500;
+    tr {
+        // @apply m-3 p-5 border-2 rounded border-sky-400;
+        @apply border-spacing-3 border-2 rounded border-sky-400;
+    }
+}
 
 ///////////////////////
 // 🏰🏰🏰🏰🏰🏰🏰🏰🏰🏰🏰🏰
