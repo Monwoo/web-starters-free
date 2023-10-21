@@ -11,6 +11,14 @@ use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsOfferRepository::class)]
+#[ORM\Index(columns: ['client_username'])]
+#[ORM\Index(columns: ['contact1'])]
+#[ORM\Index(columns: ['contact2'])]
+#[ORM\Index(columns: ['contact3'])]
+#[ORM\Index(columns: ['slug'])]
+// TODO : is index useful for 'LIKE' query ? or only exact matches ?
+// #[ORM\Index(columns: ['title'])]
+// #[ORM\Index(columns: ['description'])]
 class MwsOffer
 {
     #[ORM\Id]
@@ -58,6 +66,18 @@ class MwsOffer
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $title = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $budget = null;
+
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $leadStart = null;
 
     use TimestampableEntity;
 
@@ -254,6 +274,54 @@ class MwsOffer
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getBudget(): ?string
+    {
+        return $this->budget;
+    }
+
+    public function setBudget(?string $budget): static
+    {
+        $this->budget = $budget;
+
+        return $this;
+    }
+
+    public function getLeadStart(): ?\DateTimeInterface
+    {
+        return $this->leadStart;
+    }
+
+    public function setLeadStart(?\DateTimeInterface $leadStart): static
+    {
+        $this->leadStart = $leadStart;
 
         return $this;
     }

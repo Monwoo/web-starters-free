@@ -2,12 +2,15 @@
 
 namespace MWS\MoonManagerBundle\Controller;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use IntlDateFormatter;
 use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsContact;
 use MWS\MoonManagerBundle\Entity\MwsContactTracking;
 use MWS\MoonManagerBundle\Entity\MwsOffer;
 use MWS\MoonManagerBundle\Entity\MwsOfferTracking;
+use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsOfferImportType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
@@ -116,6 +119,9 @@ class MwsOfferController extends AbstractController
                 OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
                 OR LOWER(REPLACE(o.contact2, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
                 OR LOWER(REPLACE(o.contact3, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(o.title, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(o.description, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                OR LOWER(REPLACE(o.budget, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
             ")
             ->setParameter('keyword', '%' . $keyword . '%');
         }
@@ -148,7 +154,7 @@ class MwsOfferController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$user || ! $this->security->isGranted('ROLE_ADMIN')) {
+        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -260,7 +266,7 @@ class MwsOfferController extends AbstractController
         EntityManagerInterface $em,
     ): Response {
         $user = $this->getUser();
-        if (!$user || ! $this->security->isGranted('ROLE_ADMIN')) {
+        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -365,6 +371,10 @@ class MwsOfferController extends AbstractController
                                 $sync('contact1');
                                 $sync('contact2');
                                 $sync('contact3');
+                                $sync('title');
+                                $sync('description');
+                                $sync('budget');
+                                $sync('leadStart');
                                 $sync('sourceUrl');
                                 $sync('clientUrl');
                                 $sync('currentBillingNumber');
@@ -469,6 +479,36 @@ class MwsOfferController extends AbstractController
                     $offer->setClientUsername($userId);
                     $offer->setContact1($o["email"]);
                     $offer->setContact2($o["tel"]);
+                    $offer->setTitle($o["title"]);
+                    $offer->setDescription($o["description"]);
+                    $offer->setBudget($o["projectBudget"]);
+                    $leadStartRaw = $o["projectPublicationDate"];
+                    // fix possible tipings issues
+                    $leadStartRaw = trim(preg_replace('/\s+/', ' ', $leadStartRaw));
+                    $formatter = new IntlDateFormatter(
+                        "fr_FR",
+                        // IntlDateFormatter::RELATIVE_FULL,
+                        // IntlDateFormatter::SHORT,
+                        IntlDateFormatter::NONE,
+                        IntlDateFormatter::NONE,
+                        'Europe/Paris',
+                        IntlDateFormatter::TRADITIONAL,
+                        // 'D MMMM YYYY à HH:mm'
+                        // https://bugs.php.net/bug.php?id=53939
+                        // 'D MMMM YYYY à HH\\hmm'
+                        // "dd MMMM YYYY à HH'h'mm",
+                        // https://www.the-art-of-web.com/php/intl-date-formatter/
+                        // https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+                        "d MMMM yyyy 'à' HH'h'mm",
+                    );
+                    $leadStart = (new DateTime())->setTimestamp(
+                        $formatter->parse($leadStartRaw)
+                    );
+                    // $leadStartTxt = $leadStart->format('Y-m-d H:i:s');
+                    $leadStartTxt = $formatter->format($leadStart);
+                    $this->logger->debug("Offer LeadStart from [$leadStartRaw] to [$leadStartTxt]");
+
+                    $offer->setLeadStart($leadStart);
                     // $offer->setContact3($o["..."]);
                     $offer->setSourceUrl(
                         $this->offerSlugToSourceUrlTransformer($sourceSlug)($offerSlug)

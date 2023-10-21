@@ -17,9 +17,11 @@
     "svelte-loading-spinners": "^0.3.4"
   },
   "devDependencies": {
+    "dayjs": "^1.11.10",
     "eslint-config-svelte": "workspace:*",
     "fos-router": "link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources",
     "sass": "^1.62.0",
-    "svelte": "^3.9.2"
+    "svelte": "^3.9.2",
+    "svelte-time": "^0.8.0"
   }
 }

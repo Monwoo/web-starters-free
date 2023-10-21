@@ -13,7 +13,7 @@
 		<div class="mb-6 text-center">
 			Bienvenue
 			<a href="{{ path('mws_user_show', {'id': app.user.id}) }}">
-				<u>{{ app.user.firstname~' '~app.user.lastname }}</u>
+				<u>{{ app.user.username }}</u>
 			</a>
 		</div>
 	{% endif %}

@@ -19,6 +19,7 @@
         "surveyjs-widgets": "^1.9.112",
         "svelte": "^3.59.2",
         "svelte-loader": "^3.1.9",
+        "svelte-time": "^0.8.0",
         "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0",
         "webpack-notifier": "^1.15.0"

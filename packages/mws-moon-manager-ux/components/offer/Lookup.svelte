@@ -78,6 +78,9 @@
           <th scope="col">
             {@html offersHeaders.contact2 ?? "Contact bis"}
           </th>
+          <th scope="col">
+            {@html offersHeaders.leadStart ?? "Depuis le"}
+          </th>
           <th scope="col">Titre</th>
           <th scope="col">Description</th>
         </tr>

@@ -82,6 +82,7 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        # TODO : inject/sync with MoonManager recipe
         mws_secured_area:
             pattern: ^/mws/
             # encoders:
@@ -91,10 +92,9 @@ security:
             lazy: true
             provider: mws_user_provider
             custom_authenticator: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
-            entry_point: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
-            # TODO : bring back below when url login targetPath url is working back...
-            # entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
-            # access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
+            # entry_point: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
+            entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
+            access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
             # access_denied_url: /login
 
             logout:

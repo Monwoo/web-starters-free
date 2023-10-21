@@ -132,6 +132,10 @@ const surveyFactory = (surveyForm, dataModel) => {
   surveyModel.applyTheme(surveyTheme({}));
   // TODO: below from dataModel ? default if not in dataModel ?
   surveyModel.locale = 'fr';
+  // https://github.com/surveyjs/survey-library/issues/86
+  // TODO : fix submit button on all field fieled
+  // BUT no effect, we only want to have button, to allow auto-submit
+  // surveyModel.cssType = "bootstrap";
   surveyModel.sendResultOnPageNext = true;
   surveyModel.showCompletedPage = false;
   surveyModel.onComplete.add((sender, options) => {
