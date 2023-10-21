@@ -91,16 +91,17 @@ security:
             lazy: true
             provider: mws_user_provider
             custom_authenticator: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
-            entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
-            access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
+            entry_point: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
+            # TODO : bring back below when url login targetPath url is working back...
+            # entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
+            # access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
             # access_denied_url: /login
 
             logout:
                 path: mws_user_logout
                 # where to redirect after logout
-                target: mws_user_login
+                target: app_home
             form_login:
-                # "app_login" is the name of the route created previously
                 login_path: mws_login
                 check_path: mws_login
                 enable_csrf: true

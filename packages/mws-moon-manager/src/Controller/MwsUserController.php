@@ -75,7 +75,7 @@ class MwsUserController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+            throw $this->createAccessDeniedException('Only for logged users');
         
             // return $this->json([
             //     "status" => "ko",
@@ -197,7 +197,7 @@ class MwsUserController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+            throw $this->createAccessDeniedException('Only for logged users');
         }
 
         return $this->render('@MoonManager/mws_user/show.html.twig', [
@@ -227,7 +227,7 @@ class MwsUserController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+            throw $this->createAccessDeniedException('Only for logged users');
         }
 
         $fType = MwsUserAdminType::class;
@@ -302,7 +302,7 @@ class MwsUserController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+            throw $this->createAccessDeniedException('Only for logged users');
         }
 
         $user = new MwsUser();

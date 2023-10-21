@@ -15,6 +15,7 @@ use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,6 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class MwsOfferController extends AbstractController
 {
     public function __construct(
+        protected Security $security,
         protected LoggerInterface $logger,
         protected SerializerInterface $serializer,
         protected TranslatorInterface $translator,
@@ -60,7 +62,7 @@ class MwsOfferController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+            throw $this->createAccessDeniedException('Only for logged users');
         }
 
         $keyword = $request->query->get('keyword', null);
@@ -146,8 +148,8 @@ class MwsOfferController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+        if (!$user || ! $this->security->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Only for admins');
         }
 
         $keyword = $request->query->get('keyword', null);
@@ -223,7 +225,7 @@ class MwsOfferController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+            throw $this->createAccessDeniedException('Only for logged users');
         }
 
         $url = $request->query->get('url', null);
@@ -258,8 +260,8 @@ class MwsOfferController extends AbstractController
         EntityManagerInterface $em,
     ): Response {
         $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('mws_user_login');
+        if (!$user || ! $this->security->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Only for admins');
         }
 
         $maxTime = 60 * 30; // 30 minutes max

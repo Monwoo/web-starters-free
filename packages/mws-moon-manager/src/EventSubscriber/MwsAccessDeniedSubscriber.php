@@ -58,8 +58,13 @@ class MwsAccessDeniedSubscriber implements EventSubscriberInterface
             $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
         );
 
-        $event->setResponse(new RedirectResponse($this->urlGenerator->generate(
-            MwsLoginFormAuthenticator::LOGIN_ROUTE
-        )));
+        // TIPS : below will BREAK the 'Default Target Path Behavior' ? keep it as exception
+        // https://symfony2-document.readthedocs.io/en/latest/cookbook/security/target_path.html
+        // https://symfonycasts.com/screencast/fosuserbundle/guard-authenticator#play
+        // https://symfonycasts.com/screencast/symfony4-security/target-path
+        // https://symfony.com/doc/current/security.html#customize-successful-and-failed-authentication-behavior
+        // $event->setResponse(new RedirectResponse($this->urlGenerator->generate(
+        //     MwsLoginFormAuthenticator::LOGIN_ROUTE
+        // )));
     }
 }

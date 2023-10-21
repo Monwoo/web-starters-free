@@ -64,7 +64,8 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         protected TranslatorInterface $translator,
         protected LoggerInterface $logger,
         protected UrlGeneratorInterface $urlGenerator,
-        // protected string $firewallName,
+        // TODO : service or doc and/or recipe ?
+        protected string $firewallName = "mws_secured_area",
     )
     {
         $this->logger->debug("[MwsLoginFormAuthenticator] DID construct");
@@ -79,7 +80,20 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         // dump($request->isMethod('POST'));
         // dump($this->getLoginUrl($request));
         // dd($request->getRequestUri());
-        return $request->isMethod('POST') && $this->getLoginUrl($request) === $request->getRequestUri();
+        $willSupport = $request->isMethod('POST')
+        && $this->getLoginUrl($request) === $request->getRequestUri();
+        $this->logger->debug("[MwsLoginFormAuthenticator] Will Support : $willSupport");
+        if (!$willSupport) {
+            $lastTargetPath = $this->getTargetPath($request->getSession(), $this->firewallName);
+            if (!$lastTargetPath) {
+                // $lastTargetPath = $request->getUri();
+                // $this->saveTargetPath($request->getSession(), $this->firewallName, $lastTargetPath);
+                // $this->logger->debug("[MwsLoginFormAuthenticator] Did setup lastTargetPath to : $lastTargetPath");
+            } else {
+                $this->logger->debug("[MwsLoginFormAuthenticator] Did reuse lastTargetPath as : $lastTargetPath");
+            }
+        }
+        return $willSupport;
     }
 
     public function authenticate(Request $request): Passport
@@ -115,9 +129,12 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         // return null;
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+            $this->logger->debug("[MwsLoginFormAuthenticator] targetPathRedirect", [$targetPath]);
+            $this->removeTargetPath($request->getSession(), $firewallName); // TIPS : clean it
             return new RedirectResponse($targetPath);
         }
 
+        $this->logger->debug("[MwsLoginFormAuthenticator] classicLogin", [self::SUCCESS_LOGIN_ROUTE]);
         return new RedirectResponse($this->urlGenerator->generate(self::SUCCESS_LOGIN_ROUTE));
     }
 
