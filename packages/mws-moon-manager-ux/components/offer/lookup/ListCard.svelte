@@ -41,6 +41,8 @@
     </a>
   </td>
   <th scope="row">[{offer.id}] {offer.currentStatusSlug}</th>
+  <!-- TODO : <td>{<TagsInput bind:tags={offer.tags}></TagsInput></td> -->
+  <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td>
   <td>{offer.clientUsername}</td>
   <td>{offer.contact1 ?? ''}</td>
   <td>{offer.contact2 ?? ''}</td>

@@ -69,6 +69,7 @@
         <tr class="users-table-info">
           <th scope="col">Actions</th>
           <th scope="col">[Id] Status</th>
+          <th scope="col">Tags</th>
           <th scope="col">
             {@html offersHeaders.clientUsername ?? "Nom du client"}
           </th>
