@@ -46,8 +46,9 @@
     </div>
     <div>
       {#each offer.sourceDetail?.messages ?? [] as msg}
-        {@html msg.replace('src="', `src="https://${offer.sourceName}/`)
-          .replace(`https://${offer.sourceName}/http`, `src="http`)
+        {@html msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
+          .replaceAll('href="/', `href="https://${offer.sourceName}/`)
+          .replaceAll(`https://${offer.sourceName}/http`, `http`)
         }
       {/each}
     </div>
