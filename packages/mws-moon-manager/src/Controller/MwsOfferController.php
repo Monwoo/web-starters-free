@@ -36,7 +36,8 @@ class MwsOfferController extends AbstractController
         protected LoggerInterface $logger,
         protected SerializerInterface $serializer,
         protected TranslatorInterface $translator,
-        protected EntityManagerInterface $em
+        protected EntityManagerInterface $em,
+        protected SluggerInterface $slugger,
     ){
     }
     
@@ -146,6 +147,31 @@ class MwsOfferController extends AbstractController
             'viewTemplate' => $viewTemplate,
         ]);
     }
+
+    #[Route('/view/{offerSlug}/{viewTemplate?}', name: 'mws_offer_view')]
+    public function view(
+        $offerSlug,
+        $viewTemplate,
+        MwsOfferRepository $mwsOfferRepository,
+        Request $request,
+    ): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+
+        $offer = $mwsOfferRepository->findOneBy([
+            'slug' => $offerSlug
+        ]);
+
+        return $this->render('@MoonManager/mws_offer/view.html.twig', [
+            'offer' => $offer,
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
 
     // Tags are status AND category of status (a category is also a status...)
     #[Route('/tags/{viewTemplate?}', name: 'mws_offer_tags')]
@@ -443,7 +469,7 @@ class MwsOfferController extends AbstractController
                 return "http://source.test.localhost/offers/$oSlug";
             },
         ][$sourceName] ?? function($oSlug) use ($sourceName) {
-            return "https://$sourceName/projets/$oSlug";
+            return "https://$sourceName/projects/$oSlug";
         };
     }
     public function usernameToClientUrlTransformer($sourceName) {
@@ -499,7 +525,10 @@ class MwsOfferController extends AbstractController
                     $userId = $o["uId"] ?? null;
                     $contactBusinessUrl = $this
                     ->usernameToClientUrlTransformer($sourceSlug)($userId);
-                    $offer->setSlug($offerSlug);
+                    // TODO : check ? : https://symfonycasts.com/screencast/symfony-doctrine/sluggable
+                    $offer->setSlug($this->slugger->slug(
+                        $sourceSlug . '-' . $offerSlug
+                    ));
                     $offer->setClientUsername($userId);
                     $offer->setContact1($cleanUp($o["email"]));
                     $offer->setContact2($cleanUp($o["tel"]));

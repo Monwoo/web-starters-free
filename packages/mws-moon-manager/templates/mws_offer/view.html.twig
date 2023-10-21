@@ -1,0 +1,15 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block body %}
+	<div class="mws-offer-view" {{ svelte_component('MwsOfferView', {
+		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+		'locale': app.locale,
+		'offer': offer|serialize('json')|e('html_attr'),
+		'viewTemplate' : viewTemplate,
+	} ) }}>
+		{{ block('header') }}
+		{{ block('content') }}
+		{{ block('footer') }}
+	</div>
+{% endblock %}

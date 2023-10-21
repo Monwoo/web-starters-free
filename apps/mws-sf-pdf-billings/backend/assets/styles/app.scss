@@ -108,10 +108,14 @@ a {
 }
 
 table {
-    @apply border-separate border-spacing-2 border border-slate-500;
-    tr {
-        // @apply m-3 p-5 border-2 rounded border-sky-400;
-        @apply border-spacing-3 border-2 rounded border-sky-400;
+    // @apply border-separate border-spacing-2 border border-slate-500;
+    // @apply border-separate border-spacing-2 border-2 rounded border-sky-400;
+    @apply border-spacing-2 border-2 rounded border-slate-500;
+    tbody {
+        tr {
+            // @apply m-3 p-5 border-2 rounded border-sky-400;
+            @apply border-2 rounded border-sky-400;
+        }    
     }
 }
 
@@ -120,6 +124,13 @@ table {
 // Custom domains or component classes
 ///////////////////////
 
+.mws-offer-view {
+    [data-controller="tooltip"] {
+        svg {
+            max-width: 42px;
+        }
+    }
+}
 
 ///////////////////////
 // 🛸🛸🛸🛸🛸🛸🛸🛸🛸🛸🛸🛸

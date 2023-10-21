@@ -13,6 +13,8 @@
   // TODO : why "svelte-time" not working ?
   // import Time from "svelte-time";
 
+  export let locale;
+  export let viewTemplate;
   export let offer;
 
   // TODO : format leadAt date with dayJs ?
@@ -21,7 +23,11 @@
 
 <tr>
   <td>
-    <a href="#see-card">
+    <a href={ Routing.generate('mws_offer_view', {
+      '_locale': locale ?? '',
+      'viewTemplate': viewTemplate ?? '',
+      'offerSlug': offer.slug,
+    }) }>
       <button class="btn btn-outline-primary p-1">Voir</button>
     </a>
     <a href="#qualify">

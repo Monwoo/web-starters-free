@@ -92,7 +92,7 @@
         {#each offers as offer}
           <!-- { JSON.stringify(offer) } -->
           <!-- {@debug offer} -->
-          <ListCard {offer}></ListCard>
+          <ListCard {offer} {locale} {viewTemplate}></ListCard>
         {/each}
       </tbody>
     </table>
