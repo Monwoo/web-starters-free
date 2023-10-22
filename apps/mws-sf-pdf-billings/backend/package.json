@@ -12,6 +12,9 @@
         "core-js": "^3.23.0",
         "dayjs": "^1.11.10",
         "dotenv": "^16.3.1",
+        "flowbite": "^1.8.1",
+        "flowbite-svelte": "^0.44.18",
+        "fork-ts-checker-webpack-plugin": "^7.0.0",
         "fos-router": "file:vendor/friendsofsymfony/jsrouting-bundle/Resources",
         "mws-moon-manager-ux": "workspace:*",
         "node-sass": "^9.0.0",
@@ -21,6 +24,7 @@
         "sass-loader": "^13.3.2",
         "svelte": "^3.59.2",
         "svelte-loader": "^3.1.9",
+        "svelte-preprocess": "^5.0.3",
         "svelte-time": "^0.8.0",
         "tailwindcss": "^3.3.3",
         "ts-loader": "^9.5.0",
@@ -35,8 +39,5 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
-    },
-    "dependencies": {
-        "flowbite": "^1.8.1"
     }
 }

@@ -2,6 +2,9 @@
 
 const Encore = require('@symfony/webpack-encore');
 // const FosRouting = require('fos-router/webpack/FosRouting');
+// const svelteConfig = require('./svelte.config.mjs');
+// import svelteConfig from './svelte.config.mjs';
+const svelteConfig = import('./svelte.config.mjs');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -43,8 +46,6 @@ Encore
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
-
-    .enableSvelte()
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
@@ -105,7 +106,20 @@ Encore
     // optionally enable forked type script for faster builds
     // https://www.npmjs.com/package/fork-ts-checker-webpack-plugin
     // requires that you have a tsconfig.json file that is setup correctly.
-    //.enableForkedTypeScriptTypesChecking()
+    // .enableForkedTypeScriptTypesChecking()
+
+    .enableSvelte()
+    // https://www.reddit.com/r/symfony/comments/mqu2o0/help_svelte_typescript_integration_with_symfony/
+    // https://symfony.com/doc/current/frontend/encore/custom-loaders-plugins.html
+    // .addLoader({ // TODO : Error: ParseError: The keyword 'let' is reserved (17:1)
+    //     test: /assets\/.+\.svelte$/,
+    //     loader: 'svelte-loader',
+    //     // options: {
+    //     //     emitCss: true,
+    //     //     preprocess: sveltePreprocess({})
+    //     // }
+    //     options : svelteConfig,
+    // })
 
     // uncomment if you use React
     //.enableReactPreset()
@@ -126,5 +140,10 @@ let config = Encore.getWebpackConfig();
 // https://github.com/sveltejs/svelte-loader#resolveconditionnames
 // https://github.com/sveltejs/svelte-loader#usage
 config.resolve.conditionNames = ['svelte', 'browser', 'import'];
+
+// https://www.reddit.com/r/symfony/comments/mqu2o0/help_svelte_typescript_integration_with_symfony/
+config.resolve.extensions = ['.mjs', '.js', '.svelte'];
+let svelte = config.module.rules.pop();
+config.module.rules.unshift(svelte);
 
 module.exports = config;

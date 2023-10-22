@@ -1,0 +1,46 @@
+{
+	"compilerOptions": {
+		"baseUrl": "..",
+		"paths": {
+			"@app": [
+				"assets/svelte"
+			],
+			"@app/*": [
+				"assets/svelte/*"
+			],
+		},
+		"rootDirs": [
+			".",
+			"./types"
+		],
+		"importsNotUsedAsValues": "error",
+		"isolatedModules": true,
+		"preserveValueImports": true,
+		"lib": [
+			"esnext",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"moduleResolution": "node",
+		"module": "esnext",
+		"target": "esnext"
+	},
+	"include": [
+		"ambient.d.ts",
+		"./types/**/$types.d.ts",
+		"./vite.config.ts",
+		"./assets/svelte/**/*.js",
+		"./assets/svelte/**/*.ts",
+		"./assets/svelte/**/*.svelte",
+		"./assets/svelte/**/*.js",
+		"./assets/svelte/**/*.ts",
+		"./assets/svelte/**/*.svelte",
+		"./tests/**/*.js",
+		"./tests/**/*.ts",
+		"./tests/**/*.svelte"
+	],
+	"exclude": [
+		"./node_modules/**",
+		"./[!ambient.d.ts]**"
+	]
+}

@@ -19,6 +19,8 @@
   "devDependencies": {
     "dayjs": "^1.11.10",
     "eslint-config-svelte": "workspace:*",
+    "flowbite": "^1.8.1",
+    "flowbite-svelte": "^0.44.18",
     "fos-router": "link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources",
     "sass": "^1.62.0",
     "svelte": "^3.9.2",
