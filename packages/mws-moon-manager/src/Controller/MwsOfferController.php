@@ -84,7 +84,7 @@ class MwsOfferController extends AbstractController
                 "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/mws_user/survey-js-models/MwsOfferLookupType.json.twig"
+                "@MoonManager/survey_js_models/MwsOfferLookupType.json.twig"
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $filterForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
@@ -199,7 +199,7 @@ class MwsOfferController extends AbstractController
                 "searchKeyword" => $keyword,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/mws_user/survey-js-models/MwsOfferStatusLookupType.json.twig"
+                "@MoonManager/survey_js_models/MwsOfferStatusLookupType.json.twig"
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $filtersForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
@@ -240,7 +240,7 @@ class MwsOfferController extends AbstractController
 
         $query = $qb->getQuery();
         // dd($query->getResult());    
-        $offers = $paginator->paginate(
+        $tags = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             $request->query->getInt('pageLimit', 10), /*page number*/
@@ -249,7 +249,7 @@ class MwsOfferController extends AbstractController
         $this->logger->debug("Succeed to list offers");
 
         return $this->render('@MoonManager/mws_offer/tags.html.twig', [
-            'offers' => $offers,
+            'tags' => $tags,
             'filtersForm' => $filtersForm,
             'viewTemplate' => $viewTemplate,
         ]);
@@ -308,7 +308,9 @@ class MwsOfferController extends AbstractController
         ini_set('max_execution_time', $maxTime);
 
         $forceRewrite = $request->query->get('forceRewrite', false);
-
+        $forceStatusRewrite = $request->query->get('forceStatusRewrite', false);
+        $forceCleanTags = $request->query->get('forceCleanTags', false);
+        
         $uploadData = null;
         $form = $this->createForm(MwsOfferImportType::class, $uploadData);
         $form->handleRequest($request);
@@ -413,6 +415,12 @@ class MwsOfferController extends AbstractController
                                 $sync('clientUrl');
                                 $sync('currentBillingNumber');
                                 $sync('sourceDetail');
+                                if ($forceStatusRewrite) {
+                                    $sync('currentStatusSlug');
+                                }
+                                if ($forceCleanTags) {
+                                    $offer->getTags()->clear();
+                                }
 
                                 $tags = $inputOffer->getTags();
                                 foreach ($tags as $tag) {
@@ -511,7 +519,6 @@ class MwsOfferController extends AbstractController
                 $contactIndex = $board['users'] ?? [];
                 foreach (($board['projects'] ?? []) as $offerSlug => $o) {
                     $offer = new MwsOffer();
-                    $offerStatusSlug = "a-relancer"; // TODO : load from status DB or config DB...
 
                     $cleanUp = function($val) {
                         // NO-BREAK SPACE (U+A0)
@@ -536,9 +543,9 @@ class MwsOfferController extends AbstractController
                     $contactBusinessUrl = $this
                     ->usernameToClientUrlTransformer($sourceSlug)($userId);
                     // TODO : check ? : https://symfonycasts.com/screencast/symfony-doctrine/sluggable
-                    $offer->setSlug($this->slugger->slug(
+                    $offer->setSlug(strtolower($this->slugger->slug(
                         $sourceSlug . '-' . $offerSlug
-                    ));
+                    )));
                     $offer->setClientUsername($userId);
                     $offer->setContact1($cleanUp($o["email"]));
                     $offer->setContact2($cleanUp($o["tel"]));
@@ -572,17 +579,22 @@ class MwsOfferController extends AbstractController
                     $this->logger->debug("Offer LeadStart from [$leadStartRaw] to [$leadStartTxt]");
 
                     $sourceStatus = $cleanUp($o["projectStatus"]);
-                    $sourceStatusSlug = $this->slugger->slug($sourceStatus);
+                    $sourceStatusSlug = strtolower($this->slugger->slug($sourceStatus));
                     $sourceTag = $mwsOfferStatusRepository->findOneBy([
                         'slug' => $sourceStatusSlug,
                         // 'category' => $TODO_id_cat_from_param_config_slug ?
                     ]);
+                    // dd($sourceTag);
                     if (!$sourceTag) {
                         $sourceTag = new MwsOfferStatus();
                         $sourceTag->setSlug($sourceStatusSlug);
                         $sourceTag->setLabel($sourceStatus);
                         // $sourceTag->setCategorySlug($TODO);
+                        // TIPS : NEED to PERSIST AND FLUSH for next findOneBy to work :
+                        $this->em->persist($sourceTag);
+                        $this->em->flush();
                     }
+                    $offerStatusSlug = $sourceStatusSlug; // TODO : load from status DB or config DB...
 
                     $offer->addTag($sourceTag);
 

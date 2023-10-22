@@ -43,6 +43,7 @@
       <thead>
         <tr class="users-table-info">
           <th scope="col">Actions</th>
+          <!-- TODO : <th scope="col">[Slug] Status</th> -->
           <th scope="col">[Id] Status</th>
           <th scope="col">
             {@html headers.username ?? "Nom d'utilisateur"}

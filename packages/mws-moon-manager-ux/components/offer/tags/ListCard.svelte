@@ -1,23 +1,27 @@
-<script lang="ts">
+<script context="module">
+  // TODO : remove code duplications, inside services ?
+  // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
+  // import "dayjs/esm/locale/fr";
+  // import dayjs from "dayjs/esm";
+  import "dayjs/locale/fr";
+  // import "dayjs/locale/en";
+  import dayjs from "dayjs";
+  dayjs.locale("fr"); // Fr locale
+</script><script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
 
-  export let offer;
+  export let tag;
 </script>
 
 <tr>
   <td>
     <a href="#see-card">
-      <button class="btn btn-outline-primary p-1">Voir</button>
-    </a>
-    <a href="#qualify">
-      <button class="btn btn-outline-success p-1">Qualifier</button>
+      <button class="btn btn-outline-primary p-1">Editer</button>
     </a>
   </td>
-  <th scope="row">[{offer.id}] {offer.currentStatusSlug}</th>
-  <td>{offer.clientUsername}</td>
-  <td>{offer.contact1 ?? ''}</td>
-  <td>{offer.contact2 ?? ''}</td>
-  <td>{offer.sourceDetail?.title ?? ''}</td>
-  <td>{offer.sourceDetail?.description ?? ''}</td>
+  <th scope="row">{tag.slug}</th>
+  <td>{tag.label ?? ''}</td>
+  <td>{tag.categorySlug ?? ''}</td>
+  <td>{dayjs(tag.createdAt).format('YYYY/MM/DD h:mm')}</td>
 </tr>

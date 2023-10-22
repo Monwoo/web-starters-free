@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsOfferStatusRepository::class)]
 #[ORM\Index(columns: ['slug'])]
@@ -35,6 +36,7 @@ class MwsOfferStatus
     private ?string $textColor = null;
 
     #[ORM\ManyToMany(targetEntity: MwsOffer::class, mappedBy: 'tags')]
+    #[Serializer\Ignore]
     private Collection $mwsOffers;
 
     public function __construct()

@@ -45,16 +45,13 @@
 
 <Base {copyright} {locale} {viewTemplate}>
   <div>
-    <a href={ Routing.generate('mws_offer_import', {
-      '_locale': locale ?? '',
-      'viewTemplate': viewTemplate ?? '',
-    }) }>
-      <button class="btn btn-outline-primary p-1">Importer des offres.</button>
+    <a href="#back" on:click={() => history.back()}>
+      <button class="btn btn-outline-primary p-1">Revenir à la page précédente</button>
     </a>    
   </div>
   <div class="flex flex-wrap">
     <div class="label">
-      Recherche d'une offre via :
+      Recherche d'un tag via :
     </div>
     <div class="detail">
       {@html filtersForm}
@@ -68,25 +65,25 @@
       <thead>
         <tr class="users-table-info">
           <th scope="col">Actions</th>
-          <th scope="col">[Id] Status</th>
           <th scope="col">
-            {@html tagsHeaders.clientUsername ?? "Nom du client"}
+            {@html tagsHeaders.slug ?? "Slug"}
           </th>
           <th scope="col">
-            {@html tagsHeaders.contact1 ?? "Contact"}
+            {@html tagsHeaders.label ?? "Libellé"}
           </th>
           <th scope="col">
-            {@html tagsHeaders.contact2 ?? "Contact bis"}
+            {@html tagsHeaders.categorySlug ?? "Category slug"}
           </th>
-          <th scope="col">Titre</th>
-          <th scope="col">Description</th>
+          <th scope="col">
+            {@html tagsHeaders.createdAt ?? "Created at"}
+          </th>
         </tr>
       </thead>
       <tbody>
-        {#each tags as offer}
+        {#each tags as tag}
           <!-- { JSON.stringify(offer) } -->
           <!-- {@debug offer} -->
-          <ListCard {offer}></ListCard>
+          <ListCard {tag}></ListCard>
         {/each}
       </tbody>
     </table>

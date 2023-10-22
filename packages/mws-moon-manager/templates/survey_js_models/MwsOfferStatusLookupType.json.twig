@@ -1,0 +1,21 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set model = {
+  description: "Rechercher"|trans,
+  "__CMT_TIPS": "Will validate form on searchKeyword enter key with goNextPageAutomatic",
+  goNextPageAutomatic: true,
+  completeText: {
+    en: "Seek in offers status",
+    fr: "Rechercher dans les statut des offres"
+  },
+  "__CMT__showPrevButton": true,
+  showQuestionNumbers: false,
+  elements: [{
+      name: "searchKeyword",
+      title: "Mot(s) clef(s)",
+      type: "text",
+      validators: [],
+      minWidth: "20%",
+      isRequired: false,
+  }]
+} %}
+{{ model|serialize('json')|raw }}

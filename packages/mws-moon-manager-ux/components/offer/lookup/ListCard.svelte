@@ -41,7 +41,7 @@
       <button class="btn btn-outline-success p-1">Qualifier</button>
     </a>
   </td>
-  <th scope="row">[{offer.id}] {offer.currentStatusSlug}</th>
+  <th scope="row">[{offer.slug}] {offer.currentStatusSlug}</th>
   <td><TagsInput bind:tagSlugs={offer.tags}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>{offer.clientUsername}</td>

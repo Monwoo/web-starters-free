@@ -103,7 +103,7 @@ class MwsUserController extends AbstractController
                 "searchKeyword" => $keyword,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/mws_user/survey-js-models/MwsUserFilterType.json.twig"
+                "@MoonManager/survey_js_models/MwsUserFilterType.json.twig"
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $filterForm = $this->createForm(MwsUserFilterType::class, $lastSearch);
