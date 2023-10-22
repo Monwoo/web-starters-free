@@ -12,6 +12,7 @@
   import Routing from "fos-router";
   // TODO : why "svelte-time" not working ?
   // import Time from "svelte-time";
+  import TagsInput from "../tags/TagsInput.svelte";
 
   export let locale;
   export let viewTemplate;
@@ -41,8 +42,8 @@
     </a>
   </td>
   <th scope="row">[{offer.id}] {offer.currentStatusSlug}</th>
-  <!-- TODO : <td>{<TagsInput bind:tags={offer.tags}></TagsInput></td> -->
-  <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td>
+  <td><TagsInput bind:tagSlugs={offer.tags}></TagsInput></td>
+  <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>{offer.clientUsername}</td>
   <td>{offer.contact1 ?? ''}</td>
   <td>{offer.contact2 ?? ''}</td>

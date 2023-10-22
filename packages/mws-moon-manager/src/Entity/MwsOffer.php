@@ -79,12 +79,16 @@ class MwsOffer
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $leadStart = null;
 
+    #[ORM\ManyToMany(targetEntity: MwsOfferStatus::class, inversedBy: 'mwsOffers', cascade: ['persist'])]
+    private Collection $tags;
+
     use TimestampableEntity;
 
     public function __construct()
     {
         $this->mwsOfferTrackings = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -322,6 +326,30 @@ class MwsOffer
     public function setLeadStart(?\DateTimeInterface $leadStart): static
     {
         $this->leadStart = $leadStart;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsOfferStatus>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(MwsOfferStatus $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(MwsOfferStatus $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

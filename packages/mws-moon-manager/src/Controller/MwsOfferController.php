@@ -9,6 +9,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsContact;
 use MWS\MoonManagerBundle\Entity\MwsContactTracking;
 use MWS\MoonManagerBundle\Entity\MwsOffer;
+use MWS\MoonManagerBundle\Entity\MwsOfferStatus;
 use MWS\MoonManagerBundle\Entity\MwsOfferTracking;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsOfferImportType;
@@ -293,6 +294,7 @@ class MwsOfferController extends AbstractController
         string $format,
         Request $request,
         MwsOfferRepository $mwsOfferRepository,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
         SluggerInterface $slugger,
         EntityManagerInterface $em,
     ): Response {
@@ -347,7 +349,8 @@ class MwsOfferController extends AbstractController
                     // $reportSummary = $importContent;
                     /** @var MwsOffer[] */
                     $offersDeserialized = $this->deserializeOffers(
-                        $user, $importContent, $format, $newFilename
+                        $user, $importContent, $format, $newFilename,
+                        $mwsOfferStatusRepository
                     );
                     // dd($offersDeserialized);
 
@@ -410,6 +413,13 @@ class MwsOfferController extends AbstractController
                                 $sync('clientUrl');
                                 $sync('currentBillingNumber');
                                 $sync('sourceDetail');
+
+                                $tags = $inputOffer->getTags();
+                                foreach ($tags as $tag) {
+                                    // TODO : inside addTag, only one by specific only one choice category type ?
+                                    $offer->addTag($tag);
+                                }
+
                                 // dump($inputOffer);
                                 // dd($offer);
                                 // CLEAN all possible other duplicates :
@@ -484,7 +494,7 @@ class MwsOfferController extends AbstractController
 
     // TODO : more like 'loadOffers' than deserialize,
     //        will save in db too for code factorisation purpose...
-    public function deserializeOffers($user, $data, $format, $sourceFile = null) {
+    public function deserializeOffers($user, $data, $format, $sourceFile, $mwsOfferStatusRepository) {
         /** @param MwsOffer[] **/
         $out = null;
         // TODO : add custom serializer format instead of if switch ?
@@ -560,6 +570,21 @@ class MwsOfferController extends AbstractController
                     // $leadStartTxt = $leadStart->format('Y-m-d H:i:s');
                     $leadStartTxt = $formatter->format($leadStart);
                     $this->logger->debug("Offer LeadStart from [$leadStartRaw] to [$leadStartTxt]");
+
+                    $sourceStatus = $cleanUp($o["projectStatus"]);
+                    $sourceStatusSlug = $this->slugger->slug($sourceStatus);
+                    $sourceTag = $mwsOfferStatusRepository->findOneBy([
+                        'slug' => $sourceStatusSlug,
+                        // 'category' => $TODO_id_cat_from_param_config_slug ?
+                    ]);
+                    if (!$sourceTag) {
+                        $sourceTag = new MwsOfferStatus();
+                        $sourceTag->setSlug($sourceStatusSlug);
+                        $sourceTag->setLabel($sourceStatus);
+                        // $sourceTag->setCategorySlug($TODO);
+                    }
+
+                    $offer->addTag($sourceTag);
 
                     $offer->setLeadStart($leadStart);
                     // $offer->setContact3($o["..."]);

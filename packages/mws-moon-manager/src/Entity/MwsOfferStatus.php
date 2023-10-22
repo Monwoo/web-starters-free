@@ -2,6 +2,8 @@
 
 namespace MWS\MoonManagerBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -31,6 +33,14 @@ class MwsOfferStatus
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $textColor = null;
+
+    #[ORM\ManyToMany(targetEntity: MwsOffer::class, mappedBy: 'tags')]
+    private Collection $mwsOffers;
+
+    public function __construct()
+    {
+        $this->mwsOffers = new ArrayCollection();
+    }
 
     use TimestampableEntity;
 
@@ -95,6 +105,33 @@ class MwsOfferStatus
     public function setTextColor(?string $textColor): static
     {
         $this->textColor = $textColor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsOffer>
+     */
+    public function getMwsOffers(): Collection
+    {
+        return $this->mwsOffers;
+    }
+
+    public function addMwsOffer(MwsOffer $mwsOffer): static
+    {
+        if (!$this->mwsOffers->contains($mwsOffer)) {
+            $this->mwsOffers->add($mwsOffer);
+            $mwsOffer->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsOffer(MwsOffer $mwsOffer): static
+    {
+        if ($this->mwsOffers->removeElement($mwsOffer)) {
+            $mwsOffer->removeTag($this);
+        }
 
         return $this;
     }
