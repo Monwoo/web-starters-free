@@ -13,6 +13,7 @@
   // TODO : why "svelte-time" not working ?
   // import Time from "svelte-time";
   import TagsInput from "../tags/TagsInput.svelte";
+  import { state } from "../../../stores/reduxStorage.mjs";
 
   export let locale;
   export let viewTemplate;
@@ -41,7 +42,11 @@
       <button class="btn btn-outline-success p-1">Qualifier</button>
     </a>
   </td>
-  <th scope="row">[{offer.slug}] {offer.currentStatusSlug}</th>
+  <th
+  scope="row"
+  style:color={($state.slugToOfferTag && $state.slugToOfferTag[offer.currentStatusSlug]?.textColor)||"black"}
+  style:backgroung-color={($state.slugToOfferTag && $state.slugToOfferTag[offer.currentStatusSlug]?.bgColor)||"lightgrey"}
+  >[{offer.slug}] {offer.currentStatusSlug}</th>
   <td><TagsInput bind:tagSlugs={offer.tags}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>{offer.clientUsername}</td>

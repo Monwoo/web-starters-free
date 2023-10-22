@@ -91,6 +91,11 @@ class MwsOffer
         $this->tags = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->slug;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

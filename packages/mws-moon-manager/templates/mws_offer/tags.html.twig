@@ -3,10 +3,21 @@
 
 {% block title %}Offers tags{% endblock %}
 
+{% block storesInit %}
+	{{ parent() }}
+	<div
+	class="hidden"
+	{{ svelte_component('MwsReduxSync', {
+		'stateUpdate': {
+			'slugsToOfferTag': slugsToOfferTag,
+		}|serialize('json')|e('html_attr'),
+	}) }}></div>
+{% endblock %}
+
 {% block body %}
   {# TODO : subpath controller give hard debug time since components have same
 	name as the moon-manager-ux package one, all debug link go to wrong file... #}
-	<div class="mws-offer-lookup" {{ svelte_component('MwsOfferTags', {
+	<div class="mws-offer-tags" {{ svelte_component('MwsOfferTags', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
 		'tags': tags|serialize('json')|e('html_attr'),

@@ -39,12 +39,17 @@ class MwsOfferStatus
     #[Serializer\Ignore]
     private Collection $mwsOffers;
 
+    use TimestampableEntity;
+
     public function __construct()
     {
         $this->mwsOffers = new ArrayCollection();
     }
 
-    use TimestampableEntity;
+    public function __toString()
+    {
+        return $this->slug;
+    }
 
     public function getId(): ?int
     {

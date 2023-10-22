@@ -10,18 +10,32 @@
 </script><script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
+  import { state } from "../../../stores/reduxStorage.mjs";
 
+  export let locale;
+  export let viewTemplate;
   export let tag;
 </script>
 
 <tr>
   <td>
-    <a href="#see-card">
+    <a href={ Routing.generate('mws_offer_tag_edit', {
+      '_locale': locale ?? '',
+      'viewTemplate': viewTemplate ?? '',
+      'slug': tag.slug,
+    }) }>
       <button class="btn btn-outline-primary p-1">Editer</button>
     </a>
   </td>
   <th scope="row">{tag.slug}</th>
-  <td>{tag.label ?? ''}</td>
+  <td>
+    <span class="p-2 rounded"
+    style:color={($state.slugsToOfferTag && $state.slugsToOfferTag[tag.slug]?.textColor)||"black"}
+    style:background-color={($state.slugsToOfferTag && $state.slugsToOfferTag[tag.slug]?.bgColor)||"lightgrey"}
+    >
+      {tag.label ?? ''}
+    </span>
+  </td>
   <td>{tag.categorySlug ?? ''}</td>
   <td>{dayjs(tag.createdAt).format('YYYY/MM/DD h:mm')}</td>
 </tr>

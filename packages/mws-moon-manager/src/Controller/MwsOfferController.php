@@ -13,6 +13,7 @@ use MWS\MoonManagerBundle\Entity\MwsOfferStatus;
 use MWS\MoonManagerBundle\Entity\MwsOfferTracking;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsOfferImportType;
+use MWS\MoonManagerBundle\Form\MwsOfferStatusType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
@@ -61,6 +62,7 @@ class MwsOfferController extends AbstractController
     public function lookup(
         $viewTemplate,
         MwsOfferRepository $mwsOfferRepository,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
         PaginatorInterface $paginator,
         Request $request,
     ): Response
@@ -142,7 +144,13 @@ class MwsOfferController extends AbstractController
 
         $this->logger->debug("Succeed to list offers");
         // dd($offers);
+        $slugsToOfferTag = $mwsOfferStatusRepository->findAll();
+        $slugsToOfferTag = array_combine(array_map(function($t) {
+            return $t->getSlug();
+        }, $slugsToOfferTag), $slugsToOfferTag);
+
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
+            'slugsToOfferTag' => $slugsToOfferTag,
             'offers' => $offers,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,
@@ -175,7 +183,7 @@ class MwsOfferController extends AbstractController
 
 
     // Tags are status AND category of status (a category is also a status...)
-    #[Route('/tags/{viewTemplate?}', name: 'mws_offer_tags')]
+    #[Route('/tags/list/{viewTemplate?}', name: 'mws_offer_tags')]
     public function tags(
         $viewTemplate,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
@@ -247,11 +255,83 @@ class MwsOfferController extends AbstractController
         );
 
         $this->logger->debug("Succeed to list offers");
+        $slugsToOfferTag = $mwsOfferStatusRepository->findAll();
+        $slugsToOfferTag = array_combine(array_map(function($t) {
+            return $t->getSlug();
+        }, $slugsToOfferTag), $slugsToOfferTag);
 
         return $this->render('@MoonManager/mws_offer/tags.html.twig', [
+            'slugsToOfferTag' => $slugsToOfferTag,
             'tags' => $tags,
             'filtersForm' => $filtersForm,
             'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route('/tags/edit/{slug}/{viewTemplate}',
+        name: 'mws_offer_tag_edit',
+        methods: ['GET', 'POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function edit(
+        string $slug,
+        string|null $viewTemplate,
+        Request $request,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
+    ): Response
+    {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+        $tag = $mwsOfferStatusRepository->findOneBy([
+            'slug' => $slug,
+        ]);
+        if (!$tag) {
+            throw $this->createNotFoundException("Unknow tag slug [$slug]");
+        }
+
+        $fType = MwsOfferStatusType::class;
+        // $previousOwners = $mwsTargetUser->getTeamOwners()->toArray();
+        // dd($viewTemplate);
+        $form = $this->createForm($fType, $tag, [
+            'shouldAddNew' => false,
+            'targetTag' => $tag,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // dd($tag);
+            // // TIPS : inverse of ManyToMany must be set manually :
+            // foreach ($tag->getMwsOffers() as $key => $offer) {
+            //     // https://www.doctrine-project.org/projects/doctrine-orm/en/2.16/reference/unitofwork-associations.html#important-concepts
+            //     $offer->addTag($tag); // TODO : strange, not from setter ? maybe doctrine do not use setter ?
+            //     $this->em->persist($offer);
+            //     // dd($offer);
+            // }
+
+            $this->em->persist($tag);
+            $this->em->flush();
+            return $this->redirectToRoute('mws_offer_tags', [
+                "filterTag" => $viewTemplate
+            ], Response::HTTP_SEE_OTHER);
+        }
+
+        $slugsToOfferTag = $mwsOfferStatusRepository->findAll();
+        $slugsToOfferTag = array_combine(array_map(function($t) {
+            return $t->getSlug();
+        }, $slugsToOfferTag), $slugsToOfferTag);
+
+        return $this->render('@MoonManager/mws_offer/tagEdit.html.twig', [
+            'tag' => $tag,
+            'form' => $form,
+            'slugsToOfferTag' => $slugsToOfferTag,
+            'viewTemplate' => $viewTemplate,
+            'title' => "Modifier le tag {$tag->getLabel()}"
         ]);
     }
 

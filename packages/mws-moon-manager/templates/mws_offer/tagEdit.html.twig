@@ -1,0 +1,44 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block storesInit %}
+	{{ parent() }}
+	<div
+	class="hidden"
+	{{ svelte_component('MwsReduxSync', {
+		'stateUpdate': {
+			'slugsToOfferTag': slugsToOfferTag,
+		}|serialize('json')|e('html_attr'),
+	}) }}></div>
+{% endblock %}
+
+{% block body %}
+	<div class="mws-offer-tag-edit" {{ svelte_component('MwsOfferTagEdit', {
+		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+		'locale': app.locale,
+		'tag': tag|serialize('json')|e('html_attr'),
+		'form': (form_start(form)
+		~ form_widget(form)
+		~ form_end(form))|e('html_attr'),
+		'viewTemplate' : viewTemplate,
+	} ) }}>
+		{% if app.user %}
+			<a href="{{ path('mws_user_logout') }}">
+				<u>Logout from
+					{{ app.user.username }}</u>
+			</a>
+		{% endif %}
+		{# {% block editForm %}
+			<div>
+					{{ form_start(formUser, { 'attr' : {
+						'class': 'd-flex flex-wrap'
+					} }) }}
+					{{ form_end(formUser) }}
+			</div>
+		{% endblock %} #}
+
+		<div class="example-wrapper">
+			<h1>{{ block('title') }}! ✅</h1>
+		</div>
+	</div>
+{% endblock %}
