@@ -69,6 +69,28 @@
     });
   };
 
+  const slugToOfferTagMap = stateGet(get(state), 'slugToOfferTag');
+  const groupedTags = {};
+
+  // TODO : opti server side or service side (avoid re-compute on all components loads...)
+  for (const slug in slugToOfferTagMap) {
+    // if (Object.prototype.hasOwnProperty.call(object, key)) {
+    const tag = slugToOfferTagMap[slug];
+    const categoryTag = slugToOfferTagMap[tag.categorySlug] ?? null;
+    const groupLabel = categoryTag?.label;
+    if (!groupLabel) continue; // TODO : doc, we ASSUME that tag WITHOUT categorySlug are ROOT category tags, not usable for offers value switch
+    if (!(groupedTags[groupLabel] ?? null)) {
+      groupedTags[groupLabel] = [];
+    }
+    groupedTags[groupLabel].push(tag);
+  }
+  console.debug(groupedTags);
+
+  let addedTagKey;
+  const addTag = () => {
+    console.log('TODO add tag with key ', addedTagKey);
+    addedTagKey = "null";
+  }
 </script>
 
 {#each (tags ?? []) as tag, idx}
@@ -113,3 +135,16 @@
       data-dismiss-target="#badge-dismiss-{UID}"
   -->
 {/each}
+
+<select
+bind:value={addedTagKey} on:change={addTag}
+class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+  <option value="null" selected>Ajouter un tag</option>
+  {#each Object.keys(groupedTags) as groupLabel}
+    <optgroup label={ groupLabel }>
+      {#each groupedTags[groupLabel] as tag}
+        <option value={`${tag.categorySlug}|${tag.slug}`}>{tag.label}</option>
+      {/each}
+    </optgroup>
+  {/each}
+</select>
