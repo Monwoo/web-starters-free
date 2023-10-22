@@ -61,5 +61,9 @@
       {offer.sourceDetail?.title ?? ''}
     {/if}
   </td>
-  <td>{offer.sourceDetail?.description ?? ''}</td>
+  <td>
+    <div class="overflow-auto max-h-[10em]">
+      {offer.sourceDetail?.description ?? ''}
+    </div>
+  </td>
 </tr>

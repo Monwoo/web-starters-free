@@ -1,4 +1,13 @@
-<script lang="ts">
+<script context="module">
+  // TODO : remove code duplications, inside services ?
+  // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
+  // import "dayjs/esm/locale/fr";
+  // import dayjs from "dayjs/esm";
+  import "dayjs/locale/fr";
+  // import "dayjs/locale/en";
+  import dayjs from "dayjs";
+  dayjs.locale("fr"); // Fr locale
+</script><script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
   // TODO : namespace
@@ -30,6 +39,24 @@
         {offer.title}
       </a>
     </h1>
+    <table class="m-3 text-center">
+      <thead>
+        <tr>
+          <th scope="col">Contact 1</th>
+          <th scope="col">Contact 2</th>
+          <th scope="col">Budget</th>
+          <th scope="col">Depuis le</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{offer.contact1 ?? ''}</td>
+          <td>{offer.contact2 ?? ''}</td>      
+          <td>{offer.budget ?? ''}</td>      
+          <td>{dayjs(offer.leadStart).format('YYYY/MM/DD h:mm')}</td>      
+        </tr>  
+      </tbody>
+    </table>
     <a href="{ offer.clientUrl ?? "#not-found"}" target="_blank" rel="noreferrer">
       <button class="btn btn-outline-primary p-1">Publié par : {offer.clientUsername}</button>
     </a>    

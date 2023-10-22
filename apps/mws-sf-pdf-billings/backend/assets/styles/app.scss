@@ -130,6 +130,9 @@ table {
             max-width: 42px;
         }
     }
+    table tbody tr td {
+        @apply border-2 rounded border-sky-400;
+    }
 }
 
 ///////////////////////
