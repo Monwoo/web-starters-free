@@ -46,7 +46,15 @@
   scope="row"
   style:color={($state.slugToOfferTag && $state.slugToOfferTag[offer.currentStatusSlug]?.textColor)||"black"}
   style:backgroung-color={($state.slugToOfferTag && $state.slugToOfferTag[offer.currentStatusSlug]?.bgColor)||"lightgrey"}
-  >[{offer.slug}] {offer.currentStatusSlug}</th>
+  >
+    [{offer.slug}]
+    <div class="p-2 m-1 rounded"
+    style:color={($state.slugsToOfferTag && $state.slugsToOfferTag[offer.currentStatusSlug]?.textColor)||"black"}
+    style:background-color={($state.slugsToOfferTag && $state.slugsToOfferTag[offer.currentStatusSlug]?.bgColor)||"lightgrey"}
+    >
+      {offer.currentStatusSlug}
+  </div>
+  </th>
   <td><TagsInput bind:tagSlugs={offer.tags}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>{offer.clientUsername}</td>
