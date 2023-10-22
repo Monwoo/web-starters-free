@@ -16,6 +16,7 @@
         "flowbite-svelte": "^0.44.18",
         "fork-ts-checker-webpack-plugin": "^7.0.0",
         "fos-router": "file:vendor/friendsofsymfony/jsrouting-bundle/Resources",
+        "locally-unique-id-generator": "^0.1.5",
         "mws-moon-manager-ux": "workspace:*",
         "node-sass": "^9.0.0",
         "postcss": "^8.4.31",

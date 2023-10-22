@@ -68,6 +68,9 @@ importers:
       fos-router:
         specifier: file:vendor/friendsofsymfony/jsrouting-bundle/Resources
         version: file:apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources(webpack@5.74.0)
+      locally-unique-id-generator:
+        specifier: ^0.1.5
+        version: 0.1.5
       mws-moon-manager-ux:
         specifier: workspace:*
         version: link:../../../packages/mws-moon-manager-ux
@@ -380,6 +383,9 @@ importers:
       fos-router:
         specifier: link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources
         version: link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources
+      locally-unique-id-generator:
+        specifier: ^0.1.5
+        version: 0.1.5
       sass:
         specifier: ^1.62.0
         version: 1.62.0
@@ -6334,6 +6340,10 @@ packages:
       big.js: 5.2.2
       emojis-list: 3.0.0
       json5: 2.2.3
+    dev: true
+
+  /locally-unique-id-generator@0.1.5:
+    resolution: {integrity: sha512-cdISIqzCk2IiO9GIfL0oPyvOhz0tOetKOOasYWLfKHD7W/23EpWb12GymG0xCy8nhG+TMon5x+SS9PLaDd+avg==}
     dev: true
 
   /locate-path@3.0.0:
