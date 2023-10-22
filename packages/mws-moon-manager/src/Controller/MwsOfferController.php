@@ -25,6 +25,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -269,15 +270,17 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/tags/edit/{slug}/{viewTemplate}',
+    #[Route('/tag/edit/{categorySlug<[^/]*>}/{slug}/{viewTemplate}',
         name: 'mws_offer_tag_edit',
         methods: ['GET', 'POST'],
         defaults: [
             'viewTemplate' => null,
+            'categorySlug' => null,
         ],
     )]
-    public function edit(
+    public function tagEdit(
         string $slug,
+        string $categorySlug,
         string|null $viewTemplate,
         Request $request,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
@@ -289,9 +292,9 @@ class MwsOfferController extends AbstractController
         if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
-        $tag = $mwsOfferStatusRepository->findOneBy([
-            'slug' => $slug,
-        ]);
+        $tag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+            $slug, $categorySlug,
+        );
         if (!$tag) {
             throw $this->createNotFoundException("Unknow tag slug [$slug]");
         }
@@ -336,6 +339,79 @@ class MwsOfferController extends AbstractController
             'slugToOfferTag' => $slugToOfferTag,
             'viewTemplate' => $viewTemplate,
             'title' => "Modifier le tag {$tag->getLabel()}"
+        ]);
+    }
+
+    #[Route('/tag/delete/{viewTemplate}',
+        name: 'mws_offer_tag_delete',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagDelete(
+        string|null $viewTemplate,
+        Request $request,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
+        MwsOfferRepository $mwsOfferRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response
+    {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-offer-tag-delete', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $tagSlug = $request->request->get('tagSlug');
+        $tagCategorySlug = $request->request->get('tagCategorySlug');
+        // TODO : DOC + validation, no tag category slug could use the 'null' keyword, now RESERVED...
+        if ('null' === $tagCategorySlug) { 
+            $tagCategorySlug = null; // Form data deserialisation stuff ? extracting as string instead of null...
+        }
+        $tag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+            $tagSlug, $tagCategorySlug
+        );
+        if (!$tag) {
+            throw $this->createNotFoundException("Unknow tag slug [$tagSlug, $tagCategorySlug]");
+        }
+        $offerSlug = $request->request->get('offerSlug');
+        $offer = $mwsOfferRepository->findOneBy([
+            'slug' => $offerSlug,
+        ]);
+        if (!$offer) {
+            throw $this->createNotFoundException("Unknow offer slug [$offerSlug]");
+        }
+        // dd($tag);
+        // $tag->removeMwsOffer($offer);
+        $offer->removeTag($tag); // TODO : MUST set inverse relation ship ? but no same issue with import ?
+
+        // $this->em->persist($tag);
+        $this->em->persist($offer);
+        $this->em->flush();
+
+        // https://stackoverflow.com/questions/47872020/symfony-4-how-to-add-csrf-token-without-building-form
+        // // validate token
+        // $csrf_token = new CsrfToken('my_token', 'generated_token_value_here');
+        // if(!$csrfTokenManager->isTokenValid($csrf_token)) {
+        //     //failed. do something.
+        //     return new JsonResponse();
+        // }
+        // // generate token
+        // $token = $csrfTokenManager->getToken('my_token')->getValue();
+        // // refresh token
+        // $csrfTokenManager->refreshToken('my_token');
+
+        return $this->json([
+            'newTags' => $offer->getTags(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-tag-delete')->getValue(),
+            'viewTemplate' => $viewTemplate,
         ]);
     }
 
@@ -666,16 +742,14 @@ class MwsOfferController extends AbstractController
                     $sourceStatusSlug = strtolower($this->slugger->slug($sourceStatus));
                     $sourceCategoryLabel = 'mws.offer.tags.category.src-import';
                     $sourceCategorySlug = strtolower($this->slugger->slug($sourceCategoryLabel));
-                    $sourceTag = $mwsOfferStatusRepository->findOneBy([
-                        'slug' => $sourceStatusSlug,
-                        'categorySlug' => $sourceCategorySlug,
-                    ]);
+                    $sourceTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+                        $sourceStatusSlug, $sourceCategorySlug
+                    );
                     // dd($sourceTag);
                     if (!$sourceTag) {
-                        $sourceCategory = $mwsOfferStatusRepository->findOneBy([
-                            'slug' => $sourceCategorySlug,
-                            'categorySlug' => null, // TODO : ok ? or need query builder ?
-                        ]);
+                        $sourceCategory = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+                            $sourceCategorySlug, null
+                        );
                         if (!$sourceCategory) {
                             $sourceCategory = new MwsOfferStatus();
                             $sourceCategory->setSlug($sourceCategorySlug);
@@ -687,7 +761,7 @@ class MwsOfferController extends AbstractController
                         $sourceTag = new MwsOfferStatus();
                         $sourceTag->setSlug($sourceStatusSlug);
                         $sourceTag->setLabel($sourceStatus);
-                        // $sourceTag->setCategorySlug($TODO);
+                        $sourceTag->setCategorySlug($sourceCategorySlug);
                         // TIPS : NEED to PERSIST AND FLUSH for next findOneBy to work :
                         $this->em->persist($sourceTag);
                         $this->em->flush();

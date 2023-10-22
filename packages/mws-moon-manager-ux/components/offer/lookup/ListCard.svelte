@@ -57,7 +57,7 @@
       || offer.currentStatusSlug}
   </div>
   </th>
-  <td><TagsInput bind:tags={offer.tags}></TagsInput></td>
+  <td><TagsInput bind:tags={offer.tags} {offer} {locale}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>{offer.clientUsername}</td>
   <td>{offer.contact1 ?? ''}</td>

@@ -13,11 +13,11 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsContactRepository::class)]
 #[ORM\Index(columns: ['username'])]
-#[ORM\Index(columns: ['postalCode'])]
+#[ORM\Index(columns: ['postal_code'])]
 #[ORM\Index(columns: ['city'])]
 #[ORM\Index(columns: ['email'])]
 #[ORM\Index(columns: ['phone'])]
-#[ORM\Index(columns: ['sourceName'])]
+#[ORM\Index(columns: ['source_name'])]
 class MwsContact
 {
     #[ORM\Id]

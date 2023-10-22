@@ -1,7 +1,8 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
-  import { state, slugToOfferTag } from "../../../stores/reduxStorage.mjs";
+  import { state, slugToOfferTag, stateGet } from "../../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
 
@@ -15,19 +16,57 @@
   export let tags;
 
   export let removeTag = async (tag) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfOfferTagDelete'),
+      offerSlug: offer.slug,
+      tagSlug: tag.slug,
+      tagCategorySlug: tag.categorySlug,
+    };
+		// let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
+		let headers = {};
+    // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
+    // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+    // Per this article make sure to NOT set the Content-Type header. 
+		// headers['Content-Type'] = 'application/json';
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
     const resp = await fetch(
       // TODO : build back Api, will return new csrf to use on success, will error othewise,
       // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
       Routing.generate('mws_offer_tag_delete', {
         _locale: locale,
-        offerSlug: offer.slug,
-        tagSlug: tag.slug,
-        // _csrf: ..., // TODO : Auth secu... jwt auto-connect if already logged with regular sf ? OR only need csrf validation with credentials transmits ?
       }), {
+        method: "POST",
+        headers,
+        // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
+        body: formData,
         // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
-        credentials: "same-origin"
+        credentials: "same-origin",
+        // https://javascript.info/fetch-api
+        redirect: 'error',
       }
-    )
+    ).then(async resp => {
+      console.log(resp);
+      if (!resp.ok) {
+        // make the promise be rejected if we didn't get a 2xx response
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+          // got the desired response
+          const data = await resp.json();
+          tags = data.tags;
+          // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
+          state.update(stateData => ({
+            ...stateData,
+            csrfOfferTagDelete: data.newCsrf,
+          }))
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+    });
   };
 
 </script>

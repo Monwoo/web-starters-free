@@ -5,6 +5,10 @@ doctrine:
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
         server_version: '15'
+        # TODO : ensure below is OK + generate/sync from recipe system...
+        # https://stackoverflow.com/questions/43356717/symfony-doctrine2-manytomany-relationship-not-removed-specific-to-sqlite
+        options:
+            'PRAGMA foreign_keys': 'ON'
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware

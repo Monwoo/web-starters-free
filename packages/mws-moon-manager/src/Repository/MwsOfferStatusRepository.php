@@ -3,6 +3,7 @@
 namespace MWS\MoonManagerBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsOfferStatus;
 
@@ -19,6 +20,23 @@ class MwsOfferStatusRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, MwsOfferStatus::class);
+    }
+
+    public function findOneWithSlugAndCategory($slug, $categorySlug, $asQueryBuilder = false
+    ): MwsOfferStatus|QueryBuilder|null {
+        $qb = $this->createQueryBuilder('t')
+        ->where('t.slug = :slug')
+        ->setParameter('slug', $slug)
+        ->setMaxResults(1);
+        // dd( $categorySlug);
+        if ($categorySlug && strlen($categorySlug)) {
+            $qb->andWhere('t.categorySlug = :categorySlug')
+            ->setParameter('categorySlug', $categorySlug);
+        } else {
+            $qb->andWhere("t.categorySlug IS NULL OR t.categorySlug = ''");
+        }
+    
+        return $asQueryBuilder ? $qb : $qb->getQuery()->execute()[0] ?? null;
     }
 
 //    /**

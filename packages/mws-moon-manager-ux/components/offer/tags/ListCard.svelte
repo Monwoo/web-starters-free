@@ -23,6 +23,7 @@
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? '',
       'slug': tag.slug,
+      'categorySlug': tag.categorySlug,
     }) }>
       <button class="btn btn-outline-primary p-1">Editer</button>
     </a>
