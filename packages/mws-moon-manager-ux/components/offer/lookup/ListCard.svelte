@@ -13,7 +13,7 @@
   // TODO : why "svelte-time" not working ?
   // import Time from "svelte-time";
   import TagsInput from "../tags/TagsInput.svelte";
-  import { state } from "../../../stores/reduxStorage.mjs";
+  import { state, slugToOfferTag } from "../../../stores/reduxStorage.mjs";
 
   export let locale;
   export let viewTemplate;
@@ -44,18 +44,20 @@
   </td>
   <th
   scope="row"
-  style:color={($state.slugToOfferTag && $state.slugToOfferTag[offer.currentStatusSlug]?.textColor)||"black"}
-  style:backgroung-color={($state.slugToOfferTag && $state.slugToOfferTag[offer.currentStatusSlug]?.bgColor)||"lightgrey"}
   >
     [{offer.slug}]
     <div class="p-2 m-1 rounded"
-    style:color={($state.slugsToOfferTag && $state.slugsToOfferTag[offer.currentStatusSlug]?.textColor)||"black"}
-    style:background-color={($state.slugsToOfferTag && $state.slugsToOfferTag[offer.currentStatusSlug]?.bgColor)||"lightgrey"}
-    >
-      {offer.currentStatusSlug}
+    style:color={(slugToOfferTag($state, offer.currentStatusSlug)?.textColor)||"black"}
+    style:background-color={(slugToOfferTag($state, offer.currentStatusSlug)?.bgColor)||"lightgrey"}
+      >
+      <!-- {JSON.stringify($state)}
+      {JSON.stringify(offer.currentStatusSlug)}
+      {JSON.stringify(slugToOfferTag($state, offer.currentStatusSlug))} -->
+      {(slugToOfferTag($state, offer.currentStatusSlug)?.label)
+      || offer.currentStatusSlug}
   </div>
   </th>
-  <td><TagsInput bind:tagSlugs={offer.tags}></TagsInput></td>
+  <td><TagsInput bind:tags={offer.tags}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>{offer.clientUsername}</td>
   <td>{offer.contact1 ?? ''}</td>

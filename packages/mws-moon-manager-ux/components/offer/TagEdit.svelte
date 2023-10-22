@@ -23,8 +23,8 @@
       Edition du tag :
     </div>
     <div class="detail rounded-sm p-3"
-    style:color={($state.slugsToOfferTag && $state.slugsToOfferTag[tag.slug]?.textColor)||"black"}
-    style:background-color={($state.slugsToOfferTag && $state.slugsToOfferTag[tag.slug]?.bgColor)||"lightgrey"}
+    style:color={($state.slugToOfferTag && $state.slugToOfferTag[tag.slug]?.textColor)||"black"}
+    style:background-color={($state.slugToOfferTag && $state.slugToOfferTag[tag.slug]?.bgColor)||"lightgrey"}
     >
       [{ tag.slug }] { tag.label }
     </div>

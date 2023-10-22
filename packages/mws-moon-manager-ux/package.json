@@ -17,6 +17,7 @@
     "svelte-loading-spinners": "^0.3.4"
   },
   "devDependencies": {
+    "core-js": "^3.33.1",
     "dayjs": "^1.11.10",
     "eslint-config-svelte": "workspace:*",
     "flowbite": "^1.8.1",

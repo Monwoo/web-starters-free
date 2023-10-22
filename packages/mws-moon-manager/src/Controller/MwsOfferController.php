@@ -144,13 +144,13 @@ class MwsOfferController extends AbstractController
 
         $this->logger->debug("Succeed to list offers");
         // dd($offers);
-        $slugsToOfferTag = $mwsOfferStatusRepository->findAll();
-        $slugsToOfferTag = array_combine(array_map(function($t) {
+        $slugToOfferTag = $mwsOfferStatusRepository->findAll();
+        $slugToOfferTag = array_combine(array_map(function($t) {
             return $t->getSlug();
-        }, $slugsToOfferTag), $slugsToOfferTag);
+        }, $slugToOfferTag), $slugToOfferTag);
 
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
-            'slugsToOfferTag' => $slugsToOfferTag,
+            'slugToOfferTag' => $slugToOfferTag,
             'offers' => $offers,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,
@@ -255,13 +255,13 @@ class MwsOfferController extends AbstractController
         );
 
         $this->logger->debug("Succeed to list offers");
-        $slugsToOfferTag = $mwsOfferStatusRepository->findAll();
-        $slugsToOfferTag = array_combine(array_map(function($t) {
+        $slugToOfferTag = $mwsOfferStatusRepository->findAll();
+        $slugToOfferTag = array_combine(array_map(function($t) {
             return $t->getSlug();
-        }, $slugsToOfferTag), $slugsToOfferTag);
+        }, $slugToOfferTag), $slugToOfferTag);
 
         return $this->render('@MoonManager/mws_offer/tags.html.twig', [
-            'slugsToOfferTag' => $slugsToOfferTag,
+            'slugToOfferTag' => $slugToOfferTag,
             'tags' => $tags,
             'filtersForm' => $filtersForm,
             'viewTemplate' => $viewTemplate,
@@ -321,15 +321,18 @@ class MwsOfferController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        $slugsToOfferTag = $mwsOfferStatusRepository->findAll();
-        $slugsToOfferTag = array_combine(array_map(function($t) {
+        $slugToOfferTag = $mwsOfferStatusRepository->findAll();
+        $slugToOfferTag = array_combine(array_map(function($t) {
             return $t->getSlug();
-        }, $slugsToOfferTag), $slugsToOfferTag);
+        }, $slugToOfferTag), $slugToOfferTag);
 
         return $this->render('@MoonManager/mws_offer/tagEdit.html.twig', [
             'tag' => $tag,
             'form' => $form,
-            'slugsToOfferTag' => $slugsToOfferTag,
+            // TODO : remove code duplication, inject as global for 
+            // all routes in this controller routes renderings with slugToOfferTag
+            // AND all other redux indexes to send JS frontend side...
+            'slugToOfferTag' => $slugToOfferTag,
             'viewTemplate' => $viewTemplate,
             'title' => "Modifier le tag {$tag->getLabel()}"
         ]);
