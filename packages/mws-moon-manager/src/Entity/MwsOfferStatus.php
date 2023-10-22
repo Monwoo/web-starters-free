@@ -1,4 +1,5 @@
 <?php
+// 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
 namespace MWS\MoonManagerBundle\Entity;
 
@@ -7,14 +8,32 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use MWS\MoonManagerBundle\Helper\TranslationExtractOnly;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation as Serializer;
 
+define('trans', function(...$args){return $args[0];});
+
 #[ORM\Entity(repositoryClass: MwsOfferStatusRepository::class)]
+#[UniqueEntity(
+    fields: ['slug', 'categorySlug'],
+    errorPath: 'slug',
+    message: MwsOfferStatus::slugAndCatNotUniqueError,
+)]
 #[ORM\Index(columns: ['slug'])]
 #[ORM\Index(columns: ['category_slug'])]
 class MwsOfferStatus
 {
+    // TODO : should do someting like :
+    // TranslationExtractOnly->trans('....') for translation auto-extractor to works...
+    // BUT SOUNDS like not possible to write 'function call' inside constants...
+    // IDEA : DELEGATE ALL translations to SVELTE SIDE. Backend will only send key ?
+    //       => same issue as previous : how to auto-generate/sync app translations strings ?
+    const slugAndCatNotUniqueError = // trans(
+        'mws.offer.errors.tag-slug-and-category-not-unique'
+    /*)*/;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,6 +45,9 @@ class MwsOfferStatus
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $label = null;
 
+    // TODO : DOC : ONE LEVEL of category for now, review query if
+    // want multiple, and change this to ManyToMany or use
+    // property path alike system in current ONE LEVEL categorySlug system...
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $categorySlug = null;
 

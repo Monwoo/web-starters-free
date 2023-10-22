@@ -1,4 +1,5 @@
 <?php
+// 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
 namespace MWS\MoonManagerBundle\Controller;
 
@@ -663,12 +664,26 @@ class MwsOfferController extends AbstractController
 
                     $sourceStatus = $cleanUp($o["projectStatus"]);
                     $sourceStatusSlug = strtolower($this->slugger->slug($sourceStatus));
+                    $sourceCategoryLabel = 'mws.offer.tags.category.src-import';
+                    $sourceCategorySlug = strtolower($this->slugger->slug($sourceCategoryLabel));
                     $sourceTag = $mwsOfferStatusRepository->findOneBy([
                         'slug' => $sourceStatusSlug,
-                        // 'category' => $TODO_id_cat_from_param_config_slug ?
+                        'categorySlug' => $sourceCategorySlug,
                     ]);
                     // dd($sourceTag);
                     if (!$sourceTag) {
+                        $sourceCategory = $mwsOfferStatusRepository->findOneBy([
+                            'slug' => $sourceCategorySlug,
+                            'categorySlug' => null, // TODO : ok ? or need query builder ?
+                        ]);
+                        if (!$sourceCategory) {
+                            $sourceCategory = new MwsOfferStatus();
+                            $sourceCategory->setSlug($sourceCategorySlug);
+                            $sourceCategory->setLabel($sourceCategoryLabel);
+                            // $sourceTag->setCategorySlug($TODO);
+                            // TIPS : NEED to PERSIST AND FLUSH for next findOneBy to work :
+                            $this->em->persist($sourceCategory);
+                        }    
                         $sourceTag = new MwsOfferStatus();
                         $sourceTag->setSlug($sourceStatusSlug);
                         $sourceTag->setLabel($sourceStatus);
