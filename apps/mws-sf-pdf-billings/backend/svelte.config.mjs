@@ -14,18 +14,32 @@ import 'dotenv/config';
 // 	// SO WE AVOID BASE_HREF for DEV ENV :
 // 	baseHref = '';
 // }
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
-/** @type {import('@sveltejs/kit').Config} */
+// TODO : annotation not interpreted ?
+/* * @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: [
 		preprocess({
 			postcss: true,
-		})
+		}),
+		// vitePreprocess({
+		// 	postcss: true,
+		// }),
 	],
 	// accessors: true,
 	prerender: {
 		default: true,
 	},
+	// TODO : NOP, still no checking typescript...
+	// https://github.com/symfony/webpack-encore/pull/50
+	entryFileIsJs: false,
+	appendTsSuffixTo: [],
+	compilerOptions: {
+		// TODO : bring back to true when entry point css merge issue solved
+		// css: false
+	},
+
 	// kit: {
 	// 	adapter: adapter({
 	// 		pages: 'build',

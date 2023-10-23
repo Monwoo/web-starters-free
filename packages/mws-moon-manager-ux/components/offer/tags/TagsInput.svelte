@@ -3,6 +3,7 @@
   import Routing from "fos-router";
   import { state, offerTagsByCatSlugAndSlug, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
+  import CommentModal from "./CommentModal.svelte";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
 
@@ -14,6 +15,7 @@
   export let locale;
   export let offer;
   export let tags;
+  export let modalId;
 
   let addedTagKey;
   export let removeTag = async (tag, comment = null) => {
@@ -71,6 +73,12 @@
   };
 
   export let addTag = async (tagSlug, tagCategorySlug, comment = null) => {
+    // TODO : fetch modal response
+    const $ = window.$;
+    const modalBtn = $(`[data-modal-target="${modalId}"]`);
+    console.log(modalBtn);
+    modalBtn.click();
+
     const data = {
       _csrf_token: stateGet(get(state), 'csrfOfferTagAdd'),
       offerSlug: offer.slug,
@@ -130,6 +138,9 @@
   console.debug(groupedTags);
 </script>
 
+
+<!-- Modal toggle -->
+<CommentModal bind:modalId={modalId} />
 {#each (tags ?? []) as tag, idx}
   <!-- {@const UID = newUniqueId()} -->
 

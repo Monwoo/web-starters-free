@@ -359,6 +359,11 @@ class MwsOffer
 
     public function removeTag(MwsOfferStatus $tag): static
     {
+        // TODO : ok there ? or validator or listeners ?
+        if ($this->getCurrentStatusSlug()
+        === "{$tag->getCategorySlug()}|{$tag->getSlug()}") {
+            return $this; // TODO : doc : will ignore removal of tag used as current status
+        }
         $this->tags->removeElement($tag);
 
         return $this;

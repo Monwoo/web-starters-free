@@ -834,6 +834,10 @@ class MwsOfferController extends AbstractController
                     }
                     $offerStatusSlug = "$sourceCategorySlug|$sourceStatusSlug"; // TODO : load from status DB or config DB...
 
+                    // TODO : tips and doc, OR refactor : MUST be called before
+                    // ->addTag since will disallow removal of last status if done after
+                    // indeed, removal of tag used as currentStatus is forbidden
+                    $offer->setCurrentStatusSlug($offerStatusSlug);
                     $mwsOfferRepository->addTag($offer, $sourceTag);
 
                     $offer->setLeadStart($leadStart);
@@ -842,7 +846,6 @@ class MwsOfferController extends AbstractController
                         $this->offerSlugToSourceUrlTransformer($sourceSlug)($offerSlug)
                     );
                     $offer->setClientUrl($contactBusinessUrl);
-                    $offer->setCurrentStatusSlug($offerStatusSlug);
                     // $offer->setTitle($o['title']);
                     $offer->setSourceName($sourceSlug);
                     $offer->setSourceDetail($o);
