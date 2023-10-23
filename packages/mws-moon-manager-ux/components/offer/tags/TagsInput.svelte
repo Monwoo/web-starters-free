@@ -1,7 +1,7 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
-  import { state, slugToOfferTag, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import { state, offerTagsByCatSlugAndSlug, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
@@ -112,14 +112,14 @@
     });
   };
 
-  const slugToOfferTagMap = stateGet(get(state), 'slugToOfferTag');
+  const offerTagsByCatSlugAndSlugMap = stateGet(get(state), 'offerTagsByCatSlugAndSlug');
   const groupedTags = {};
 
   // TODO : opti server side or service side (avoid re-compute on all components loads...)
-  for (const slug in slugToOfferTagMap) {
+  for (const slug in offerTagsByCatSlugAndSlugMap) {
     // if (Object.prototype.hasOwnProperty.call(object, key)) {
-    const tag = slugToOfferTagMap[slug];
-    const categoryTag = slugToOfferTagMap[tag.categorySlug] ?? null;
+    const tag = offerTagsByCatSlugAndSlugMap[slug];
+    const categoryTag = offerTagsByCatSlugAndSlugMap[`|${tag.categorySlug}`] ?? null;
     const groupLabel = categoryTag?.label;
     if (!groupLabel) continue; // TODO : doc, we ASSUME that tag WITHOUT categorySlug are ROOT category tags, not usable for offers value switch
     if (!(groupedTags[groupLabel] ?? null)) {
@@ -139,8 +139,8 @@
   <!-- // TODO : use css var and css class INSTEAD of hard style injections ? -->
   <!-- https://flowbite.com/docs/components/badge/ -->
   <span
-  style:color={(slugToOfferTag($state, tag.slug)?.textColor)||"black"}
-  style:background-color={(slugToOfferTag($state, tag.slug)?.bgColor)||"lightgrey"}
+  style:color={(offerTagsByCatSlugAndSlug($state, tag.categorySlug, tag.slug)?.textColor)||"black"}
+  style:background-color={(offerTagsByCatSlugAndSlug($state, tag.categorySlug, tag.slug)?.bgColor)||"lightgrey"}
   class="inline-flex items-center
   px-2 py-1 mr-2 text-sm font-medium 
   opacity-75 hover:opacity-100">
@@ -180,7 +180,7 @@ bind:value={addedTagKey} on:change={() => {
   const [tagCategorySlug, tagSlug] = addedTagKey.split('|');
   addTag(tagSlug, tagCategorySlug);
 }}
-class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+class="opacity-30 hover:opacity-100 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
   <option value="null" selected>Ajouter un tag</option>
   {#each Object.keys(groupedTags) as groupLabel}
     <optgroup label={ groupLabel }>

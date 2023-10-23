@@ -39,6 +39,15 @@ class MwsOfferStatusRepository extends ServiceEntityRepository
         return $asQueryBuilder ? $qb : $qb->getQuery()->execute()[0] ?? null;
     }
 
+    public function getTagsByCategorySlugAndSlug() {
+        $allTags = $this->findAll();
+        $offerTagsByCatSlugAndSlug = array_combine(array_map(function($t) {
+            return "{$t->getCategorySlug()}|{$t->getSlug()}";
+        }, $allTags), $allTags);
+
+        return $offerTagsByCatSlugAndSlug;
+    }
+
 //    /**
 //     * @return MwsOfferStatus[] Returns an array of MwsOfferStatus objects
 //     */

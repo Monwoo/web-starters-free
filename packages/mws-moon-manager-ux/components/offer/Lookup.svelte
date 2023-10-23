@@ -3,14 +3,14 @@
   import Routing from "fos-router";
   // TODO : namespace
   import Base from "../layout/Base.svelte";
-  import ListCard from "./lookup/ListCard.svelte";
+  import List from "./lookup/List.svelte";
   import { onMount } from "svelte";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let locale;
   export let lookup;
-  export let offers;
+  export let offers = [];
   export let offersPaginator;
   export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
@@ -64,39 +64,7 @@
 
   <!-- { JSON.stringify(offers) } -->
   <div class="overflow-y-auto">
-    <table>
-      <thead>
-        <tr class="users-table-info">
-          <th scope="col">Actions</th>
-          <th scope="col">[Slug] Status</th>
-          <th scope="col">Tags</th>
-          <th scope="col">
-            {@html offersHeaders.clientUsername ?? "Nom du client"}
-          </th>
-          <th scope="col">
-            {@html offersHeaders.contact1 ?? "Contact"}
-          </th>
-          <th scope="col">
-            {@html offersHeaders.contact2 ?? "Contact bis"}
-          </th>
-          <th scope="col">
-            {@html offersHeaders.leadStart ?? "Depuis le"}
-          </th>
-          <th scope="col">
-            {@html offersHeaders.budget ?? "Budget"}
-          </th>
-          <th scope="col">Titre</th>
-          <th scope="col">Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each offers as offer}
-          <!-- { JSON.stringify(offer) } -->
-          <!-- {@debug offer} -->
-          <ListCard {offer} {locale} {viewTemplate}></ListCard>
-        {/each}
-      </tbody>
-    </table>
+    <List {locale} {offers} {offersHeaders} {viewTemplate}></List>
   </div>
   <div>{@html offersPaginator}</div>
 </Base>

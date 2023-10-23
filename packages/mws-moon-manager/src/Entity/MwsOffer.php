@@ -50,6 +50,7 @@ class MwsOffer
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $currentBillingNumber = null;
 
+    // TODO : doc : combinaison of tag.categorySlug|tag.slug
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $currentStatusSlug = null;
 

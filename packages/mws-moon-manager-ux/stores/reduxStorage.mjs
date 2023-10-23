@@ -31,15 +31,20 @@ export const stateGet = (stateData, propertyPath, _default = null) => {
   : value ;
 }
 
-export const slugToOfferTag = (stateData, slug, _default = null) => {
-  const slugToTag = stateGet(stateData, 'slugToOfferTag');
-  if (!slugToTag || !(slugToTag[slug] ?? false)) {
+export const offerTagsByKey = (stateData, key, _default = null) => {
+  const keyToTag = stateGet(stateData, 'offerTagsByCatSlugAndSlug');
+  if (!keyToTag || !(keyToTag[key] ?? false)) {
     console.debug(
-      `MWS redux storage fail to found tag ${slug} inside slugToOfferTag`,
-      slugToTag,
+      `MWS redux storage fail to found tag ${key} inside offerTagsByCatSlugAndSlug`,
+      keyToTag,
       stateData,
     );
     return _default;
   }
-  return slugToTag[slug];
+  return keyToTag[key];
+}
+
+export const offerTagsByCatSlugAndSlug = (stateData, catSlug, slug, _default = null) => {
+  const key = `${catSlug}|${slug}`;
+  return offerTagsByKey(stateData, key, _default);
 }

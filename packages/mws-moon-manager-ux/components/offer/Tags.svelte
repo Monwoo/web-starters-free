@@ -3,7 +3,7 @@
   import Routing from "fos-router";
   // TODO : namespace
   import Base from "../layout/Base.svelte";
-  import ListCard from "./tags/ListCard.svelte";
+  import ListItem from "./tags/ListItem.svelte";
   import { onMount } from "svelte";
 
   // export let users:any[] = []; // TODO : not Typescript ?
@@ -83,7 +83,7 @@
         {#each tags as tag}
           <!-- { JSON.stringify(offer) } -->
           <!-- {@debug offer} -->
-          <ListCard {locale} {viewTemplate} {tag}></ListCard>
+          <ListItem {locale} {viewTemplate} {tag}></ListItem>
         {/each}
       </tbody>
     </table>

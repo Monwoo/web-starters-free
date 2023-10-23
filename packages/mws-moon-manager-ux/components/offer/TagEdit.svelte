@@ -3,7 +3,7 @@
   import Routing from "fos-router";
   // TODO : namespace
   import Base from "../layout/Base.svelte";
-  import { state } from "../../stores/reduxStorage.mjs";
+  import { state, offerTagsByCatSlugAndSlug } from "../../stores/reduxStorage.mjs";
 
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let locale;
@@ -23,8 +23,8 @@
       Edition du tag :
     </div>
     <div class="detail rounded-sm p-3"
-    style:color={($state.slugToOfferTag && $state.slugToOfferTag[tag.slug]?.textColor)||"black"}
-    style:background-color={($state.slugToOfferTag && $state.slugToOfferTag[tag.slug]?.bgColor)||"lightgrey"}
+    style:color={(offerTagsByCatSlugAndSlug($state, tag.categorySlug, tag.slug)?.textColor)||"black"}
+    style:background-color={(offerTagsByCatSlugAndSlug($state, tag.categorySlug, tag.slug)?.bgColor)||"lightgrey"}
     >
       [{ tag.slug }] { tag.label }
     </div>

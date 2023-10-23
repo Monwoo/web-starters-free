@@ -46,11 +46,13 @@ class MwsOfferController extends AbstractController
     }
     
     #[Route('/', name: 'mws_offer')]
-    public function index(): Response
+    public function index(
+        Request $request,
+    ): Response
     {
         // TODO : depending of user roles : will have different preview systems
         return $this->redirectToRoute(
-            'mws_offer_list',
+            'mws_offer_lookup',
             array_merge($request->query->all(), [
                 "page" => 1,
                 // "filterTags" => $filterTags,
@@ -146,13 +148,10 @@ class MwsOfferController extends AbstractController
 
         $this->logger->debug("Succeed to list offers");
         // dd($offers);
-        $slugToOfferTag = $mwsOfferStatusRepository->findAll();
-        $slugToOfferTag = array_combine(array_map(function($t) {
-            return $t->getSlug();
-        }, $slugToOfferTag), $slugToOfferTag);
+        $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->getTagsByCategorySlugAndSlug();
 
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
-            'slugToOfferTag' => $slugToOfferTag,
+            'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
             'offers' => $offers,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,
@@ -164,7 +163,7 @@ class MwsOfferController extends AbstractController
         $offerSlug,
         $viewTemplate,
         MwsOfferRepository $mwsOfferRepository,
-        Request $request,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
     ): Response
     {
         $user = $this->getUser();
@@ -176,8 +175,13 @@ class MwsOfferController extends AbstractController
         $offer = $mwsOfferRepository->findOneBy([
             'slug' => $offerSlug
         ]);
+        if (!$offer) {
+            throw $this->createNotFoundException("Unknow offer slug [$offerSlug]");
+        }
 
+        $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->getTagsByCategorySlugAndSlug();
         return $this->render('@MoonManager/mws_offer/view.html.twig', [
+            'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
             'offer' => $offer,
             'viewTemplate' => $viewTemplate,
         ]);
@@ -257,13 +261,13 @@ class MwsOfferController extends AbstractController
         );
 
         $this->logger->debug("Succeed to list offers");
-        $slugToOfferTag = $mwsOfferStatusRepository->findAll();
-        $slugToOfferTag = array_combine(array_map(function($t) {
+        $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->findAll();
+        $offerTagsByCatSlugAndSlug = array_combine(array_map(function($t) {
             return $t->getSlug();
-        }, $slugToOfferTag), $slugToOfferTag);
+        }, $offerTagsByCatSlugAndSlug), $offerTagsByCatSlugAndSlug);
 
         return $this->render('@MoonManager/mws_offer/tags.html.twig', [
-            'slugToOfferTag' => $slugToOfferTag,
+            'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
             'tags' => $tags,
             'filtersForm' => $filtersForm,
             'viewTemplate' => $viewTemplate,
@@ -325,18 +329,18 @@ class MwsOfferController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        $slugToOfferTag = $mwsOfferStatusRepository->findAll();
-        $slugToOfferTag = array_combine(array_map(function($t) {
+        $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->findAll();
+        $offerTagsByCatSlugAndSlug = array_combine(array_map(function($t) {
             return $t->getSlug();
-        }, $slugToOfferTag), $slugToOfferTag);
+        }, $offerTagsByCatSlugAndSlug), $offerTagsByCatSlugAndSlug);
 
         return $this->render('@MoonManager/mws_offer/tagEdit.html.twig', [
             'tag' => $tag,
             'form' => $form,
             // TODO : remove code duplication, inject as global for 
-            // all routes in this controller routes renderings with slugToOfferTag
+            // all routes in this controller routes renderings with offerTagsByCatSlugAndSlug
             // AND all other redux indexes to send JS frontend side...
-            'slugToOfferTag' => $slugToOfferTag,
+            'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
             'viewTemplate' => $viewTemplate,
             'title' => "Modifier le tag {$tag->getLabel()}"
         ]);
@@ -672,7 +676,7 @@ class MwsOfferController extends AbstractController
                         /** @var MwsOffer $offer */
                         if (!$offer->getCurrentStatusSlug()) {
                             // TODO : from .env config file ? or from DB ? (status with tags for default selections ?)
-                            $offerStatusSlug = "a-relancer"; // TODO : load from status DB or config DB...
+                            $offerStatusSlug = "mws-offer-tags-category-src-import|a-relancer"; // TODO : load from status DB or config DB...
                             $offer->setCurrentStatusSlug($offerStatusSlug);
                             // dd($offer);    
                         }
@@ -828,7 +832,7 @@ class MwsOfferController extends AbstractController
                         $this->em->persist($sourceTag);
                         $this->em->flush();
                     }
-                    $offerStatusSlug = $sourceStatusSlug; // TODO : load from status DB or config DB...
+                    $offerStatusSlug = "$sourceCategorySlug|$sourceStatusSlug"; // TODO : load from status DB or config DB...
 
                     $mwsOfferRepository->addTag($offer, $sourceTag);
 

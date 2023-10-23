@@ -31,8 +31,8 @@
   <th scope="row">{tag.slug}</th>
   <td>
     <span class="p-2 rounded"
-    style:color={($state.slugToOfferTag && $state.slugToOfferTag[tag.slug]?.textColor)||"black"}
-    style:background-color={($state.slugToOfferTag && $state.slugToOfferTag[tag.slug]?.bgColor)||"lightgrey"}
+    style:color={($state.offerTagsByCatSlugAndSlug && $state.offerTagsByCatSlugAndSlug[tag.slug]?.textColor)||"black"}
+    style:background-color={($state.offerTagsByCatSlugAndSlug && $state.offerTagsByCatSlugAndSlug[tag.slug]?.bgColor)||"lightgrey"}
     >
       {tag.label ?? ''}
     </span>

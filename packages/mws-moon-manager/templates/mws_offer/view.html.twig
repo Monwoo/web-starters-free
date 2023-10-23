@@ -1,6 +1,19 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends '@MoonManager/base.html.twig' %}
 
+{% block storesInit %}
+	{{ parent() }}
+	<div
+	class="hidden"
+	{{ svelte_component('MwsReduxSync', {
+		'stateUpdate': {
+			'offerTagsByCatSlugAndSlug': offerTagsByCatSlugAndSlug,
+			'csrfOfferTagDelete': csrf_token('mws-csrf-offer-tag-delete'),
+			'csrfOfferTagAdd': csrf_token('mws-csrf-offer-tag-add'),
+		}|serialize('json')|e('html_attr'),
+	}) }}></div>
+{% endblock %}
+
 {% block body %}
 	<div class="mws-offer-view" {{ svelte_component('MwsOfferView', {
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),

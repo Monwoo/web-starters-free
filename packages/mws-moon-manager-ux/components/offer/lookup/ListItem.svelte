@@ -13,7 +13,7 @@
   // TODO : why "svelte-time" not working ?
   // import Time from "svelte-time";
   import TagsInput from "../tags/TagsInput.svelte";
-  import { state, slugToOfferTag } from "../../../stores/reduxStorage.mjs";
+  import { state, offerTagsByKey } from "../../../stores/reduxStorage.mjs";
 
   export let locale;
   export let viewTemplate;
@@ -36,24 +36,26 @@
       'viewTemplate': viewTemplate ?? '',
       'offerSlug': offer.slug,
     }) }>
-      <button class="btn btn-outline-primary p-1">Voir</button>
+      <button class="btn btn-outline-primary p-2 m-3">Voir</button>
     </a>
-    <a href="#qualify">
-      <button class="btn btn-outline-success p-1">Qualifier</button>
-    </a>
+    <!-- <a href="#qualify">
+      TIPS : short cuted by 'status' update, will qualify depending of logic
+             linked to new status change
+      <button class="btn btn-outline-success p-2 m-3">Qualifier</button>
+    </a> -->
   </td>
   <th
   scope="row"
   >
     [{offer.slug}]
     <div class="p-2 m-1 rounded"
-    style:color={(slugToOfferTag($state, offer.currentStatusSlug)?.textColor)||"black"}
-    style:background-color={(slugToOfferTag($state, offer.currentStatusSlug)?.bgColor)||"lightgrey"}
+    style:color={(offerTagsByKey($state, offer.currentStatusSlug)?.textColor)||"black"}
+    style:background-color={(offerTagsByKey($state, offer.currentStatusSlug)?.bgColor)||"lightgrey"}
       >
       <!-- {JSON.stringify($state)}
       {JSON.stringify(offer.currentStatusSlug)}
-      {JSON.stringify(slugToOfferTag($state, offer.currentStatusSlug))} -->
-      {(slugToOfferTag($state, offer.currentStatusSlug)?.label)
+      {JSON.stringify(offerTagsByCatSlugAndSlug($state, offer.currentStatusSlug))} -->
+      {(offerTagsByKey($state, offer.currentStatusSlug)?.label)
       || offer.currentStatusSlug}
   </div>
   </th>

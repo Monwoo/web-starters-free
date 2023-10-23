@@ -9,7 +9,7 @@
 	class="hidden"
 	{{ svelte_component('MwsReduxSync', {
 		'stateUpdate': {
-			'slugToOfferTag': slugToOfferTag,
+			'offerTagsByCatSlugAndSlug': offerTagsByCatSlugAndSlug,
 		}|serialize('json')|e('html_attr'),
 	}) }}></div>
 {% endblock %}

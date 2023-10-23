@@ -12,6 +12,7 @@
   import Routing from "fos-router";
   // TODO : namespace
   import Base from "../layout/Base.svelte";
+  import List from "./lookup/List.svelte";
 
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let locale;
@@ -80,6 +81,7 @@
       {/each}
     </div>
   </div>
+  <List {locale} offers={[offer]} {viewTemplate}></List>
 </Base>
 
 <!-- <style lang="scss">
