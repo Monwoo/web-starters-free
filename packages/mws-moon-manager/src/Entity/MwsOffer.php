@@ -6,9 +6,11 @@ namespace MWS\MoonManagerBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
+use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsOfferRepository::class)]
@@ -344,6 +346,7 @@ class MwsOffer
         return $this->tags;
     }
 
+    // TODO doc : should use MwsOfferRepository function.... instead of entity->addTag....
     public function addTag(MwsOfferStatus $tag): static
     {
         if (!$this->tags->contains($tag)) {

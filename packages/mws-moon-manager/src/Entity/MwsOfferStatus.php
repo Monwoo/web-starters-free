@@ -51,6 +51,12 @@ class MwsOfferStatus
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $categorySlug = null;
 
+    // TODO : wrong normalizer ? isCategoryOkWithMultiplesTags should be detected....
+    // https://symfony.com/doc/current/components/serializer.html#serializing-boolean-attributes
+    // Without 'public' will break on offer tags list... (serialization for component issue...)
+    #[ORM\Column(nullable: true)]
+    public ?bool $categoryAllowMultiplesTags = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $bgColor = null;
 
@@ -161,6 +167,25 @@ class MwsOfferStatus
         if ($this->mwsOffers->removeElement($mwsOffer)) {
             $mwsOffer->removeTag($this);
         }
+
+        return $this;
+    }
+
+    public function isCategoryOkWithMultiplesTags(): ?bool
+    {
+        return $this->categoryAllowMultiplesTags;
+    }
+
+    // TODO : wrong normalizer ? isCategoryOkWithMultiplesTags should be detected....
+    // https://symfony.com/doc/current/components/serializer.html#serializing-boolean-attributes
+    // public function getCategoryOkWithMultiplesTags(): ?bool
+    // {
+    //     return $this->categoryAllowMultiplesTags;
+    // }
+
+    public function setCategoryOkWithMultiplesTags(?bool $categoryAllowMultiplesTags): static
+    {
+        $this->categoryAllowMultiplesTags = $categoryAllowMultiplesTags;
 
         return $this;
     }

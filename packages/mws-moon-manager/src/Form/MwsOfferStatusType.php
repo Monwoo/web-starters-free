@@ -19,6 +19,7 @@ class MwsOfferStatusType extends AbstractType
             ->add('categorySlug')
             ->add('bgColor', ColorType::class)
             ->add('textColor', ColorType::class)
+            ->add('categoryAllowMultiplesTags')
             // ->add('mwsOffers')
             // ->add('createdAt')
             // ->add('updatedAt')

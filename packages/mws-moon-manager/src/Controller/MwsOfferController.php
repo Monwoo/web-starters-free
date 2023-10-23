@@ -462,7 +462,7 @@ class MwsOfferController extends AbstractController
             throw $this->createNotFoundException("Unknow offer slug [$offerSlug]");
         }
         // dd($tag);
-        $offer->addTag($tag); // TODO : MUST set inverse relation ship ? but no same issue with import ?
+        $mwsOfferRepository->addTag($offer, $tag);
 
         $this->em->persist($offer);
         $this->em->flush();
@@ -571,7 +571,7 @@ class MwsOfferController extends AbstractController
                     /** @var MwsOffer[] */
                     $offersDeserialized = $this->deserializeOffers(
                         $user, $importContent, $format, $newFilename,
-                        $mwsOfferStatusRepository
+                        $mwsOfferStatusRepository, $mwsOfferRepository
                     );
                     // dd($offersDeserialized);
 
@@ -643,7 +643,9 @@ class MwsOfferController extends AbstractController
 
                                 $tags = $inputOffer->getTags();
                                 foreach ($tags as $tag) {
-                                    // TODO : inside addTag, only one by specific only one choice category type ?
+                                    // TIPS : inside addTag, only one by specific only one choice category type ?
+                                    // OK to copy all, clone src use
+                                    // $mwsOfferRepository->addTag($offer, $tag);
                                     $offer->addTag($tag);
                                 }
 
@@ -721,7 +723,7 @@ class MwsOfferController extends AbstractController
 
     // TODO : more like 'loadOffers' than deserialize,
     //        will save in db too for code factorisation purpose...
-    public function deserializeOffers($user, $data, $format, $sourceFile, $mwsOfferStatusRepository) {
+    public function deserializeOffers($user, $data, $format, $sourceFile, $mwsOfferStatusRepository, $mwsOfferRepository) {
         /** @param MwsOffer[] **/
         $out = null;
         // TODO : add custom serializer format instead of if switch ?
@@ -737,7 +739,7 @@ class MwsOfferController extends AbstractController
                 // dump($board);
                 $contactIndex = $board['users'] ?? [];
                 foreach (($board['projects'] ?? []) as $offerSlug => $o) {
-                    $offer = new MwsOffer();
+                    $offer = new MwsOffer($this->em);
 
                     $cleanUp = function($val) {
                         // NO-BREAK SPACE (U+A0)
@@ -813,6 +815,7 @@ class MwsOfferController extends AbstractController
                             $sourceCategory = new MwsOfferStatus();
                             $sourceCategory->setSlug($sourceCategorySlug);
                             $sourceCategory->setLabel($sourceCategoryLabel);
+                            // $sourceCategory->setCategoryOkWithMultiplesTags(true);
                             // $sourceTag->setCategorySlug($TODO);
                             // TIPS : NEED to PERSIST AND FLUSH for next findOneBy to work :
                             $this->em->persist($sourceCategory);
@@ -827,7 +830,7 @@ class MwsOfferController extends AbstractController
                     }
                     $offerStatusSlug = $sourceStatusSlug; // TODO : load from status DB or config DB...
 
-                    $offer->addTag($sourceTag);
+                    $mwsOfferRepository->addTag($offer, $sourceTag);
 
                     $offer->setLeadStart($leadStart);
                     // $offer->setContact3($o["..."]);

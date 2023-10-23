@@ -57,7 +57,7 @@
       } else {
           // got the desired response
           const data = await resp.json();
-          tags = data.newTags;
+          tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
           stateUpdate(state, {
             csrfOfferTagDelete: data.newCsrf,
@@ -98,7 +98,8 @@
         throw new Error("Not 2xx response", {cause: resp});
       } else {
           const data = await resp.json();
-          tags = data.newTags;
+          tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          console.debug("Did add tag", tags);
           stateUpdate(state, {
             csrfOfferTagDelete: data.newCsrf,
           });
