@@ -13,7 +13,6 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "svelte-awesome-color-picker": "^2.4.1",
-    "svelte-i18n": "^3.6.0",
     "svelte-loading-spinners": "^0.3.4"
   },
   "devDependencies": {
@@ -25,7 +24,8 @@
     "fos-router": "link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources",
     "locally-unique-id-generator": "^0.1.5",
     "sass": "^1.62.0",
-    "svelte": "^3.9.2",
+    "svelte": "^4.2.2",
+    "svelte-i18n": "^4.0.0",
     "svelte-time": "^0.8.0"
   }
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
-  import { state, slugToOfferTag, stateGet } from "../../../stores/reduxStorage.mjs";
+  import { state, slugToOfferTag, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
@@ -15,11 +15,13 @@
   export let offer;
   export let tags;
 
-  export let removeTag = async (tag) => {
+  let addedTagKey;
+  export let removeTag = async (tag, comment = null) => {
     const data = {
       _csrf_token: stateGet(get(state), 'csrfOfferTagDelete'),
       offerSlug: offer.slug,
       tagSlug: tag.slug,
+      comment, // TODO : allow optional comment on status switch ?
       tagCategorySlug: tag.categorySlug,
     };
 		// let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
@@ -55,17 +57,57 @@
       } else {
           // got the desired response
           const data = await resp.json();
-          tags = data.tags;
+          tags = data.newTags;
           // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
-          state.update(stateData => ({
-            ...stateData,
+          stateUpdate(state, {
             csrfOfferTagDelete: data.newCsrf,
-          }))
+          });
       }
     }).catch(e => {
       console.error(e);
       // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
       const shouldWait = confirm("Echec de l'enregistrement.");
+    });
+  };
+
+  export let addTag = async (tagSlug, tagCategorySlug, comment = null) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfOfferTagAdd'),
+      offerSlug: offer.slug,
+      tagSlug: tagSlug,
+      comment, // TODO : allow optional comment on status switch ?
+      tagCategorySlug: tagCategorySlug,
+    };
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate('mws_offer_tag_add', {
+        _locale: locale,
+      }), {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        redirect: 'error',
+      }
+    ).then(async resp => {
+      console.log(resp);
+      addedTagKey = "null";
+      if (!resp.ok) {
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+          const data = await resp.json();
+          tags = data.newTags;
+          stateUpdate(state, {
+            csrfOfferTagDelete: data.newCsrf,
+          });
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+      addedTagKey = "null";
     });
   };
 
@@ -85,12 +127,6 @@
     groupedTags[groupLabel].push(tag);
   }
   console.debug(groupedTags);
-
-  let addedTagKey;
-  const addTag = () => {
-    console.log('TODO add tag with key ', addedTagKey);
-    addedTagKey = "null";
-  }
 </script>
 
 {#each (tags ?? []) as tag, idx}
@@ -137,7 +173,12 @@
 {/each}
 
 <select
-bind:value={addedTagKey} on:change={addTag}
+bind:value={addedTagKey} on:change={() => {
+  if ('null' === addedTagKey) return;
+
+  const [tagCategorySlug, tagSlug] = addedTagKey.split('|');
+  addTag(tagSlug, tagCategorySlug);
+}}
 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
   <option value="null" selected>Ajouter un tag</option>
   {#each Object.keys(groupedTags) as groupLabel}

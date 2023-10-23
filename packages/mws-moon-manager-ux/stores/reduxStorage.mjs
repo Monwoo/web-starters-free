@@ -1,7 +1,12 @@
 // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 import { writable } from 'svelte/store';
+import * as _ from 'lodash';
 
 export const state = writable({});
+
+export const stateUpdate = (targetState, updateData) => {
+  targetState.update((stateData) => _.merge(stateData, updateData));
+}
 
 export const stateGet = (stateData, propertyPath, _default = null) => {
   if (typeof propertyPath === 'string') {

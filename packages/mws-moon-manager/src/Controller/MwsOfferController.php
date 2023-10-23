@@ -415,6 +415,65 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
+    #[Route('/tag/add/{viewTemplate}',
+        name: 'mws_offer_tag_add',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagAdd(
+        string|null $viewTemplate,
+        Request $request,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
+        MwsOfferRepository $mwsOfferRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response
+    {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-offer-tag-add', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $tagSlug = $request->request->get('tagSlug');
+        $tagCategorySlug = $request->request->get('tagCategorySlug');
+        // TODO : DOC + validation, no tag category slug could use the 'null' keyword, now RESERVED...
+        if ('null' === $tagCategorySlug) { 
+            $tagCategorySlug = null; // Form data deserialisation stuff ? extracting as string instead of null...
+        }
+        $tag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+            $tagSlug, $tagCategorySlug
+        );
+        if (!$tag) {
+            throw $this->createNotFoundException("Unknow tag slug [$tagSlug, $tagCategorySlug]");
+        }
+        $offerSlug = $request->request->get('offerSlug');
+        $offer = $mwsOfferRepository->findOneBy([
+            'slug' => $offerSlug,
+        ]);
+        if (!$offer) {
+            throw $this->createNotFoundException("Unknow offer slug [$offerSlug]");
+        }
+        // dd($tag);
+        $offer->addTag($tag); // TODO : MUST set inverse relation ship ? but no same issue with import ?
+
+        $this->em->persist($offer);
+        $this->em->flush();
+
+        return $this->json([
+            'newTags' => $offer->getTags(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-tag-delete')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
     #[Route('/fetch-root-url', name: 'mws_offer_fetchRootUrl')]
     public function fetchRootUrl(
         Request $request,

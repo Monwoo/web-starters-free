@@ -17,7 +17,7 @@
         "survey-core": "^1.9.112",
         "survey-jquery": "^1.9.112",
         "surveyjs-widgets": "^1.9.112",
-        "svelte": "^3.59.2",
+        "svelte": "^4.2.2",
         "svelte-loader": "^3.1.9",
         "svelte-time": "^0.8.0",
         "webpack": "^5.74.0",
