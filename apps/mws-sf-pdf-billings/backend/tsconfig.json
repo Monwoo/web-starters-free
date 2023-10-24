@@ -26,10 +26,14 @@
 		}
 	},
 	"include": [
-		"./**/*.{js,ts,svelte}",
-	],
-	"files": [
-
+		"ambient.d.ts",
+		"./types/**/$types.d.ts",
+		"./vite.config.ts",
+		"./components/**/*.{js,ts,svelte}",
+		"./stores/**/*.{js,ts,svelte}",
+		"./tests/**/*.js",
+		"./tests/**/*.ts",
+		"./tests/**/*.svelte"
 	],
 	"exclude": [
 		"./node_modules/**",

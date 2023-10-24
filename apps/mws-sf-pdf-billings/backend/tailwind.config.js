@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./assets/**/*.{js,json,svelte,ts,scss}",
+    "./assets/**/*.{js,json,svelte,ts,scss,html}",
 
     "./templates/**/*.html.twig",
     "./src/**/*.php",
@@ -15,9 +15,7 @@ module.exports = {
     "../../../packages/mws-moon-manager/templates/**/*.html.twig",
     "../../../packages/mws-moon-manager/src/**/*.php",
     // Svelte UX package
-    "../../../packages/mws-moon-manager-ux/components/**/*.js",
-    "../../../packages/mws-moon-manager-ux/components/**/*.svelte",
-    "../../../packages/mws-moon-manager-ux/components/**/*.ts",
+    "../../../packages/mws-moon-manager-ux/components/**/*.{js,svelte,ts}",
     // https://flowbite.com/docs/getting-started/quickstart/
     "./node_modules/flowbite/**/*.js",
     // https://flowbite-svelte.com/docs/pages/introduction

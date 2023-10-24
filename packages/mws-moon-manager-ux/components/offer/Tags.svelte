@@ -46,7 +46,13 @@
 <Base {copyright} {locale} {viewTemplate}>
   <div>
     <a href="#back" on:click={() => history.back()}>
-      <button class="btn btn-outline-primary p-1">Revenir à la page précédente</button>
+      <button class="btn btn-outline-primary p-1 m-3">Revenir à la page précédente</button>
+    </a>    
+    <a href={ Routing.generate('mws_offer_tags_reset_to_default', {
+      '_locale': locale ?? '',
+      'viewTemplate': viewTemplate ?? '',
+    }) }>
+      <button class="btn btn-outline-primary p-1 m-3">Réinitialiser les tags par défaut</button>
     </a>    
   </div>
   <div class="flex flex-wrap">

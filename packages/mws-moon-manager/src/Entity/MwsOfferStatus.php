@@ -55,7 +55,7 @@ class MwsOfferStatus
     // https://symfony.com/doc/current/components/serializer.html#serializing-boolean-attributes
     // Without 'public' will break on offer tags list... (serialization for component issue...)
     #[ORM\Column(nullable: true)]
-    public ?bool $categoryAllowMultiplesTags = null;
+    public ?bool $categoryOkWithMultiplesTags = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $bgColor = null;
@@ -173,19 +173,19 @@ class MwsOfferStatus
 
     public function isCategoryOkWithMultiplesTags(): ?bool
     {
-        return $this->categoryAllowMultiplesTags;
+        return $this->categoryOkWithMultiplesTags;
     }
 
     // TODO : wrong normalizer ? isCategoryOkWithMultiplesTags should be detected....
     // https://symfony.com/doc/current/components/serializer.html#serializing-boolean-attributes
     // public function getCategoryOkWithMultiplesTags(): ?bool
     // {
-    //     return $this->categoryAllowMultiplesTags;
+    //     return $this->categoryOkWithMultiplesTags;
     // }
 
-    public function setCategoryOkWithMultiplesTags(?bool $categoryAllowMultiplesTags): static
+    public function setCategoryOkWithMultiplesTags(?bool $categoryOkWithMultiplesTags): static
     {
-        $this->categoryAllowMultiplesTags = $categoryAllowMultiplesTags;
+        $this->categoryOkWithMultiplesTags = $categoryOkWithMultiplesTags;
 
         return $this;
     }

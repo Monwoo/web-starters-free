@@ -274,6 +274,33 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
+    #[Route('/tags/reset-to-default/{viewTemplate?}', name: 'mws_offer_tags_reset_to_default')]
+    public function tagsResetToDefault(
+        $viewTemplate,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
+        Request $request,
+    ): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+
+        // TODO : sync default tags
+
+        return $this->redirectToRoute(
+            'mws_offer_tags',
+            array_merge($request->query->all(), [
+                "viewTemplate" => $viewTemplate,
+                "page" => 1,
+            ]),
+            Response::HTTP_SEE_OTHER
+        );
+    }
+
+
+
     #[Route('/tag/edit/{categorySlug<[^/]*>}/{slug}/{viewTemplate}',
         name: 'mws_offer_tag_edit',
         methods: ['GET', 'POST'],

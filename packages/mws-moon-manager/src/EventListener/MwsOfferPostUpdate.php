@@ -18,6 +18,6 @@ class MwsOfferPostUpdate
   {
     $entityManager = $event->getObjectManager();
 
-    // Ensure tags category cleanups and/or unicity on categoryAllowMultiplesTags ?
+    // Ensure tags category cleanups and/or unicity on categoryOkWithMultiplesTags ?
   }
 }
