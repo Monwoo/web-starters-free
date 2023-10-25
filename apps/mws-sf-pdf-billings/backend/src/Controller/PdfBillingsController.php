@@ -471,7 +471,10 @@ class PdfBillingsController extends AbstractController
         "proforma" => "Proforma",
     ];
 
-    #[Route('', name: 'app_pdf_billings')]
+    #[Route('',
+        name: 'app_pdf_billings',
+        options: ['expose' => true],
+    )]
     public function index(
         Request $request,
         BillingConfigRepository $bConfigRepository,
