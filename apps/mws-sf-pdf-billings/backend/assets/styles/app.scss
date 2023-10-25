@@ -125,15 +125,15 @@ html body {
 
 .mws-window {
     // TIPS : MUST set parent height to work (html {height:100vh;})
-    @apply flex flex-wrap h-full;
+    @apply relative flex flex-wrap h-full;
     .mws-window-01 {
-        @apply w-full h-[50%] md:w-1/2 md:h-full overflow-auto;
+        @apply relative w-full h-[50%] md:w-1/2 md:h-full overflow-auto;
         // .mws-ratio-3\/7 & { // Nop, not working, 
         //     @apply h-[30%] md:w-[30%];
         // }
     }
     .mws-window-02 {
-        @apply w-full h-[50%] md:w-1/2 md:h-full overflow-auto;
+        @apply relative w-full h-[50%] md:w-1/2 md:h-full overflow-auto;
     }
     &.mws-ratio-3\/7 {
         .mws-window-01 {
