@@ -287,7 +287,31 @@ class MwsOfferController extends AbstractController
             throw $this->createAccessDeniedException('Only for admins');
         }
 
-        // TODO : sync default tags
+        // TODO : sync default tags FROM config files instead of hard coded data ?
+        $sourceCategoryLabel = "Prospection";
+        $sourceStatus = "A relancer";
+        $sourceCategorySlug = strtolower($this->slugger->slug($sourceCategoryLabel));
+        $sourceStatusSlug = strtolower($this->slugger->slug($sourceStatus));
+        $sourceCategory = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+            $sourceCategorySlug, null
+        );
+        if (!$sourceCategory) {
+            $sourceCategory = new MwsOfferStatus();
+        }
+        $sourceCategory->setSlug($sourceCategorySlug);
+        $sourceCategory->setLabel($sourceCategoryLabel);
+        $this->em->persist($sourceCategory);
+        $sourceTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+            $sourceStatusSlug, $sourceCategorySlug
+        );
+        if (!$sourceTag) {
+            $sourceTag = new MwsOfferStatus();
+        }
+        $sourceTag->setSlug($sourceStatusSlug);
+        $sourceTag->setLabel($sourceStatus);
+        $sourceTag->setCategorySlug($sourceCategorySlug);
+        $this->em->persist($sourceTag);
+        $this->em->flush();
 
         return $this->redirectToRoute(
             'mws_offer_tags',
