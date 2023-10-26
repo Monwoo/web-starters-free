@@ -25,6 +25,7 @@
 		'tagsHeaders': {
 			'slug' : knp_pagination_sortable(tags, 'Slug', 't.slug'),
 			'label' : knp_pagination_sortable(tags, 'Libellé', 't.label'),
+			'categorySlug' : knp_pagination_sortable(tags, 'Category slug', 't.categorySlug'),
 		}|serialize('json')|e('html_attr'),
 		'filters': filtersForm.vars.value|serialize('json')|e('html_attr'),
 		'filtersForm': (form_start(filtersForm, { 'attr' : {

@@ -288,30 +288,41 @@ class MwsOfferController extends AbstractController
         }
 
         // TODO : sync default tags FROM config files instead of hard coded data ?
-        $sourceCategoryLabel = "Prospection";
-        $sourceStatus = "A relancer";
-        $sourceCategorySlug = strtolower($this->slugger->slug($sourceCategoryLabel));
-        $sourceStatusSlug = strtolower($this->slugger->slug($sourceStatus));
-        $sourceCategory = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-            $sourceCategorySlug, null
-        );
-        if (!$sourceCategory) {
-            $sourceCategory = new MwsOfferStatus();
+        // $defaultTags = $this->getParameter('mws_moon_manager.offer.defaultTags') ?? [];
+        $moonManagerParams = $this->getParameter('mws_moon_manager') ?? [];
+        $offerParams = $moonManagerParams['offer'];
+        $defaultTags = $offerParams['defaultTags'];
+        // dd($defaultTags);
+
+        foreach ($defaultTags as $tag) {
+            // TODO : user serializer format instead of custom extract ?
+            $sourceStatusLabel = $tag['label'] ?? null;
+            $sourceCategorySlug = $tag['categorySlug'] ?? null;
+
+            $sourceStatusSlug = $sourceStatusLabel ? strtolower($this->slugger->slug($sourceStatusLabel)) : null;
+            if ($sourceCategorySlug) {
+                $sourceCategory = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+                    $sourceCategorySlug, null
+                );
+                if (!$sourceCategory) {
+                    $sourceCategory = new MwsOfferStatus();
+                    $sourceCategory->setSlug($sourceCategorySlug);
+                    $sourceCategory->setLabel($sourceCategorySlug);
+                    $this->em->persist($sourceCategory);    
+                }
+            }
+            $sourceTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+                $sourceStatusSlug, $sourceCategorySlug
+            );
+            if (!$sourceTag) {
+                $sourceTag = new MwsOfferStatus();
+            }
+            $sourceTag->setSlug($sourceStatusSlug);
+            $sourceTag->setLabel($sourceStatusLabel);
+            $sourceTag->setCategorySlug($sourceCategorySlug);
+            $this->em->persist($sourceTag);
+            $this->em->flush();
         }
-        $sourceCategory->setSlug($sourceCategorySlug);
-        $sourceCategory->setLabel($sourceCategoryLabel);
-        $this->em->persist($sourceCategory);
-        $sourceTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-            $sourceStatusSlug, $sourceCategorySlug
-        );
-        if (!$sourceTag) {
-            $sourceTag = new MwsOfferStatus();
-        }
-        $sourceTag->setSlug($sourceStatusSlug);
-        $sourceTag->setLabel($sourceStatus);
-        $sourceTag->setCategorySlug($sourceCategorySlug);
-        $this->em->persist($sourceTag);
-        $this->em->flush();
 
         return $this->redirectToRoute(
             'mws_offer_tags',

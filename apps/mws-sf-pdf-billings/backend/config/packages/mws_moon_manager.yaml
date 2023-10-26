@@ -1,0 +1,23 @@
+# TODO : auto gen from recipe...
+parameters:
+    mws_moon_manager:
+        offer:
+            defaultTags:
+              - label: Prospection
+              - label: A relancer
+                categorySlug: prospection
+              - label: Pas de réponse
+                categorySlug: prospection
+              - label: Ne veut pas être dérangé
+                categorySlug: prospection
+              - label: Devis à négocier
+                categorySlug: prospection
+              - label: En attente de paiement
+                categorySlug: prospection
+              - label: Synthèse à faire
+                categorySlug: prospection
+              - label: Validation des suivis
+                categorySlug: prospection
+              - label: Livraison OK
+                categorySlug: prospection
+
