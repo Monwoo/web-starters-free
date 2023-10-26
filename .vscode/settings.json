@@ -4,5 +4,6 @@
   "workbench.colorCustomizations": {
     "statusBar.noFolderBackground": "#DAA520",
     "statussBar.prominentBackground": "#DAA520"
-  }
+  },
+  "svelte.language-server.ls-path": "./apps/mws-sf-pdf-billings/backend",
 }

@@ -3,7 +3,7 @@
   import Routing from "fos-router";
   import { state, offerTagsByCatSlugAndSlug, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
-  import CommentModal from "./CommentModal.svelte";
+  import FunnelModal from "./FunnelModal.svelte";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
 
@@ -140,7 +140,7 @@
 
 
 <!-- Modal toggle -->
-<CommentModal bind:modalId={modalId} />
+<FunnelModal bind:modalId={modalId} />
 {#each (tags ?? []) as tag, idx}
   <!-- {@const UID = newUniqueId()} -->
 

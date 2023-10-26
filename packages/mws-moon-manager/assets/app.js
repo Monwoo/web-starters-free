@@ -9,8 +9,11 @@
 
 // import 'flowbite/dist/flowbite.min.js';
 // import 'flowbite/dist/flowbite.js';
-import 'flowbite';
-// TODO : improve flowbite integration :
+// import 'flowbite';
+// https://flowbite.com/docs/getting-started/quickstart/#init-functions
+import { initFlowbite } from 'flowbite'
+initFlowbite();
+// TODO : improve flowbite integration ? really better or in dev lib ? :
 // https://flowbite.com/docs/getting-started/svelte/
 
 // TIPS : should be init BEFORE registerSvelteControllerComponents that use it
