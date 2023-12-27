@@ -25,6 +25,8 @@
         "postcss-loader": "^7.3.3",
         "regenerator-runtime": "^0.13.9",
         "sass-loader": "^13.3.2",
+        "survey-core": "^1.9.122",
+        "survey-jquery": "^1.9.122",
         "svelte": "^4.2.2",
         "svelte-loader": "^3.1.9",
         "svelte-preprocess": "^5.0.4",

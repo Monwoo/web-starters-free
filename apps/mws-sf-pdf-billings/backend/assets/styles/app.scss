@@ -10,6 +10,17 @@
 @tailwind components;
 @tailwind utilities;
 
+// Survey js basic styles
+@import "~survey-core/defaultV2.min.css";
+// @import "~survey-jquery/defaultV2.min.css";
+// @import "~survey-core/defaultV2.css";
+// @import "~survey-jquery/defaultV2.css";
+
+// SurveyJs adjustment to fit with our base theme :
+:root {
+    --sjs-general-backcolor-dim: transparent;
+}
+
 ///////////////////////
 // 🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥
 // Base theme adjustments

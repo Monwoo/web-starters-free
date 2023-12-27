@@ -56,7 +56,7 @@
     <div class="label">
       Recherche d'une offre via :
     </div>
-    <div class="detail">
+    <div class="detail w-full">
       {@html lookupForm}
     </div>
   </div>

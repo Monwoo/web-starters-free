@@ -90,7 +90,7 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 --optimize-autoloader
 
 # bootstrap database
-APP_ENV=prod php bin/console doctrine:migrations:migrate -n
+php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 # bootstrap one user ONLY to let it be change and do wiziwig updates :

@@ -16,6 +16,40 @@
       validators: [],
       minWidth: "20%",
       isRequired: false,
-  }]
+  }, {
+      name: "searchTags",
+      title: "Tags",
+      description: "Ajouter des tags à filtrer.",
+      type: "tagbox",
+      validators: [],
+      minWidth: "20%",
+      isRequired: false,
+      "choicesByUrl": {
+        "url": "https://surveyjs.io/api/CountriesExample"
+      },
+  },
+  ]
 } %}
+{# TODO : predefined
+ as fixed taglist ? : ['didNotAnswer']
+  {
+    name: "searchFilters",
+    title: "Filtres pré-défini",
+    type: "text",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+} #}
+{# TODO : predefined sorter ? + knp table sorts ?
+ as fixed taglist ? : ['byBestCostFunction', 'byDate',
+ 'by last received message', etc...]
+  {
+    name: "searchSorters",
+    title: "Ordonnanceurs",
+    type: "text",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+} #}
+
 {{ model|serialize('json')|raw }}
