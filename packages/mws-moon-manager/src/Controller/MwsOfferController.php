@@ -84,8 +84,9 @@ class MwsOfferController extends AbstractController
         // $searchTags = $request->query->get('tags', null); // []);
         $keyword = $requestData['keyword'] ?? null;
         $searchTags = $requestData['tags'] ?? []; // []);
+        $customFilters = $requestData['customFilters'] ?? [];
         $sourceRootLookupUrl = $requestData['sourceRootLookupUrl'] ?? null;
-        // dd($searchTags);    
+        // dd($searchTags);
 
         $qb = $mwsOfferRepository->createQueryBuilder('o');
 
@@ -94,6 +95,7 @@ class MwsOfferController extends AbstractController
             "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
                 "searchTags" => $searchTags,
+                "customFilters" => $customFilters,
                 "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
@@ -126,6 +128,7 @@ class MwsOfferController extends AbstractController
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $customFilters = $surveyAnswers['customFilters'] ?? [];
                 // dd($searchTags);
                 $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
                 return $this->redirectToRoute(
@@ -134,6 +137,7 @@ class MwsOfferController extends AbstractController
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
                         "tags" => $searchTags,
+                        "customFilters" => $customFilters,
                         "page" => 1,
                         "sourceRootLookupUrl" => $sourceRootLookupUrl,
                     ]),
@@ -159,20 +163,43 @@ class MwsOfferController extends AbstractController
         }
 
         if (count($searchTags)) {
+            $qb = $qb
+            ->join('o.tags', 'tag');
             $orClause = '';
-            foreach ($searchTags as $idx => $tag) {
-                // [$category, $slug] = explode($tagSlugSep, $tag);
+            foreach ($searchTags as $idx => $searchTagSlug) {
+                [$category, $slug] = explode($tagSlugSep, $searchTagSlug);
+                // $tag = $mwsOfferStatusRepository->findOneBy([
+                //     "categorySlug" => $category,
+                //     "slug" => $slug,
+                // ]);
                 if ($idx) {
                     $orClause .= ' OR ';
                 }
                 // TODO refactor ? CurrentStatusSlug is too hacky stuff ?
                 // + TODO : join search on o.tags instead ? 
-                $orClause .= "o.currentStatusSlug = :tag$idx";
                 // $orClause .= "o.currentStatusSlug = :tag$idx";
-                $qb->setParameter("tag$idx", str_replace($tagSlugSep, '|', $tag));
+                // $orClause .= ":tag$idx in (o.tags)";
+                $orClause .= "( :tagSlug$idx = tag.slug";
+                $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
+                // $qb->setParameter("tag$idx", str_replace($tagSlugSep, '|', $tag));
+                // $qb->setParameter("tag$idx", $tag);
+                $qb->setParameter("tagSlug$idx", $slug);
+                $qb->setParameter("tagCategory$idx", $category);
             }
 
-            $qb->andWhere($orClause);
+            $qb = $qb->andWhere($orClause);
+        }
+
+        if (count($customFilters)) {
+            $qb = $qb
+            ->join('o.contacts', 'contact');
+            // dd($customFilters);
+            foreach ($customFilters as $customFilter) {
+                if ($customFilter === "Ayant une photo") {
+                    $qb = $qb->andWhere("contact.avatarUrl IS NOT NULL");
+                    $qb = $qb->andWhere("contact.avatarUrl <> ''");
+                }
+            }
         }
 
         $query = $qb->getQuery();
