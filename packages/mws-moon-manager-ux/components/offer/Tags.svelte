@@ -59,7 +59,7 @@
     <div class="label">
       Recherche d'un tag via :
     </div>
-    <div class="detail">
+    <div class="detail w-full">
       {@html filtersForm}
     </div>
   </div>

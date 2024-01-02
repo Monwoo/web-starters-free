@@ -30,10 +30,15 @@ composer install
 php bin/console assets:install --symlink public
 php bin/console fos:js-routing:dump
 
+pnpm run build
+
 # Use SYMFONY dev server (not same as php builtin or bin/console)
 wget https://get.symfony.com/cli/installer -O - | bash
 alias symfony="~/.symfony5/bin/symfony"
 symfony server:start
+
+# if you dev css/js side too, for watch mode :
+pnpm run watch
 
 # install with local PRIVATE bundles :
 COMPOSER=composer.private.json composer install
@@ -90,6 +95,7 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 --optimize-autoloader
 
 # bootstrap database
+rm var/data.db.sqlite # clean old one
 php bin/console doctrine:migrations:migrate -n
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 

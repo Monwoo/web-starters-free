@@ -715,6 +715,12 @@ class MwsOfferController extends AbstractController
                                     $offer->addTag($tag);
                                 }
 
+                                $offer->getContacts()->clear();
+                                $contacts = $inputOffer->getContacts();
+                                foreach ($contacts as $contact) {
+                                    $offer->addContact($contact);
+                                }
+
                                 // dump($inputOffer);
                                 // dd($offer);
                                 // CLEAN all possible other duplicates :

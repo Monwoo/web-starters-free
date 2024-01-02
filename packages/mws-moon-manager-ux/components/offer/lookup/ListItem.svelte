@@ -36,7 +36,7 @@
       'viewTemplate': viewTemplate ?? '',
       'offerSlug': offer.slug,
     }) }>
-      <button class="btn btn-outline-primary p-2 m-3">Voir</button>
+      <img width='64' src={ offer.contacts[0].avatarUrl } alt={ offer.contacts[0].username }/>
     </a>
     <!-- <a href="#qualify">
       TIPS : short cuted by 'status' update, will qualify depending of logic
