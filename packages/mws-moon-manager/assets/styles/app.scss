@@ -1,3 +1,24 @@
+// Survey js basic styles
+@import "~survey-core/defaultV2.min.css";
+@import "~survey-jquery/defaultV2.min.css";
+// @import "~survey-core/defaultV2.css";
+// @import "~survey-jquery/defaultV2.css";
+@import "~select2/dist/css/select2.min.css";
+
+
+// .mws-survey-js-form {
+//     // TODO https://sass-lang.com/documentation/at-rules/import/ + sound
+//     // like @import get written to css output instead of scss interpretation ?
+//     // @use "~survey-core/defaultV2.min.css";
+//     @import "~survey-core/defaultV2.min.css"; // TODO : missing post css config for it ?
+//     @import "~survey-jquery/defaultV2.min.css";    
+// }
+
+// SurveyJs adjustment to fit with our base theme :
+:root {
+    --sjs-general-backcolor-dim: transparent;
+}
+
 body {
     background-color: lightblue;
 }
@@ -16,10 +37,35 @@ body {
 // TODO : below fail on SOURCE map or postCss issue ? ...
 // @import "~survey-core/defaultV2.css";
 // .mws-classic-survey-js {
-.mws-survey-js-form {
-    // TODO https://sass-lang.com/documentation/at-rules/import/ + sound
-    // like @import get written to css output instead of scss interpretation ?
-    // @use "~survey-core/defaultV2.min.css";
-    @import "~survey-core/defaultV2.min.css"; // TODO : missing post css config for it ?
-    @import "~survey-jquery/defaultV2.min.css";    
+// .mws-survey-js-form {
+//     // TODO https://sass-lang.com/documentation/at-rules/import/ + sound
+//     // like @import get written to css output instead of scss interpretation ?
+//     // @use "~survey-core/defaultV2.min.css";
+//     @import "~survey-core/defaultV2.min.css"; // TODO : missing post css config for it ?
+//     @import "~survey-jquery/defaultV2.min.css";    
+// }
+
+// Fixing double size main scroll bug :
+html, body, footer {
+    overflow:hidden;
+    overflow-clip-margin: unset;    
+}
+
+// Customize survey JS :
+
+:root, .sd-root-modern {
+    --sjs-base-unit: 7px;
+    --sjs-default-font-family: ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family: ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --sjs-font-family: ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+    --sd-base-padding: 14px;
+}
+
+.sd-body.sd-body--static {
+    // TODO : do without !important;, 
+    // framework default css loaded after custom css ? why ?
+    // cf app.js loading order ? since module, parallel loads ?
+    // force load orders ?
+    max-width: 100% !important;
 }

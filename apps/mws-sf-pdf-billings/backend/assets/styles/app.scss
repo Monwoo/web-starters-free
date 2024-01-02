@@ -10,27 +10,6 @@
 @tailwind components;
 @tailwind utilities;
 
-// Survey js basic styles
-@import "~survey-core/defaultV2.min.css";
-@import "~survey-jquery/defaultV2.min.css";
-// @import "~survey-core/defaultV2.css";
-// @import "~survey-jquery/defaultV2.css";
-@import "~select2/dist/css/select2.min.css";
-
-
-// .mws-survey-js-form {
-//     // TODO https://sass-lang.com/documentation/at-rules/import/ + sound
-//     // like @import get written to css output instead of scss interpretation ?
-//     // @use "~survey-core/defaultV2.min.css";
-//     @import "~survey-core/defaultV2.min.css"; // TODO : missing post css config for it ?
-//     @import "~survey-jquery/defaultV2.min.css";    
-// }
-
-// SurveyJs adjustment to fit with our base theme :
-:root {
-    --sjs-general-backcolor-dim: transparent;
-}
-
 ///////////////////////
 // 🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥🛥
 // Base theme adjustments

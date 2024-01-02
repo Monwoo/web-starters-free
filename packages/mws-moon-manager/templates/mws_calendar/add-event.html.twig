@@ -1,0 +1,9 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block content %}
+    <div {{ svelte_component('MwsCalendar', {
+        'title': block('title'),
+        'currentLanguage' : app.request.locale|locale_name(app.request.locale)|u.title,
+    }) }}>
+{% endblock %}

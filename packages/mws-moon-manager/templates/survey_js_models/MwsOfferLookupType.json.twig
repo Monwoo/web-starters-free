@@ -13,12 +13,15 @@
   elements: [{
       name: "searchKeyword",
       title: "Mot(s) clef(s)",
-      type: "text",
+      type: "comment",
+      "_cmt": "limited to 500 chars : ",
+      maxLength: 500,
       validators: [],
       minWidth: "20%",
       isRequired: false,
   }, {
       name: "searchTags",
+      startWithNewLine: false,
       title: "Tags",
       description: "Ajouter des tags à filtrer.",
       type: "tagbox",
@@ -31,6 +34,7 @@
       },
   } , {
     "type": "checkbox",
+    startWithNewLine: false,
     "name": "customFilters",
     "title": "Filtres personnalisés :",
     "description": "Choisissez :",

@@ -20,7 +20,7 @@
   export let offer;
 
   // TODO : format leadAt date with dayJs ?
-  console.debug(offer);
+  console.debug("LIST ITEM OFFER : ", offer);
 
   // TODO : configurable services, use generic data connectors instead of :
   // TODO : remove code duplication :
@@ -36,7 +36,7 @@
       'viewTemplate': viewTemplate ?? '',
       'offerSlug': offer.slug,
     }) }>
-      <img width='64' src={ offer.contacts[0].avatarUrl } alt={ offer.contacts[0].username }/>
+      <img width='64' src="{ offer.contacts[0].avatarUrl ?? '' }" alt="{ offer.contacts[0].username ?? '' }"/>
     </a>
     <!-- <a href="#qualify">
       TIPS : short cuted by 'status' update, will qualify depending of logic

@@ -43,9 +43,6 @@ import {
 } from '@symfony/ux-svelte';
 import './bootstrap.js';
 
-// any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.scss';
-
 registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));
 
 // // TODO : remove code duplication and put this in some 'mws-utils' package ?
@@ -81,6 +78,10 @@ import {
 import dayjs from 'dayjs';
 
 window.dayjs = dayjs;
+
+
+// any CSS you import will output into a single css file (app.css in this case)
+import './styles/app.scss';
 
 // https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/32182004
 // $('div').is(':offscreen');

@@ -140,7 +140,7 @@
 
 
 <!-- Modal toggle -->
-<FunnelModal bind:modalId={modalId} />
+<FunnelModal bind:modalId={modalId} {locale} />
 {#each (tags ?? []) as tag, idx}
   <!-- {@const UID = newUniqueId()} -->
 

@@ -10,6 +10,8 @@
     export let isOpen = false;
     export let opener;
     export let funnelModal;
+    import Routing from "fos-router";
+    export let locale;
 
     $: {
         if (isOpen) {
@@ -174,6 +176,12 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
                 calendar meetings with click on current user calendar
                  + notes / duration / repetition => + sync google calendar ?
                  + duplicate from other events (sort events to use as template with some tags ?)
+                 <a href={ Routing.generate('mws_calendar_add_event', {
+                    '_locale': locale ?? '',
+                    // 'viewTemplate': viewTemplate ?? '',
+                  }) }>
+                    <button class="btn btn-outline-primary p-1 m-1">Approfondir le devis</button>
+                  </a>
                 <h1>Synchro client</h1>
                 Connect to existing client or add new one from it
             </div>
