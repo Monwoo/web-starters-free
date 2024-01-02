@@ -20,19 +20,6 @@
       minWidth: "20%",
       isRequired: false,
   }, {
-      name: "searchTags",
-      startWithNewLine: false,
-      title: "Tags",
-      description: "Ajouter des tags à filtrer.",
-      type: "tagbox",
-      validators: [],
-      minWidth: "20%",
-      isRequired: false,
-      choices: allOfferTags,
-      "__choicesByUrl": {
-        "url": "https://surveyjs.io/api/CountriesExample"
-      },
-  } , {
     "type": "checkbox",
     startWithNewLine: false,
     "name": "customFilters",
@@ -45,7 +32,19 @@
     "showOtherItem": false,
     "showSelectAllItem": true,
     "separateSpecialChoices": true
-  }
+  }, {
+    name: "searchTags",
+    title: "Tags",
+    description: "Ajouter des tags à filtrer.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allOfferTags,
+    "__choicesByUrl": {
+      "url": "https://surveyjs.io/api/CountriesExample"
+    },
+  },
   ]
 } %}
 {# TODO : predefined
