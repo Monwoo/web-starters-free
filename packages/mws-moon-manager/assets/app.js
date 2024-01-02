@@ -72,6 +72,9 @@ window.Survey = Survey;
 //in base.html.twig... WHY ?
 import "survey-jquery";
 
+// https://surveyjs.answerdesk.io/ticket/details/t2638/tagbox-not-visible
+import "select2";
+
 import {
   inputmask
 } from "surveyjs-widgets";

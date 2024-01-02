@@ -99,7 +99,7 @@ rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
     type="button"
 >
-    Toggle modal
+    Actions
 </button>
 
 <!-- TIPS : only to init flowbite component, need some 
@@ -132,7 +132,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
                 class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
             >
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Terms of Service
+                    Actions
                 </h3>
                 <button
                     type="button"
@@ -162,24 +162,20 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
             </div>
             <!-- Modal body -->
             <div class="p-6 space-y-6">
+                <h1>Send Message</h1>
                 <p
                     class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
                 >
-                    With less than a month to go before the European Union
-                    enacts new consumer privacy laws for its citizens, companies
-                    around the world are updating their terms of service
-                    agreements to comply.
+                    Fill field for codeur auto answers tagged as needToBeSend ?
+                    +  duplicate from other answers (sort answers to use as template with some tags ?)
                 </p>
-                <p
-                    class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                >
-                    The European Union’s General Data Protection Regulation
-                    (G.D.P.R.) goes into effect on May 25 and is meant to ensure
-                    a common set of data rights in the European Union. It
-                    requires organizations to notify users as soon as possible
-                    of high-risk data breaches that could personally affect
-                    them.
-                </p>
+                <h1>Add comment</h1>
+                <h1>Create event</h1>
+                calendar meetings with click on current user calendar
+                 + notes / duration / repetition => + sync google calendar ?
+                 + duplicate from other events (sort events to use as template with some tags ?)
+                <h1>Synchro client</h1>
+                Connect to existing client or add new one from it
             </div>
             <!-- Modal footer -->
             <div

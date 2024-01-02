@@ -106,6 +106,9 @@ importers:
       sass-loader:
         specifier: ^13.3.2
         version: 13.3.2(node-sass@9.0.0)(webpack@5.74.0)
+      select2:
+        specifier: 4.1.0-rc.0
+        version: 4.1.0-rc.0
       survey-core:
         specifier: ^1.9.122
         version: 1.9.122
@@ -345,6 +348,9 @@ importers:
       regenerator-runtime:
         specifier: ^0.13.9
         version: 0.13.11
+      select2:
+        specifier: 4.1.0-rc.0
+        version: 4.1.0-rc.0
       survey-core:
         specifier: ^1.9.112
         version: 1.9.112
@@ -8893,6 +8899,10 @@ packages:
 
   /select2@4.0.13:
     resolution: {integrity: sha512-1JeB87s6oN/TDxQQYCvS5EFoQyvV6eYMZZ0AeA4tdFDYWN3BAGZ8npr17UBFddU0lgAt3H0yjX3X6/ekOj1yjw==}
+    dev: true
+
+  /select2@4.1.0-rc.0:
+    resolution: {integrity: sha512-Hr9TdhyHCZUtwznEH2CBf7967mEM0idtJ5nMtjvk3Up5tPukOLXbHUNmh10oRfeNIhj+3GD3niu+g6sVK+gK0A==}
     dev: true
 
   /selfsigned@2.1.1:

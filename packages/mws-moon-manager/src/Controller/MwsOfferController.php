@@ -72,14 +72,20 @@ class MwsOfferController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
+        $tagSlugSep = ' > '; // TODO :load objects and trick display/value function of surveyJS instead...
 
         if (!$user) {
             throw $this->createAccessDeniedException('Only for logged users');
         }
 
-        $keyword = $request->query->get('keyword', null);
-        $sourceRootLookupUrl = $request->query->get('sourceRootLookupUrl', null);
-        
+        $requestData = $request->query->all();
+        // dd($requestData);
+        // After symfony 6, get will not return array anymore
+        // $searchTags = $request->query->get('tags', null); // []);
+        $keyword = $requestData['keyword'] ?? null;
+        $searchTags = $requestData['tags'] ?? []; // []);
+        $sourceRootLookupUrl = $requestData['sourceRootLookupUrl'] ?? null;
+        // dd($searchTags);    
 
         $qb = $mwsOfferRepository->createQueryBuilder('o');
 
@@ -87,10 +93,21 @@ class MwsOfferController extends AbstractController
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
+                "searchTags" => $searchTags,
                 "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/survey_js_models/MwsOfferLookupType.json.twig"
+                "@MoonManager/survey_js_models/MwsOfferLookupType.json.twig", [
+                    'allOfferTags' => array_map(function(MwsOfferStatus $tag) use ($tagSlugSep) {
+                        return $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug() ;
+                    },
+                    // $mwsOfferStatusRepository->findAll()
+                    $mwsOfferStatusRepository
+                    ->createQueryBuilder("t")
+                    ->where($qb->expr()->isNotNull("t.categorySlug"))
+                    ->getQuery()->getResult()
+                ),
+                ]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $filterForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
@@ -108,12 +125,15 @@ class MwsOfferController extends AbstractController
                     true
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchTags = $surveyAnswers['searchTags'] ?? [];
+                // dd($searchTags);
                 $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
                 return $this->redirectToRoute(
                     'mws_offer_lookup',
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
+                        "tags" => $searchTags,
                         "page" => 1,
                         "sourceRootLookupUrl" => $sourceRootLookupUrl,
                     ]),
@@ -136,6 +156,23 @@ class MwsOfferController extends AbstractController
                 OR LOWER(REPLACE(o.budget, ' ', '')) LIKE :keyword
             ")
             ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
+        }
+
+        if (count($searchTags)) {
+            $orClause = '';
+            foreach ($searchTags as $idx => $tag) {
+                // [$category, $slug] = explode($tagSlugSep, $tag);
+                if ($idx) {
+                    $orClause .= ' OR ';
+                }
+                // TODO refactor ? CurrentStatusSlug is too hacky stuff ?
+                // + TODO : join search on o.tags instead ? 
+                $orClause .= "o.currentStatusSlug = :tag$idx";
+                // $orClause .= "o.currentStatusSlug = :tag$idx";
+                $qb->setParameter("tag$idx", str_replace($tagSlugSep, '|', $tag));
+            }
+
+            $qb->andWhere($orClause);
         }
 
         $query = $qb->getQuery();
@@ -231,11 +268,14 @@ class MwsOfferController extends AbstractController
                     true
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchTags = $surveyAnswers['searchTags'] ?? [];
+
                 return $this->redirectToRoute(
                     'mws_offer_tags',
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
+                        "tags" => $searchTags,
                         "page" => 1,
                     ]),
                     Response::HTTP_SEE_OTHER

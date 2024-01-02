@@ -14,6 +14,7 @@
         "mark.js": "^8.11.1",
         "mws-moon-manager-ux": "workspace:^",
         "regenerator-runtime": "^0.13.9",
+        "select2": "4.1.0-rc.0",
         "survey-core": "^1.9.112",
         "survey-jquery": "^1.9.112",
         "surveyjs-widgets": "^1.9.112",
