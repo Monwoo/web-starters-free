@@ -18,14 +18,14 @@ use Symfony\Component\Routing\Annotation\Route;
 )]
 class MwsCalendarController extends AbstractController
 {
-    #[Route('index', name: 'mws_calendar_index')]
+    #[Route('/index', name: 'mws_calendar_index')]
     public function index(): Response
     {
         return $this->render('@MoonManager/mws_calendar/index.html.twig', [
         ]);
     }
 
-    #[Route('add-event', name: 'mws_calendar_add_event')]
+    #[Route('/add-event', name: 'mws_calendar_add_event')]
     public function add_event(): Response
     {
         return $this->render('@MoonManager/mws_calendar/add-event.html.twig', [

@@ -21,8 +21,10 @@ class MwsMessageController extends AbstractController
     #[Route('/', name: 'mws_message_list')]
     public function index(): Response
     {
+        $messages = [];
+        // TODO : import some data, then display :
         return $this->render('@MoonManager/mws_message/list.html.twig', [
-            'controller_name' => 'MwsMessageController',
+            'messages' => $messages
         ]);
     }
 }
