@@ -19,9 +19,11 @@ use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
+use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,6 +34,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/{_locale<%app.supported_locales%>}/mws-offer',
     options: ['expose' => true],
+)]
+#[SecuAttr(
+    "is_granted('ROLE_USER')",
+    statusCode: 401,
+    message: MwsLoginFormAuthenticator::t_failToGrantAccess
 )]
 class MwsOfferController extends AbstractController
 {

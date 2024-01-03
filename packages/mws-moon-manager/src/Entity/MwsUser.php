@@ -85,6 +85,9 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: MwsContact::class, inversedBy: 'mwsUsers')]
     private Collection $comingFrom;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsMessage::class, orphanRemoval: true)]
+    private Collection $mwsMessages;
+
     use TimestampableEntity;
     // https://symfonycasts.com/screencast/symfony5-doctrine/bad-migrations
 
@@ -109,6 +112,7 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->mwsOfferTrackings = new ArrayCollection();
         $this->mwsContactTrackings = new ArrayCollection();
         $this->comingFrom = new ArrayCollection();
+        $this->mwsMessages = new ArrayCollection();
     }
 
     public function __toString()
@@ -495,6 +499,36 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeComingFrom(MwsContact $comingFrom): static
     {
         $this->comingFrom->removeElement($comingFrom);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsMessage>
+     */
+    public function getMwsMessages(): Collection
+    {
+        return $this->mwsMessages;
+    }
+
+    public function addMwsMessage(MwsMessage $mwsMessage): static
+    {
+        if (!$this->mwsMessages->contains($mwsMessage)) {
+            $this->mwsMessages->add($mwsMessage);
+            $mwsMessage->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsMessage(MwsMessage $mwsMessage): static
+    {
+        if ($this->mwsMessages->removeElement($mwsMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($mwsMessage->getOwner() === $this) {
+                $mwsMessage->setOwner(null);
+            }
+        }
 
         return $this;
     }

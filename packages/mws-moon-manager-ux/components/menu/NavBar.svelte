@@ -146,6 +146,15 @@
               </li>
               <li>
                 <a
+                  href={Routing.generate("mws_message_list")}
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Messages
+                </a>
+              </li>
+              
+              <li>
+                <a
                   href={Routing.generate("mws_offer_tags")}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >

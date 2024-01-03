@@ -11,17 +11,18 @@
 <table>
   <thead>
     <tr class="users-table-info">
-      <th scope="col">Actions</th>
+      <th scope="col">Voir</th>
       <th scope="col">[Slug] Status</th>
       <th scope="col">Tags</th>
       <th scope="col">
         {@html offersHeaders.clientUsername ?? "Nom du client"}
       </th>
       <th scope="col">
-        {@html offersHeaders.contact1 ?? "Contact"}
+        {@html offersHeaders.contact1 ?? "Contact"}<br/>
+        {@html offersHeaders.contact2 ?? "Contact bis"}
       </th>
       <th scope="col">
-        {@html offersHeaders.contact2 ?? "Contact bis"}
+        Messages
       </th>
       <th scope="col">
         {@html offersHeaders.leadStart ?? "Depuis le"}

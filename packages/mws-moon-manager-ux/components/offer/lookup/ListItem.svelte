@@ -62,8 +62,14 @@
   <td><TagsInput bind:tags={offer.tags} {offer} {locale}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>{offer.clientUsername}</td>
-  <td>{offer.contact1 ?? ''}</td>
-  <td>{offer.contact2 ?? ''}</td>
+  <td>
+    {offer.contact1 ?? ''}<br/>
+    {offer.contact2 ?? ''}
+  </td>
+  <td>
+
+X
+  </td>
   <td>
     <!-- <Time timestamp={offer.leadStart} format="YYYY/MM/DD h:mm" /> -->
     <!-- https://day.js.org/docs/en/display/format -->
