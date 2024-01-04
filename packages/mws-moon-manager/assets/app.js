@@ -151,6 +151,58 @@ const surveyFactory = (surveyForm, dataModel) => {
     surveyDataInput.val(encodeURIComponent(responseData));
     surveyForm.submit();
   });
+  // https://surveyjs.io/form-library/examples/file-upload/jquery#content-code
+  surveyModel.onUploadFiles.add(async (_, options) => {
+    const formData = new FormData();
+    options.files.forEach((file) => {
+      formData.append(file.name, file);
+    });
+
+    console.debug("Will Upload with : ", formData);
+
+
+    // // const validFiles = [];
+    // options.callback('error', // TODO : no error text feedback allowed here ?
+    //   ['An error occurred during file upload.'], 
+    //   // ['An error occurred during file upload.']
+    //   // options.files.map((file) => {
+    //   //   return {
+    //   //     file: file,
+    //   //     content: "An error occurred during file upload." // + data[file.name]
+    //   //   };options.callback('error',
+    //   // })
+    // );
+
+    options.callback(
+      'success',
+      options.files.map((file) => {
+        return {
+          file: file,
+          content: "http://localhost:8000/bundles/moonmanager/medias/MoonManagerLogo.png" // + data[file.name]
+        };
+      })
+    );
+
+    // fetch("https://api.surveyjs.io/private/Surveys/uploadTempFiles", {
+    //   method: "POST",
+    //   body: formData
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     options.callback(
+    //       options.files.map((file) => {
+    //         return {
+    //           file: file,
+    //           content: "https://api.surveyjs.io/private/Surveys/getTempFile?name=" + data[file.name]
+    //         };
+    //       })
+    //     );
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error: ", error);
+    //     options.callback([], ['An error occurred during file upload.']);
+    //   });
+  });
   surveyModel.data = surveyData;
 
   // let surveyWrapper = $(".survey-js-wrapper", surveyForm);

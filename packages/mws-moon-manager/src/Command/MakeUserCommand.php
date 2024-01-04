@@ -89,10 +89,10 @@ class MakeUserCommand extends Command
             "[" . get_class($user) . "] New MWS user inserted OK."
         );
         $output->writeln([
-            "<info>Did save MWS USER as : {$user->getUserIdentifier()}</>",
+            "<info>Did save MWS USER as : {$user->getUserIdentifier()}</info>",
         ]);
         $output->writeln([
-            "<info>With password : {$pass}</>",
+            "<info>With password : {$pass}</info>",
         ]);
     }
 
@@ -120,10 +120,10 @@ class MakeUserCommand extends Command
             "[" . get_class($connection) . "] New MWS user inserted OK."
         );
         $output->writeln([
-            "<info>Did save MWS USER as : {$this->userLogin}</>",
+            "<info>Did save MWS USER as : {$this->userLogin}</info>",
         ]);
         $output->writeln([
-            "<info>With password : {$pass}</>",
+            "<info>With password : {$pass}</info>",
         ]);
     }
 
@@ -159,7 +159,7 @@ class MakeUserCommand extends Command
             $this->em->flush();    
 
             $output->writeln([
-                "<info>Did remove all users</>",
+                "<info>Did remove all users</info>",
             ]);
         }
  

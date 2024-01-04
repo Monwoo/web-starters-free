@@ -77,7 +77,7 @@ class BackupCommand extends Command
         // TODO : remove and clean copy olders than 60 days ? (to keep spaces...)
 
         $output->writeln([
-            "<info>Did backup to '$backupDatabaseFile'</>",
+            "<info>Did backup to '$backupDatabaseFile'</info>",
         ]);
     
         return $cmdStatus;

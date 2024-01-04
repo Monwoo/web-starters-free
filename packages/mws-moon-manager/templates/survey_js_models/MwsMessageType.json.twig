@@ -126,6 +126,15 @@
         "panelCount": 1,
         "templateElements": [
             {
+                "type": "file",
+                "title": "Attach file if you want (max 1Mo)",
+                "name": "uploadFile",
+                "storeDataAsText": false,
+                "waitForUpload": true,
+                "allowMultiple": false,
+                "maxSize": 1024000,
+                "hideNumber": true
+            },{
                 "_cmt2": "For informational purpose in sync with data model, will upload other way :",
                 enableIf: "false",
                 name: "attachementFileKeyPath",
@@ -138,6 +147,7 @@
                 isRequired: false,
             }, {
                 "_cmt2": "For informational purpose in sync with data model, will upload other way :",
+                _enableIf: "{panel.attachementFileKeyPath} <> ''",
                 enableIf: "false",
                 startWithNewLine: false,
                 name: "uploadFilePath",
@@ -148,7 +158,21 @@
                 validators: [],
                 minWidth: "20%",
                 isRequired: false,
-                disabled: true,
+            }, {
+                visibleIf: "false",
+                startWithNewLine: false,
+                type: "html",
+                html: "displayValue( {row.attachementFileKeyPath} | displayValue({panel.attachementFileKeyPath}) | {panel.attachementFileKeyPath} | {displayValue(asTemplate)})",
+            }, {
+                visibleIf: "{panel.uploadFilePath} != ''",
+                startWithNewLine: false,
+                name: "deleteUpload",
+                title: "Supprimer ",
+                type: "boolean",
+                "description": "Enlever la pièce jointe.",
+                validators: [],
+                minWidth: "20%",
+                isRequired: false,
             }, {
                 name: "text",
                 title: "Texte",
