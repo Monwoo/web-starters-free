@@ -306,14 +306,14 @@ class MwsMessageController extends AbstractController
     }
     
     #[Route(
-        '/delete-all',
+        '/delete-all/{viewTemplate<[^/]*>?}',
         name: 'mws_message_delete_all',
         methods: ['POST'],
     )]
     public function deleteAll(
         string|null $viewTemplate,
         Request $request,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
     ): Response {
         $user = $this->getUser();
         // TIPS : firewall, middleware or security guard can also
@@ -340,10 +340,18 @@ class MwsMessageController extends AbstractController
         $resp = $query->execute();
         $this->em->flush();    
 
-        return $this->json([
-            'delete' => 'ok',
-            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-message-delete')->getValue(),
-        ]);
+        // return $this->json([
+        //     'delete' => 'ok',
+        //     'newCsrf' => $csrfTokenManager->getToken('mws-csrf-message-delete')->getValue(),
+        // ]);
+        return $this->redirectToRoute(
+            'mws_message_list',
+            [ // array_merge($request->query->all(), [
+                "viewTemplate" => 1,
+                "page" => 1,
+            ], //),
+            Response::HTTP_SEE_OTHER
+        );
     }
 
     // TODO : more like 'loadMessages' than deserialize,

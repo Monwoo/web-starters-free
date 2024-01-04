@@ -40,8 +40,12 @@
     <button class="btn btn-outline-primary p-1">Supprimer les messages.</button>
   </a>     -->
   <form action="{ Routing.generate('mws_message_delete_all', {
-    '_locale': locale ?? '',
-  }) }" method="post">
+      '_locale': locale ?? '',
+      'viewTemplate': viewTemplate ?? '',
+    }) }"
+    method="post"
+    onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les messages ?');"
+  >
     <input type="hidden" name="_csrf_token" value="{ csrfMessageDelete }" />
     <button type="submit">Supprimer les messages</button>
   </form>
