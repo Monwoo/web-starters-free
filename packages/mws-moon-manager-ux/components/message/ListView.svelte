@@ -94,6 +94,9 @@
       <th scope="col">
         {@html messagesHeaders.owner ?? "owner"}
       </th>
+      <th scope="col">
+        {@html messagesHeaders.updatedAt ?? "updatedAt"}
+      </th>
     </tr>
   </thead>
   <tbody>

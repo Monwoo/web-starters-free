@@ -32,6 +32,7 @@
             'messages' : knp_pagination_sortable(messages, 'Messages', 'm.messages'),
             'sourceId' : knp_pagination_sortable(messages, 'Source Id', 'm.sourceId'),
             'owner' : knp_pagination_sortable(messages, 'Owner', 'm.owner'),
+            'updatedAt' : knp_pagination_sortable(messages, 'updatedAt', 'm.updatedAt'),
 		}|serialize('json')|e('html_attr'),
         'offersPaginator': block('offersPaginator'),
     }) }}></div>

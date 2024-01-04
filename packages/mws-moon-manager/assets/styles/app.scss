@@ -69,3 +69,10 @@ html, body, footer {
     // force load orders ?
     max-width: 100% !important;
 }
+
+// ajust for button space on embed forms
+.sd-panel__content {
+    padding-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}

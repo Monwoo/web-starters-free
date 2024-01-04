@@ -4,6 +4,7 @@ namespace MWS\MoonManagerBundle\Entity;
 
 use Symfony\Component\Serializer;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 // use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
@@ -12,6 +13,9 @@ use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 //     AbstractNormalizer::ATTRIBUTES =>
 //     ['projectId', 'owner' => ['id']]
 // ])] // Not for entity class....
+#[ORM\Index(columns: ['project_id'])]
+#[ORM\Index(columns: ['dest_id'])]
+#[ORM\Index(columns: ['source_id'])]
 class MwsMessage
 {
     #[ORM\Id]
@@ -49,6 +53,8 @@ class MwsMessage
     #[ORM\ManyToOne(inversedBy: 'mwsMessages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?MwsUser $owner = null;
+
+    use TimestampableEntity;
 
     public function getId(): ?int
     {

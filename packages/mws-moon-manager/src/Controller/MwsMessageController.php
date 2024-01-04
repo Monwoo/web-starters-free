@@ -84,12 +84,13 @@ class MwsMessageController extends AbstractController
 
             if ($addMessageForm->isValid()) {
                 $this->logger->debug("addMessageForm ok");
-                // dd($filterForm);
+                // dd($addMessageForm);
 
                 $surveyAnswers = json_decode(
                     urldecode($addMessageForm->get('jsonResult')->getData()),
                     true
                 );
+                // dd($surveyAnswers);
                 $projectId = $surveyAnswers['projectId'] ?? null;
                 $destId = $surveyAnswers['destId'] ?? null;
                 $sourceId = $surveyAnswers['sourceId'] ?? null;
@@ -133,6 +134,22 @@ class MwsMessageController extends AbstractController
                 $sync('sourceId');
                 $sync('messages');
                 $sync('crmLogs');
+
+                // doing cleanup
+                $cleanMsgs = [];
+                foreach($msg->getMessages() as $msgTchat) {
+                    $uploadFiles = $msgTchat['uploadFile'] ?? null; // TODO : refactor for multiples files ?
+                    if ($uploadFiles && count($uploadFiles)) {
+                        // $uploadFile = $uploadFiles[0];
+                        if ($msgTchat['deleteUpload']) {
+                            // TODO : clean not used upload path ? or keep for restore and clean after long non usage ? tag as trash ?
+                            unset($msgTchat['uploadFile']);
+                            $msgTchat['deleteUpload'] = false;
+                        }
+                    }
+                    $cleanMsgs[] = $msgTchat;
+                };
+                $msg->setMessages($cleanMsgs);
 
                 // $sync('messages');
                 // Save the submited message :

@@ -37,7 +37,8 @@
         "symfony/dotenv": "6.3.*",
         "stof/doctrine-extensions-bundle": "^1.8",
         "symfony/form": "6.3.*",
-        "symfony/validator": "6.3.*"
+        "symfony/validator": "6.3.*",
+        "vich/uploader-bundle": "*"
     },
     "autoload": {
         "psr-4": {

@@ -85,4 +85,7 @@
   <td>
     {message.owner.username}
   </td>
+  <td>
+    {message.updatedAt}
+  </td>
 </tr>
