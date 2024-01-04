@@ -164,6 +164,8 @@ const surveyFactory = (surveyForm, dataModel) => {
     model: surveyModel
   });
   console.debug("Survey surveyWrapper :", surveyWrapper, surveyModel);
+  // surveyModel.getQuestionByName('projectId').value = 'Forced PID';
+  surveyWrapper.data('surveyModel', surveyModel);
   return surveyWrapper;
 }
 

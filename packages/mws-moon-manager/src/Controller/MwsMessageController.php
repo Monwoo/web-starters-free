@@ -3,9 +3,11 @@
 namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsMessage;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsMessageImportType;
+use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -43,7 +46,9 @@ class MwsMessageController extends AbstractController
     #[Route('/list/{viewTemplate<[^/]*>?}', name: 'mws_message_list')]
     public function list(
         $viewTemplate,
+        Request $request,
         MwsMessageRepository $mwsMessageRepository,
+        PaginatorInterface $paginator,
     ): Response
     {
         $user = $this->getUser();
@@ -51,13 +56,93 @@ class MwsMessageController extends AbstractController
             throw $this->createAccessDeniedException('Only for admins');
         }
 
-        $messages = $mwsMessageRepository->findBy([
-            'owner' => $user,
-        ]);
+        // $messages = $mwsMessageRepository->findBy([
+        //     'owner' => $user,
+        // ]);
+        $qb = $mwsMessageRepository->createQueryBuilder('m');
+
+        $query = $qb->getQuery();
+        // dd($query->getResult());    
+        $messages = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            $request->query->getInt('pageLimit', 10), /*page number*/
+        );
+        $addMessageConfig = [
+            "jsonResult" => rawurlencode(json_encode([
+                // "searchKeyword" => $keyword,
+            ])),
+            "surveyJsModel" => rawurlencode($this->renderView(
+                "@MoonManager/survey_js_models/MwsMessageType.json.twig",
+            )),
+        ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
+        $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig);
+        $addMessageForm->handleRequest($request);
+
+        if ($addMessageForm->isSubmitted()) {
+            $this->logger->debug("Did submit addMessageForm");
+
+            if ($addMessageForm->isValid()) {
+                $this->logger->debug("addMessageForm ok");
+                // dd($filterForm);
+
+                $surveyAnswers = json_decode(
+                    urldecode($addMessageForm->get('jsonResult')->getData()),
+                    true
+                );
+                $projectId = $surveyAnswers['projectId'] ?? null;
+                $destId = $surveyAnswers['destId'] ?? null;
+                $sourceId = $surveyAnswers['sourceId'] ?? null;
+                // $monwooAmount = $surveyAnswers['monwooAmount'] ?? null;
+                // $projectDelayInOpenDays = $surveyAnswers['projectDelayInOpenDays'] ?? null;
+                // $asNewOffer = $surveyAnswers['asNewOffer'] ?? null;
+
+                $msg = $mwsMessageRepository->findOneBy([
+                    'projectId' => $projectId,
+                    'destId' => $destId,
+                    'sourceId' => $sourceId,
+                    'owner' => $user,
+                ]);
+                // $msg = $mwsMessageRepository->createQueryBuilder('m');
+                if (!$msg) {
+                    $msg = new MwsMessage();
+                    $msg->setOwner($user);
+                }
+                // dd($msg);
+                $sync = function ($path) use ($surveyAnswers, $msg) {
+                    $set = 'set' . ucfirst($path);
+                    // $get = 'get' . ucfirst($path);
+                    // $v =  $inputMessage->$get();
+                    $v =  $surveyAnswers[$path] ?? null;
+                    if (
+                        null !== $v &&
+                        ((!is_string($v)) || strlen($v))
+                    ) {
+                        $msg->$set($v);
+                    }
+                };
+
+                // dd($surveyAnswers);
+                $sync('projectId');
+                $sync('destId'); // TODO : validation error : can't be empty
+                $sync('monwooAmount');
+                $sync('projectDelayInOpenDays');
+                // $sync('asNewOffer');
+                $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
+                $sync('sourceId');
+
+                // $sync('messages');
+                // Save the submited message :
+                $this->em->persist($msg);
+                $this->em->flush();
+            }
+        }
+
         // TODO : import some data, then display :
         return $this->render('@MoonManager/mws_message/list.html.twig', [
             'viewTemplate' => $viewTemplate,
-            'messages' => $messages
+            'messages' => $messages,
+            'addMessageForm' => $addMessageForm,
         ]);
     }
 
@@ -215,6 +300,48 @@ class MwsMessageController extends AbstractController
             'uploadForm' => $form,
             'viewTemplate' => $viewTemplate,
             'title' => 'Importer les messages via ' . ($formatToText[$format] ?? $format)
+        ]);
+    }
+    
+    #[Route(
+        '/delete-all',
+        name: 'mws_message_delete_all',
+        methods: ['POST'],
+    )]
+    public function deleteAll(
+        string|null $viewTemplate,
+        Request $request,
+        MwsMessageRepository $mwsMessageRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) { // TODO : only for admin too ?
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-message-delete', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        
+        // dd($tag);
+        // $tag->removeMwsOffer($offer);
+
+        $qb = $this->em->createQueryBuilder()
+        ->delete(MwsUser::class, 'u');               
+
+        $query = $qb->getQuery();
+        // dump($query->getSql());
+
+        $resp = $query->execute();
+        $this->em->flush();    
+
+        return $this->json([
+            'delete' => 'ok',
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-message-delete')->getValue(),
         ]);
     }
 

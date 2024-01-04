@@ -1,10 +1,34 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends '@MoonManager/base.html.twig' %}
 
+{% block offersPaginator %}
+    <div class="count">
+            [ {{ messages.getTotalItemCount }} éléments]
+    </div>
+    <div class="navigation">
+            {{ knp_pagination_render(messages) }}
+    </div>
+{% endblock %}
+
 {% block content %}
     <div {{ svelte_component('MwsMessageList', {
         'title': block('title'),
 		'locale': app.locale,
         'messages': messages|serialize('json')|e('html_attr'),
-    }) }}>
+        'addMessageForm': (form_start(addMessageForm, { 'attr' : {
+                'class': 'd-flex flex-wrap mws-survey-js-form'
+            } }) ~ form_widget(addMessageForm)
+            ~ form_end(addMessageForm))|e('html_attr'),
+        'csrfMessageDelete': csrf_token('mws-csrf-message-delete'),
+		'messagesHeaders': {
+            'projectId' : knp_pagination_sortable(messages, 'Project Id', 'm.projectId'),
+            'destId' : knp_pagination_sortable(messages, 'Dest Id', 'm.destId'),
+            'monwooAmount' : knp_pagination_sortable(messages, 'Amount', 'm.monwooAmount'),
+            'projectDelayInOpenDays' : knp_pagination_sortable(messages, 'Delay', 'm.projectDelayInOpenDays'),
+            'asNewOffer' : knp_pagination_sortable(messages, 'As new', 'm.asNewOffer'),
+            'sourceId' : knp_pagination_sortable(messages, 'Source Id', 'm.sourceId'),
+            'owner' : knp_pagination_sortable(messages, 'Owner', 'm.owner'),
+		}|serialize('json')|e('html_attr'),
+        'offersPaginator': block('offersPaginator'),
+    }) }}></div>
 {% endblock %}

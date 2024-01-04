@@ -4,6 +4,10 @@
     export let title = null;
     export let locale = null;
     export let messages = '[]';
+    export let messagesHeaders = '{}';
+    export let addMessageForm = '';
+    export let offersPaginator;
+    export let csrfMessageDelete;
 
     const decodeHtml = (html) => {
         var txt = document.createElement("textarea");
@@ -12,9 +16,12 @@
     }
 
     messages = JSON.parse(decodeHtml(messages));
-
+    messagesHeaders = JSON.parse(decodeHtml(messagesHeaders));
+    offersPaginator = decodeHtml(offersPaginator);
+    addMessageForm = decodeHtml(addMessageForm);
 </script>
 
 <ListView
-{title} {locale} {messages}
+{title} {locale} {messages} {messagesHeaders}
+{offersPaginator} {addMessageForm} {csrfMessageDelete}
 ></ListView>
