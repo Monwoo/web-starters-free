@@ -12,6 +12,10 @@
     addModal.eltModal.show();
   };
 
+  // TODO : reactive on message update ? :
+  // TODO : check message.destId for specific urls schema injections ?
+  let sourceUrl = `https://${message.destId}/projects`;
+
   onMount(async () => {
     // await tick();
     // await tick();
@@ -50,7 +54,9 @@
     >
   </td>
   <th scope="row">
-    {message.projectId}
+    <a href="{`${sourceUrl}/${message.projectId}`}" target="_blank" rel="noreferrer">
+      {message.projectId}
+    </a>
   </th>
   <td>
     {message.destId}

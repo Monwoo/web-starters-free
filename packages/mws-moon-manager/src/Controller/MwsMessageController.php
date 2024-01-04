@@ -131,6 +131,8 @@ class MwsMessageController extends AbstractController
                 $sync('isDraft', true);
                 // $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
                 $sync('sourceId');
+                $sync('messages');
+                $sync('crmLogs');
 
                 // $sync('messages');
                 // Save the submited message :

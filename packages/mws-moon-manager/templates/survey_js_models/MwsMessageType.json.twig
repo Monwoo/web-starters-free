@@ -96,7 +96,7 @@
     maxLength: 200,
     validators: [],
     minWidth: "20%",
-    isRequired: false,
+    isRequired: true,
   }, {
     name: "templateCategorySlug",
     visibleIf: "{asTemplate}",
@@ -106,7 +106,7 @@
     maxLength: 200,
     validators: [],
     minWidth: "20%",
-    isRequired: false,
+    isRequired: true,
   }, {
       name: "sourceId",
       title: "sourceId",
@@ -116,7 +116,53 @@
       validators: [],
       minWidth: "20%",
       isRequired: false,
-  },
+    }, {
+        "type": "paneldynamic",
+        "minPanelCount": 0,
+        "name": "messages",
+        "valueName": "messages",
+        "title": "Add message to send on next bulks sync :",
+        "panelAddText": "Add message",
+        "panelCount": 1,
+        "templateElements": [
+            {
+                "_cmt2": "For informational purpose in sync with data model, will upload other way :",
+                enableIf: "false",
+                name: "attachementFileKeyPath",
+                title: "attachementFileKeyPath",
+                type: "text",
+                "_cmt": "limited to 200 chars : // TODO : ok for URL ? ",
+                maxLength: 200,
+                validators: [],
+                minWidth: "20%",
+                isRequired: false,
+            }, {
+                "_cmt2": "For informational purpose in sync with data model, will upload other way :",
+                enableIf: "false",
+                startWithNewLine: false,
+                name: "uploadFilePath",
+                title: "uploadFilePath",
+                type: "text",
+                "_cmt": "limited to 200 chars : // TODO : ok for URL ? ",
+                maxLength: 200,
+                validators: [],
+                minWidth: "20%",
+                isRequired: false,
+                disabled: true,
+            }, {
+                name: "text",
+                title: "Texte",
+                type: "comment",
+                "_cmt": "limited to 1000 chars : ",
+                maxLength: 1000,
+                validators: [],
+                minWidth: "20%",
+                '_cmt2': "Nb of lines in textarea :",
+                rows: 21,
+                isRequired: false,
+            },
+        ]
+    }
   ]
 } %}
 {{ model|serialize('json')|raw }}
