@@ -65,6 +65,9 @@
     {message.asNewOffer}
   </td>
   <td>
+    {message.isDraft}
+  </td>
+  <td>
     {message.sourceId}
   </td>
   <td>

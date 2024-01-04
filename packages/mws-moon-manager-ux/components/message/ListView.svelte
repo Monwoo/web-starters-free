@@ -80,13 +80,16 @@
         {@html messagesHeaders.asNewOffer ?? "asNewOffer"}
       </th>
       <th scope="col">
+        {@html messagesHeaders.isDraft ?? "isDraft"}
+      </th>
+      <th scope="col">
         {@html messagesHeaders.sourceId ?? "sourceId"}
       </th>
       <th scope="col">
-        CrmLogs
+        {@html messagesHeaders.crmLogs ?? "crmLogs"}
       </th>
       <th scope="col">
-        messages
+        {@html messagesHeaders.messages ?? "messages"}
       </th>
       <th scope="col">
         {@html messagesHeaders.owner ?? "owner"}

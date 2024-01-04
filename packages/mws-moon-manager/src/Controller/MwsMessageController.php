@@ -109,11 +109,11 @@ class MwsMessageController extends AbstractController
                     $msg->setOwner($user);
                 }
                 // dd($msg);
-                $sync = function ($path) use ($surveyAnswers, $msg) {
+                $sync = function ($path, $ko = null) use ($surveyAnswers, $msg) {
                     $set = 'set' . ucfirst($path);
                     // $get = 'get' . ucfirst($path);
                     // $v =  $inputMessage->$get();
-                    $v =  $surveyAnswers[$path] ?? null;
+                    $v =  $surveyAnswers[$path] ?? $ko;
                     if (
                         null !== $v &&
                         ((!is_string($v)) || strlen($v))
@@ -128,6 +128,7 @@ class MwsMessageController extends AbstractController
                 $sync('monwooAmount');
                 $sync('projectDelayInOpenDays');
                 $sync('asNewOffer');
+                $sync('isDraft', true);
                 // $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
                 $sync('sourceId');
 
@@ -264,6 +265,7 @@ class MwsMessageController extends AbstractController
                                 $sync('monwooAmount');
                                 $sync('projectDelayInOpenDays');
                                 $sync('asNewOffer');
+                                $sync('isDraft');
                                 $sync('sourceId');
                                 $sync('crmLogs');
                                 $sync('messages');
@@ -367,7 +369,7 @@ class MwsMessageController extends AbstractController
 
             foreach ($data as $sourceSlug => $board) {
                 // $contactIndex = $board['users'] ?? [];
-                foreach (($board ?? []) as $offerSlug => $o) {
+                foreach (($board ?? []) as $projectId => $m) {
                     $message = new MwsMessage();
 
                     $cleanUp = function ($val) {
@@ -380,14 +382,15 @@ class MwsMessageController extends AbstractController
                             )
                         ) : null;
                     };
-                    $message->setProjectId($cleanUp($o["projectId"] ?? null));
-                    $message->setDestId($cleanUp($o["destId"]));
-                    $message->setMonwooAmount($o["monwooAmount"] ?? null);
-                    $message->setProjectDelayInOpenDays($o["projectDelayInOpenDays"] ?? null);
-                    $message->setDestId($cleanUp($o["destId"] ?? null));
-                    $message->setSourceId($o["sourceId"] ?? $sourceFile); // TODO : track ?
-                    $message->setCrmLogs($o["crmLogs"] ?? null);
-                    $message->setMessages($o["messages"] ?? null);
+                    $message->setProjectId($cleanUp($m["projectId"] ?? null));
+                    $message->setDestId($cleanUp($m["destId"]));
+                    $message->setMonwooAmount($m["monwooAmount"] ?? null);
+                    $message->setProjectDelayInOpenDays($m["projectDelayInOpenDays"] ?? null);
+                    $message->setAsNewOffer($m["asNewOffer"] ?? null);
+                    $message->setIsDraft($m["isDraft"] ?? true);
+                    $message->setSourceId($m["sourceId"] ?? $sourceFile); // TODO : track ?
+                    $message->setCrmLogs($m["crmLogs"] ?? null);
+                    $message->setMessages($m["messages"] ?? null);
                     $message->setOwner($user);
 
                     $out[] = $message;

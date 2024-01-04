@@ -34,6 +34,9 @@ class MwsMessage
     #[ORM\Column(nullable: true)]
     private ?bool $asNewOffer = null;
 
+    #[ORM\Column]
+    private ?bool $isDraft = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $sourceId = null;
 
@@ -156,6 +159,18 @@ class MwsMessage
     public function setOwner(?MwsUser $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function isIsDraft(): ?bool
+    {
+        return $this->isDraft;
+    }
+
+    public function setIsDraft(bool $isDraft): static
+    {
+        $this->isDraft = $isDraft;
 
         return $this;
     }
