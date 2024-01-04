@@ -7,6 +7,9 @@
 
   export let title = null;
   export let currentLanguage = null;
+  export let messages = [];
+
+  console.debug("Having msg : ", messages);
 </script>
 
 <div>
@@ -18,4 +21,7 @@
   </a>    
 </div>
 
-<MessageView></MessageView>
+{#each messages as message}
+  <MessageView {message}></MessageView>
+{/each}
+

@@ -3,6 +3,7 @@
 namespace MWS\MoonManagerBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsContact;
 
@@ -19,6 +20,23 @@ class MwsContactRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, MwsContact::class);
+    }
+
+    public function findOneWithIdAndEmail($username, $email, $asQueryBuilder = false
+    ): MwsContact|QueryBuilder|null {
+        $qb = $this->createQueryBuilder('m')
+        ->where('m.username = :userId')
+        ->setParameter('userId', $username)
+        ->setMaxResults(1);
+        // dd( $categorySlug);
+        if ($email && strlen($email)) {
+            $qb->andWhere('m.email = :email')
+            ->setParameter('email', $email);
+        } else {
+            $qb->andWhere("m.email IS NULL OR m.email = ''");
+        }
+    
+        return $asQueryBuilder ? $qb : $qb->getQuery()->execute()[0] ?? null;
     }
 
 //    /**

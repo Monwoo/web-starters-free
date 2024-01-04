@@ -17,6 +17,7 @@ use MWS\MoonManagerBundle\Form\MwsOfferImportType;
 use MWS\MoonManagerBundle\Form\MwsOfferStatusType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
+use MWS\MoonManagerBundle\Repository\MwsContactRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
@@ -32,7 +33,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/{_locale<%app.supported_locales%>}/mws-offer',
+#[Route(
+    '/{_locale<%app.supported_locales%>}/mws-offer',
     options: ['expose' => true],
 )]
 #[SecuAttr(
@@ -49,14 +51,13 @@ class MwsOfferController extends AbstractController
         protected TranslatorInterface $translator,
         protected EntityManagerInterface $em,
         protected SluggerInterface $slugger,
-    ){
+    ) {
     }
-    
+
     #[Route('/', name: 'mws_offer')]
     public function index(
         Request $request,
-    ): Response
-    {
+    ): Response {
         // TODO : depending of user roles : will have different preview systems
         return $this->redirectToRoute(
             'mws_offer_lookup',
@@ -68,16 +69,15 @@ class MwsOfferController extends AbstractController
             Response::HTTP_SEE_OTHER
         );
     }
-    
-    #[Route('/lookup/{viewTemplate?}', name: 'mws_offer_lookup')]
+
+    #[Route('/lookup/{viewTemplate<[^/]*>?}', name: 'mws_offer_lookup')]
     public function lookup(
         $viewTemplate,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
         PaginatorInterface $paginator,
         Request $request,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         $tagSlugSep = ' > '; // TODO :load objects and trick display/value function of surveyJS instead...
 
@@ -106,16 +106,18 @@ class MwsOfferController extends AbstractController
                 "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
-                "@MoonManager/survey_js_models/MwsOfferLookupType.json.twig", [
-                    'allOfferTags' => array_map(function(MwsOfferStatus $tag) use ($tagSlugSep) {
-                        return $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug() ;
-                    },
-                    // $mwsOfferStatusRepository->findAll()
-                    $mwsOfferStatusRepository
-                    ->createQueryBuilder("t")
-                    ->where($qb->expr()->isNotNull("t.categorySlug"))
-                    ->getQuery()->getResult()
-                ),
+                "@MoonManager/survey_js_models/MwsOfferLookupType.json.twig",
+                [
+                    'allOfferTags' => array_map(
+                        function (MwsOfferStatus $tag) use ($tagSlugSep) {
+                            return $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
+                        },
+                        // $mwsOfferStatusRepository->findAll()
+                        $mwsOfferStatusRepository
+                            ->createQueryBuilder("t")
+                            ->where($qb->expr()->isNotNull("t.categorySlug"))
+                            ->getQuery()->getResult()
+                    ),
                 ]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
@@ -155,9 +157,9 @@ class MwsOfferController extends AbstractController
 
         if ($keyword) {
             $qb
-            // LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-            // OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-            ->andWhere("
+                // LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                // OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                ->andWhere("
                 LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE :keyword
                 OR LOWER(REPLACE(o.contact1, ' ', '')) LIKE :keyword
                 OR LOWER(REPLACE(o.contact2, ' ', '')) LIKE :keyword
@@ -166,12 +168,12 @@ class MwsOfferController extends AbstractController
                 OR LOWER(REPLACE(o.description, ' ', '')) LIKE :keyword
                 OR LOWER(REPLACE(o.budget, ' ', '')) LIKE :keyword
             ")
-            ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
+                ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
         }
 
         if (count($searchTags)) {
             $qb = $qb
-            ->join('o.tags', 'tag');
+                ->join('o.tags', 'tag');
             $orClause = '';
             foreach ($searchTags as $idx => $searchTagSlug) {
                 [$category, $slug] = explode($tagSlugSep, $searchTagSlug);
@@ -199,7 +201,7 @@ class MwsOfferController extends AbstractController
 
         if (count($customFilters)) {
             $qb = $qb
-            ->join('o.contacts', 'contact');
+                ->join('o.contacts', 'contact');
             // dd($customFilters);
             foreach ($customFilters as $customFilter) {
                 if ($customFilter === "Ayant une photo") {
@@ -229,14 +231,13 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/view/{offerSlug}/{viewTemplate?}', name: 'mws_offer_view')]
+    #[Route('/view/{offerSlug}/{viewTemplate<[^/]*>?}', name: 'mws_offer_view')]
     public function view(
         $offerSlug,
         $viewTemplate,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
 
         if (!$user) {
@@ -260,22 +261,21 @@ class MwsOfferController extends AbstractController
 
 
     // Tags are status AND category of status (a category is also a status...)
-    #[Route('/tags/list/{viewTemplate?}', name: 'mws_offer_tags')]
+    #[Route('/tags/list/{viewTemplate<[^/]*>?}', name: 'mws_offer_tags')]
     public function tags(
         $viewTemplate,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
         PaginatorInterface $paginator,
         Request $request,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
 
-        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
         $keyword = $request->query->get('keyword', null);
-        
+
         $qb = $mwsOfferStatusRepository->createQueryBuilder('t');
 
         $lastSearch = [
@@ -319,11 +319,11 @@ class MwsOfferController extends AbstractController
 
         if ($keyword) {
             $qb
-            ->andWhere("
+                ->andWhere("
                 LOWER(REPLACE(t.slug, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
                 OR LOWER(REPLACE(t.label, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
             ")
-            ->setParameter('keyword', '%' . $keyword . '%');
+                ->setParameter('keyword', '%' . $keyword . '%');
         }
 
         $query = $qb->getQuery();
@@ -336,7 +336,7 @@ class MwsOfferController extends AbstractController
 
         $this->logger->debug("Succeed to list offers");
         $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->findAll();
-        $offerTagsByCatSlugAndSlug = array_combine(array_map(function($t) {
+        $offerTagsByCatSlugAndSlug = array_combine(array_map(function ($t) {
             return $t->getSlug();
         }, $offerTagsByCatSlugAndSlug), $offerTagsByCatSlugAndSlug);
 
@@ -348,16 +348,15 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/tags/reset-to-default/{viewTemplate?}', name: 'mws_offer_tags_reset_to_default')]
+    #[Route('/tags/reset-to-default/{viewTemplate<[^/]*>?}', name: 'mws_offer_tags_reset_to_default')]
     public function tagsResetToDefault(
         $viewTemplate,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
         Request $request,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
 
-        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -376,17 +375,19 @@ class MwsOfferController extends AbstractController
             $sourceStatusSlug = $sourceStatusLabel ? strtolower($this->slugger->slug($sourceStatusLabel)) : null;
             if ($sourceCategorySlug) {
                 $sourceCategory = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-                    $sourceCategorySlug, null
+                    $sourceCategorySlug,
+                    null
                 );
                 if (!$sourceCategory) {
                     $sourceCategory = new MwsOfferStatus();
                     $sourceCategory->setSlug($sourceCategorySlug);
                     $sourceCategory->setLabel($sourceCategorySlug);
-                    $this->em->persist($sourceCategory);    
+                    $this->em->persist($sourceCategory);
                 }
             }
             $sourceTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-                $sourceStatusSlug, $sourceCategorySlug
+                $sourceStatusSlug,
+                $sourceCategorySlug
             );
             if (!$sourceTag) {
                 $sourceTag = new MwsOfferStatus();
@@ -410,7 +411,8 @@ class MwsOfferController extends AbstractController
 
 
 
-    #[Route('/tag/edit/{categorySlug<[^/]*>}/{slug}/{viewTemplate}',
+    #[Route(
+        '/tag/edit/{categorySlug<[^/]*>}/{slug}/{viewTemplate<[^/]*>?}',
         name: 'mws_offer_tag_edit',
         methods: ['GET', 'POST'],
         defaults: [
@@ -424,16 +426,16 @@ class MwsOfferController extends AbstractController
         string|null $viewTemplate,
         Request $request,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
-        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
         $tag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-            $slug, $categorySlug,
+            $slug,
+            $categorySlug,
         );
         if (!$tag) {
             throw $this->createNotFoundException("Unknow tag slug [$slug]");
@@ -466,7 +468,7 @@ class MwsOfferController extends AbstractController
         }
 
         $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->findAll();
-        $offerTagsByCatSlugAndSlug = array_combine(array_map(function($t) {
+        $offerTagsByCatSlugAndSlug = array_combine(array_map(function ($t) {
             return $t->getSlug();
         }, $offerTagsByCatSlugAndSlug), $offerTagsByCatSlugAndSlug);
 
@@ -482,7 +484,8 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/tag/delete/{viewTemplate}',
+    #[Route(
+        '/tag/delete/{viewTemplate<[^/]*>?}',
         name: 'mws_offer_tag_delete',
         methods: ['POST'],
         defaults: [
@@ -495,8 +498,7 @@ class MwsOfferController extends AbstractController
         MwsOfferStatusRepository $mwsOfferStatusRepository,
         MwsOfferRepository $mwsOfferRepository,
         CsrfTokenManagerInterface $csrfTokenManager
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
@@ -512,11 +514,12 @@ class MwsOfferController extends AbstractController
         $tagSlug = $request->request->get('tagSlug');
         $tagCategorySlug = $request->request->get('tagCategorySlug');
         // TODO : DOC + validation, no tag category slug could use the 'null' keyword, now RESERVED...
-        if ('null' === $tagCategorySlug) { 
+        if ('null' === $tagCategorySlug) {
             $tagCategorySlug = null; // Form data deserialisation stuff ? extracting as string instead of null...
         }
         $tag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-            $tagSlug, $tagCategorySlug
+            $tagSlug,
+            $tagCategorySlug
         );
         if (!$tag) {
             throw $this->createNotFoundException("Unknow tag slug [$tagSlug, $tagCategorySlug]");
@@ -555,7 +558,8 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/tag/add/{viewTemplate}',
+    #[Route(
+        '/tag/add/{viewTemplate<[^/]*>?}',
         name: 'mws_offer_tag_add',
         methods: ['POST'],
         defaults: [
@@ -568,8 +572,7 @@ class MwsOfferController extends AbstractController
         MwsOfferStatusRepository $mwsOfferStatusRepository,
         MwsOfferRepository $mwsOfferRepository,
         CsrfTokenManagerInterface $csrfTokenManager
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
@@ -585,11 +588,12 @@ class MwsOfferController extends AbstractController
         $tagSlug = $request->request->get('tagSlug');
         $tagCategorySlug = $request->request->get('tagCategorySlug');
         // TODO : DOC + validation, no tag category slug could use the 'null' keyword, now RESERVED...
-        if ('null' === $tagCategorySlug) { 
+        if ('null' === $tagCategorySlug) {
             $tagCategorySlug = null; // Form data deserialisation stuff ? extracting as string instead of null...
         }
         $tag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-            $tagSlug, $tagCategorySlug
+            $tagSlug,
+            $tagCategorySlug
         );
         if (!$tag) {
             throw $this->createNotFoundException("Unknow tag slug [$tagSlug, $tagCategorySlug]");
@@ -617,8 +621,7 @@ class MwsOfferController extends AbstractController
     #[Route('/fetch-root-url', name: 'mws_offer_fetchRootUrl')]
     public function fetchRootUrl(
         Request $request,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
 
         if (!$user) {
@@ -640,9 +643,10 @@ class MwsOfferController extends AbstractController
         return $response;
     }
 
-    #[Route('/import/{viewTemplate}/{format}',
+    #[Route(
+        '/import/{viewTemplate<[^/]*>?}/{format}',
         name: 'mws_offer_import',
-        methods: ['GET','POST'],
+        methods: ['GET', 'POST'],
         defaults: [
             'viewTemplate' => null,
             'format' => 'monwoo-extractor-export',
@@ -654,11 +658,12 @@ class MwsOfferController extends AbstractController
         Request $request,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
+        MwsContactRepository $mwsContactRepository,
         SluggerInterface $slugger,
         EntityManagerInterface $em,
     ): Response {
         $user = $this->getUser();
-        if (!$user || ! $this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -669,7 +674,8 @@ class MwsOfferController extends AbstractController
         $forceRewrite = $request->query->get('forceRewrite', false);
         $forceStatusRewrite = $request->query->get('forceStatusRewrite', false);
         $forceCleanTags = $request->query->get('forceCleanTags', false);
-        
+        $forceCleanContacts = $request->query->get('forceCleanContacts', false);
+
         $uploadData = null;
         $form = $this->createForm(MwsOfferImportType::class, $uploadData);
         $form->handleRequest($request);
@@ -695,7 +701,7 @@ class MwsOfferController extends AbstractController
                     // this is needed to safely include the file name as part of the URL
                     $safeFilename = $slugger->slug($originalName);
 
-                    $newFilename = $safeFilename.'_'.uniqid().'.'.$extension;
+                    $newFilename = $safeFilename . '_' . uniqid() . '.' . $extension;
 
                     $importContent = file_get_contents($importedUpload->getPathname());
                     // https://www.php.net/manual/fr/function.iconv.php
@@ -703,15 +709,20 @@ class MwsOfferController extends AbstractController
                     // $importContent = iconv("ISO-8859-1", "UTF-8", $importContent);
                     $importContentEncoding = mb_detect_encoding($importContent);
                     // dd($importContentEncoding);
-                    $importContent = iconv($importContentEncoding,"UTF-8", $importContent);
+                    $importContent = iconv($importContentEncoding, "UTF-8", $importContent);
                     // dd($importContent);
                     // TIPS : clean as soon as we can...
                     unlink($importedUpload->getPathname());
                     // $reportSummary = $importContent;
                     /** @var MwsOffer[] */
                     $offersDeserialized = $this->deserializeOffers(
-                        $user, $importContent, $format, $newFilename,
-                        $mwsOfferStatusRepository, $mwsOfferRepository
+                        $user,
+                        $importContent,
+                        $format,
+                        $newFilename,
+                        $mwsOfferRepository,
+                        $mwsOfferStatusRepository,
+                        $mwsContactRepository,
                     );
                     // dd($offersDeserialized);
 
@@ -725,11 +736,11 @@ class MwsOfferController extends AbstractController
 
                         // TODO : add as repository method ?
                         $qb = $mwsOfferRepository
-                        ->createQueryBuilder('o')
-                        ->where('o.slug = :slug')
-                        ->andWhere('o.sourceName = :sourceName')
-                        ->setParameter('slug', $slug)
-                        ->setParameter('sourceName', $sourceName);
+                            ->createQueryBuilder('o')
+                            ->where('o.slug = :slug')
+                            ->andWhere('o.sourceName = :sourceName')
+                            ->setParameter('slug', $slug)
+                            ->setParameter('sourceName', $sourceName);
                         // if ($email && strlen($email)) {
                         //     $qb->andWhere('p.email = :email')
                         //     ->setParameter('email', trim(strtolower($email)));
@@ -743,7 +754,7 @@ class MwsOfferController extends AbstractController
                         // dd($query->getDQL());
                         // dd($query);
                         $allDuplicates = $query->execute();
-                        
+
                         // dd($allDuplicates);
                         // var_dump($allDuplicates);exit;
                         if ($allDuplicates && count($allDuplicates)) {
@@ -752,12 +763,14 @@ class MwsOfferController extends AbstractController
                                 $inputOffer = $offer;
                                 // $offer = $allDuplicates[0];
                                 $offer = array_shift($allDuplicates);
-                                $sync = function($path) use ($inputOffer, $offer) {
+                                $sync = function ($path) use ($inputOffer, $offer) {
                                     $set = 'set' . ucfirst($path);
                                     $get = 'get' . ucfirst($path);
                                     $v =  $inputOffer->$get();
-                                    if (null !== $v &&
-                                    ((!is_string($v)) || strlen($v))) {
+                                    if (
+                                        null !== $v &&
+                                        ((!is_string($v)) || strlen($v))
+                                    ) {
                                         $offer->$set($v);
                                     }
                                 };
@@ -789,7 +802,9 @@ class MwsOfferController extends AbstractController
                                     $offer->addTag($tag);
                                 }
 
-                                $offer->getContacts()->clear();
+                                if ($forceCleanContacts) {
+                                    $offer->getContacts()->clear();
+                                }
                                 $contacts = $inputOffer->getContacts();
                                 foreach ($contacts as $contact) {
                                     $offer->addContact($contact);
@@ -801,31 +816,30 @@ class MwsOfferController extends AbstractController
                                 foreach ($allDuplicates as $otherDups) {
                                     $em->remove($otherDups);
                                 }
+                                // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
+
+                                // if (!$offer->getSourceFile()
+                                // || !strlen($offer->getSourceFile())) {
+                                //     $offer->setSourceFile('unknown');
+                                // }
+
+                                // Default auto compute values :
+                                /** @var MwsOffer $offer */
+                                if (!$offer->getCurrentStatusSlug()) {
+                                    // TODO : from .env config file ? or from DB ? (status with tags for default selections ?)
+                                    $offerStatusSlug = "mws-offer-tags-category-src-import|a-relancer"; // TODO : load from status DB or config DB...
+                                    $offer->setCurrentStatusSlug($offerStatusSlug);
+                                    // dd($offer);    
+                                }
+
+                                $em->persist($offer);
+                                $em->flush();
+                                $savedCount++;
                             } else {
                                 $reportSummary .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
                                 continue;
                             }
                         }
-
-                        // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
-
-                        // if (!$offer->getSourceFile()
-                        // || !strlen($offer->getSourceFile())) {
-                        //     $offer->setSourceFile('unknown');
-                        // }
-
-                        // Default auto compute values :
-                        /** @var MwsOffer $offer */
-                        if (!$offer->getCurrentStatusSlug()) {
-                            // TODO : from .env config file ? or from DB ? (status with tags for default selections ?)
-                            $offerStatusSlug = "mws-offer-tags-category-src-import|a-relancer"; // TODO : load from status DB or config DB...
-                            $offer->setCurrentStatusSlug($offerStatusSlug);
-                            // dd($offer);    
-                        }
-
-                        $em->persist($offer);
-                        $em->flush();
-                        $savedCount++;
                     }
                     $reportSummary .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
 
@@ -836,7 +850,7 @@ class MwsOfferController extends AbstractController
         $formatToText = [
             // 'tsv' => "Tab-separated values (TSV)",
             'csv' => "Comma-separated values (CSV)",
-            'json' => "JavaScript Object Notation (JSON)",            
+            'json' => "JavaScript Object Notation (JSON)",
         ];
         return $this->render('@MoonManager/mws_offer/import.html.twig', [
             'reportSummary' => $reportSummary,
@@ -848,28 +862,38 @@ class MwsOfferController extends AbstractController
     }
 
     // TODO : inside some Services helper class instead ?
-    public function offerSlugToSourceUrlTransformer($sourceName) {
+    public function offerSlugToSourceUrlTransformer($sourceName)
+    {
         return [ // TODO : from configs or services ?
             'source.test.localhost' => function ($oSlug) {
                 return "http://source.test.localhost/offers/$oSlug";
             },
-        ][$sourceName] ?? function($oSlug) use ($sourceName) {
+        ][$sourceName] ?? function ($oSlug) use ($sourceName) {
             return "https://$sourceName/projects/$oSlug";
         };
     }
-    public function usernameToClientUrlTransformer($sourceName) {
+    public function usernameToClientUrlTransformer($sourceName)
+    {
         return [ // TODO : from configs or services ?
             'source.test.localhost' => function ($username) {
                 return "http://source.test.localhost/-$username";
             },
-        ][$sourceName] ?? function($oSlug) use ($sourceName) {
+        ][$sourceName] ?? function ($oSlug) use ($sourceName) {
             return "https://$sourceName/-$oSlug";
         };
     }
 
     // TODO : more like 'loadOffers' than deserialize,
     //        will save in db too for code factorisation purpose...
-    public function deserializeOffers($user, $data, $format, $sourceFile, $mwsOfferStatusRepository, $mwsOfferRepository) {
+    public function deserializeOffers(
+        MwsUser $user,
+        String $data,
+        String $format,
+        String $sourceFile,
+        MwsOfferRepository $mwsOfferRepository,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
+        MwsContactRepository $mwsContactRepository
+    ) {
         /** @param MwsOffer[] **/
         $out = null;
         // TODO : add custom serializer format instead of if switch ?
@@ -885,9 +909,9 @@ class MwsOfferController extends AbstractController
                 // dump($board);
                 $contactIndex = $board['users'] ?? [];
                 foreach (($board['projects'] ?? []) as $offerSlug => $o) {
-                    $offer = new MwsOffer($this->em);
+                    $offer = new MwsOffer();
 
-                    $cleanUp = function($val) {
+                    $cleanUp = function ($val) {
                         // NO-BREAK SPACE (U+A0)
                         // https://stackoverflow.com/questions/150033/regular-expression-to-match-non-ascii-characters
                         // https://stackoverflow.com/questions/55904971/regex-in-php-returning-preg-match-compilation-failed-pcre-does-not-support
@@ -896,7 +920,9 @@ class MwsOfferController extends AbstractController
                         // return trim(preg_replace('/[\s\xc2\xa0]+/', ' ', $val));
                         return trim(
                             // NO-BREAK SPACE (U+A0)
-                            preg_replace('/(\xc2\xa0)+/', ' ',
+                            preg_replace(
+                                '/(\xc2\xa0)+/',
+                                ' ',
                                 // preg_replace('/\s+/', ' ', $val)
                                 // https://stackoverflow.com/questions/3469080/match-whitespace-but-not-newlines
                                 // preg_replace('/\h+/', ' ', $val)
@@ -908,7 +934,7 @@ class MwsOfferController extends AbstractController
                     };
                     $userId = $o["uId"] ?? null;
                     $contactBusinessUrl = $this
-                    ->usernameToClientUrlTransformer($sourceSlug)($userId);
+                        ->usernameToClientUrlTransformer($sourceSlug)($userId);
                     // TODO : check ? : https://symfonycasts.com/screencast/symfony-doctrine/sluggable
                     $offer->setSlug(strtolower($this->slugger->slug(
                         $sourceSlug . '-' . $offerSlug
@@ -950,12 +976,14 @@ class MwsOfferController extends AbstractController
                     $sourceCategoryLabel = 'mws.offer.tags.category.src-import';
                     $sourceCategorySlug = strtolower($this->slugger->slug($sourceCategoryLabel));
                     $sourceTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-                        $sourceStatusSlug, $sourceCategorySlug
+                        $sourceStatusSlug,
+                        $sourceCategorySlug
                     );
                     // dd($sourceTag);
                     if (!$sourceTag) {
                         $sourceCategory = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-                            $sourceCategorySlug, null
+                            $sourceCategorySlug,
+                            null
                         );
                         if (!$sourceCategory) {
                             $sourceCategory = new MwsOfferStatus();
@@ -965,7 +993,7 @@ class MwsOfferController extends AbstractController
                             // $sourceTag->setCategorySlug($TODO);
                             // TIPS : NEED to PERSIST AND FLUSH for next findOneBy to work :
                             $this->em->persist($sourceCategory);
-                        }    
+                        }
                         $sourceTag = new MwsOfferStatus();
                         $sourceTag->setSlug($sourceStatusSlug);
                         $sourceTag->setLabel($sourceStatus);
@@ -995,9 +1023,13 @@ class MwsOfferController extends AbstractController
                     // TODO : getClientSlug that ensure contact unicity ?
 
                     $c = $contactIndex[$userId] ?? [];
-                    // TODO : contactSlug = $c .... ; => unicity check in db before creating new one...
-                    // TODO : from repo ? need update if exist or keep existing ?
-                    $contact = new MwsContact();
+                    $contact = $mwsContactRepository->findOneWithIdAndEmail(
+                        $userId,
+                        $c['email'] ?? null
+                    );
+                    if (null === $contact) {
+                        $contact = new MwsContact();
+                    }
 
                     // TODO : from ORM update listeners instead of hard coded ? but how to inject comments etc... ?
                     $traking = new MwsContactTracking();
@@ -1005,7 +1037,7 @@ class MwsOfferController extends AbstractController
                     $traking->setOwner($user);
                     $traking->setComment("Imported from : $sourceFile");
                     $contact->addMwsContactTracking($traking);
-                    
+
                     $contact->setUsername($userId);
                     $contact->setStatus($c['status']);
                     $contact->setPostalCode($c['adresseL2_CP']);
@@ -1047,18 +1079,18 @@ class MwsOfferController extends AbstractController
     }
 
     /** @param MwsOffer[] $offers */
-    public function serializeOffers($offers, $format) {
+    public function serializeOffers($offers, $format)
+    {
         $out = null;
         // TODO : add custom serializer format instead of if switch ?
         if ($format === 'monwoo-extractor-export') {
-
         } else {
             $out = $this->serializer->serialize(
                 $offers,
                 MwsOffer::class . "[]",
                 $format,
                 // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
-            );    
+            );
         }
         return $out;
     }

@@ -2,10 +2,16 @@
 
 namespace MWS\MoonManagerBundle\Entity;
 
+use Symfony\Component\Serializer;
 use Doctrine\ORM\Mapping as ORM;
 use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
+// use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[ORM\Entity(repositoryClass: MwsMessageRepository::class)]
+// #[Serializer\Annotation\Context(context: [
+//     AbstractNormalizer::ATTRIBUTES =>
+//     ['projectId', 'owner' => ['id']]
+// ])] // Not for entity class....
 class MwsMessage
 {
     #[ORM\Id]

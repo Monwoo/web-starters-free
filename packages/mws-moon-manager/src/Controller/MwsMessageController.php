@@ -3,13 +3,16 @@
 namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use GuzzleHttp\Psr7\Request;
+use MWS\MoonManagerBundle\Entity\MwsMessage;
 use MWS\MoonManagerBundle\Entity\MwsUser;
+use MWS\MoonManagerBundle\Form\MwsMessageImportType;
+use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,21 +37,32 @@ class MwsMessageController extends AbstractController
         protected TranslatorInterface $translator,
         protected EntityManagerInterface $em,
         protected SluggerInterface $slugger,
-    ){
+    ) {
     }
 
-    #[Route('/', name: 'mws_message_list')]
-    public function index(): Response
+    #[Route('/list/{viewTemplate<[^/]*>?}', name: 'mws_message_list')]
+    public function list(
+        $viewTemplate,
+        MwsMessageRepository $mwsMessageRepository,
+    ): Response
     {
-        $messages = [];
+        $user = $this->getUser();
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+
+        $messages = $mwsMessageRepository->findBy([
+            'owner' => $user,
+        ]);
         // TODO : import some data, then display :
         return $this->render('@MoonManager/mws_message/list.html.twig', [
+            'viewTemplate' => $viewTemplate,
             'messages' => $messages
         ]);
     }
 
     #[Route(
-        '/import/{viewTemplate}/{format}',
+        '/import/{viewTemplate<[^/]*>?}/{format}',
         name: 'mws_message_import',
         methods: ['GET', 'POST'],
         defaults: [
@@ -60,8 +74,7 @@ class MwsMessageController extends AbstractController
         string|null $viewTemplate,
         string $format,
         Request $request,
-        MwsOfferRepository $mwsOfferRepository,
-        MwsOfferStatusRepository $mwsOfferStatusRepository,
+        MwsMessageRepository $mwsMessageRepository,
     ): Response {
         $user = $this->getUser();
         if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
@@ -77,7 +90,7 @@ class MwsMessageController extends AbstractController
         $forceCleanTags = $request->query->get('forceCleanTags', false);
 
         $uploadData = null;
-        $form = $this->createForm(MwsOfferImportType::class, $uploadData);
+        $form = $this->createForm(MwsMessageImportType::class, $uploadData);
         $form->handleRequest($request);
         $reportSummary = "";
 
@@ -87,8 +100,6 @@ class MwsMessageController extends AbstractController
 
             if ($form->isValid()) {
                 $this->logger->debug("Form is valid : ok");
-                // https://github.com/symfony/symfony/blob/6.3/src/Symfony/Component/HttpFoundation/File/UploadedFile.php
-                // https://stackoverflow.com/questions/14462390/how-to-declare-the-type-for-local-variables-using-phpdoc-notation
                 /** @var UploadedFile $importedUpload */
                 $importedUpload = $form->get('importedUpload')->getData();
                 if ($importedUpload) {
@@ -99,149 +110,97 @@ class MwsMessageController extends AbstractController
                     $extension = array_slice(explode(".", $originalFilename), -1)[0];
                     $originalName = implode(".", array_slice(explode(".", $originalFilename), 0, -1));
                     // this is needed to safely include the file name as part of the URL
-                    $safeFilename = $slugger->slug($originalName);
+                    $safeFilename = $this->slugger->slug($originalName);
 
                     $newFilename = $safeFilename . '_' . uniqid() . '.' . $extension;
 
                     $importContent = file_get_contents($importedUpload->getPathname());
-                    // https://www.php.net/manual/fr/function.iconv.php
-                    // https://www.php.net/manual/en/function.mb-detect-encoding.php
-                    // $importContent = iconv("ISO-8859-1", "UTF-8", $importContent);
                     $importContentEncoding = mb_detect_encoding($importContent);
                     // dd($importContentEncoding);
                     $importContent = iconv($importContentEncoding, "UTF-8", $importContent);
-                    // dd($importContent);
                     // TIPS : clean as soon as we can...
                     unlink($importedUpload->getPathname());
                     // $reportSummary = $importContent;
                     /** @var MwsOffer[] */
-                    $offersDeserialized = $this->deserializeOffers(
+                    $messagesDeserialized = $this->deserializeMessages(
                         $user,
                         $importContent,
                         $format,
                         $newFilename,
-                        $mwsOfferStatusRepository,
-                        $mwsOfferRepository
                     );
-                    // dd($offersDeserialized);
+                    // dd($messagesDeserialized);
 
                     $savedCount = 0;
-                    /** @var MwsOffer $offer */
-                    foreach ($offersDeserialized as $idx => $offer) {
-                        $sourceName = $offer->getSourceName();
-                        $slug = $offer->getSlug();
-                        // $email = $offer->getContact1();
-                        // $phone = $offer->getContact2();
+                    /** @var MwsMessage $message */
+                    foreach ($messagesDeserialized as $idx => $message) {
+                        $destId = $message->getDestId();
+                        $projectId = $message->getProjectId();
+                        $sourceId = $message->getSourceId();
+                        $owner = $message->getOwner();
+                        // $email = $message->getContact1();
+                        // $phone = $message->getContact2();
 
                         // TODO : add as repository method ?
-                        $qb = $mwsOfferRepository
-                            ->createQueryBuilder('o')
-                            ->where('o.slug = :slug')
-                            ->andWhere('o.sourceName = :sourceName')
-                            ->setParameter('slug', $slug)
-                            ->setParameter('sourceName', $sourceName);
-                        // if ($email && strlen($email)) {
-                        //     $qb->andWhere('p.email = :email')
-                        //     ->setParameter('email', trim(strtolower($email)));
-                        // }
-                        // if ($phone && strlen($phone)) {
-                        //     $qb->andWhere('p.phone = :phone')
-                        //     ->setParameter('phone', trim(strtolower($phone)));
-                        // }
+                        $qb = $mwsMessageRepository
+                            ->createQueryBuilder('m')
+                            ->where('m.destId = :destId')
+                            ->andWhere('m.projectId = :projectId')
+                            ->andWhere('m.sourceId = :sourceId')
+                            ->andWhere('m.owner = :owner')
+                            ->setParameter('destId', $destId)
+                            ->setParameter('projectId', $projectId)
+                            ->setParameter('sourceId', $sourceId)
+                            ->setParameter('owner', $owner);
                         $query = $qb->getQuery();
 
-                        // dd($query->getDQL());
-                        // dd($query);
                         $allDuplicates = $query->execute();
 
                         // dd($allDuplicates);
-                        // var_dump($allDuplicates);exit;
                         if ($allDuplicates && count($allDuplicates)) {
                             if ($forceRewrite) {
-                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
-                                $inputOffer = $offer;
-                                // $offer = $allDuplicates[0];
-                                $offer = array_shift($allDuplicates);
-                                $sync = function ($path) use ($inputOffer, $offer) {
+                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$destId , $projectId , $sourceId , $owner]<br/>";
+                                $inputMessage = $message;
+                                // $message = $allDuplicates[0];
+                                $message = array_shift($allDuplicates);
+                                $sync = function ($path) use ($inputMessage, $message) {
                                     $set = 'set' . ucfirst($path);
                                     $get = 'get' . ucfirst($path);
-                                    $v =  $inputOffer->$get();
+                                    $v =  $inputMessage->$get();
                                     if (
                                         null !== $v &&
                                         ((!is_string($v)) || strlen($v))
                                     ) {
-                                        $offer->$set($v);
+                                        $message->$set($v);
                                     }
                                 };
                                 // TODO : factorize code with serializer service ? factorize to same location...
                                 $sync('clientUsername');
-                                $sync('contact1');
-                                $sync('contact2');
-                                $sync('contact3');
-                                $sync('title');
-                                $sync('description');
-                                $sync('budget');
-                                $sync('leadStart');
-                                $sync('sourceUrl');
-                                $sync('clientUrl');
-                                $sync('currentBillingNumber');
-                                $sync('sourceDetail');
-                                if ($forceStatusRewrite) {
-                                    $sync('currentStatusSlug');
-                                }
-                                if ($forceCleanTags) {
-                                    $offer->getTags()->clear();
-                                }
-
-                                $tags = $inputOffer->getTags();
-                                foreach ($tags as $tag) {
-                                    // TIPS : inside addTag, only one by specific only one choice category type ?
-                                    // OK to copy all, clone src use
-                                    // $mwsOfferRepository->addTag($offer, $tag);
-                                    $offer->addTag($tag);
-                                }
-
-                                $offer->getContacts()->clear();
-                                $contacts = $inputOffer->getContacts();
-                                foreach ($contacts as $contact) {
-                                    $offer->addContact($contact);
-                                }
-
-                                // dump($inputOffer);
-                                // dd($offer);
+                                $sync('destId');
+                                $sync('monwooAmount');
+                                $sync('projectDelayInOpenDays');
+                                $sync('asNewOffer');
+                                $sync('sourceId');
+                                $sync('crmLogs');
+                                $sync('messages');
+                                $sync('owner');
+                                // dd($message);
                                 // CLEAN all possible other duplicates :
                                 foreach ($allDuplicates as $otherDups) {
-                                    $em->remove($otherDups);
+                                    $this->em->remove($otherDups);
                                 }
+                                                        // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
+                                $this->em->persist($message);
+                                $this->em->flush();
+                                $savedCount++;
                             } else {
-                                $reportSummary .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
+                                $reportSummary .= "<strong>Ignore le doublon : </strong> [$destId , $projectId , $sourceId , $owner]<br/>";
                                 continue;
                             }
                         }
-
-                        // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
-
-                        // if (!$offer->getSourceFile()
-                        // || !strlen($offer->getSourceFile())) {
-                        //     $offer->setSourceFile('unknown');
-                        // }
-
-                        // Default auto compute values :
-                        /** @var MwsOffer $offer */
-                        if (!$offer->getCurrentStatusSlug()) {
-                            // TODO : from .env config file ? or from DB ? (status with tags for default selections ?)
-                            $offerStatusSlug = "mws-offer-tags-category-src-import|a-relancer"; // TODO : load from status DB or config DB...
-                            $offer->setCurrentStatusSlug($offerStatusSlug);
-                            // dd($offer);    
-                        }
-
-                        $em->persist($offer);
-                        $em->flush();
-                        $savedCount++;
                     }
-                    $reportSummary .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
+                    $reportSummary .= "<br/><br/>Enregistrement de $savedCount messages OK <br/>";
 
-                    // var_dump($extension);var_dump($importContent);var_dump($offersDeserialized); exit;
+                    // var_dump($extension);var_dump($importContent);var_dump($messagesDeserialized); exit;
                 }
             }
         }
@@ -250,12 +209,79 @@ class MwsMessageController extends AbstractController
             'csv' => "Comma-separated values (CSV)",
             'json' => "JavaScript Object Notation (JSON)",
         ];
-        return $this->render('@MoonManager/mws_offer/import.html.twig', [
+        return $this->render('@MoonManager/mws_message/import.html.twig', [
             'reportSummary' => $reportSummary,
             'format' => $format,
             'uploadForm' => $form,
             'viewTemplate' => $viewTemplate,
-            'title' => 'Importer les offres via ' . ($formatToText[$format] ?? $format)
+            'title' => 'Importer les messages via ' . ($formatToText[$format] ?? $format)
         ]);
+    }
+
+    // TODO : more like 'loadMessages' than deserialize,
+    //        will save in db too for code factorisation purpose...
+    public function deserializeMessages($user, $data, $format, $sourceFile)
+    {
+        /** @param MwsMessage[] **/
+        $out = null;
+        // TODO : add custom serializer format instead of if switch ?
+        if ($format === 'monwoo-extractor-export') {
+            $data = json_decode($data, true);
+            $out = [];
+
+            foreach ($data as $sourceSlug => $board) {
+                // $contactIndex = $board['users'] ?? [];
+                foreach (($board ?? []) as $offerSlug => $o) {
+                    $message = new MwsMessage();
+
+                    $cleanUp = function ($val) {
+                        return $val ? trim(
+                            // NO-BREAK SPACE (U+A0)
+                            preg_replace(
+                                '/(\xc2\xa0)+/',
+                                ' ',
+                                preg_replace('/[^\S\r\n]+/', ' ', $val)
+                            )
+                        ) : null;
+                    };
+                    $message->setProjectId($cleanUp($o["projectId"] ?? null));
+                    $message->setDestId($cleanUp($o["destId"]));
+                    $message->setMonwooAmount($o["monwooAmount"] ?? null);
+                    $message->setProjectDelayInOpenDays($o["projectDelayInOpenDays"] ?? null);
+                    $message->setDestId($cleanUp($o["destId"] ?? null));
+                    $message->setSourceId($o["sourceId"] ?? $sourceFile); // TODO : track ?
+                    $message->setCrmLogs($o["crmLogs"] ?? null);
+                    $message->setMessages($o["messages"] ?? null);
+                    $message->setOwner($user);
+
+                    $out[] = $message;
+                }
+            }
+        } else {
+            $out = $this->serializer->deserialize(
+                $data,
+                MwsMessage::class . "[]",
+                $format,
+                // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            );
+        }
+        return $out;
+    }
+
+    /** @param MwsMessage[] $offers */
+    public function serializeMessages($offers, $format)
+    {
+        $out = null;
+        // TODO : add custom serializer format instead of if switch ?
+        if ($format === 'monwoo-extractor-export') {
+        } else {
+            $out = $this->serializer->serialize(
+                $offers,
+                MwsMessage::class . "[]",
+                $format,
+                // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            );
+        }
+        return $out;
     }
 }

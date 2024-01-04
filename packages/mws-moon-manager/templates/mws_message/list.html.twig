@@ -4,7 +4,7 @@
 {% block content %}
     <div {{ svelte_component('MwsMessageList', {
         'title': block('title'),
-        'currentLanguage' : app.request.locale|locale_name(app.request.locale)|u.title,
+		'locale': app.locale,
         'messages': messages|serialize('json')|e('html_attr'),
     }) }}>
 {% endblock %}

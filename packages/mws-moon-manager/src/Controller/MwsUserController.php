@@ -188,7 +188,7 @@ class MwsUserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/show/{viewTemplate?}',
+    #[Route('/{id}/show/{viewTemplate<[^/]*>?}',
         name: 'mws_user_show',
         methods: ['GET'],
 
@@ -209,7 +209,7 @@ class MwsUserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit/{viewTemplate}',
+    #[Route('/{id}/edit/{viewTemplate<[^/]*>?}',
         name: 'mws_user_edit',
         methods: ['GET', 'POST'],
         defaults: [
@@ -287,7 +287,7 @@ class MwsUserController extends AbstractController
         ]);
     }
 
-    #[Route('/add/{viewTemplate}',
+    #[Route('/add/{viewTemplate<[^/]*>?}',
         name: 'mws_user_new',
         methods: ['GET', 'POST'],
         defaults: [

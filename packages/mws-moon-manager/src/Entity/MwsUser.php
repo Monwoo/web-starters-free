@@ -56,36 +56,46 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'teamOwners')]
+    #[Serializer\Annotation\Ignore]
     private Collection $teamMembers;
 
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'teamMembers')]
+    #[Serializer\Annotation\Ignore]
     private Collection $teamOwners;
 
     #[ORM\ManyToMany(targetEntity: MwsCalendarEvent::class, mappedBy: 'clients')]
     #[ORM\JoinTable(name: 'mws_client_event_mws_user')]
+    #[Serializer\Annotation\Ignore]
     private Collection $mwsClientEvents;
 
     #[ORM\ManyToMany(targetEntity: MwsCalendarEvent::class, mappedBy: 'observers')]
     #[ORM\JoinTable(name: 'mws_observer_event_mws_user')]
+    #[Serializer\Annotation\Ignore]
     private Collection $mwsObserverEvents;
 
     #[ORM\ManyToMany(targetEntity: MwsCalendarEvent::class, mappedBy: 'owners')]
     #[ORM\JoinTable(name: 'mws_owner_event_mws_user')]
+    #[Serializer\Annotation\Ignore]
     private Collection $mwsOwnerEvents;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsCalendarTracking::class)]
+    #[Serializer\Annotation\Ignore]
     private Collection $mwsCalendarTrackings;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsOfferTracking::class)]
+    #[Serializer\Annotation\Ignore]
     private Collection $mwsOfferTrackings;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsContactTracking::class)]
+    #[Serializer\Annotation\Ignore]
     private Collection $mwsContactTrackings;
 
     #[ORM\ManyToMany(targetEntity: MwsContact::class, inversedBy: 'mwsUsers')]
+    #[Serializer\Annotation\Ignore]
     private Collection $comingFrom;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MwsMessage::class, orphanRemoval: true)]
+    #[Serializer\Annotation\Ignore]
     private Collection $mwsMessages;
 
     use TimestampableEntity;
