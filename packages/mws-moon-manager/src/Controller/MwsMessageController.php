@@ -347,7 +347,7 @@ class MwsMessageController extends AbstractController
         return $this->redirectToRoute(
             'mws_message_list',
             [ // array_merge($request->query->all(), [
-                "viewTemplate" => 1,
+                "viewTemplate" => $viewTemplate,
                 "page" => 1,
             ], //),
             Response::HTTP_SEE_OTHER

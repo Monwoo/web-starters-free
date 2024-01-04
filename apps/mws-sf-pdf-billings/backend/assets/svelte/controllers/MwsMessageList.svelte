@@ -3,6 +3,7 @@
     import ListView from "mws-moon-manager-ux/components/message/ListView.svelte";
     export let title = null;
     export let locale = null;
+    export let viewTemplate;
     export let messages = '[]';
     export let messagesHeaders = '{}';
     export let addMessageForm = '';
@@ -22,6 +23,6 @@
 </script>
 
 <ListView
-{title} {locale} {messages} {messagesHeaders}
+{title} {locale} {viewTemplate} {messages} {messagesHeaders}
 {offersPaginator} {addMessageForm} {csrfMessageDelete}
 ></ListView>
