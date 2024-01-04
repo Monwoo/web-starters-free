@@ -127,8 +127,8 @@ class MwsMessageController extends AbstractController
                 $sync('destId'); // TODO : validation error : can't be empty
                 $sync('monwooAmount');
                 $sync('projectDelayInOpenDays');
-                // $sync('asNewOffer');
-                $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
+                $sync('asNewOffer');
+                // $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
                 $sync('sourceId');
 
                 // $sync('messages');
@@ -273,15 +273,17 @@ class MwsMessageController extends AbstractController
                                 foreach ($allDuplicates as $otherDups) {
                                     $this->em->remove($otherDups);
                                 }
-                                                        // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
-                                $this->em->persist($message);
-                                $this->em->flush();
-                                $savedCount++;
+                                // $savedCount++;
                             } else {
                                 $reportSummary .= "<strong>Ignore le doublon : </strong> [$destId , $projectId , $sourceId , $owner]<br/>";
-                                continue;
+                                continue; // TODO : WHY BELOW counting one write when all is duplicated ?
                             }
                         }
+
+                        // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
+                        $this->em->persist($message);
+                        $this->em->flush();
+                        $savedCount++;
                     }
                     $reportSummary .= "<br/><br/>Enregistrement de $savedCount messages OK <br/>";
 
@@ -311,7 +313,6 @@ class MwsMessageController extends AbstractController
     public function deleteAll(
         string|null $viewTemplate,
         Request $request,
-        MwsMessageRepository $mwsMessageRepository,
         CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
@@ -331,7 +332,7 @@ class MwsMessageController extends AbstractController
         // $tag->removeMwsOffer($offer);
 
         $qb = $this->em->createQueryBuilder()
-        ->delete(MwsUser::class, 'u');               
+        ->delete(MwsMessage::class, 'u');               
 
         $query = $qb->getQuery();
         // dump($query->getSql());

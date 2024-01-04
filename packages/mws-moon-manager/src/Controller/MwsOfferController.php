@@ -832,14 +832,14 @@ class MwsOfferController extends AbstractController
                                     // dd($offer);    
                                 }
 
-                                $em->persist($offer);
-                                $em->flush();
-                                $savedCount++;
                             } else {
                                 $reportSummary .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
-                                continue;
+                                continue;// TODO : WHY BELOW counting one write when all is duplicated ?
                             }
                         }
+                        $em->persist($offer);
+                        $em->flush();
+                        $savedCount++;
                     }
                     $reportSummary .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
 

@@ -43,7 +43,7 @@
     '_locale': locale ?? '',
   }) }" method="post">
     <input type="hidden" name="_csrf_token" value="{ csrfMessageDelete }" />
-    <button type="submit">Se connecter</button>
+    <button type="submit">Supprimer les messages</button>
   </form>
 
   <button
