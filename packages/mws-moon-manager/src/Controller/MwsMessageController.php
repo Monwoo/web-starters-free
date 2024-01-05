@@ -11,6 +11,7 @@ use MWS\MoonManagerBundle\Form\MwsMessageImportType;
 use MWS\MoonManagerBundle\Form\MwsMessageTchatUploadType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
+use MWS\MoonManagerBundle\Repository\MwsMessageTchatUploadRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -143,7 +144,7 @@ class MwsMessageController extends AbstractController
                     $uploadFiles = $msgTchat['uploadFile'] ?? null; // TODO : refactor for multiples files ?
                     if ($uploadFiles && count($uploadFiles)) {
                         // $uploadFile = $uploadFiles[0];
-                        if ($msgTchat['deleteUpload']) {
+                        if ($msgTchat['deleteUpload'] ?? false) {
                             // TODO : clean not used upload path ? or keep for restore and clean after long non usage ? tag as trash ?
                             unset($msgTchat['uploadFile']);
                             $msgTchat['deleteUpload'] = false;
@@ -160,30 +161,87 @@ class MwsMessageController extends AbstractController
             }
         }
 
-        $init = new MwsMessageTchatUpload();
-        $messageTchatUploadForm = $this->createForm(MwsMessageTchatUploadType::class, $init);
+        return $this->render('@MoonManager/mws_message/list.html.twig', [
+            'viewTemplate' => $viewTemplate,
+            'messages' => $messages,
+            'addMessageForm' => $addMessageForm,
+        ]);
+    }
+
+    #[Route(
+        '/tchat/upload',
+        name: 'mws_message_tchat_upload',
+        methods: ['POST'],
+        defaults: [
+        ],
+    )]
+    public function tchatUpload(
+        Request $request,
+        MwsMessageTchatUploadRepository $mwsMessageTchatUploadRepository,
+        CsrfTokenManagerInterface $csrfTokenManager,
+    ): Response {
+        $user = $this->getUser();
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-message-tchat-upload', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $newToken = $csrfTokenManager->getToken('mws-csrf-message-tchat-upload')->getValue();
+
+        $messageTchatUpload = new MwsMessageTchatUpload();
+        $messageTchatUploadForm = $this->createForm(
+            MwsMessageTchatUploadType::class,
+            $messageTchatUpload, [
+                'csrf_protection' => false,
+            ]
+        );
         $messageTchatUploadForm->handleRequest($request);
 
         if ($messageTchatUploadForm->isSubmitted()) {
             $this->logger->debug("Did submit messageTchatUploadForm");
             if ($messageTchatUploadForm->isValid()) {
                 $this->logger->debug("messageTchatUploadForm ok");
-                // dd($addMessageForm);
-
+        
                 // $messageTchatUploadImg = $messageTchatUploadForm->get('imageFile')->getData();
                 // dd($messageTchatUploadImg);
+                /** @var MwsMessageTchatUpload */
                 $messageTchatUpload = $messageTchatUploadForm->getData();
-                // dd($messageTchatUpload);
+                dump($_FILES);
+                dd($messageTchatUpload);
+
+                $duplicats = $mwsMessageTchatUploadRepository->findBy([
+                    'imageOriginalName' => $messageTchatUpload->getImageOriginalName(),
+                    'imageSize' => $messageTchatUpload->getImageSize(),
+                ]);
+
                 $this->em->persist($messageTchatUpload);
                 $this->em->flush();
+
+                // clean files duplicatas, only keep last one, // TODO : warn, l'est adjust behavior...
+                foreach ($duplicats as $dups) {
+                    $this->em->remove($dups);
+                }
+                $this->em->flush();
+
+                return $this->json([
+                    'success' => 'ok',
+                    'messageTchatUpload' => $messageTchatUpload,
+                    'renewToken' => $newToken,
+                ]);
             }
+            return $this->json([
+                'success' => 'ko',
+                'error' => 'Form is not valid'
+            ]);
         }
-        // TODO : import some data, then display :
-        return $this->render('@MoonManager/mws_message/list.html.twig', [
-            'viewTemplate' => $viewTemplate,
-            'messages' => $messages,
-            'addMessageForm' => $addMessageForm,
-            'messageTchatUploadForm' => $messageTchatUploadForm,
+
+        return $this->json([
+            'success' => 'ko',
+            'error' => 'Need submit field for form to be submitted'
         ]);
     }
 

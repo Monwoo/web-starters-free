@@ -31,6 +31,7 @@ class MwsMessageTchatUploadType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => MwsMessageTchatUpload::class,
+            // 'csrf_protection' => false, // WARNING : do your own csrf ways if false...
         ]);
     }
 }

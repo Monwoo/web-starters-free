@@ -83,6 +83,7 @@
 		{% block javascript %}
 			<script>
 				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
+				window.mwsTchatUpTok = "{{ csrf_token('mws-csrf-message-tchat-upload') }}";
 			</script>
 			{# TOO early for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}
 			{# WARNING : order counts for routes loads, manually done inside mwsMoonManager for now #}

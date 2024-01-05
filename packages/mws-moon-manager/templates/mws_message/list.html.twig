@@ -11,20 +11,18 @@
 {% endblock %}
 
 {% block content %}
-    <div>
     {# {{
         (form_start(messageTchatUploadForm, { 'attr' : {
                 'class': 'd-flex flex-wrap mws-survey-js-form'
             } }) ~ form_widget(messageTchatUploadForm)
             ~ form_end(messageTchatUploadForm))|raw
     }} #}
-    {{  form_start(messageTchatUploadForm, { 'attr' : {
+    {# {{  form_start(messageTchatUploadForm, { 'attr' : {
                 'class': 'd-flex flex-wrap  '
         } })
     }}
     {{ form_widget(messageTchatUploadForm) }}
-    {{ form_end(messageTchatUploadForm) }}
-    </div>
+    {{ form_end(messageTchatUploadForm) }} #}
 
     <div {{ svelte_component('MwsMessageList', {
         'title': block('title'),

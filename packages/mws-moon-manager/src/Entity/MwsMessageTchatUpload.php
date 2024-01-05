@@ -36,6 +36,8 @@ class MwsMessageTchatUpload
     private ?string $imageName = null;
     #[ORM\Column(nullable: true)]
     private ?int $imageSize = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $imageOriginalName = null;
 
     use TimestampableEntity;
 
@@ -88,6 +90,16 @@ class MwsMessageTchatUpload
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    public function setImageOriginalName(?string $imageOriginalName): void
+    {
+        $this->imageOriginalName = $imageOriginalName;
+    }
+
+    public function getImageOriginalName(): ?string
+    {
+        return $this->imageOriginalName;
     }
 
     public function setImageSize(?int $imageSize): void

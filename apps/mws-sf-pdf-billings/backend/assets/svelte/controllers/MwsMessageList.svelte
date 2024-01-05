@@ -9,6 +9,7 @@
     export let addMessageForm = '';
     export let offersPaginator;
     export let csrfMessageDelete;
+    export let csrfMessageTchatUpload;
 
     const decodeHtml = (html) => {
         var txt = document.createElement("textarea");
@@ -24,5 +25,5 @@
 
 <ListView
 {title} {locale} {viewTemplate} {messages} {messagesHeaders}
-{offersPaginator} {addMessageForm} {csrfMessageDelete}
+{offersPaginator} {addMessageForm} {csrfMessageDelete} {csrfMessageTchatUpload}
 ></ListView>
