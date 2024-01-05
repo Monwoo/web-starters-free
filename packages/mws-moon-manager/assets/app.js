@@ -159,6 +159,7 @@ const surveyFactory = (surveyForm, dataModel) => {
     });
     const token = window.mwsTchatUpTok;
     formData.append('_csrf_token', token);
+    formData.append('mws_message_tchat_upload[submit]', token);
     console.debug("Will Upload with : ", formData, token);
 
     try {
@@ -166,7 +167,9 @@ const surveyFactory = (surveyForm, dataModel) => {
         _locale: 'fr' // TODO : work on it, why all those repetitions ?
       }), {
         method: "POST",
-        body: formData
+        body: formData,
+        credentials: "same-origin", // Mandatory for csrf test, based on cookies
+        redirect: 'error', // Needed if redirect to login screen instead of data answer
       });
       const respClone = resp.clone(); // In case .json fail, will have already
       // read the body and no way to show text error
