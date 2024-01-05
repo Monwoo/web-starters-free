@@ -161,6 +161,46 @@ const surveyFactory = (surveyForm, dataModel) => {
     formData.append('_csrf_token', token);
     console.debug("Will Upload with : ", formData, token);
 
+    try {
+      const resp = await fetch(Routing.generate('mws_message_tchat_upload', {
+        _locale: 'fr' // TODO : work on it, why all those repetitions ?
+      }), {
+        method: "POST",
+        body: formData
+      });
+      const respClone = resp.clone(); // In case .json fail, will have already
+      // read the body and no way to show text error
+
+      console.debug('Upload resp : ', resp);
+      if (resp.ok) {
+        const data = await resp.json();
+        window.mwsTchatUpTok = data.renewToken;
+
+        if (data.success == 'ok') {
+          options.callback(
+            'success',
+            options.files.map((file) => {
+              return {
+                file: file,
+                content: "http://localhost:8000/bundles/moonmanager/medias/MoonManagerLogo.png" // + data[file.name]
+              };
+            })
+          );
+          return;
+        }
+      }
+      console.log("Resp error :");
+      const txt = await respClone.text();
+      console.log(txt);
+
+    } catch (e) {
+      console.warn('Upload file error :', e);
+    }
+
+    alert('Fail to upload file');
+
+    options.callback('error', // TODO : no error text feedback allowed here ?
+      ['An error occurred during file upload.'])
 
     // // const validFiles = [];
     // options.callback('error', // TODO : no error text feedback allowed here ?
@@ -173,38 +213,6 @@ const surveyFactory = (surveyForm, dataModel) => {
     //   //   };options.callback('error',
     //   // })
     // );
-    const resp = await fetch(Routing.generate('mws_message_tchat_upload', {
-      _locale: 'fr' // TODO : work on it, why all those repetitions ?
-    }), {
-      method: "POST",
-      body: formData
-    });
-
-    console.debug('Upload resp : ', resp);
-    if (resp.ok) {
-      const data = await resp.json();
-      window.mwsTchatUpTok = data.renewToken;
-
-      if (data.success == 'ok') {
-        options.callback(
-          'success',
-          options.files.map((file) => {
-            return {
-              file: file,
-              content: "http://localhost:8000/bundles/moonmanager/medias/MoonManagerLogo.png" // + data[file.name]
-            };
-          })
-        );
-        return;
-      }
-    } else {
-      console.log("Resp error :", await resp.text());
-    }
-
-    alert('Fail to upload file');
-
-    options.callback('error', // TODO : no error text feedback allowed here ?
-      ['An error occurred during file upload.'])
   });
   surveyModel.data = surveyData;
 
