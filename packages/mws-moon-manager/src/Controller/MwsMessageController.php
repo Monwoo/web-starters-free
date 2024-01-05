@@ -5,8 +5,10 @@ namespace MWS\MoonManagerBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsMessage;
+use MWS\MoonManagerBundle\Entity\MwsMessageTchatUpload;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsMessageImportType;
+use MWS\MoonManagerBundle\Form\MwsMessageTchatUploadType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
@@ -158,11 +160,30 @@ class MwsMessageController extends AbstractController
             }
         }
 
+        $init = new MwsMessageTchatUpload();
+        $messageTchatUploadForm = $this->createForm(MwsMessageTchatUploadType::class, $init);
+        $messageTchatUploadForm->handleRequest($request);
+
+        if ($messageTchatUploadForm->isSubmitted()) {
+            $this->logger->debug("Did submit messageTchatUploadForm");
+            if ($messageTchatUploadForm->isValid()) {
+                $this->logger->debug("messageTchatUploadForm ok");
+                // dd($addMessageForm);
+
+                // $messageTchatUploadImg = $messageTchatUploadForm->get('imageFile')->getData();
+                // dd($messageTchatUploadImg);
+                $messageTchatUpload = $messageTchatUploadForm->getData();
+                // dd($messageTchatUpload);
+                $this->em->persist($messageTchatUpload);
+                $this->em->flush();
+            }
+        }
         // TODO : import some data, then display :
         return $this->render('@MoonManager/mws_message/list.html.twig', [
             'viewTemplate' => $viewTemplate,
             'messages' => $messages,
             'addMessageForm' => $addMessageForm,
+            'messageTchatUploadForm' => $messageTchatUploadForm,
         ]);
     }
 

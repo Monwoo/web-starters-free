@@ -28,7 +28,7 @@
         "select2": "4.1.0-rc.0",
         "survey-core": "^1.9.122",
         "survey-jquery": "^1.9.122",
-        "svelte": "^3.0",
+        "svelte": "^4.2.2",
         "svelte-loader": "^3.1.9",
         "svelte-preprocess": "^5.0.4",
         "svelte-time": "^0.8.0",

@@ -228,6 +228,8 @@ $(() => { // Wait for page load
     // WARNING : $(this) will work with js function, not lambda function...
     // const surveyForm = $(this);
     const surveyForm = $(htmlSurveyForm);
+    // When having multiple forms, form take prefix for name ? sound like buggy behavior if target element is not surveyjs form, bugging all possible next forms....
+    // const surveyModel = decodeURIComponent($('[name$="[surveyJsModel]"], [name$="mws_survey_js[surveyJsModel]"]', surveyForm).val());
     const surveyModel = decodeURIComponent($('[name$="[surveyJsModel]"]', surveyForm).val());
     // surveyFactory(surveyForm, JSON.parse(decodeHtml(surveyModel)));
     // TIPS : use '|raw' filter twig side to avoid html entities decode
