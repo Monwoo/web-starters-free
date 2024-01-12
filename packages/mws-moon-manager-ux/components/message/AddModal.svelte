@@ -28,6 +28,8 @@
 
     export let surveyModel;
 
+    let htmlModalRoot;
+
     $: {
         if (isOpen) {
             eltModal.show();
@@ -56,9 +58,9 @@
         };
 
         setTimeout(() => {
-            // TODO : wait for surey js on load event instead of empiric timings
+            // TODO : wait for surveyJs on load event instead of empiric timings
             const jQuery = window.$; // TODO : no missing 'window' with SF controllers ways ?
-            let surveyWrapper = jQuery(".survey-js-wrapper");
+            let surveyWrapper = jQuery(".survey-js-wrapper", htmlModalRoot);
             surveyModel = surveyWrapper.data("surveyModel");
 
             console.debug("Add Modal onMount surveyModel : ", surveyModel);
@@ -70,19 +72,15 @@
         return;
     });
 
-    const addMessage = () => {
-        console.log("TODO : add message");
-        eltModal?.hide();
-    };
-
 </script>
 
 <div
+    bind:this={htmlModalRoot}
     id={modalId}
     tabindex="-1"
     aria-hidden="true"
     class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden
-overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
 >
     <div class="relative w-full max-w-full max-h-full m-3">
         <!-- Modal content -->

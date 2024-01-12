@@ -64,13 +64,6 @@ class MwsMessageController extends AbstractController
         // ]);
         $qb = $mwsMessageRepository->createQueryBuilder('m');
 
-        $query = $qb->getQuery();
-        // dd($query->getResult());    
-        $messages = $paginator->paginate(
-            $query, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            $request->query->getInt('pageLimit', 10), /*page number*/
-        );
         $addMessageConfig = [
             "jsonResult" => rawurlencode(json_encode([
                 // "searchKeyword" => $keyword,
@@ -140,7 +133,7 @@ class MwsMessageController extends AbstractController
 
                 // doing cleanup
                 $cleanMsgs = [];
-                foreach($msg->getMessages() as $msgTchat) {
+                foreach($msg->getMessages() ?? [] as $msgTchat) {
                     $uploadFiles = $msgTchat['uploadFile'] ?? null; // TODO : refactor for multiples files ?
                     if ($uploadFiles && count($uploadFiles)) {
                         // $uploadFile = $uploadFiles[0];
@@ -160,6 +153,14 @@ class MwsMessageController extends AbstractController
                 $this->em->flush();
             }
         }
+
+        $query = $qb->getQuery();
+        // dd($query->getResult());    
+        $messages = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            $request->query->getInt('pageLimit', 10), /*page number*/
+        );
 
         return $this->render('@MoonManager/mws_message/list.html.twig', [
             'viewTemplate' => $viewTemplate,

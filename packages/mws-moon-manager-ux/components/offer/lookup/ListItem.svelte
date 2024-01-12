@@ -73,6 +73,7 @@
     on:click={() => {
       // addModal.surveyModel.data = null; // Ensure data is empty before show...
       addModal.surveyModel.data = {
+        // TODO : not shown in target modal, wrong format or wrong way to set data ? :
         projectId: offer.slug.split('-').slice(-1).join(''),
         destId: 'codeur.com',
       }; // Ensure data is empty before show...

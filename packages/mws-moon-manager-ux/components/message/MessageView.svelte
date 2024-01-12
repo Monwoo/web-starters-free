@@ -8,6 +8,7 @@
 
   const showEditMsg = () => {
     // addModal.surveyModel.getQuestionByName('projectId').value = 'Forced PID';
+    console.debug("Will show :", message);
     addModal.surveyModel.data = message;
     addModal.eltModal.show();
   };
