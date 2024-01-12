@@ -37,6 +37,10 @@
             'class': 'd-flex flex-wrap mws-survey-js-form'
         } }) ~ form_widget(lookupForm)
 		~ form_end(lookupForm))|e('html_attr'),
+		'addMessageForm': (form_start(addMessageForm, { 'attr' : {
+				'class': 'd-flex flex-wrap mws-survey-js-form'
+		} }) ~ form_widget(addMessageForm)
+		~ form_end(addMessageForm))|e('html_attr'),
 		'viewTemplate' : viewTemplate,
 	} ) }}>
         {{ block('header') }}

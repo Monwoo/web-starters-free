@@ -22,9 +22,9 @@
     export let addMessageForm;
     export let modalId = `msgAddModal-${UID}`;
     export let isOpen = false;
-    export let opener;
+    // export let opener;
+    // export let locale;
     export let eltModal;
-    export let locale;
 
     export let surveyModel;
 

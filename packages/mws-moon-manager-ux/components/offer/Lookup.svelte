@@ -15,6 +15,7 @@
   export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
+  export let addMessageForm = '';
 
   console.debug(locale);
   console.debug(lookup);
@@ -90,7 +91,7 @@
 
   <!-- { JSON.stringify(offers) } -->
   <div class="overflow-y-auto">
-    <List {locale} {offers} {offersHeaders} {viewTemplate}></List>
+    <List {locale} {offers} {offersHeaders} {viewTemplate} {addMessageForm}></List>
   </div>
   <div>{@html offersPaginator}</div>
 </Base>

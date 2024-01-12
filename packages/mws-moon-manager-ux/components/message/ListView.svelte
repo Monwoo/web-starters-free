@@ -5,8 +5,8 @@
   import Routing from "fos-router";
   export let locale;
   export let viewTemplate;
-  export let title = null;
-  export let currentLanguage = null;
+  // export let title = null;
+  // export let currentLanguage = null;
   export let messages = [];
   export let messagesHeaders = {}; // injected raw html
   export let addMessageForm;

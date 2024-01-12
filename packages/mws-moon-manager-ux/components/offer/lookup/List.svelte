@@ -2,12 +2,18 @@
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // TODO : namespace
   import ListItem from "./ListItem.svelte";
+  import AddModal from '../../message/AddModal.svelte';
 
   export let locale;
   export let offers = [];
+  export let addMessageForm;
   export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
+
+  let addModal;
 </script>
+<AddModal bind:this={addModal} {addMessageForm} />
+
 <table>
   <thead>
     <tr class="users-table-info">
@@ -38,7 +44,7 @@
     {#each offers as offer}
       <!-- { JSON.stringify(offer) } -->
       <!-- {@debug offer} -->
-      <ListItem {offer} {locale} {viewTemplate}></ListItem>
+      <ListItem {offer} {locale} {viewTemplate} {addModal}></ListItem>
     {/each}
   </tbody>
 </table>

@@ -18,6 +18,7 @@
   export let locale;
   export let viewTemplate;
   export let offer;
+  export let addModal;
 
   // TODO : format leadAt date with dayJs ?
   console.debug("LIST ITEM OFFER : ", offer);
@@ -67,8 +68,18 @@
     {offer.contact2 ?? ''}
   </td>
   <td>
-
-X
+    <button
+    class="btn btn-outline-primary p-1"
+    on:click={() => {
+      // addModal.surveyModel.data = null; // Ensure data is empty before show...
+      addModal.surveyModel.data = {
+        projectId: offer.slug.split('-').slice(-1).join(''),
+        destId: 'codeur.com',
+      }; // Ensure data is empty before show...
+      addModal.eltModal.show();
+    }}
+    >Ajouter un message.</button>
+    <!-- TODO : last msg content and last monwoo msg + last of forseen msg   -->
   </td>
   <td>
     <!-- <Time timestamp={offer.leadStart} format="YYYY/MM/DD h:mm" /> -->
@@ -86,14 +97,6 @@ X
     {/if}
   </td>
   <td>
-    <button
-    class="btn btn-outline-primary p-1"
-    on:click={() => {
-      addModal.surveyModel.data = null; // Ensure data is empty before show...
-      addModal.eltModal.show();
-    }}
-    >Ajouter un message.</button>
-    <!-- TODO : last msg content and last monwoo msg + last of forseen msg   -->
     <div class="overflow-auto max-h-[10em]">
       {offer.sourceDetail?.description ?? ''}
     </div>
