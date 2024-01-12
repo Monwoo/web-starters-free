@@ -76,7 +76,34 @@
         // TODO : not shown in target modal, wrong format or wrong way to set data ? :
         projectId: offer.slug.split('-').slice(-1).join(''),
         destId: 'codeur.com',
+        isDraft: true,
+        // TODO : also link CRM Users ?
+        sourceId: 'MoonManagerUI-' + (new Date()).getTime(),
       }; // Ensure data is empty before show...
+      addModal.sourceDetailView = `
+        <h1>${offer.title}</h1>
+        <p>${offer.contact1 ?? ''}</p>
+        <p>${offer.contact2 ?? ''}</p>      
+        <p>${offer.budget ?? ''}</p>      
+        <p>${dayjs(offer.leadStart).format('YYYY/MM/DD h:mm')}</p>      
+        <a href="${ offer.clientUrl ?? "#not-found"}" target="_blank" rel="noreferrer">
+          <button class="btn btn-outline-primary p-1">Publié par : ${offer.clientUsername}</button>
+        </a>    
+        <p>${ offer.description ?? '' }</p>      
+        ${ myOfferId && offer.sourceUrl ? `
+          <a href="${offer.sourceUrl}/${myOfferId}" target="_blank" rel="noreferrer">
+            <button class="btn btn-outline-primary p-1">Source des messages</button>
+          </a>
+        `: `` }
+        ${ (offer.sourceDetail?.messages ?? []).reduce(
+            (html, msg) => html
+              + msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
+              .replaceAll('href="/', `href="https://${offer.sourceName}/`)
+              .replaceAll(`https://${offer.sourceName}/http`, `http`),
+            ``
+            )
+        }
+      `;
       addModal.eltModal.show();
     }}
     >Ajouter un message.</button>

@@ -17,24 +17,26 @@
 <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"> -->
 <nav class="border-gray-200 dark:border-gray-700">
   <div
-    class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+    class="overflow-scroll max-h-[100vh] flex flex-wrap items-center justify-between mx-auto md:p-4"
   >
-    <a
+    <span class="hidden md:inline">
+      <a
       href={Routing.generate("mws_offer_lookup", {
         _locale: locale ?? "",
         viewTemplate: viewTemplate ?? null,
       })}
-      class="flex items-center"
-    >
-      <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
-      <span
-        class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+        class="flex items-center"
       >
-        <button class="p-1">Rechercher une offre</button>
+        <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
+        <span
+          class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+        >
+          <button class="p-1">Rechercher une offre</button>
+        </span>
+      </a>
+      <span>
+        <slot />
       </span>
-    </a>
-    <span>
-      <slot />
     </span>
 
     <button
@@ -72,6 +74,27 @@
           md:flex-row md:space-x-8 md:mt-0 md:border-0
          dark:border-gray-700"
       >
+        <li>
+          <span class="inline md:hidden">
+            <a
+            href={Routing.generate("mws_offer_lookup", {
+              _locale: locale ?? "",
+              viewTemplate: viewTemplate ?? null,
+            })}
+              class="flex items-center"
+            >
+              <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
+              <span
+                class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+              >
+                <button class="p-1">Rechercher une offre</button>
+              </span>
+            </a>
+            <span>
+              <slot />
+            </span>
+          </span>      
+        </li>
         <li>
           <a href={Routing.generate("app_home", undefined, true)} aria-current="page">
             <button>Accueil</button>

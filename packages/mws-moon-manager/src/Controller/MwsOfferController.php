@@ -91,6 +91,9 @@ class MwsOfferController extends AbstractController
         // $searchTags = $request->query->get('tags', null); // []);
         $keyword = $requestData['keyword'] ?? null;
         $searchTags = $requestData['tags'] ?? []; // []);
+        // TODO : avoid tag filter system...
+        $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
+        
         $customFilters = $requestData['customFilters'] ?? [];
         $sourceRootLookupUrl = $requestData['sourceRootLookupUrl'] ?? null;
         // dd($searchTags);

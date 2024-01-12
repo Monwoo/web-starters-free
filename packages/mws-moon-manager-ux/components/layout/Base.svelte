@@ -13,7 +13,7 @@
 
 <slot name="mws-body">
   <div class="flex flex-col h-screen">
-    <header class="py-5 bg-gray-700 text-white text-center">
+    <header class="md:py-5 bg-gray-700 text-white text-center">
       <Header {locale} {viewTemplate}>
         <slot name="mws-header">
             Sticky Header and Footer with Tailwind 😎

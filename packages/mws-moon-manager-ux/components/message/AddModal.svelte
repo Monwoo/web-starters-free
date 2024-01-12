@@ -1,4 +1,3 @@
-<!-- https://svelte.dev/docs/custom-elements-api -->
 <!-- <svelte:options
 	customElement={{
 		tag: 'mws-message-add-modal',
@@ -27,6 +26,8 @@
     export let eltModal;
 
     export let surveyModel;
+    export let sourceDetailView; // HTML view of source to help fill form....
+    export let showSourceDetail = true;
 
     let htmlModalRoot;
 
@@ -119,7 +120,20 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 </button>
             </div>
             <!-- Modal body -->
-            <div class="p-6 space-y-6">
+            {#if sourceDetailView &&
+                sourceDetailView.length &&
+                showSourceDetail}
+                <div
+                    class="p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[35vw] h-[60vh] top-[10vh]"
+                >
+                    {@html sourceDetailView}
+                </div>
+            {/if}
+            <!-- Modal body -->
+            <div class="p-6 space-y-6"
+            class:mr-[25vw]={sourceDetailView &&
+                sourceDetailView.length &&
+                showSourceDetail}>
                 {@html addMessageForm}
             </div>
             <!-- Modal footer -->
@@ -138,6 +152,17 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
                     >Annuler</button
                 >
+
+                {#if sourceDetailView && sourceDetailView.length}
+                    <button
+                        on:click={() => (showSourceDetail = !showSourceDetail)}
+                        type="button"
+                        class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                        >{showSourceDetail
+                            ? "Cacher les détails"
+                            : "Voir les détails"}</button
+                    >
+                {/if}
             </div>
         </div>
     </div>

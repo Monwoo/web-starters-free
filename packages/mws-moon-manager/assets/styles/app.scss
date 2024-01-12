@@ -5,6 +5,7 @@
 // @import "~survey-jquery/defaultV2.css";
 @import "~select2/dist/css/select2.min.css";
 
+$mws-media-phone-w: 768px;
 
 // .mws-survey-js-form {
 //     // TODO https://sass-lang.com/documentation/at-rules/import/ + sound
@@ -75,4 +76,12 @@ html, body, footer {
     padding-bottom: 2rem;
     padding-left: 1rem;
     padding-right: 1rem;
+}
+
+.sd-row--multiple > div {
+    // TIPS, CSS var can't be used in @media query,
+    // so using SCSS one...
+    @media (max-width: $mws-media-phone-w) {
+        flex: initial !important;
+    }
 }
