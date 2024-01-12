@@ -86,6 +86,14 @@ X
     {/if}
   </td>
   <td>
+    <button
+    class="btn btn-outline-primary p-1"
+    on:click={() => {
+      addModal.surveyModel.data = null; // Ensure data is empty before show...
+      addModal.eltModal.show();
+    }}
+    >Ajouter un message.</button>
+    <!-- TODO : last msg content and last monwoo msg + last of forseen msg   -->
     <div class="overflow-auto max-h-[10em]">
       {offer.sourceDetail?.description ?? ''}
     </div>

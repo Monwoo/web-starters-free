@@ -47,6 +47,13 @@ class GdprSentinelListener
     // Config value available for db start time == GDPRSentinelListener ok since will inject it ?
     $this->twig->addGlobal('gdprSentinelRequestCheck', true);
 
+    // TODO : in DEV : removing GDPR feature until billing is not another db connector than moonManager...
+    //      or avoid by putting all access behind passwords and db review script,
+    // need to keep keys of personal ids and check against, not really possible,
+    // to keep the data and remove it for long, since for remove purpose 
+    // we keep the sensitive info to avoid...
+    return;
+
     if (!$this->projectDir || !(strlen($this->projectDir) > 0)) {
       $this->logger->error(
         'GdprSentinelListener missing service config '
