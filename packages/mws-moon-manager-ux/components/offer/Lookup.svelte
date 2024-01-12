@@ -38,6 +38,14 @@
     // const win = window.open('', "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
     // // win.document.body.innerHTML = "HTML";
     // win.document.body.innerHTML = await htmlResp.text();
+    const $ = window.$;
+    // TIPS opti : use svelte html node ref and pass to jquery ?
+    const htmlLookup = $(lookupForm); 
+    // console.log(htmlLookup);
+    const lookupSurveyJsFormData = Object.fromEntries((new FormData(htmlLookup[0])).entries());
+    const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonResult]'])); // TODO : from param or config
+    // TIPS : same as jsonResult, updated by survey js or other if using ref element instead of raw string... :
+    console.log('lookupSurveyJsData : ', lookupSurveyJsData);
   });
 
   console.log(Routing.generate('mws_offer_import'));
@@ -60,6 +68,24 @@
       {@html lookupForm}
     </div>
   </div>
+  {@html jsonResult.customFilters
+    ? '<strong>Filtres actifs : </strong>' +
+      jsonResult.customFilters.reduce((acc, f) => `
+        ${acc} [${f}]
+      `, ``) + '<br/>'
+    : ''
+  }
+  {@html jsonResult.searchTags
+    ? '<strong>Tags : </strong>' +
+      jsonResult.searchTags.reduce((acc, f) => `
+        ${acc} [${f}]
+      `, ``) + '<br/>'
+    : ''
+  }
+  {@html jsonResult.searchKeyword
+    ? `<strong>Mots clefs : </strong>${jsonResult.searchKeyword}`
+    : ``
+  }
   {@html offersPaginator}
 
   <!-- { JSON.stringify(offers) } -->
