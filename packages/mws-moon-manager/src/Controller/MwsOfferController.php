@@ -200,6 +200,8 @@ class MwsOfferController extends AbstractController
         }
 
         if (count($customFilters)) {
+            // $lastWeekDate = new DateTime(getDate(strtotime("-1 week"));
+            $lastWeekDate = new DateTime("-1 week");
             $qb = $qb
                 ->join('o.contacts', 'contact');
             // dd($customFilters);
@@ -207,6 +209,46 @@ class MwsOfferController extends AbstractController
                 if ($customFilter === "Ayant une photo") {
                     $qb = $qb->andWhere("contact.avatarUrl IS NOT NULL");
                     $qb = $qb->andWhere("contact.avatarUrl <> ''");
+                }
+                if ($customFilter === "Moins d'une semaine") {
+                    // dd($lastWeekDate);
+                    // $qb = $qb->andWhere("CONVERT(DATETIME, o.leadStart) > :startTime")
+                    // ->setParameters(['startTime' => $lastWeekDate]);
+
+                    // $qb = $qb->andWhere("o.leadStart > :startTime");
+                    // $qb->setParameter('startTime', $lastWeekDate);
+
+                    // ->andWhere('e.date BETWEEN :from AND :to')
+                    // ->setParameter('from', $from )
+                    // ->setParameter('to', $to)
+            
+                    $qb = $qb->andWhere("o.leadStart >= :startTime");
+                    $qb->setParameter('startTime', $lastWeekDate);
+                }
+                if ($customFilter === "Avec un contact") {
+                    $qb = $qb->andWhere("
+                    o.contact1 IS NOT NULL
+                    OR o.contact2 IS NOT NULL
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact1 <> ''
+                    OR o.contact2 <> ''
+                    ");
+                }
+                if ($customFilter === "Sans offre déposée") {
+                    // $qb = $qb->andWhere("
+                    // o.sourceDetail.monwooOfferId IS NOT NULL
+                    // ");
+                    // https://dev.mysql.com/doc/refman/5.7/en/json-search-functions.html#function_json-contains
+                    // $qb = $qb->andWhere("
+                    //  NOT JSON_CONTAINS(o.sourceDetail, '', '$.monwooOfferId')
+                    // "); // MySql....
+
+                    // https://github.com/ScientaNL/DoctrineJsonFunctions
+                    // JSON_EXTRACT(c.attributes, '$.gender') = :gender
+                    $qb = $qb->andWhere("
+                     JSON_EXTRACT(o.sourceDetail, '$.monwooOfferId') IS NULL
+                    ");
                 }
             }
         }

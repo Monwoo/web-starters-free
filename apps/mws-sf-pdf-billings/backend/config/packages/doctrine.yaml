@@ -60,6 +60,12 @@ doctrine:
         dql:
             string_functions:
                 REPLACE: MWS\MoonManagerBundle\Query\Replace
+                # https://github.com/ScientaNL/DoctrineJsonFunctions
+                JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonExtract
+                # TODO : depending of target DB, change filters for plateforme :
+                # JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                # JSON: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\Json
+                # JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
 
 when@test:
     doctrine:

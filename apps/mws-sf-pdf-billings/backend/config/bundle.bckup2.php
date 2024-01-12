@@ -1,6 +1,6 @@
 <?php
-// TODO : not so good to edit bundles.php (will be rewrite on each composer new package installs...)
-$bundles = [
+
+return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
@@ -20,31 +20,9 @@ $bundles = [
     Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
     Symfony\UX\Svelte\SvelteBundle::class => ['all' => true],
     Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
-    Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
+    Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
+    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
+    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
+    Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
 ];
-
-// Paid or private starter might not be loaded, do lazy loads :
-if (class_exists(MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class)) {
-    $bundles = array_merge($bundles, [
-        MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class => ['all' => true],
-    ]);
-}
-if (class_exists(MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class)) {
-    $bundles = array_merge($bundles, [
-        MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class => ['all' => true],
-    ]);
-}
-
-// In case of pre-production debugs, we want to get some messages, but still stay closest to the 
-// production context. With that, we can debug without sending the dev debug bundle in production too ;)
-if (class_exists(Symfony\Bundle\DebugBundle\DebugBundle::class)) {
-    $bundles = array_merge($bundles, [
-        Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
-        Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
-        Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    ]);
-    // dd($_ENV);
-}
-
-return $bundles;
