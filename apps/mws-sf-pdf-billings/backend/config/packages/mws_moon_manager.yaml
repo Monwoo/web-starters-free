@@ -20,6 +20,6 @@ parameters:
                 categorySlug: prospection
               - label: Livraison OK
                 categorySlug: prospection
-              - label: Not for Miguel Monwoo
+              - label: Hors cible business
                 categorySlug: prospection
 

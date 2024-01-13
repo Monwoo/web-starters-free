@@ -151,6 +151,12 @@ class MwsMessageController extends AbstractController
                 // Save the submited message :
                 $this->em->persist($msg);
                 $this->em->flush();
+
+                $backUrl = $request->query->get('backUrl', null);
+
+                if ($backUrl) {
+                    return $this->redirect($backUrl);                    
+                }
             }
         }
 

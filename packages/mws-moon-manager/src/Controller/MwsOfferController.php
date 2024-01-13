@@ -275,7 +275,15 @@ class MwsOfferController extends AbstractController
                 "@MoonManager/survey_js_models/MwsMessageType.json.twig",
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
-        $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig);
+        $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig, [
+            // ensure query param 
+            'action' => $this->generateUrl('mws_message_list', [
+                'viewTemplate' => $viewTemplate,
+                'backUrl' => $this->generateUrl('mws_offer_lookup', array_merge($request->query->all(), [
+                    'viewTemplate' => $viewTemplate,
+                ])),
+            ])
+        ]);
 
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
             'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
