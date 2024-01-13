@@ -69,7 +69,7 @@
     {offer.contact1 ?? ''}<br/>
     {offer.contact2 ?? ''}
   </td>
-  <td>
+  <td class="max-w-[30vw]">
     <button
     class="btn btn-outline-primary m-3"
     on:click={() => {
@@ -82,6 +82,7 @@
         // TODO : also link CRM Users ?
         sourceId: 'MoonManagerUI-' + (new Date()).getTime(),
       }; // Ensure data is empty before show...
+      // TODO: remove code duplication with message list :
       addModal.sourceDetailView = `
         <h1>${offer.title}</h1>
         <p>${offer.contact1 ?? ''}</p>
@@ -95,8 +96,10 @@
         ${ myOfferId && offer.sourceUrl ? `
           <a href="${offer.sourceUrl}/${myOfferId}" target="_blank" rel="noreferrer">
             <button class="btn btn-outline-primary p-1">Source des messages</button>
-          </a>
-        `: `` }
+          </a><br/>
+          Proposition : ${ offer.sourceDetail.monwooOfferAmount ?? '' }<br/>
+          Délais : ${ offer.sourceDetail.monwooOfferDelay ?? '' }<br/>
+          `: `` }
         ${ (offer.sourceDetail?.messages ?? []).reduce(
             (html, msg) => html // TODO : factorise code duplication
               + msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
@@ -111,6 +114,9 @@
     >Ajouter un message.</button>
     <div class="overflow-auto max-h-[8em]">
       <div class="sended-messages">
+        Proposition : { offer.sourceDetail.monwooOfferAmount ?? '' }<br/>
+        Délais : { offer.sourceDetail.monwooOfferDelay ?? '' }<br/>
+  
         <!-- TODO : .reverse() not working with reduce ?
           {@html (offer.sourceDetail?.messages ?? []).reverse().reduce( FAIL
           did change order of reduce function for now
@@ -131,6 +137,33 @@
         on:click={() => {
           console.debug("Will edit :", message);
           addModal.surveyModel.data = message;
+                // TODO: remove code duplication with message list :
+          addModal.sourceDetailView = `
+            <h1>${offer.title}</h1>
+            <p>${offer.contact1 ?? ''}</p>
+            <p>${offer.contact2 ?? ''}</p>      
+            <p>${offer.budget ?? ''}</p>      
+            <p>${dayjs(offer.leadStart).format('YYYY/MM/DD h:mm')}</p>      
+            <a href="${ offer.clientUrl ?? "#not-found"}" target="_blank" rel="noreferrer">
+              <button class="btn btn-outline-primary p-1">Publié par : ${offer.clientUsername}</button>
+            </a>    
+            <p>${ offer.description ?? '' }</p>      
+            ${ myOfferId && offer.sourceUrl ? `
+              <a href="${offer.sourceUrl}/${myOfferId}" target="_blank" rel="noreferrer">
+                <button class="btn btn-outline-primary p-1">Source des messages</button>
+              </a><br/>
+              Proposition : ${ offer.sourceDetail.monwooOfferAmount ?? '' }<br/>
+              Délais : ${ offer.sourceDetail.monwooOfferDelay ?? '' }<br/>
+            `: `` }
+            ${ (offer.sourceDetail?.messages ?? []).reduce(
+                (html, msg) => html // TODO : factorise code duplication
+                  + msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
+                  .replaceAll('href="/', `href="https://${offer.sourceName}/`)
+                  .replaceAll(`https://${offer.sourceName}/http`, `http`),
+                ``
+                )
+            }
+          `;
           addModal.eltModal.show();
         }}
         >

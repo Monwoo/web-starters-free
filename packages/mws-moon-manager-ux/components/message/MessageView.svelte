@@ -10,6 +10,15 @@
     // addModal.surveyModel.getQuestionByName('projectId').value = 'Forced PID';
     console.debug("Will show :", message);
     addModal.surveyModel.data = message;
+
+    // TODO : load offer from project id ?
+    // const offer = 
+    // TODO: remove code duplication with message list :
+    // addModal.sourceDetailView = `
+    //   <h1>${offer.title}</h1>
+    //   <p>${offer.contact1 ?? ''}</p>
+    // `;
+
     addModal.eltModal.show();
   };
 
