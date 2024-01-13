@@ -11,6 +11,7 @@
   export let locale;
   export let lookup;
   export let offers = [];
+  export let messagesByProjectId = {};
   export let offersPaginator;
   export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
@@ -53,7 +54,7 @@
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
-  <div>
+  <div class="p-3 flex flex-wrap">
     <a href={ Routing.generate('mws_offer_import', {
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? '',
@@ -61,29 +62,36 @@
       <button class="btn btn-outline-primary p-1">Importer des offres.</button>
     </a>    
   </div>
-  <div class="flex flex-wrap">
+  <div class="p-3 flex flex-wrap">
     <div class="label">
-      Recherche d'une offre via :
+      <button
+      data-collapse-toggle="search-offer-lookup"
+      type="button"
+      class="rounded-lg "
+      aria-controls="search-offer-lookup"
+      aria-expanded="false"
+    >
+      Filtres de recherche
     </div>
-    <div class="detail w-full">
+    <div id="search-offer-lookup" class="detail w-full hidden">
       {@html lookupForm}
     </div>
   </div>
-  {@html jsonResult.customFilters
+  {@html jsonResult.customFilters && jsonResult.customFilters.length
     ? '<strong>Filtres actifs : </strong>' +
       jsonResult.customFilters.reduce((acc, f) => `
         ${acc} [${f}]
       `, ``) + '<br/>'
     : ''
   }
-  {@html jsonResult.searchTags
+  {@html jsonResult.searchTags && jsonResult.searchTags.length
     ? '<strong>Tags : </strong>' +
       jsonResult.searchTags.reduce((acc, f) => `
         ${acc} [${f}]
       `, ``) + '<br/>'
     : ''
   }
-  {@html jsonResult.searchTagsToAvoid
+  {@html jsonResult.searchTagsToAvoid && jsonResult.searchTagsToAvoid.length
     ? '<strong>Tags à éviter : </strong>' +
       jsonResult.searchTagsToAvoid.reduce((acc, f) => `
         ${acc} [${f}]
@@ -98,7 +106,8 @@
 
   <!-- { JSON.stringify(offers) } -->
   <div class="overflow-y-auto">
-    <List {locale} {offers} {offersHeaders} {viewTemplate} {addMessageForm}></List>
+    <List {locale} {offers} {offersHeaders} {viewTemplate}
+    {addMessageForm} {messagesByProjectId}></List>
   </div>
   <div>{@html offersPaginator}</div>
 </Base>

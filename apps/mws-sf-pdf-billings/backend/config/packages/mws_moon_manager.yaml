@@ -4,7 +4,12 @@ parameters:
         offer:
             defaultTags:
               - label: Prospection
+                categoryOkWithMultiplesTags: false
               - label: A relancer
+                categorySlug: prospection
+              - label: Investir pour relancer
+                categorySlug: prospection
+              - label: Risque de non-rentabilité
                 categorySlug: prospection
               - label: Pas de réponse
                 categorySlug: prospection

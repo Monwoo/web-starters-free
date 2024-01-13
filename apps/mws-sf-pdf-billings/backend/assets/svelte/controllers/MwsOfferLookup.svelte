@@ -12,6 +12,7 @@
   export let locale;
   export let lookup = '{}';
   export let offers;
+  export let messagesByProjectId;
   export let offersPaginator;
   export let offersHeaders = '{}'; // injected raw html
   export let viewTemplate;
@@ -29,6 +30,8 @@
 
   lookup = JSON.parse(decodeHtml(lookup));
   offers = JSON.parse(decodeHtml(offers));
+  messagesByProjectId = JSON.parse(decodeHtml(messagesByProjectId));
+
   offersHeaders = JSON.parse(decodeHtml(offersHeaders));
   offersPaginator = decodeHtml(offersPaginator);
   lookupForm = decodeHtml(lookupForm);
@@ -38,7 +41,7 @@
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Lookup {lookup} {copyright}
+<Lookup {lookup} {copyright} {messagesByProjectId}
 {locale} {viewTemplate} {lookupForm} {offers}
 {offersPaginator} {offersHeaders} {addMessageForm}
 ></Lookup>

@@ -85,3 +85,14 @@ html, body, footer {
         flex: initial !important;
     }
 }
+
+.read-status {
+    svg {
+        max-width: 42px;
+    }
+    &.read {
+        svg {
+            color: green;
+        }
+    }
+}

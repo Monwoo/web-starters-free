@@ -162,10 +162,31 @@
                     isRequired: false,
                 }
             ]
+        }, {
+            startWithNewLine: true,
+            name: "shouldDeleteMessage",
+            title: "Supprimer ce message",
+            type: "boolean",
+            "description": "Supprimer ce message de la base de données.",
+            validators: [],
+            minWidth: "20%",
+            isRequired: false,
         },
     ]
 } %}
 {{ model|serialize('json')|raw }}
+
+{#
+TODO : can't show alert with json data model only ? :
+https://surveyjs.answerdesk.io/ticket/details/t11430/how-can-i-show-a-confirmation-popup-on-changing-a-value-in-the-form
+survey.onValueChanging.add(function(sender, options){
+   if(confirm('Your name is: ' + options.value)){
+     alert('The name is successfully updated');
+   } else {
+     options.value = options.oldValue;
+   }
+});
+#}
 
 {# 
 // TODO : migrate back to full js side config file, will be better for syntax checks, comments, {% endswitch %}

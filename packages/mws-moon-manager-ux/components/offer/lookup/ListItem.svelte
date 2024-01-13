@@ -18,10 +18,12 @@
   export let locale;
   export let viewTemplate;
   export let offer;
+  export let messages;
   export let addModal;
 
   // TODO : format leadAt date with dayJs ?
   console.debug("LIST ITEM OFFER : ", offer);
+  console.debug("messages :", messages);
 
   // TODO : configurable services, use generic data connectors instead of :
   // TODO : remove code duplication :
@@ -69,7 +71,7 @@
   </td>
   <td>
     <button
-    class="btn btn-outline-primary p-1"
+    class="btn btn-outline-primary m-3"
     on:click={() => {
       // addModal.surveyModel.data = null; // Ensure data is empty before show...
       addModal.surveyModel.data = {
@@ -96,7 +98,7 @@
           </a>
         `: `` }
         ${ (offer.sourceDetail?.messages ?? []).reduce(
-            (html, msg) => html
+            (html, msg) => html // TODO : factorise code duplication
               + msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
               .replaceAll('href="/', `href="https://${offer.sourceName}/`)
               .replaceAll(`https://${offer.sourceName}/http`, `http`),
@@ -107,7 +109,37 @@
       addModal.eltModal.show();
     }}
     >Ajouter un message.</button>
-    <!-- TODO : last msg content and last monwoo msg + last of forseen msg   -->
+    <div class="overflow-auto max-h-[8em]">
+      <div class="sended-messages">
+        <!-- TODO : .reverse() not working with reduce ?
+          {@html (offer.sourceDetail?.messages ?? []).reverse().reduce( FAIL
+          did change order of reduce function for now
+        -->
+        {@html (offer.sourceDetail?.messages ?? []).reduce(
+          (html, msg) => ``// TODO : factorise code duplication
+            + msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
+            .replaceAll('href="/', `href="https://${offer.sourceName}/`)
+            .replaceAll(`https://${offer.sourceName}/http`, `http`)
+            + html,
+          ``
+        )}
+      </div>
+      <div class="crm-messages">
+        {#each messages ?? [] as message }
+        <button
+        class="btn btn-secondary m-3"
+        on:click={() => {
+          console.debug("Will edit :", message);
+          addModal.surveyModel.data = message;
+          addModal.eltModal.show();
+        }}
+        >
+          Éditer le message.
+        </button>
+    
+        {/each}
+      </div>
+    </div>
   </td>
   <td>
     <!-- <Time timestamp={offer.leadStart} format="YYYY/MM/DD h:mm" /> -->

@@ -100,57 +100,64 @@ class MwsMessageController extends AbstractController
                     'sourceId' => $sourceId,
                     'owner' => $user,
                 ]);
-                // $msg = $mwsMessageRepository->createQueryBuilder('m');
-                if (!$msg) {
-                    $msg = new MwsMessage();
-                    $msg->setOwner($user);
-                }
-                // dd($msg);
-                $sync = function ($path, $ko = null) use ($surveyAnswers, $msg) {
-                    $set = 'set' . ucfirst($path);
-                    // $get = 'get' . ucfirst($path);
-                    // $v =  $inputMessage->$get();
-                    $v =  $surveyAnswers[$path] ?? $ko;
-                    if (
-                        null !== $v &&
-                        ((!is_string($v)) || strlen($v))
-                    ) {
-                        $msg->$set($v);
+                $shouldDeleteMessage = $surveyAnswers['shouldDeleteMessage'] ?? null;
+                
+                if ($shouldDeleteMessage && $msg) {
+                    $this->em->remove($msg);
+                    $this->em->flush();
+                } else {
+                    // $msg = $mwsMessageRepository->createQueryBuilder('m');
+                    if (!$msg) {
+                        $msg = new MwsMessage();
+                        $msg->setOwner($user);
                     }
-                };
-
-                // dd($surveyAnswers);
-                $sync('projectId');
-                $sync('destId'); // TODO : validation error : can't be empty
-                $sync('monwooAmount');
-                $sync('projectDelayInOpenDays');
-                $sync('asNewOffer');
-                $sync('isDraft', true);
-                // $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
-                $sync('sourceId');
-                $sync('messages');
-                $sync('crmLogs');
-
-                // doing cleanup
-                $cleanMsgs = [];
-                foreach($msg->getMessages() ?? [] as $msgTchat) {
-                    $uploadFiles = $msgTchat['uploadFile'] ?? null; // TODO : refactor for multiples files ?
-                    if ($uploadFiles && count($uploadFiles)) {
-                        // $uploadFile = $uploadFiles[0];
-                        if ($msgTchat['deleteUpload'] ?? false) {
-                            // TODO : clean not used upload path ? or keep for restore and clean after long non usage ? tag as trash ?
-                            unset($msgTchat['uploadFile']);
-                            $msgTchat['deleteUpload'] = false;
+                    // dd($msg);
+                    $sync = function ($path, $ko = null) use ($surveyAnswers, $msg) {
+                        $set = 'set' . ucfirst($path);
+                        // $get = 'get' . ucfirst($path);
+                        // $v =  $inputMessage->$get();
+                        $v =  $surveyAnswers[$path] ?? $ko;
+                        if (
+                            null !== $v &&
+                            ((!is_string($v)) || strlen($v))
+                        ) {
+                            $msg->$set($v);
                         }
-                    }
-                    $cleanMsgs[] = $msgTchat;
-                };
-                $msg->setMessages($cleanMsgs);
+                    };
 
-                // $sync('messages');
-                // Save the submited message :
-                $this->em->persist($msg);
-                $this->em->flush();
+                    // dd($surveyAnswers);
+                    $sync('projectId');
+                    $sync('destId'); // TODO : validation error : can't be empty
+                    $sync('monwooAmount');
+                    $sync('projectDelayInOpenDays');
+                    $sync('asNewOffer');
+                    $sync('isDraft', true);
+                    // $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
+                    $sync('sourceId');
+                    $sync('messages');
+                    $sync('crmLogs');
+
+                    // doing cleanup
+                    $cleanMsgs = [];
+                    foreach($msg->getMessages() ?? [] as $msgTchat) {
+                        $uploadFiles = $msgTchat['uploadFile'] ?? null; // TODO : refactor for multiples files ?
+                        if ($uploadFiles && count($uploadFiles)) {
+                            // $uploadFile = $uploadFiles[0];
+                            if ($msgTchat['deleteUpload'] ?? false) {
+                                // TODO : clean not used upload path ? or keep for restore and clean after long non usage ? tag as trash ?
+                                unset($msgTchat['uploadFile']);
+                                $msgTchat['deleteUpload'] = false;
+                            }
+                        }
+                        $cleanMsgs[] = $msgTchat;
+                    };
+                    $msg->setMessages($cleanMsgs);
+
+                    // $sync('messages');
+                    // Save the submited message :
+                    $this->em->persist($msg);
+                    $this->em->flush();
+                }
 
                 $backUrl = $request->query->get('backUrl', null);
 

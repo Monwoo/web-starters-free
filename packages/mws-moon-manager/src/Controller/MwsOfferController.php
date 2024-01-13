@@ -18,6 +18,7 @@ use MWS\MoonManagerBundle\Form\MwsOfferStatusType;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Form\MwsUserFilterType;
 use MWS\MoonManagerBundle\Repository\MwsContactRepository;
+use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
@@ -75,6 +76,7 @@ class MwsOfferController extends AbstractController
         $viewTemplate,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
+        MwsMessageRepository $mwsMessageRepository,
         PaginatorInterface $paginator,
         Request $request,
     ): Response {
@@ -180,7 +182,7 @@ class MwsOfferController extends AbstractController
 
         if (count($searchTags) || count($searchTagsToAvoid)) {
             $qb = $qb
-                ->join('o.tags', 'tag');
+                ->innerJoin('o.tags', 'tag');
         }
         if (count($searchTags)) {
             $orClause = '';
@@ -214,11 +216,20 @@ class MwsOfferController extends AbstractController
             foreach ($searchTagsToAvoid as $idx => $searchTagToAvoidSlug) {
                 $dql = '';
                 [$category, $slug] = explode($tagSlugSep, $searchTagToAvoidSlug);
+                $tag = $mwsOfferStatusRepository->findOneBy([
+                    'slug' => $slug,
+                    'categorySlug' => $category,
+                ]);
                 // dump($category); dd($slug);
-                $dql .= "NOT ( :tagToAvoidSlug$idx = tag.slug";
-                $dql .= " AND :tagToAvoidCategory$idx = tag.categorySlug )";
-                $qb->setParameter("tagToAvoidSlug$idx", $slug);
-                $qb->setParameter("tagToAvoidCategory$idx", $category);
+                // $dql .= "NOT ( :tagToAvoidSlug$idx = tag.slug";
+                // $dql .= " AND :tagToAvoidCategory$idx = tag.categorySlug )";
+                // $dql .= "NOT ( :tagToAvoidSlug$idx MEMBER OF o.tags.slug ";
+                // $dql .= " AND :tagToAvoidCategory$idx MEMBER OF o.tags.categorySlug )";
+                // $qb->setParameter("tagToAvoidSlug$idx", $slug);
+                // $qb->setParameter("tagToAvoidCategory$idx", $category);
+                $dql .= ":tagToAvoid$idx NOT MEMBER OF o.tags";
+                $qb->setParameter("tagToAvoid$idx", $tag);
+                // dd($dql);
                 $qb = $qb->andWhere($dql);
             }
         }
@@ -306,9 +317,16 @@ class MwsOfferController extends AbstractController
             ])
         ]);
 
+        // TODO : also crossable with message sources,
+        // same id from multiple source may not always be equal for same stuff behing...
+        $messagesByProjectId = $mwsMessageRepository->getMessagesByProjectIdFromOffers(
+            $offers->getItems()
+        );
+        // dd($messagesByProjectId);
         return $this->render('@MoonManager/mws_offer/lookup.html.twig', [
             'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
             'offers' => $offers,
+            'messagesByProjectId' => $messagesByProjectId,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,
             'addMessageForm' => $addMessageForm,
