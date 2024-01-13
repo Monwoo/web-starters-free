@@ -83,6 +83,13 @@
       `, ``) + '<br/>'
     : ''
   }
+  {@html jsonResult.searchTagsToAvoid
+    ? '<strong>Tags à éviter : </strong>' +
+      jsonResult.searchTagsToAvoid.reduce((acc, f) => `
+        ${acc} [${f}]
+      `, ``) + '<br/>'
+    : ''
+  }
   {@html jsonResult.searchKeyword
     ? `<strong>Mots clefs : </strong>${jsonResult.searchKeyword}`
     : ``

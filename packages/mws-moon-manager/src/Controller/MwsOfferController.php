@@ -93,6 +93,7 @@ class MwsOfferController extends AbstractController
         $searchTags = $requestData['tags'] ?? []; // []);
         // TODO : avoid tag filter system...
         $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
+        // dd($searchTagsToAvoid);
         
         $customFilters = $requestData['customFilters'] ?? [];
         $sourceRootLookupUrl = $requestData['sourceRootLookupUrl'] ?? null;
@@ -105,6 +106,7 @@ class MwsOfferController extends AbstractController
             "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
                 "searchTags" => $searchTags,
+                "searchTagsToAvoid" => $searchTagsToAvoid,
                 "customFilters" => $customFilters,
                 "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
@@ -140,6 +142,7 @@ class MwsOfferController extends AbstractController
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
                 $customFilters = $surveyAnswers['customFilters'] ?? [];
                 // dd($searchTags);
                 $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
@@ -149,6 +152,7 @@ class MwsOfferController extends AbstractController
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
                         "tags" => $searchTags,
+                        "tagsToAvoid" => $searchTagsToAvoid,
                         "customFilters" => $customFilters,
                         "page" => 1,
                         "sourceRootLookupUrl" => $sourceRootLookupUrl,
@@ -174,9 +178,11 @@ class MwsOfferController extends AbstractController
                 ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
         }
 
-        if (count($searchTags)) {
+        if (count($searchTags) || count($searchTagsToAvoid)) {
             $qb = $qb
                 ->join('o.tags', 'tag');
+        }
+        if (count($searchTags)) {
             $orClause = '';
             foreach ($searchTags as $idx => $searchTagSlug) {
                 [$category, $slug] = explode($tagSlugSep, $searchTagSlug);
@@ -200,6 +206,21 @@ class MwsOfferController extends AbstractController
             }
 
             $qb = $qb->andWhere($orClause);
+        }
+
+        if (count($searchTagsToAvoid)) {
+            // dd($searchTagsToAvoid);
+
+            foreach ($searchTagsToAvoid as $idx => $searchTagToAvoidSlug) {
+                $dql = '';
+                [$category, $slug] = explode($tagSlugSep, $searchTagToAvoidSlug);
+                // dump($category); dd($slug);
+                $dql .= "NOT ( :tagToAvoidSlug$idx = tag.slug";
+                $dql .= " AND :tagToAvoidCategory$idx = tag.categorySlug )";
+                $qb->setParameter("tagToAvoidSlug$idx", $slug);
+                $qb->setParameter("tagToAvoidCategory$idx", $category);
+                $qb = $qb->andWhere($dql);
+            }
         }
 
         if (count($customFilters)) {
@@ -366,6 +387,7 @@ class MwsOfferController extends AbstractController
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
 
                 return $this->redirectToRoute(
                     'mws_offer_tags',
@@ -373,6 +395,7 @@ class MwsOfferController extends AbstractController
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
                         "tags" => $searchTags,
+                        "tagsToAvoid" => $searchTagsToAvoid,
                         "page" => 1,
                     ]),
                     Response::HTTP_SEE_OTHER
