@@ -38,8 +38,17 @@ class MwsMessage
     #[ORM\Column(nullable: true)]
     private ?bool $asNewOffer = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $isDraft = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isTemplate = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $templateNameSlug = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $templateCategorySlug = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $sourceId = null;
@@ -177,6 +186,41 @@ class MwsMessage
     public function setIsDraft(bool $isDraft): static
     {
         $this->isDraft = $isDraft;
+
+        return $this;
+    }
+    public function isIsTemplate(): ?bool
+    {
+        return $this->isTemplate;
+    }
+
+    public function setIsTemplate(bool $isTemplate): static
+    {
+        $this->isTemplate = $isTemplate;
+
+        return $this;
+    }
+
+    public function getTemplateNameSlug(): ?string
+    {
+        return $this->templateNameSlug;
+    }
+
+    public function setTemplateNameSlug(?string $templateNameSlug): static
+    {
+        $this->templateNameSlug = $templateNameSlug;
+
+        return $this;
+    }
+
+    public function getTemplateCategorySlug(): ?string
+    {
+        return $this->templateCategorySlug;
+    }
+
+    public function setTemplateCategorySlug(?string $templateCategorySlug): static
+    {
+        $this->templateCategorySlug = $templateCategorySlug;
 
         return $this;
     }

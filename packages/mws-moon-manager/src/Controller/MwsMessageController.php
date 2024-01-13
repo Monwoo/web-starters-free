@@ -134,6 +134,9 @@ class MwsMessageController extends AbstractController
                     $sync('projectDelayInOpenDays');
                     $sync('asNewOffer');
                     $sync('isDraft', true);
+                    $sync('isTemplate', null);
+                    $sync('templateCategorySlug', null);
+                    $sync('templateNameSlug', null);
                     // $msg->setAsNewOffer("Oui" === ($surveyAnswers['asNewOffer'] ?? null));
                     $sync('sourceId');
                     $sync('messages');
@@ -380,6 +383,9 @@ class MwsMessageController extends AbstractController
                                 $sync('projectDelayInOpenDays');
                                 $sync('asNewOffer');
                                 $sync('isDraft');
+                                $sync('isTemplate', null);
+                                $sync('templateCategorySlug', null);
+                                $sync('templateNameSlug', null);
                                 $sync('sourceId');
                                 $sync('crmLogs');
                                 $sync('messages');
@@ -550,6 +556,9 @@ class MwsMessageController extends AbstractController
                     $message->setProjectDelayInOpenDays($m["projectDelayInOpenDays"] ?? null);
                     $message->setAsNewOffer($m["asNewOffer"] ?? null);
                     $message->setIsDraft($m["isDraft"] ?? true);
+                    $message->setIsTemplate($m["isTemplate"] ?? null);
+                    $message->setTemplateNameSlug($m["templateNameSlug"] ?? null);
+                    $message->setTemplateCategorySlug($m["templateCategorySlug"] ?? null);
                     $message->setSourceId($m["sourceId"] ?? $sourceFile); // TODO : track ?
                     $message->setCrmLogs($m["crmLogs"] ?? null);
                     $message->setMessages($m["messages"] ?? null);

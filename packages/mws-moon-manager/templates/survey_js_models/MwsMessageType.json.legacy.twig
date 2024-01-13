@@ -80,8 +80,8 @@
     isRequired: false,
   }, {
     startWithNewLine: false,
-    name: "asTemplate",
-    title: "As template",
+    name: "isTemplate",
+    title: "Is template",
     type: "boolean",
     "description": "Utiliser en tant que template.",
     validators: [],
@@ -89,7 +89,7 @@
     isRequired: false,
   }, {
     name: "templateNameSlug",
-    visibleIf: "{asTemplate}",
+    visibleIf: "{isTemplate}",
     title: "templateNameSlug",
     type: "text",
     "_cmt": "limited to 200 chars : ",
@@ -99,7 +99,7 @@
     isRequired: true,
   }, {
     name: "templateCategorySlug",
-    visibleIf: "{asTemplate}",
+    visibleIf: "{isTemplate}",
     title: "templateCategorySlug",
     type: "text",
     "_cmt": "limited to 200 chars : ",
@@ -238,5 +238,5 @@
                 visibleIf: "false",
                 startWithNewLine: false,
                 type: "html",
-                html: "displayValue( {row.attachementFileKeyPath} | displayValue({panel.attachementFileKeyPath}) | {panel.attachementFileKeyPath} | {displayValue(asTemplate)})",
+                html: "displayValue( {row.attachementFileKeyPath} | displayValue({panel.attachementFileKeyPath}) | {panel.attachementFileKeyPath} | {displayValue(isTemplate)})",
             }, #}
