@@ -22,6 +22,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -419,6 +421,54 @@ class MwsMessageController extends AbstractController
         ]);
     }
     
+    #[Route('/export/{format?}',
+        name: 'mws_message_export',
+        methods: ['GET'],
+    )]
+    public function export(
+        ?string $format,
+        MwsMessageRepository $mwsMessageRepository,
+    ): Response {
+        $user = $this->getUser();
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+        $format = $format ?? "monwoo-extractor-export";
+
+        $messages = $mwsMessageRepository->findAll() ?? [];
+
+        $messagesSerialized = $this->serializeMessages(
+            $messages,
+            $format,
+        );
+
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+  
+        $filename = "MoonManager-ExportMessages-v" . $packageVersion
+        . "-" . time() .".{$format}"; // . '.pdf';
+        if ("monwoo-extractor-export" == $format) {
+            $filename = "bulk-answers.json";
+        }
+
+        $response = new Response();
+
+        //set headers
+        $mime = [
+            'json' => 'application/json',
+            'csv' => 'text/comma-separated-values',
+            'xml' => 'application/xml',
+            'yaml' => 'application/yaml',
+        ][$format] ?? 'text/plain';
+        if ($mime) {
+            $response->headers->set('Content-Type', $mime);
+        }
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);    
+
+        $response->setContent($messagesSerialized);
+        return $response;
+    }
+
     #[Route(
         '/delete-all/{viewTemplate<[^/]*>?}',
         name: 'mws_message_delete_all',
@@ -519,16 +569,38 @@ class MwsMessageController extends AbstractController
         return $out;
     }
 
-    /** @param MwsMessage[] $offers */
-    public function serializeMessages($offers, $format)
+    /** @param MwsMessage[] $messages */
+    public function serializeMessages($messages, $format)
     {
         $out = null;
         // TODO : add custom serializer format instead of if switch ?
         if ($format === 'monwoo-extractor-export') {
+            $bulkAnswers = [];
+            // TODO : might get less messages this way than json or regular ways ?
+            foreach ($messages as $msg) {
+                $destId = $msg->getDestId() ?? '-unknown-';
+                $projectId = $msg->getProjectId() ?? '-unknown-';
+                if (!array_key_exists($destId, $bulkAnswers)) {
+                    $bulkAnswers[$destId] = [];
+                }
+                $dest = &$bulkAnswers[$destId];
+                if (!array_key_exists($projectId, $dest)) {
+                    $dest[$projectId] = [];
+                }
+                $dest[$projectId] = $msg;
+            }
+
+            if (count($bulkAnswers)) {
+                // $out = json_encode($bulkAnswers);
+                $out = $this->serializer->serialize(
+                    $bulkAnswers,
+                    JsonEncoder::FORMAT,
+                    [AbstractNormalizer::IGNORED_ATTRIBUTES => ['owner']]
+                );
+            }
         } else {
             $out = $this->serializer->serialize(
-                $offers,
-                MwsMessage::class . "[]",
+                $messages,
                 $format,
                 // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
             );

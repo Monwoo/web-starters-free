@@ -25,13 +25,13 @@
     '_locale': locale ?? '',
     'viewTemplate': viewTemplate ?? '',
   }) }>
-    <button class="btn btn-outline-primary p-1">Importer des messages.</button>
+    <button class="btn btn-outline-primary p-1 m-2">Importer des messages.</button>
   </a>    
-  <a href={ Routing.generate('mws_message_import', {
+  <a href={ Routing.generate('mws_message_export', {
     '_locale': locale ?? '',
     'viewTemplate': viewTemplate ?? '',
   }) }>
-    <button class="btn btn-outline-primary p-1">Exporter les messages.</button>
+    <button class="btn btn-outline-primary p-1 m-2">Exporter les messages.</button>
   </a>    
   <!-- <a href={ Routing.generate('mws_message_import', {
     '_locale': locale ?? '',
@@ -47,7 +47,9 @@
     onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les messages ?');"
   >
     <input type="hidden" name="_csrf_token" value="{ csrfMessageDelete }" />
-    <button type="submit">Supprimer les messages</button>
+    <button 
+    class="btn btn-outline-primary p-1 m-2"
+    type="submit">Supprimer les messages</button>
   </form>
 
   <button
