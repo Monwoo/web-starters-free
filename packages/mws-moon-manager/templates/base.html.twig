@@ -90,10 +90,12 @@
 
 			{# TODO : inject inside app.js... instead of html loads... # }
 			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-		  <script type="text/javascript" src="https://unpkg.com/survey-jquery"></script>
+		  <script type="text/javascript" src="https://unpkg.com/survey-jquery@1.9.125/survey.jquery.js"></script>
 			{ # #}
 			<script type="text/javascript" src="{{ asset('bundles/moonmanager/lib/jquery.3.7.1.min.js') }}"></script>
 		  <script type="text/javascript" src="{{ asset('bundles/moonmanager/lib/survey-jquery.1.9.112.min.js') }}"></script>
+			{# <script type="text/javascript" src="https://unpkg.com/survey-jquery@1.9.125/survey.jquery.js"></script>#}
+
 
 	    {{ encore_entry_script_tags('mwsMoonManager') }}
 	    {{ encore_entry_script_tags('app') }}

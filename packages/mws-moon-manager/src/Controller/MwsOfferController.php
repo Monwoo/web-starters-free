@@ -300,11 +300,20 @@ class MwsOfferController extends AbstractController
         // dd($offers);
         $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->getTagsByCategorySlugAndSlug();
 
+        $availableTemplates = $mwsMessageRepository->findBy([
+            "isTemplate" => true,
+        ]);
+        // https://surveyjs.answerdesk.io/ticket/details/t12135/how-to-get-full-choise-object-when-the-value-in-dropdown-selected
+        // https://surveyjs.io/form-library/documentation/api-reference/survey-data-model#onLoadChoicesFromServer
+        // https://surveyjs.io/form-library/examples/dropdown-box-with-custom-items/reactjs#content-code
+        
+
         $addMessageConfig = [
             // "jsonResult" => rawurlencode(json_encode([])),
             "jsonResult" => rawurlencode('{}'),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsMessageType.json.twig",
+                ["availableTemplates" => $availableTemplates,]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig, [

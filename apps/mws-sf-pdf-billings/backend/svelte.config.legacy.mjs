@@ -1,11 +1,13 @@
 // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
+// TODO : refactor, not used since webpack use import => upgrade webpack to wait for async import or remove this file...
+
 // import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 import 'dotenv/config';
 
 // let baseHref = process.env.VITE_MWS_BASE_HREF || '';
-// console.warn("CONFIGURE svelte.config.js for : ", process.env.NODE_ENV);
+console.warn("CONFIGURE svelte.config.js for : ", process.env.NODE_ENV);
 
 // if (process.env.NODE_ENV === 'development' && process.env.VITE_MWS_BASE_HREF) {
 // 	console.warn("DISABELING VITE_MWS_BASE_HREF for developpement, to avoid buggy behavior");
@@ -38,7 +40,9 @@ const config = {
 	compilerOptions: {
 		// TODO : bring back to true when entry point css merge issue solved
 		// css: false
+		customElement: true,
 	},
+	customElement: true,
 
 	// kit: {
 	// 	adapter: adapter({

@@ -6,9 +6,22 @@
   // TIPS : <svelte:options accessors /> needed for external end-to-end test
   //        (and standalone component export....)
   import Header from "./Header.svelte";
+  // import TemplateChoiceItem from '../message/TemplateChoiceItem.svelte';
+
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let locale;
   export let viewTemplate;
+
+  // TODO : scroll top on page load to avoid auto scroll
+  // when loading letting scroll at wrong place
+  // in non scrollable body... ?
+
+  // TIPS : NEED to be REGISTRED BEFORE surveyJs lib load ... ?
+  // // https://svelte.dev/docs/custom-elements-api (
+  // // TODO : auto load instead of injected ?)
+  // // customElements.define('mws-msg-template-choice-item', TemplateChoiceItem.element);
+  // // customElements.define('mws-msg-template-choice-item', () => (new TemplateChoiceItem({})).element);
+  // window.customElements.define('mws-msg-template-choice-item',  TemplateChoiceItem);
 </script>
 
 <slot name="mws-body">

@@ -5,8 +5,11 @@ const Encore = require('@symfony/webpack-encore');
 // const FosRouting = require('fos-router/webpack/FosRouting');
 // const svelteConfig = require('./svelte.config.mjs');
 // import svelteConfig from './svelte.config.mjs';
-const svelteConfig = import('./svelte.config.mjs');
+// const svelteConfig = await import('./svelte.config.mjs');
+const svelteConfig = require('./svelte.config.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+console.warn("svelteConfig from webpack.config.js : ", svelteConfig);
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -116,8 +119,23 @@ Encore
     // requires that you have a tsconfig.json file that is setup correctly.
     // .enableForkedTypeScriptTypesChecking()
 
-    .enableSvelte() // Classic svelte loader
-
+    // .enableSvelte() // Classic svelte loader
+    .addLoader({
+        resolve: {
+            mainFields: ['svelte', 'browser', 'module', 'main'],
+            extensions: ['.mjs', '.js', '.svelte'],
+        },
+        test: /\.svelte$/,
+        loader: 'svelte-loader',
+        options: svelteConfig,
+        // options: {
+        //     compilerOptions: {
+        //         // TODO : bring back to true when entry point css merge issue solved
+        //         // css: false
+        //         customElement: true,
+        //     },        
+        // }
+    })
     // CUSTOM svelte loader :
     // https://www.reddit.com/r/symfony/comments/mqu2o0/help_svelte_typescript_integration_with_symfony/
     // https://symfony.com/doc/current/frontend/encore/custom-loaders-plugins.html
@@ -129,7 +147,8 @@ Encore
     //     loader: 'svelte-loader',
     //     resolve: {
     //         mainFields: ['svelte', 'browser', 'module', 'main'],
-    //         extensions: ['.cjs', '.mjs', '.js', '.ts', '.d.ts', '.svelte'],
+    //         // extensions: ['.cjs', '.mjs', '.js', '.ts', '.d.ts', '.svelte'],
+    //         extensions: ['.svelte'],
     //     },
     //     // options: {
     //     //     emitCss: true,

@@ -54,6 +54,34 @@ registerSvelteControllerComponents(require.context('./svelte/controllers', true,
 //   return txt.value;
 // }
 
+// https://svelte.dev/docs/custom-elements-api (
+// TODO : auto load from Svelte should be ok instead of injected ?)
+// https://surveyjs.answerdesk.io/ticket/details/t8664/display-icon-to-dropdown-possible-answers
+// https://surveyjs.io/form-library/documentation/customize-question-types/third-party-component-integration-react
+
+// customElements.define('mws-msg-template-choice-item', TemplateChoiceItem.element);
+// customElements.define('mws-msg-template-choice-item', () => (new TemplateChoiceItem({})).element);
+import TemplateChoiceItem from 'mws-moon-manager-ux/components/message/TemplateChoiceItem.svelte';
+window.customElements.get('mws-msg-template-choice-item') ||
+  window.customElements.define('mws-msg-template-choice-item', TemplateChoiceItem.element);
+// customElements.define('mws-msg-template-choice-item',  TemplateChoiceItem.element);
+
+// https://stackoverflow.com/questions/60529034/svelte-custom-element-api
+// customElement: true // Needed in svelte config, for .element to exist on component
+
+// https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define
+// customElements.define(
+//   "my-customized-built-in-element",
+//   MyCustomizedBuiltInElement,
+//   {
+//     extends: "p",
+//   },
+// );
+// <p is="my-customized-built-in-element"></p>
+
+// TODO : ensure custom element ok for hot reloads ? need page refresh for now
+// https://nuclia.com/developers/how-to-run-svelte-custom-elements-in-dev-mode/
+
 
 // Connect SurveyJs via JQuery and add to client window context :
 ////////////////////////////////////////
@@ -117,6 +145,45 @@ import "survey-core/survey.i18n.js";
 import {
   surveyTheme
 } from './survey-js/_theme.json.js';
+
+// https://knockoutjs.com/documentation/component-overview.html
+// Survey.ko.components.register('mws-msg-template-choice-item', {
+//   viewModel: function(params) {
+//       // Data: value is either null, 'like', or 'dislike'
+//       this.chosenValue = params.value;
+
+//       // Behaviors
+//       this.like = function() { this.chosenValue('like'); }.bind(this);
+//       this.dislike = function() { this.chosenValue('dislike'); }.bind(this);
+//   },
+//   template:
+//       '<div class="like-or-dislike" data-bind="visible: !chosenValue()">\
+//           <button data-bind="click: like">Like it</button>\
+//           <button data-bind="click: dislike">Dislike it</button>\
+//       </div>\
+//       <div class="result" data-bind="visible: chosenValue">\
+//           You <strong data-bind="text: chosenValue"></strong> it\
+//       </div>'
+// });
+
+// https://knockoutjs.com/documentation/component-custom-elements.html
+// TODO : why regular web component not accessible + why knockout available when using jquery version ?
+
+Survey.ko.components.register('mws-msg-template-choice-item', {
+  viewModel: function (params) {
+    console.log('Msg template item params : ', params);
+    // Data: value is either null, 'like', or 'dislike'
+    this.chosenValue = params.item.jsonObj.templateCategorySlug;
+    this.chosenValue += ' => ' + params.item.jsonObj.templateNameSlug;
+    // // Behaviors
+    // this.like = function() { this.chosenValue('like'); }.bind(this);
+    // this.dislike = function() { this.chosenValue('dislike'); }.bind(this);
+  },
+  template:
+    '<div class="result" data-bind="visible: chosenValue">\
+          <strong data-bind="text: chosenValue"></strong>\
+      </div>'
+});
 
 const surveyFactory = (surveyForm, dataModel) => {
   Survey
