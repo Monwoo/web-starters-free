@@ -1,6 +1,7 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% set model = {
     description: "Ajouter"|trans,
+    fitToContainer: true,
     "__CMT_TIPS": "Will validate form on searchKeyword enter key with goNextPageAutomatic",
     '__goNextPageAutomatic': true,
     completeText: {
@@ -13,10 +14,14 @@
     elements: [{
             name: "templatePreload",
             title: "Pré charger avec le template",
-            type: "text",
-            inputType: "number",
-            "_cmt": "limited to 200 chars : ",
-            maxLength: 200,
+            type: "dropdown",
+            showNoneItem: true,
+            showOtherItem: true,
+            "_cmt":"https://surveyjs.io/form-library/examples/dropdown-box-with-custom-items/reactjs#content-code",
+            "_itemComponent": "new-item",
+            "_choices": { "hello" : ["Ford", "Vauxhall", "Volkswagen"], world: ["Nissan", "Audi", "Mercedes-Benz", "BMW", "Peugeot", "Toyota", "Citroen"] },
+            "choices": [ "Ford", "Vauxhall", "Volkswagen", "Nissan", "Audi", "Mercedes-Benz", "BMW", "Peugeot", "Toyota", "Citroen" ],
+            "searchEnabled":  false,
             validators: [],
             minWidth: "20%",
             isRequired: false,
