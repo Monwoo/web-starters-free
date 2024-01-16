@@ -62,8 +62,8 @@ registerSvelteControllerComponents(require.context('./svelte/controllers', true,
 // customElements.define('mws-msg-template-choice-item', TemplateChoiceItem.element);
 // customElements.define('mws-msg-template-choice-item', () => (new TemplateChoiceItem({})).element);
 import TemplateChoiceItem from 'mws-moon-manager-ux/components/message/TemplateChoiceItem.svelte';
-window.customElements.get('mws-msg-template-choice-item') ||
-  window.customElements.define('mws-msg-template-choice-item', TemplateChoiceItem.element);
+window.customElements.get('s-mws-msg-template-choice-item') ||
+  window.customElements.define('s-mws-msg-template-choice-item', TemplateChoiceItem.element);
 // customElements.define('mws-msg-template-choice-item',  TemplateChoiceItem.element);
 
 // https://stackoverflow.com/questions/60529034/svelte-custom-element-api
@@ -173,16 +173,16 @@ Survey.ko.components.register('mws-msg-template-choice-item', {
   viewModel: function (params) {
     console.log('Msg template item params : ', params);
     // Data: value is either null, 'like', or 'dislike'
-    this.chosenValue = params.item.jsonObj.templateCategorySlug;
-    this.chosenValue += ' => ' + params.item.jsonObj.templateNameSlug;
-    // // Behaviors
-    // this.like = function() { this.chosenValue('like'); }.bind(this);
-    // this.dislike = function() { this.chosenValue('dislike'); }.bind(this);
+      // this.chosenValue = params.item.jsonObj.templateCategorySlug;
+      // this.chosenValue += ' => ' + params.item.jsonObj.templateNameSlug;
+    this.chosenValue = encodeURIComponent(JSON.stringify(
+      params.item.jsonObj
+    ));
   },
   template:
-    '<div class="result" data-bind="visible: chosenValue">\
-          <strong data-bind="text: chosenValue"></strong>\
-      </div>'
+    `<s-mws-msg-template-choice-item
+    data-bind="attr: {item : chosenValue}"
+    ></s-mws-msg-template-choice-item>`
 });
 
 const surveyFactory = (surveyForm, dataModel) => {

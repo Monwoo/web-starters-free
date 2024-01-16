@@ -86,6 +86,17 @@ html, body, footer {
     }
 }
 
+.sd-dropdown__value {
+    input {
+        // TODO: why needed for custom view display in dropdown ?
+        //       missing some class
+        opacity: 0;
+    }
+    .sd-dropdown__filter-string-input:not([placeholder=""]) {
+        opacity: 1;
+    }
+}
+
 .read-status {
     svg {
         max-width: 42px;
