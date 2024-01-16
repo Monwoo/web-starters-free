@@ -185,6 +185,10 @@ Survey.ko.components.register('mws-msg-template-choice-item', {
     ></s-mws-msg-template-choice-item>`
 });
 
+// TODO : mirror knockout components with svelte to do so ? or need custom lib ? :
+// Survey.ko.components.register('s-mws-msg-template-choice-item',  TemplateChoiceItem.element);
+
+
 const surveyFactory = (surveyForm, dataModel) => {
   Survey
     .StylesManager
