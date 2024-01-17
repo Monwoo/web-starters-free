@@ -77,9 +77,9 @@
               options.question.hasErrors(true);
           }
           if (question?.name == "templatePreload") {
-            console.log('Reload modal survey data with new template values...', options);
+            console.log('Reload modal survey data with new template values...', options, question?.value);
 
-            // question?.survey.data = ??
+            question.survey.data = options.value;
           }
         });
       },
