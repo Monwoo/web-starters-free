@@ -300,13 +300,22 @@ class MwsOfferController extends AbstractController
         // dd($offers);
         $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->getTagsByCategorySlugAndSlug();
 
-        $availableTemplates = $mwsMessageRepository->findBy([
-            "isTemplate" => true,
-        ]);
+        // $availableTemplates = $mwsMessageRepository->findBy([
+        //     "isTemplate" => true,
+        // ]);
+        // TODO : helper inside repository ?
+        $availableTQb = $mwsMessageRepository
+        ->createQueryBuilder('m')
+        ->where('m.isTemplate = :isTemplate')
+        ->setParameter('isTemplate', true)
+        ->orderBy('m.templateCategorySlug')
+        ->addOrderBy('m.templateNameSlug')
+        ;
+        $availableTemplates = $availableTQb->getQuery()->execute();
         // https://surveyjs.answerdesk.io/ticket/details/t12135/how-to-get-full-choise-object-when-the-value-in-dropdown-selected
         // https://surveyjs.io/form-library/documentation/api-reference/survey-data-model#onLoadChoicesFromServer
         // https://surveyjs.io/form-library/examples/dropdown-box-with-custom-items/reactjs#content-code
-        
+
 
         $addMessageConfig = [
             // "jsonResult" => rawurlencode(json_encode([])),
