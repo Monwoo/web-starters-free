@@ -78,7 +78,7 @@
               options.question.hasErrors(true);
           }
           // TIPS : check is object to avoid submit survey values with string instead of object
-          if (question?.name == "templatePreload" &&  options.value.destId) {
+          if (question?.name == "templatePreload" &&  options.value?.destId) {
             console.log('Reload modal survey data with new template values...', options, question?.value);
 
             // function removeEmpty(obj) {
@@ -88,6 +88,14 @@
             //       .map(([k, v]) => [k, v === Object(v) ? removeEmpty(v) : v])
             //   );
             // } // TODO : remove empty recursively + loadash deep merge ?
+
+            if (options.value.messages) {
+              // tag incoming template message as 'can be send'
+              options.value.messages = options.value.messages.map((tchat) => {
+                tchat.haveBeenSent = false;
+                return tchat;
+              });
+            }
 
             question.survey.data = {
               ...(question.survey.data ?? {}),

@@ -136,6 +136,12 @@
             "panelCount": 0,
             "templateElements": [
                 {
+                    name: "haveBeenSent",
+                    visibleIf: "{panel.haveBeenSent}",
+                    html: "<strong class='text-red-500'>WARNING : will not be sent since already sent</strong>",
+                    type: "html",
+                    minWidth: "20%",
+                }, {
                     "_cmt": "https://surveyjs.io/form-library/documentation/customize-question-types/create-custom-widgets",
                     "type": "file",
                     "title": "Attach file if you want (max 1Mo)",
