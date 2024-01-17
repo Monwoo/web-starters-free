@@ -97,6 +97,20 @@ html, body, footer {
     }
 }
 
+.sd-file {
+    min-height: 9em;
+    padding: 0px;
+    margin: 0px;
+    .sd-file__decorator {
+        padding: 0px;
+        // TODO : not enough, did raise up min-height for now
+        height: fit-content;
+    }
+    .sd-file__drag-area {
+        position: initial;
+    }
+}
+
 .read-status {
     svg {
         max-width: 42px;
