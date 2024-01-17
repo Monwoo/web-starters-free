@@ -79,7 +79,10 @@
           if (question?.name == "templatePreload") {
             console.log('Reload modal survey data with new template values...', options, question?.value);
 
-            question.survey.data = options.value;
+            question.survey.data = {
+              // templatePreload: options.value, // TODO : nop, not filling templatePreload with last selected value...
+              ...options.value
+            };
           }
         });
       },
