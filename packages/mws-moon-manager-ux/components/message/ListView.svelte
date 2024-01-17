@@ -73,6 +73,9 @@
         {@html messagesHeaders.destId ?? "destId"}
       </th>
       <th scope="col">
+        {@html messagesHeaders.templateNameSlug ?? "templateNameSlug"}
+      </th>
+      <th scope="col">
         {@html messagesHeaders.monwooAmount ?? "monwooAmount"}
       </th>
       <th scope="col">

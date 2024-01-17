@@ -6,6 +6,8 @@ use Symfony\Component\Serializer;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 // use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[ORM\Entity(repositoryClass: MwsMessageRepository::class)]
@@ -13,11 +15,25 @@ use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 //     AbstractNormalizer::ATTRIBUTES =>
 //     ['projectId', 'owner' => ['id']]
 // ])] // Not for entity class....
+#[UniqueEntity(
+    fields: ['templateNameSlug', 'templateCategorySlug'],
+    errorPath: 'templateNameSlug',
+    message: MwsMessage::slugAndCatNotUniqueError,
+)]
 #[ORM\Index(columns: ['project_id'])]
 #[ORM\Index(columns: ['dest_id'])]
 #[ORM\Index(columns: ['source_id'])]
 class MwsMessage
 {
+    // TODO : should do someting like :
+    // TranslationExtractOnly->trans('....') for translation auto-extractor to works...
+    // BUT SOUNDS like not possible to write 'function call' inside constants...
+    // IDEA : DELEGATE ALL translations to SVELTE SIDE. Backend will only send key ?
+    //       => same issue as previous : how to auto-generate/sync app translations strings ?
+    const slugAndCatNotUniqueError = // trans(
+        'mws.message.errors.template-tag-slug-and-category-not-unique'
+    /*)*/;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

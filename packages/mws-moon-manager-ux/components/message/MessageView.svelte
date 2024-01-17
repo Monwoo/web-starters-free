@@ -72,6 +72,9 @@
     {message.destId}
   </td>
   <td>
+    {message.templateNameSlug}
+  </td>
+  <td>
     {message.monwooAmount}
   </td>
   <td>

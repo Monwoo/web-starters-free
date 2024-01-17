@@ -54,8 +54,7 @@ class MwsMessageController extends AbstractController
         Request $request,
         MwsMessageRepository $mwsMessageRepository,
         PaginatorInterface $paginator,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
@@ -66,12 +65,23 @@ class MwsMessageController extends AbstractController
         // ]);
         $qb = $mwsMessageRepository->createQueryBuilder('m');
 
+        // TODO : helper inside repository ?, factorize code
+        $availableTQb = $mwsMessageRepository
+            ->createQueryBuilder('m')
+            ->where('m.isTemplate = :isTemplate')
+            ->setParameter('isTemplate', true)
+            ->orderBy('m.templateCategorySlug')
+            ->addOrderBy('m.templateNameSlug');
+        $availableTemplates = $availableTQb->getQuery()->execute();
+
+
         $addMessageConfig = [
             "jsonResult" => rawurlencode(json_encode([
                 // "searchKeyword" => $keyword,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsMessageType.json.twig",
+                ["availableTemplates" => $availableTemplates]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig);
@@ -89,6 +99,7 @@ class MwsMessageController extends AbstractController
                     true
                 );
                 // dd($surveyAnswers);
+                $msgId = $surveyAnswers['id'] ?? null;
                 $projectId = $surveyAnswers['projectId'] ?? null;
                 $destId = $surveyAnswers['destId'] ?? null;
                 $sourceId = $surveyAnswers['sourceId'] ?? null;
@@ -96,14 +107,16 @@ class MwsMessageController extends AbstractController
                 // $projectDelayInOpenDays = $surveyAnswers['projectDelayInOpenDays'] ?? null;
                 // $asNewOffer = $surveyAnswers['asNewOffer'] ?? null;
 
-                $msg = $mwsMessageRepository->findOneBy([
+                $msg = ($msgId ? $mwsMessageRepository->findOneBy([
+                    'id' => $msgId,
+                ]) : null) ?? $mwsMessageRepository->findOneBy([
                     'projectId' => $projectId,
                     'destId' => $destId,
                     'sourceId' => $sourceId,
                     'owner' => $user,
                 ]);
                 $shouldDeleteMessage = $surveyAnswers['shouldDeleteMessage'] ?? null;
-                
+
                 if ($shouldDeleteMessage && $msg) {
                     $this->em->remove($msg);
                     $this->em->flush();
@@ -144,7 +157,7 @@ class MwsMessageController extends AbstractController
 
                     // doing cleanup
                     $cleanMsgs = [];
-                    foreach($msg->getMessages() ?? [] as $msgTchat) {
+                    foreach ($msg->getMessages() ?? [] as $msgTchat) {
                         $uploadFiles = $msgTchat['uploadFile'] ?? null; // TODO : refactor for multiples files ?
                         if ($uploadFiles && count($uploadFiles)) {
                             // $uploadFile = $uploadFiles[0];
@@ -167,8 +180,16 @@ class MwsMessageController extends AbstractController
                 $backUrl = $request->query->get('backUrl', null);
 
                 if ($backUrl) {
-                    return $this->redirect($backUrl);                    
+                    return $this->redirect($backUrl);
                 }
+                // TIPS : always redirect to avoid data loaded previous this forme to miss updated data
+                return $this->redirectToRoute(
+                    'mws_message_list',
+                    array_merge($request->query->all(), [
+                        "viewTemplate" => $viewTemplate,
+                        "page" => 1,
+                    ]),
+                );
             }
         }
 
@@ -191,8 +212,7 @@ class MwsMessageController extends AbstractController
         '/tchat/upload',
         name: 'mws_message_tchat_upload',
         methods: ['POST'],
-        defaults: [
-        ],
+        defaults: [],
     )]
     public function tchatUpload(
         Request $request,
@@ -214,7 +234,8 @@ class MwsMessageController extends AbstractController
         $messageTchatUpload = new MwsMessageTchatUpload();
         $messageTchatUploadForm = $this->createForm(
             MwsMessageTchatUploadType::class,
-            $messageTchatUpload, [
+            $messageTchatUpload,
+            [
                 'csrf_protection' => false,
             ]
         );
@@ -224,7 +245,7 @@ class MwsMessageController extends AbstractController
             $this->logger->debug("Did submit messageTchatUploadForm");
             if ($messageTchatUploadForm->isValid()) {
                 $this->logger->debug("messageTchatUploadForm ok");
-        
+
                 // $messageTchatUploadImg = $messageTchatUploadForm->get('imageFile')->getData();
                 // dd($messageTchatUploadImg);
                 /** @var MwsMessageTchatUpload */
@@ -426,8 +447,9 @@ class MwsMessageController extends AbstractController
             'title' => 'Importer les messages via ' . ($formatToText[$format] ?? $format)
         ]);
     }
-    
-    #[Route('/export/{format?}',
+
+    #[Route(
+        '/export/{format?}',
         name: 'mws_message_export',
         methods: ['GET'],
     )]
@@ -450,9 +472,9 @@ class MwsMessageController extends AbstractController
 
         $rootPackage = \Composer\InstalledVersions::getRootPackage();
         $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
-  
+
         $filename = "MoonManager-ExportMessages-v" . $packageVersion
-        . "-" . time() .".{$format}"; // . '.pdf';
+            . "-" . time() . ".{$format}"; // . '.pdf';
         if ("monwoo-extractor-export" == $format) {
             $filename = "bulk-answers.json";
         }
@@ -469,7 +491,7 @@ class MwsMessageController extends AbstractController
         if ($mime) {
             $response->headers->set('Content-Type', $mime);
         }
-        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);    
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
 
         $response->setContent($messagesSerialized);
         return $response;
@@ -497,18 +519,18 @@ class MwsMessageController extends AbstractController
             $this->logger->debug("Fail csrf with", [$csrf, $request]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
-        
+
         // dd($tag);
         // $tag->removeMwsOffer($offer);
 
         $qb = $this->em->createQueryBuilder()
-        ->delete(MwsMessage::class, 'u');               
+            ->delete(MwsMessage::class, 'u');
 
         $query = $qb->getQuery();
         // dump($query->getSql());
 
         $resp = $query->execute();
-        $this->em->flush();    
+        $this->em->flush();
 
         // return $this->json([
         //     'delete' => 'ok',

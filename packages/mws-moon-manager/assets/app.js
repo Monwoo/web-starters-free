@@ -217,7 +217,7 @@ function MsgTemplateItemViewModel(params, componentInfo) {
       console.debug(event.detail);
       console.debug(params);
       if (self.chosenValue == event.detail.fromValue) {
-        event.detail.bindQuestion(params.question);
+        event.detail.bindQuestion(params.question, params.item);
         console.debug('choice-item-ready ok for ' + params.item.jsonObj?.id
         + ' ' + params.item.jsonObj?.templateCategorySlug
         + ' ' + params.item.jsonObj?.templateNameSlug);  

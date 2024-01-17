@@ -63,7 +63,7 @@
     // // The web-component methode ? already defined...
     // dispatchEvent('mws-msg-template-choice-item-ready', {
     dispatch('mws-msg-template-choice-item-ready', {
-      bindQuestion: (q) => {
+      bindQuestion: (q, item) => {
         // TODO : question?.remove('change', () => { if already setup and in dispose...
         question = q;
         // question?.on('change', () => {
@@ -71,18 +71,46 @@
         // })
 
         // https://surveyjs.answerdesk.io/ticket/details/t6188/adding-custom-event-validation-for-single-question
+        // TODO : clean listener .remove ?
         question?.survey.onValueChanged.add(function(sender, options){
           // TODO : not really efficient having ALL choice item to listen to value changes, should be root question only once ?
           if(!!options.question && options.question.validateOnValueChanged) {
               options.question.hasErrors(true);
           }
-          if (question?.name == "templatePreload") {
+          // TIPS : check is object to avoid submit survey values with string instead of object
+          if (question?.name == "templatePreload" &&  options.value.destId) {
             console.log('Reload modal survey data with new template values...', options, question?.value);
 
+            // function removeEmpty(obj) {
+            //   return Object.fromEntries(
+            //     Object.entries(obj)
+            //       .filter(([_, v]) => v != null)
+            //       .map(([k, v]) => [k, v === Object(v) ? removeEmpty(v) : v])
+            //   );
+            // } // TODO : remove empty recursively + loadash deep merge ?
+
             question.survey.data = {
+              ...(question.survey.data ?? {}),
+              // https://stackoverflow.com/questions/286141/remove-blank-attributes-from-an-object-in-javascript
+              ...Object.fromEntries(Object.entries(
+                options.value, // String value sometime ?
+              ).filter(([_, v]) => v != null)),
+              // will not update to null if null, sync behavior :
+              // monwooAmount: options.value.monwooAmount ?? question.survey.data?.monwooAmount,
+
+              // ...(item.jsonObj ?? {}),
               // templatePreload: options.value, // TODO : nop, not filling templatePreload with last selected value...
-              ...options.value
+              // templatePreload: options.value ?? item.jsonObj, // TODO : nop, not filling templatePreload with last selected value...
+              // id: null, // force new id creation ? NOP, based on projectId lookup...
+              // Keep existing id fields
+              id: question.survey.data?.id ?? null,
+              projectId: question.survey.data?.projectId,
+              isDraft: question.survey.data?.isDraft,
+              isTemplate: question.survey.data?.isTemplate,
+              templateNameSlug: question.survey.data?.templateNameSlug,
+              templateCategorySlug : question.survey.data?.templateCategorySlug ,
             };
+            console.log('New survey data :', question.survey.data);
           }
         });
       },
