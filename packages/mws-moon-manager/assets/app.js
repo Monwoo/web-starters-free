@@ -213,18 +213,26 @@ function MsgTemplateItemViewModel(params, componentInfo) {
     // https://knockoutjs.com/documentation/component-registration.html#specifying-a-viewmodel
     const element = componentInfo.element;
     const readyListener = event => {
-      console.log('KO Msg template item ready');
-      console.log(event.detail);
-      console.log(params);
-      event.bindQuestion(null);
-      alert('choice-item-ready ok');
+      console.debug('KO Msg template item ready');
+      console.debug(event.detail);
+      console.debug(params);
+      if (self.chosenValue == event.detail.fromValue) {
+        event.detail.bindQuestion(params.question);
+        console.debug('choice-item-ready ok for ' + params.item.jsonObj?.id
+        + ' ' + params.item.jsonObj?.templateCategorySlug
+        + ' ' + params.item.jsonObj?.templateNameSlug);  
+      }
     };
     // jQuery('body').bind("mws-msg-template-choice-item-ready", function(e){console.log('mws-msg-template-choice-item-ready OK', e);});
     // Self element get cloned or alike ? event listener not working if direclty on element :
     // element.addEventListener('mws-msg-template-choice-item-ready', readyListener);
     // element.addEventListener('mws-msg-template-choice-item-ready', readyListener);
     // jQuery(element).bind("mws-msg-template-choice-item-ready", readyListener);
+
+    // Nop, not working too, only the one on 'window' is working, need id check
+    // since will get event from all, not only children events...
     self.readyListener = readyListener;
+    window.addEventListener('mws-msg-template-choice-item-ready', readyListener);
 
     const bc = Survey.ko.contextFor(componentInfo.element);
     console.log("bc", bc);
@@ -236,7 +244,7 @@ function MsgTemplateItemViewModel(params, componentInfo) {
     // const parentDispose = self.dispose;
     self.dispose = () => {
       // parentDispose();
-      element.removeEventListener('mws-msg-template-choice-item-ready', readyListener);
+      window.removeEventListener('mws-msg-template-choice-item-ready', readyListener);
       console.log('KO Msg template item disposed OK');
     }
     console.log('KO Msg template init from model ok OK');

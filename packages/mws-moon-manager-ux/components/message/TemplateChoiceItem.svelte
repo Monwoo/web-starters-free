@@ -9,6 +9,7 @@
 	export let name = 'world';
 	export let question;
 	export let item;
+	let itemData;
 
   // https://github.com/sveltejs/svelte/issues/3119#issuecomment-658671940
   const svelteDispatch = createEventDispatcher();
@@ -37,8 +38,8 @@
   // $: templateHtmlView = liveTemplateHtmlView ?? templateHtmlView;
   // $: templateHtmlView = liveTemplateHtmlView ? liveTemplateHtmlView : templateHtmlView;
 
-  item = (item && item != 'undefined') ? JSON.parse(decodeURIComponent(item)) : null;
-  console.log('Custom view for : ', question, item);
+  itemData = (item && item != 'undefined') ? JSON.parse(decodeURIComponent(item)) : null;
+  console.log('Custom view for : ', question, itemData);
 
   // TODO : below on:click is called when dropdown open itself too
   const reloadOffer = () => {
@@ -62,9 +63,27 @@
     // // The web-component methode ? already defined...
     // dispatchEvent('mws-msg-template-choice-item-ready', {
     dispatch('mws-msg-template-choice-item-ready', {
-      detail: {
-        bindQuestion: (q) => question = q
+      bindQuestion: (q) => {
+        // TODO : question?.remove('change', () => { if already setup and in dispose...
+        question = q;
+        // question?.on('change', () => {
+        //   alert('Reload modal survey data with template values...')
+        // })
+
+        // https://surveyjs.answerdesk.io/ticket/details/t6188/adding-custom-event-validation-for-single-question
+        question?.survey.onValueChanged.add(function(sender, options){
+          // TODO : not really efficient having ALL choice item to listen to value changes, should be root question only once ?
+          if(!!options.question && options.question.validateOnValueChanged) {
+              options.question.hasErrors(true);
+          }
+          if (question?.name == "templatePreload") {
+            console.log('Reload modal survey data with new template values...', options);
+
+            // question?.survey.data = ??
+          }
+        });
       },
+      fromValue: item,
     });
   });
 </script>
@@ -75,8 +94,8 @@
   <span class="sv-string-viewer" on:mousedown={
     () => (null)
   }>
-    {#if item}
-      {item?.templateCategorySlug} &gt; {item?.templateNameSlug}
+    {#if itemData}
+      {itemData.templateCategorySlug} &gt; {itemData.templateNameSlug}
     {:else}
       --
     {/if}
