@@ -169,21 +169,101 @@ import {
 // https://knockoutjs.com/documentation/component-custom-elements.html
 // TODO : why regular web component not accessible + why knockout available when using jquery version ?
 
-Survey.ko.components.register('mws-msg-template-choice-item', {
-  viewModel: function (params) {
-    console.log('Msg template item params : ', params);
+// function MsgTemplateItemViewModel(params) {
+//   var self = this;
+//   console.log('KO Msg template item params : ', params);
+//   // Data: value is either null, 'like', or 'dislike'
+//     // this.chosenValue = params.item.jsonObj.templateCategorySlug;
+//     // this.chosenValue += ' => ' + params.item.jsonObj.templateNameSlug;
+//   self.chosenValue = encodeURIComponent(JSON.stringify(
+//     params.item.jsonObj
+//   ));
+//   self.init = function (element, valueAccessor) {
+//     // var arg = valueAccessor();
+//     // for (var eventName in arg) {
+//     //     element.addEventListener(eventName, arg[eventName], true);
+//     // }
+//     element.addEventListener('mws-msg-template-choice-item-ready', event => {
+//       console.log(event.detail);
+//       console.log(params);
+//       event.bindQuestion(null);
+//       alert('choice-item-ready ok');
+//     });
+//     // https://knockoutjs.com/documentation/component-binding.html
+//     const parentDispose = self.prototype.dispose;
+//     this.prototype.dispose = () => {
+//       parentDispose();
+//       element.removeEventListener('mws-msg-template-choice-item-ready');
+//       console.log('KO Msg template item disposed OK');
+//     }
+//     console.log('KO Msg template init from model ok OK');
+//   };
+// }
+
+function MsgTemplateItemViewModel(params, componentInfo) {
+    var self = this;
+    console.log('KO Msg template item params : ', params);
     // Data: value is either null, 'like', or 'dislike'
       // this.chosenValue = params.item.jsonObj.templateCategorySlug;
       // this.chosenValue += ' => ' + params.item.jsonObj.templateNameSlug;
-    this.chosenValue = encodeURIComponent(JSON.stringify(
+    self.chosenValue = encodeURIComponent(JSON.stringify(
       params.item.jsonObj
     ));
-  },
+  
+    // https://knockoutjs.com/documentation/component-registration.html#specifying-a-viewmodel
+    const element = componentInfo.element;
+    const readyListener = event => {
+      console.log('KO Msg template item ready');
+      console.log(event.detail);
+      console.log(params);
+      event.bindQuestion(null);
+      alert('choice-item-ready ok');
+    };
+    // jQuery('body').bind("mws-msg-template-choice-item-ready", function(e){console.log('mws-msg-template-choice-item-ready OK', e);});
+    // Self element get cloned or alike ? event listener not working if direclty on element :
+    // element.addEventListener('mws-msg-template-choice-item-ready', readyListener);
+    // element.addEventListener('mws-msg-template-choice-item-ready', readyListener);
+    // jQuery(element).bind("mws-msg-template-choice-item-ready", readyListener);
+    self.readyListener = readyListener;
+
+    const bc = Survey.ko.contextFor(componentInfo.element);
+    console.log("bc", bc);
+    // const question = bc.$component.question;
+    const question = bc.question;
+    // bc.$component.addEventListener('mws-msg-template-choice-item-ready', readyListener);
+
+    // https://knockoutjs.com/documentation/component-binding.html
+    // const parentDispose = self.dispose;
+    self.dispose = () => {
+      // parentDispose();
+      element.removeEventListener('mws-msg-template-choice-item-ready', readyListener);
+      console.log('KO Msg template item disposed OK');
+    }
+    console.log('KO Msg template init from model ok OK');
+  }
+Survey.ko.components.register('mws-msg-template-choice-item', {
+  // viewModel: (params) => new MsgTemplateItemViewModel(params),
+  viewModel: {
+    createViewModel: function(params, componentInfo) {
+        // - 'params' is an object whose key/value pairs are the parameters
+        //   passed from the component binding or custom element
+        // - 'componentInfo.element' is the element the component is being
+        //   injected into. When createViewModel is called, the template has
+        //   already been injected into this element, but isn't yet bound.
+        // - 'componentInfo.templateNodes' is an array containing any DOM
+        //   nodes that have been supplied to the component. See below.
+        // Return the desired view model instance, e.g.:
+        return new MsgTemplateItemViewModel(params, componentInfo);
+    }
+},
   template:
+    // https://copyprogramming.com/howto/knockoutjs-how-do-i-bind-change-event-of-select-without-firing-during-databinding
     `<s-mws-msg-template-choice-item
-    data-bind="attr: {item : chosenValue}"
+    data-bind="attr: {item : chosenValue}, event: { 'mws-msg-template-choice-item': function(event) { readyListener(event) }}"
     ></s-mws-msg-template-choice-item>`
 });
+
+// Survey.ko.applyBindings();
 
 // TODO : mirror knockout components with svelte to do so ? or need custom lib ? :
 // Survey.ko.components.register('s-mws-msg-template-choice-item',  TemplateChoiceItem.element);
