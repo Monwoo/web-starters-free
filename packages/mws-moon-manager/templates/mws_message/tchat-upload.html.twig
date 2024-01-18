@@ -1,3 +1,8 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block content %}
+
 {{
   form_start(messageTchatUploadForm, { 'attr' : {
                 'class': 'd-flex flex-wrap mws-survey-js-form'
@@ -6,3 +11,4 @@
   {{form_widget(messageTchatUploadForm)}}
   <input type="hidden" name="_csrf_token" value="{{ csrf_token('mws-csrf-message-tchat-upload') }}" >
 {{form_end(messageTchatUploadForm)}}
+{% endblock %}

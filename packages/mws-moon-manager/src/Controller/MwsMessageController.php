@@ -301,6 +301,49 @@ class MwsMessageController extends AbstractController
         ]);
     }
 
+    #[Route('/tchat/upload/list/{viewTemplate<[^/]*>?}', name: 'mws_message_tchat_upload_list')]
+    public function tchatUploadList(
+        $viewTemplate,
+        Request $request,
+        MwsMessageTchatUploadRepository $mwsMessageTchatUploadRepository,
+        PaginatorInterface $paginator,
+    ): Response {
+        $user = $this->getUser();
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+
+        // TODO: protect with csrf form instead of get param :
+        $removeAll = $request->query->get('removeAll', false);
+        if($removeAll) {
+            // TODO : e2e test : media uploaded file should be removed too
+            // cf vich_uploader config...
+            $qb = $this->em->createQueryBuilder()
+            ->delete(MwsMessageTchatUpload::class, 'u');               
+            $query = $qb->getQuery();
+            $resp = $query->execute();
+            $this->em->flush();
+        }
+
+        // $messages = $mwsMessageRepository->findBy([
+        //     'owner' => $user,
+        // ]);
+        $qb = $mwsMessageTchatUploadRepository->createQueryBuilder('m');
+
+        $query = $qb->getQuery();
+        // dd($query->getResult());    
+        $medias = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            $request->query->getInt('pageLimit', 10), /*page number*/
+        );
+
+        return $this->render('@MoonManager/mws_message/tchat-upload-list.html.twig', [
+            'viewTemplate' => $viewTemplate,
+            'medias' => $medias,
+        ]);
+    }
+
     #[Route(
         '/import/{viewTemplate<[^/]*>?}/{format}',
         name: 'mws_message_import',
