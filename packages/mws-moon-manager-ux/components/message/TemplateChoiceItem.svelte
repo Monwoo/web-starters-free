@@ -74,7 +74,7 @@
         // TODO : clean listener .remove ?
         question?.survey.onValueChanged.add(function(sender, options){
           // TODO : not really efficient having ALL choice item to listen to value changes, should be root question only once ?
-          if(!!options.question && options.question.validateOnValueChanged) {
+          if((!!options.question) && options.question.validateOnValueChanged) {
               options.question.hasErrors(true);
           }
           // TIPS : check is object to avoid submit survey values with string instead of object
@@ -108,6 +108,7 @@
 
               // ...(item.jsonObj ?? {}),
               // templatePreload: options.value, // TODO : nop, not filling templatePreload with last selected value...
+              // TIPS : ok not setting value, othewise, can't detect value change of specific question...
               // templatePreload: options.value ?? item.jsonObj, // TODO : nop, not filling templatePreload with last selected value...
               // id: null, // force new id creation ? NOP, based on projectId lookup...
               // Keep existing id fields
