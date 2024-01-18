@@ -23,21 +23,21 @@ class MwsMessageTchatUpload
     // 
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
-    // #[Vich\UploadableField(mapping: 'message_tchats_upload', fileNameProperty: 'mediaName', size: 'mediaSize')]
-    #[Vich\UploadableField(mapping: 'message_tchats_upload', fileNameProperty: 'media.name', size: 'media.size')]
+    // #[Vich\UploadableField(mapping: 'message_tchats_upload', fileNameProperty: 'media.name', size: 'media.size')]
+    #[Vich\UploadableField(mapping: 'message_tchats_upload', fileNameProperty: 'mediaName', size: 'mediaSize')]
     private ?File $mediaFile = null;
     
     // #[ORM\Embedded(class: 'Vich\UploaderBundle\Entity\File')]
-    #[ORM\Embedded(class: EmbeddedFile::class)]
-    private ?EmbeddedFile $media = null;
+    // #[ORM\Embedded(class: EmbeddedFile::class)]
+    // private ?EmbeddedFile $media = null;
 
     // Duplicate definition error, since using 
     //    #[Vich\UploadableField(.... ?
-    // #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true)]
     private ?string $mediaName = null;
-    // #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true)]
     private ?int $mediaSize = null;
-    // #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true)]
     private ?string $mediaOriginalName = null;
 
     use TimestampableEntity;
@@ -113,13 +113,13 @@ class MwsMessageTchatUpload
         return $this->mediaSize;
     }
 
-    public function setMedia(?int $media): void
-    {
-        $this->media = $media;
-    }
+    // public function setMedia(?int $media): void
+    // {
+    //     $this->media = $media;
+    // }
 
-    public function getMedia(): ?int
-    {
-        return $this->media;
-    }
+    // public function getMedia(): ?int
+    // {
+    //     return $this->media;
+    // }
 }

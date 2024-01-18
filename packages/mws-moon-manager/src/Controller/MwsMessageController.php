@@ -254,7 +254,7 @@ class MwsMessageController extends AbstractController
                 /** @var MwsMessageTchatUpload */
                 $messageTchatUpload = $messageTchatUploadForm->getData();
                 dump($_FILES);
-                dump($uploaderHelper->asset($messageTchatUpload, 'media', MwsMessageTchatUpload::class));
+                dump($uploaderHelper->asset($messageTchatUpload, 'mediaFile', MwsMessageTchatUpload::class));
                 dd($messageTchatUpload);
 
                 $duplicats = $mwsMessageTchatUploadRepository->findBy([
