@@ -1,0 +1,8 @@
+{{
+  form_start(messageTchatUploadForm, { 'attr' : {
+                'class': 'd-flex flex-wrap mws-survey-js-form'
+            } })
+}}
+  {{form_widget(messageTchatUploadForm)}}
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token('mws-csrf-message-tchat-upload') }}" >
+{{form_end(messageTchatUploadForm)}}

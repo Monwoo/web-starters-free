@@ -213,7 +213,8 @@ class MwsMessageController extends AbstractController
     #[Route(
         '/tchat/upload',
         name: 'mws_message_tchat_upload',
-        methods: ['POST'],
+        // methods: ['POST'],
+        methods: ['POST', 'GET'],
         defaults: [],
     )]
     public function tchatUpload(
@@ -227,13 +228,6 @@ class MwsMessageController extends AbstractController
             throw $this->createAccessDeniedException('Only for admins');
         }
 
-        $csrf = $request->request->get('_csrf_token');
-        if (!$this->isCsrfTokenValid('mws-csrf-message-tchat-upload', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
-            throw $this->createAccessDeniedException('CSRF Expired');
-        }
-        $newToken = $csrfTokenManager->getToken('mws-csrf-message-tchat-upload')->getValue();
-
         $messageTchatUpload = new MwsMessageTchatUpload();
         $messageTchatUploadForm = $this->createForm(
             MwsMessageTchatUploadType::class,
@@ -246,6 +240,13 @@ class MwsMessageController extends AbstractController
 
         if ($messageTchatUploadForm->isSubmitted()) {
             $this->logger->debug("Did submit messageTchatUploadForm");
+            $csrf = $request->request->get('_csrf_token');
+            if (!$this->isCsrfTokenValid('mws-csrf-message-tchat-upload', $csrf)) {
+                $this->logger->debug("Fail csrf with", [$csrf, $request]);
+                throw $this->createAccessDeniedException('CSRF Expired');
+            }
+            $newToken = $csrfTokenManager->getToken('mws-csrf-message-tchat-upload')->getValue();
+    
             if ($messageTchatUploadForm->isValid()) {
                 $this->logger->debug("messageTchatUploadForm ok");
 
@@ -253,17 +254,18 @@ class MwsMessageController extends AbstractController
                 // dd($messageTchatUploadImg);
                 /** @var MwsMessageTchatUpload */
                 $messageTchatUpload = $messageTchatUploadForm->getData();
-                dump($_FILES);
-                dump($uploaderHelper->asset($messageTchatUpload, 'mediaFile', MwsMessageTchatUpload::class));
-                dd($messageTchatUpload);
+                // dump($_FILES);
+                // dump($uploaderHelper->asset($messageTchatUpload, 'mediaFile', MwsMessageTchatUpload::class));
+                // dd($messageTchatUpload);
 
                 $duplicats = $mwsMessageTchatUploadRepository->findBy([
-                    'imageOriginalName' => $messageTchatUpload->getImageOriginalName(),
-                    'imageSize' => $messageTchatUpload->getImageSize(),
+                    'mediaOriginalName' => $messageTchatUpload->getMediaOriginalName(),
+                    'mediaSize' => $messageTchatUpload->getMediaSize(),
                 ]);
 
                 $this->em->persist($messageTchatUpload);
                 $this->em->flush();
+                // dd($messageTchatUpload); // OK, mediaName is setup correctly
 
                 // clean files duplicatas, only keep last one, // TODO : warn, l'est adjust behavior...
                 foreach ($duplicats as $dups) {
@@ -273,19 +275,29 @@ class MwsMessageController extends AbstractController
 
                 return $this->json([
                     'success' => 'ok',
-                    'messageTchatUpload' => $messageTchatUpload,
+                    // 'messageTchatUpload' => $messageTchatUpload,
+                    'mediaPathByFiles' => [
+                        // TODO : multi path if multi files uploads...
+                        $uploaderHelper->asset($messageTchatUpload, 'mediaFile')
+                        // TODO : use baseHref ?
+                        // "/uploads/messages/tchats/" . $messageTchatUpload->getMediaName()
+                    ],
                     'renewToken' => $newToken,
                 ]);
             }
             return $this->json([
                 'success' => 'ko',
-                'error' => 'Form is not valid'
+                'error' => 'Form is not valid',
+                'renewToken' => $newToken,
             ]);
         }
 
-        return $this->json([
-            'success' => 'ko',
-            'error' => 'Need submit field for form to be submitted'
+        // return $this->json([
+        //     'success' => 'ko',
+        //     'error' => 'Need submit field for form to be submitted'
+        // ]);
+        return $this->render('@MoonManager/mws_message/tchat-upload.html.twig', [
+            'messageTchatUploadForm' => $messageTchatUploadForm,
         ]);
     }
 

@@ -314,7 +314,7 @@ const surveyFactory = (surveyForm, dataModel) => {
   surveyModel.onUploadFiles.add(async (_, options) => {
     const formData = new FormData();
     options.files.forEach((file) => {
-      formData.append(file.name, file);
+      formData.append('mws_message_tchat_upload[mediaFile][file]', file);
     });
     const token = window.mwsTchatUpTok;
     formData.append('_csrf_token', token);
@@ -341,10 +341,11 @@ const surveyFactory = (surveyForm, dataModel) => {
         if (data.success == 'ok') {
           options.callback(
             'success',
-            options.files.map((file) => {
+            options.files.map((file, idx) => {
               return {
                 file: file,
-                content: "http://localhost:8000/bundles/moonmanager/medias/MoonManagerLogo.png" // + data[file.name]
+                // content: "http://localhost:8000/bundles/moonmanager/medias/MoonManagerLogo.png" // + data[file.name]
+                content: data.mediaPathByFiles[idx],
               };
             })
           );
