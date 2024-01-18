@@ -164,6 +164,11 @@
                     "maxSize": 1024000,
                     "hideNumber": true
                 }, {
+                    visibleIf: "{panel.billingSourceFile.0.content} != ''",
+                    startWithNewLine: true,
+                    type: "html",
+                    html: "Load billing from : <a href='{panel.billingSourceFile.0.content}' target='_blank'>{panel.billingSourceFile.0.name}</a>",
+                }, {
                     name: "text",
                     title: "Texte",
                     type: "comment",
