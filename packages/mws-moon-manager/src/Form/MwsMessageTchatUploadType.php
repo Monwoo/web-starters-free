@@ -16,12 +16,12 @@ class MwsMessageTchatUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('imageFile', VichImageType::class, [
-            'required' => false
-        ]);
-        // $builder->add('imageFile', VichFileType::class, [
+        // $builder->add('mediaFile', VichImageType::class, [
         //     'required' => false
         // ]);
+        $builder->add('mediaFile', VichFileType::class, [
+            'required' => false
+        ]);
 
 
         $builder->add('submit', SubmitType::class, ['label' => 'Télécharger']);

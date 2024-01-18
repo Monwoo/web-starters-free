@@ -26,6 +26,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[Route(
     '/{_locale<%app.supported_locales%>}/mws-message',
@@ -161,11 +162,12 @@ class MwsMessageController extends AbstractController
                         $uploadFiles = $msgTchat['uploadFile'] ?? null; // TODO : refactor for multiples files ?
                         if ($uploadFiles && count($uploadFiles)) {
                             // $uploadFile = $uploadFiles[0];
-                            if ($msgTchat['deleteUpload'] ?? false) {
-                                // TODO : clean not used upload path ? or keep for restore and clean after long non usage ? tag as trash ?
-                                unset($msgTchat['uploadFile']);
-                                $msgTchat['deleteUpload'] = false;
-                            }
+                            // TIPS : below not needed, handled by surveyJs and right Entity Model relation ship delete cascade etc...
+                            // if ($msgTchat['deleteUpload'] ?? false) {
+                            //     // TODO : clean not used upload path ? or keep for restore and clean after long non usage ? tag as trash ?
+                            //     unset($msgTchat['uploadFile']);
+                            //     $msgTchat['deleteUpload'] = false;
+                            // }
                         }
                         $cleanMsgs[] = $msgTchat;
                     };
@@ -218,6 +220,7 @@ class MwsMessageController extends AbstractController
         Request $request,
         MwsMessageTchatUploadRepository $mwsMessageTchatUploadRepository,
         CsrfTokenManagerInterface $csrfTokenManager,
+        UploaderHelper $uploaderHelper,
     ): Response {
         $user = $this->getUser();
         if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
@@ -246,12 +249,13 @@ class MwsMessageController extends AbstractController
             if ($messageTchatUploadForm->isValid()) {
                 $this->logger->debug("messageTchatUploadForm ok");
 
-                // $messageTchatUploadImg = $messageTchatUploadForm->get('imageFile')->getData();
+                // $messageTchatUploadImg = $messageTchatUploadForm->get('mediaFile')->getData();
                 // dd($messageTchatUploadImg);
                 /** @var MwsMessageTchatUpload */
                 $messageTchatUpload = $messageTchatUploadForm->getData();
-                // dump($_FILES);
-                // dd($messageTchatUpload);
+                dump($_FILES);
+                dump($uploaderHelper->asset($messageTchatUpload, 'media', MwsMessageTchatUpload::class));
+                dd($messageTchatUpload);
 
                 $duplicats = $mwsMessageTchatUploadRepository->findBy([
                     'imageOriginalName' => $messageTchatUpload->getImageOriginalName(),

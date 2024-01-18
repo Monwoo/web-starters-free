@@ -23,21 +23,22 @@ class MwsMessageTchatUpload
     // 
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
-    #[Vich\UploadableField(mapping: 'message_tchats_upload', fileNameProperty: 'imageName', size: 'imageSize')]
-    private ?File $imageFile = null;
+    // #[Vich\UploadableField(mapping: 'message_tchats_upload', fileNameProperty: 'mediaName', size: 'mediaSize')]
+    #[Vich\UploadableField(mapping: 'message_tchats_upload', fileNameProperty: 'media.name', size: 'media.size')]
+    private ?File $mediaFile = null;
     
     // #[ORM\Embedded(class: 'Vich\UploaderBundle\Entity\File')]
-    // #[ORM\Embedded(class: EmbeddedFile::class)]
-    // private ?EmbeddedFile $image = null;
+    #[ORM\Embedded(class: EmbeddedFile::class)]
+    private ?EmbeddedFile $media = null;
 
     // Duplicate definition error, since using 
     //    #[Vich\UploadableField(.... ?
-    #[ORM\Column(nullable: true)]
-    private ?string $imageName = null;
-    #[ORM\Column(nullable: true)]
-    private ?int $imageSize = null;
-    #[ORM\Column(nullable: true)]
-    private ?string $imageOriginalName = null;
+    // #[ORM\Column(nullable: true)]
+    private ?string $mediaName = null;
+    // #[ORM\Column(nullable: true)]
+    private ?int $mediaSize = null;
+    // #[ORM\Column(nullable: true)]
+    private ?string $mediaOriginalName = null;
 
     use TimestampableEntity;
 
@@ -54,61 +55,71 @@ class MwsMessageTchatUpload
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
      *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $mediaFile
      */
-    public function setImageFile(?File $imageFile = null): void
+    public function setMediaFile(?File $mediaFile = null): void
     {
-        $this->imageFile = $imageFile;
+        $this->mediaFile = $mediaFile;
 
-        if (null !== $imageFile) {
+        if (null !== $mediaFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new \DateTimeImmutable();
         }
     }
 
-    public function getImageFile(): ?File
+    public function getMediaFile(): ?File
     {
-        return $this->imageFile;
+        return $this->mediaFile;
     }
 
-    // public function setImage(EmbeddedFile $image): void
+    // public function setMedia(EmbeddedFile $media): void
     // {
-    //     $this->image = $image;
+    //     $this->media = $media;
     // }
 
-    // public function getImage(): ?EmbeddedFile
+    // public function getMedia(): ?EmbeddedFile
     // {
-    //     return $this->image;
+    //     return $this->media;
     // }
 
-    public function setImageName(?string $imageName): void
+    public function setMediaName(?string $mediaName): void
     {
-        $this->imageName = $imageName;
+        $this->mediaName = $mediaName;
     }
 
-    public function getImageName(): ?string
+    public function getMediaName(): ?string
     {
-        return $this->imageName;
+        return $this->mediaName;
     }
 
-    public function setImageOriginalName(?string $imageOriginalName): void
+    public function setMediaOriginalName(?string $mediaOriginalName): void
     {
-        $this->imageOriginalName = $imageOriginalName;
+        $this->mediaOriginalName = $mediaOriginalName;
     }
 
-    public function getImageOriginalName(): ?string
+    public function getMediaOriginalName(): ?string
     {
-        return $this->imageOriginalName;
+        return $this->mediaOriginalName;
     }
 
-    public function setImageSize(?int $imageSize): void
+    public function setMediaSize(?int $mediaSize): void
     {
-        $this->imageSize = $imageSize;
+        $this->mediaSize = $mediaSize;
     }
 
-    public function getImageSize(): ?int
+    public function getMediaSize(): ?int
     {
-        return $this->imageSize;
+        return $this->mediaSize;
+    }
+
+    public function setMedia(?int $media): void
+    {
+        $this->media = $media;
+    }
+
+    public function getMedia(): ?int
+    {
+        return $this->media;
     }
 }

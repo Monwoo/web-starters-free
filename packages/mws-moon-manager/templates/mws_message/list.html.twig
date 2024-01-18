@@ -36,7 +36,7 @@
         'csrfMessageDelete': csrf_token('mws-csrf-message-delete'),
 		'messagesHeaders': {
             'projectId' : knp_pagination_sortable(messages, 'Project Id', 'm.projectId'),
-            'destId' : knp_pagination_sortable(messages, 'Dest Id', 'm.destId'),
+            'templateNameSlug' : knp_pagination_sortable(messages, 'Template name', 'm.templateNameSlug'),
             'monwooAmount' : knp_pagination_sortable(messages, 'Amount', 'm.monwooAmount'),
             'projectDelayInOpenDays' : knp_pagination_sortable(messages, 'Delay', 'm.projectDelayInOpenDays'),
             'asNewOffer' : knp_pagination_sortable(messages, 'As new', 'm.asNewOffer'),
