@@ -111,6 +111,30 @@ html, body, footer {
     }
 }
 
+.sd-file__list {
+    // width: 100%;
+    padding: 0;
+    .sd-file__preview {
+        width: 100%;
+        .sd-file__sign a {
+            width: 100%;
+        }
+    }
+}
+
+.sd-element--with-frame {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.sd-root-modern--mobile .sd-body.sd-body--responsive, .sd-root-modern--mobile .sd-body.sd-body--static {
+    padding: 2px;
+}
+
+sd-body.sd-body--responsive {
+    padding: 2px;  
+}
+
 .read-status {
     svg {
         max-width: 42px;

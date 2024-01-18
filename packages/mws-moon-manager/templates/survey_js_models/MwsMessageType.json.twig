@@ -155,27 +155,14 @@
                 },                {
                     "type": "file",
                     "title": "Attach billing source if you have (.yml, max 1Mo)",
+                    _acceptedTypes: "application/yaml",
+                    acceptedTypes: ".yml,.yaml",
                     "name": "billingSourceFile",
                     "storeDataAsText": false,
                     "waitForUpload": true,
                     "allowMultiple": false,
                     "maxSize": 1024000,
                     "hideNumber": true
-                }, {
-                    visibleIf: "{panel.uploadFile.0.content} != ''",
-                    startWithNewLine: false,
-                    type: "html",
-                    html: "Fichier joint : <a href='{panel.uploadFile.0.content}' target='_blank'>{panel.uploadFile.0.name}</a>",
-                },  {
-                    visibleIf: "{panel.uploadFile.0.content} != ''",
-                    startWithNewLine: false,
-                    name: "deleteUpload",
-                    title: "Supprimer ",
-                    type: "boolean",
-                    "description": "Enlever la pièce jointe.",
-                    validators: [],
-                    minWidth: "20%",
-                    isRequired: false,
                 }, {
                     name: "text",
                     title: "Texte",
@@ -202,6 +189,25 @@
     ]
 } %}
 {{ model|serialize('json')|raw }}
+
+{# 
+                , {
+                    visibleIf: "{panel.uploadFile.0.content} != ''",
+                    startWithNewLine: false,
+                    type: "html",
+                    html: "Fichier joint : <a href='{panel.uploadFile.0.content}' target='_blank'>{panel.uploadFile.0.name}</a>",
+                }, {
+                    visibleIf: "{panel.uploadFile.0.content} != ''",
+                    startWithNewLine: false,
+                    name: "deleteUpload",
+                    title: "Supprimer ",
+                    type: "boolean",
+                    "description": "Enlever la pièce jointe.",
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                }, 
+ #}
 
 {#
 TODO : can't show alert with json data model only ? :

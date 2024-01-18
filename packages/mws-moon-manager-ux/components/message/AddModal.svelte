@@ -130,7 +130,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 </div>
             {/if}
             <!-- Modal body -->
-            <div class="p-6 space-y-6"
+            <div class="p-1 space-y-6"
             class:mr-[25vw]={sourceDetailView &&
                 sourceDetailView.length &&
                 showSourceDetail}>
