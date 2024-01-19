@@ -313,8 +313,10 @@ const surveyFactory = (surveyForm, dataModel) => {
   // https://surveyjs.io/form-library/examples/file-upload/jquery#content-code
   surveyModel.onUploadFiles.add(async (_, options) => {
     const formData = new FormData();
-    options.files.forEach((file) => {
-      formData.append('mws_message_tchat_upload[mediaFile][file]', file);
+    options.files.forEach((file, idx) => {
+      // TODO : multi-files uploads ?
+      // formData.append(`mws_message_tchat_upload[mediaFile][file${idx}]`, file);
+      formData.append(`mws_message_tchat_upload[mediaFile][file]`, file);
     });
     const token = window.mwsTchatUpTok;
     formData.append('_csrf_token', token);

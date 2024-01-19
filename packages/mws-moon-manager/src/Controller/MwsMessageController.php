@@ -26,6 +26,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Yaml\Yaml;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[Route(
@@ -342,6 +343,114 @@ class MwsMessageController extends AbstractController
             'viewTemplate' => $viewTemplate,
             'medias' => $medias,
         ]);
+    }
+
+    #[Route(
+        '/tchat/load-billing-src/{viewTemplate<[^/]*>?}/{format?}',
+        name: 'mws_message_tchat_load_billing_src',
+        methods: ['GET', 'POST'],
+        defaults: [
+            'viewTemplate' => null,
+            'format' => 'yaml',
+        ],
+    )]
+    public function tchatLoadBillingSrc(
+        string|null $viewTemplate,
+        string $format,
+        Request $request,
+        MwsMessageRepository $mwsMessageRepository,
+    ): Response {
+        $user = $this->getUser();
+        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+        if ($format != 'yaml') {
+            throw $this->createAccessDeniedException('Format not handled...');
+        }
+
+        $mwsBillingsPostUrl = $this->generateUrl('app_pdf_billings');
+        $srcToLoad = "// TODO";
+
+        // TODO : auto adjust files from template ? will download manually for now
+        //        But might be nice to autoload original or refreshed version
+        //        with last informations in message details, need url generators
+        //        by destId to generate client profile and project link to destination
+
+        // // sync billing :
+        // $tmpDataFile = __DIR__ . "/../tmp.yaml";
+        // $dataTemplate = Yaml::parseFile($srcToLoad);
+
+        // $dataTemplate = array_merge($dataTemplate , [
+        //     'clientSlug' => "--",
+        //     'clientName' => self::end(explode("/-", $report['LAST-CLIENT-URL'])),
+        //     'clientWebsite' => $report['LAST-CLIENT-URL'],
+        //     'documentType' => "devis",
+        //     'quotationTemplate' => "monwoo-02-wp-e-com",
+        //     'quotationNumber' => $report['LAST-MONWOO-DEVIS'],
+        //     'businessAim' => ($dataTemplate['businessAim'] ?? '') . '<div class="description" style="">
+        //         - ' . $report['LAST-PROJECT-URL']
+        //         .'</div>',
+        //     '_token' => $csrf,
+        // ]);
+        // file_put_contents($tmpDataFile, Yaml::dump($dataTemplate));
+
+        // $data = [
+        //     'billing_config_submitable' => [
+        //         // TODO : preload import file
+        //         'clientSlug' => "--",
+        //         'importedUpload' => DataPart::fromPath(
+        //             $tmpDataFile,
+        //             self::end(explode('/', $this->monwooDataTemplate)),
+        //             'application/yaml'
+        //         ),
+        //         '_token' => $csrf,
+        //     ]
+        // ];
+
+        // // https://github.com/symfony/symfony/issues/49315
+        // // TIPS : example for native JS :
+        // // https://stackoverflow.com/questions/62281752/how-to-validate-content-length-of-multipart-form-data-in-javascript
+        // $formData = new FormDataPart($data);
+        // $dataPartHeaders = $formData->getPreparedHeaders()->toArray();
+        // $dataPartHeaders["Cookie"] = $headers['Cookie'];
+        // // var_dump([$dataPartHeaders, $formData->size]); exit();
+
+        // // $dataPartHeaders['Authorization'] = $accessToken;
+        // // https://stackoverflow.com/questions/71387088/empty-request-request-and-request-files-with-multipart-form-data
+        // // DO NOT specify the Content-Type header yourself
+        // // $dataPartHeaders['Content-Type'] = 'multipart/form-data';
+
+        // // Save in pdfbillings to be able to download Monwoo billing for this outlay :
+        // $response = $httpClient->request('POST', "$mwsBillingsPostUrl?for-monwoo-theme", [
+        //     'headers' => $dataPartHeaders,
+        //     // 'body' => $formData->bodyToIterable(), // TODO  : recomanded way, but not working directly, ok with string value, need to clone somewhere ?
+        //     // https://stackoverflow.com/questions/67198851/uploaded-file-in-apitestcase-is-not-set-in-the-controller-side-request
+        //     'body' => $formData->bodyToString(),
+        // ]);
+        // $statusCode = $response->getStatusCode();
+        // if ($statusCode === 302 || $statusCode === 200) {
+        //     $io->success([
+        //         "[$statusCode] POST OK with $mwsBillingsPostUrl and : $this->monwooDataTemplate",
+        //         "",
+        //     ]);
+        //     $headers["Cookie"] = $respHeaders['set-cookie'][0];
+        //     file_put_contents(__DIR__ . "/../../tmp.html", $response->getContent());
+        //     // $io->info([
+        //     //     $response->getContent(),
+        //     // ]);
+        // } else {
+        //     $io->warning([
+        //         "[$statusCode] Fail to POST $this->monwooDataTemplate at $mwsBillingsPostUrl",
+        //         $response->getInfo('debug')
+        //     ]);
+        //     return Command::FAILURE;
+        // }
+
+
+        // redirect to report ready to download
+        return $this->redirectToRoute(
+            'app_pdf_billings',
+        );
     }
 
     #[Route(
