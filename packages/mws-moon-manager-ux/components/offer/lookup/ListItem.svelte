@@ -61,14 +61,19 @@
       {(offerTagsByKey($state, offer.currentStatusSlug)?.label)
       || offer.currentStatusSlug}
     </div>
-    [{ offer.sourceDetail.projectOffersAnswered }
+    [{ offer.sourceDetail?.projectOffersAnswered }
     ..
-    { offer.sourceDetail.projectOffersViewed }] /
-    { offer.sourceDetail.projectOffers }
+    { offer.sourceDetail?.projectOffersViewed }] /
+    { offer.sourceDetail?.projectOffers }
   </th>
   <td><TagsInput bind:tags={offer.tags} {offer} {locale}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
-  <td>{offer.clientUsername}</td>
+  <td>
+    {offer.clientUsername} <br/>
+    {offer.contacts[0].sourceDetail?.status}  <br/>
+    {offer.contacts[0].sourceDetail?.nbProjects} projet(s) <br/>
+    depuis : {offer.contacts[0].sourceDetail?.membershipStart} <br/>
+  </td>
   <td>
     {offer.contact1 ?? ''}<br/>
     {offer.contact2 ?? ''}

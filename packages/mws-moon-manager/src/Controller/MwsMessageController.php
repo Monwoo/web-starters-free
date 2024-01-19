@@ -557,6 +557,9 @@ class MwsMessageController extends AbstractController
                                 $sync = function ($path) use ($inputMessage, $message) {
                                     $set = 'set' . ucfirst($path);
                                     $get = 'get' . ucfirst($path);
+                                    if(!method_exists($inputMessage, $get)) {
+                                        $get = 'is' . ucfirst($path);
+                                    }
                                     $v =  $inputMessage->$get();
                                     if (
                                         null !== $v &&
@@ -566,7 +569,7 @@ class MwsMessageController extends AbstractController
                                     }
                                 };
                                 // TODO : factorize code with serializer service ? factorize to same location...
-                                $sync('clientUsername');
+                                $sync('projectId');
                                 $sync('destId');
                                 $sync('monwooAmount');
                                 $sync('projectDelayInOpenDays');
