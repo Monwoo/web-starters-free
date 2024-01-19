@@ -14,7 +14,13 @@ vich_uploader:
         message_tchats_upload:
             uri_prefix: '/uploads/messages/tchats'
             upload_destination: '%kernel.project_dir%/public/uploads/messages/tchats'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            # namer: MWS\MoonManagerBundle\Naming\OrignalNameNamer
+            namer: mws_message_tchat_upload_namer
+            # directory_namer:
+            #     service: Vich\UploaderBundle\Naming\CurrentDateTimeDirectoryNamer
+            #     options:
+            #         date_time_format: 'Y/d/m'
+            #         date_time_property: uploadTimestamp
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true

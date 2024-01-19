@@ -20,6 +20,20 @@ services:
         #     # pass this value to any $projectDir argument for any service
         #     # that's created in this file (including controller arguments)
         #     string $projectDir: '%kernel.project_dir%'
+        # public: true
+
+
+    # MWS\MoonManagerBundle\Naming\:
+    #     resource: '../src/Naming/'
+    #     # https://stackoverflow.com/questions/48425043/symfony-4-service-removed-or-inlined-though-it-is-public/65355876#65355876
+    #     public: true
+    #     # alias: MWS\MoonManagerBundle\Naming\OrignalNameNamer.message_tchats_upload
+
+    mws_message_tchat_upload_namer:
+        class: MWS\MoonManagerBundle\Naming\OrignalNameNamer
+        # https://stackoverflow.com/questions/48425043/symfony-4-service-removed-or-inlined-though-it-is-public/65355876#65355876
+        public: true
+        # alias: MWS\MoonManagerBundle\Naming\OrignalNameNamer.message_tchats_upload
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
