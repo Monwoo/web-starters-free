@@ -60,7 +60,11 @@
       {JSON.stringify(offerTagsByCatSlugAndSlug($state, offer.currentStatusSlug))} -->
       {(offerTagsByKey($state, offer.currentStatusSlug)?.label)
       || offer.currentStatusSlug}
-  </div>
+    </div>
+    [{ offer.sourceDetail.projectOffersAnswered }
+    ..
+    { offer.sourceDetail.projectOffersViewed }] /
+    { offer.sourceDetail.projectOffers }
   </th>
   <td><TagsInput bind:tags={offer.tags} {offer} {locale}></TagsInput></td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
