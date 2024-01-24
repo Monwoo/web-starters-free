@@ -914,11 +914,23 @@ class MwsOfferController extends AbstractController
                                 $sync('clientUrl');
                                 $sync('currentBillingNumber');
                                 $sync('sourceDetail');
-                                if ($forceStatusRewrite) {
-                                    $sync('currentStatusSlug');
-                                }
                                 if ($forceCleanTags) {
                                     $offer->getTags()->clear();
+                                }
+                                if ($forceStatusRewrite) {
+                                    $sync('currentStatusSlug');
+                                    $slugs = explode('|', $offer->getCurrentStatusSlug());
+                                    $currentStatusTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+                                        $slugs[1], $slugs[0]
+                                    );
+                                    // TODO : if currentStatusTag not found ? wrong slug ? etc ...
+                                    // TODO : refactor to : slug / nameSlug / categorySlug
+                                    // since slug is now used for name and full slug key...
+
+                                    // TIPS : add to ensure tag list ok without duplicata :
+                                    // $offer->addTag($currentStatusTag); // WARNING : refactor or warn ? this one to not check category exclusivity etc...
+                                    // $offer->addTag($currentStatusTag);
+                                    $mwsOfferRepository->addTag($offer, $currentStatusTag);
                                 }
 
                                 $tags = $inputOffer->getTags();
@@ -926,7 +938,9 @@ class MwsOfferController extends AbstractController
                                     // TIPS : inside addTag, only one by specific only one choice category type ?
                                     // OK to copy all, clone src use
                                     // $mwsOfferRepository->addTag($offer, $tag);
-                                    $offer->addTag($tag);
+                                    // $offer->addTag($tag); // TODO : clean up script in case someone use the add without category dups check ?
+                                    // But still safer to use repo algo :
+                                    $mwsOfferRepository->addTag($offer, $tag);
                                 }
 
                                 if ($forceCleanContacts) {
