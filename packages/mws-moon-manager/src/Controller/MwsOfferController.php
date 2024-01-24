@@ -285,6 +285,11 @@ class MwsOfferController extends AbstractController
                      JSON_EXTRACT(o.sourceDetail, '$.monwooOfferId') IS NULL
                     ");
                 }
+                if ($customFilter === "Avec offre déposée") {
+                    $qb = $qb->andWhere("
+                     NOT JSON_EXTRACT(o.sourceDetail, '$.monwooOfferId') IS NULL
+                    ");
+                }
             }
         }
 

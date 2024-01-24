@@ -210,7 +210,7 @@ class MwsMessage
         return $this->isTemplate;
     }
 
-    public function setIsTemplate(bool $isTemplate): static
+    public function setIsTemplate(?bool $isTemplate): static
     {
         $this->isTemplate = $isTemplate;
 

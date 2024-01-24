@@ -7,21 +7,51 @@
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let locale;
   export let viewTemplate;
-  export let reportSummary = '';
+  export let reportSummary = "";
   export let format;
   export let uploadForm;
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const forceRewrite = urlParams.has("forceRewrite");
+
   console.debug(locale);
+
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
   <div>
-    <a href="{ Routing.generate('mws_offer_lookup', {
-      '_locale': locale ?? '',
-      'viewTemplate': viewTemplate ?? '',
-    }) }">
+    <a
+      href={Routing.generate("mws_offer_lookup", {
+        _locale: locale ?? "",
+        viewTemplate: viewTemplate ?? "",
+      })}
+    >
       <button class="btn btn-outline-primary p-1">Liste des offres.</button>
-    </a>    
+    </a>
+
+    {#if forceRewrite}
+      <a
+        href={Routing.generate("mws_offer_import", {
+          _locale: locale ?? "",
+          viewTemplate: viewTemplate ?? "",
+        })}
+      >
+        <button class="btn btn-outline-primary p-1">Ne pas surcharger.</button>
+      </a>
+    {:else}
+      <a
+        href={Routing.generate("mws_offer_import", {
+          _locale: locale ?? "",
+          viewTemplate: viewTemplate ?? "",
+          forceRewrite: true,
+          forceStatusRewrite: true,
+        })}
+      >
+        <button class="btn btn-outline-primary p-1"
+          >Forcer la surcharger.</button
+        >
+      </a>
+    {/if}
   </div>
   <div class="flex flex-wrap">
     <div class="label">
