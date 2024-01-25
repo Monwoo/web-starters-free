@@ -31,6 +31,29 @@
 	</tr>
 {% endfor %}
 
+{% if (billingConfig.marginBeforeTotal ?? null)
+	and billingConfig.marginBeforeTotal|length %}
+	<br pagebreak="true" />
+	<tr>
+		{# <td class="empty-space" style="height:{{billingConfig.marginBeforeTotal}};font-size:{{billingConfig.marginBeforeTotal}};">&nbsp;</td> #}
+		<td class="empty-space" style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;
+		height:{{billingConfig.marginBeforeTotal}};font-size:{{billingConfig.marginBeforeTotal}};
+		">&nbsp;</td>
+		<td class="empty-space" style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;
+		height:{{billingConfig.marginBeforeTotal}};font-size:{{billingConfig.marginBeforeTotal}};
+		">&nbsp;</td>
+		<td class="empty-space" style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;
+		height:{{billingConfig.marginBeforeTotal}};font-size:{{billingConfig.marginBeforeTotal}};
+		">&nbsp;</td>
+		<td class="empty-space" style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;
+		height:{{billingConfig.marginBeforeTotal}};font-size:{{billingConfig.marginBeforeTotal}};
+		">&nbsp;</td>
+		<td class="empty-space" style="width:{{ 0.12 * fullWidth }};border-right:solid 1px black;
+		height:{{billingConfig.marginBeforeTotal}};font-size:{{billingConfig.marginBeforeTotal}};
+		">&nbsp;</td>
+	</tr>
+{% endif %}
+
 {% if leftToSettle.totalWithTaxes|round(2) %}
 	<tr style="text-align:right;font-size:10pt;font-weight:bold;color:#000000;">
 		<td style="width:{{ 0.40 * fullWidth }};border-right:solid 1px black;">

@@ -1163,6 +1163,7 @@ class PdfBillingsController extends AbstractController
         $sync('marginBeforeEndItem', $toFloat);
         $sync('marginAfterEndItem', $toFloat);
         $sync('pageBreakAfterEndItem');
+        $sync('marginBeforeTotal', $toFloat);
         $sync('hideDefaultOutlaysOnEmptyOutlays');
 
         $this->setupBillingConfigDefaults($bConfig);

@@ -108,6 +108,9 @@ class BillingConfig
     #[ORM\Column(nullable: true)]
     private ?bool $pageBreakAfterEndItem = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marginBeforeTotal = null;
+
     #[ORM\Column(nullable: true)]
     private ?bool $hideDefaultOutlaysOnEmptyOutlays = null;
 
@@ -594,6 +597,18 @@ class BillingConfig
         if ($this->products->removeElement($product)) {
             $product->removeBilling($this);
         }
+
+        return $this;
+    }
+
+    public function getMarginBeforeTotal(): ?string
+    {
+        return $this->marginBeforeTotal;
+    }
+
+    public function setMarginBeforeTotal(?string $marginBeforeTotal): static
+    {
+        $this->marginBeforeTotal = $marginBeforeTotal;
 
         return $this;
     }

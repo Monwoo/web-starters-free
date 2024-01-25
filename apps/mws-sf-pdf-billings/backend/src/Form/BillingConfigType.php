@@ -40,6 +40,7 @@ class BillingConfigType extends AbstractType
             ->add('marginBeforeEndItem')
             ->add('marginAfterEndItem')
             ->add('pageBreakAfterEndItem')
+            ->add('marginBeforeTotal')
             ->add('hideDefaultOutlaysOnEmptyOutlays')
             ->add('outlays')
             ->add('products')
