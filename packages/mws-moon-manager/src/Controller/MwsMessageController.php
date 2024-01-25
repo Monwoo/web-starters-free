@@ -790,8 +790,31 @@ class MwsMessageController extends AbstractController
                     $bulkAnswers[$destId] = [];
                 }
                 $dest = &$bulkAnswers[$destId];
+                if ($msg->isIsTemplate()) {
+                    // ensure template stay as custom template ID...
+                    // INDEED, in case of multiple messages, templates are lost for reloads...
+                    // so only keep first template found with right id
+                    // TODO : prevent id clash, disallow same cat and name slugs
+                    //         if is template...)
+                    $tId = "_" . $msg->getTemplateCategorySlug()
+                    . "_" . $msg->getTemplateNameSlug();
+                    if ($msg->getProjectId() !== $tId
+                       && !array_key_exists($tId, $dest)) {
+                        $tMsg = clone $msg;
+                        $tMsg->setProjectId($tId);
+                        // array_push($messages, $tMsg); foreach will not see this add...
+                        $dest[$tId] = $tMsg;
+                        $msg->setIsTemplate(false);
+                    }
+                }
                 if (!array_key_exists($projectId, $dest)) {
-                    $dest[$projectId] = [];
+                    // $dest[$projectId] = [];
+                } else {
+                    // prepend existing messages to new project description
+                    $msg->setMessages(array_merge(
+                        $dest[$projectId]->getMessages(),
+                        $msg->getMessages()
+                    ));
                 }
                 $dest[$projectId] = $msg;
             }
