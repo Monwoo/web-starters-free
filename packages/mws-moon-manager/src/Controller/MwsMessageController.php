@@ -109,14 +109,18 @@ class MwsMessageController extends AbstractController
                 // $projectDelayInOpenDays = $surveyAnswers['projectDelayInOpenDays'] ?? null;
                 // $asNewOffer = $surveyAnswers['asNewOffer'] ?? null;
 
+                // $msg = ($msgId ? $mwsMessageRepository->findOneBy([
+                //     'id' => $msgId,
+                // PB : fail back on project ID avoid multi-msg per offers :
+                // ]) : null) ?? $mwsMessageRepository->findOneBy([
+                //     'projectId' => $projectId,
+                //     'destId' => $destId,
+                //     'sourceId' => $sourceId,
+                //     'owner' => $user,
+                // ]);
                 $msg = ($msgId ? $mwsMessageRepository->findOneBy([
                     'id' => $msgId,
-                ]) : null) ?? $mwsMessageRepository->findOneBy([
-                    'projectId' => $projectId,
-                    'destId' => $destId,
-                    'sourceId' => $sourceId,
-                    'owner' => $user,
-                ]);
+                ]) : null);
                 $shouldDeleteMessage = $surveyAnswers['shouldDeleteMessage'] ?? null;
 
                 if ($shouldDeleteMessage && $msg) {
