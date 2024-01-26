@@ -203,12 +203,18 @@ import {
 function MsgTemplateItemViewModel(params, componentInfo) {
     var self = this;
     console.log('KO Msg template item params : ', params);
+
+    var childrenDone = Survey.ko.bindingEvent.subscribe(componentInfo.element, 'descendantsComplete', function (node) {
+      // You can add custom post-processing logic here
+      console.log('Having Question view rendering completed : ', params.question);
+    });
+
     // Data: value is either null, 'like', or 'dislike'
       // this.chosenValue = params.item.jsonObj.templateCategorySlug;
       // this.chosenValue += ' => ' + params.item.jsonObj.templateNameSlug;
-    self.chosenValue = encodeURIComponent(JSON.stringify(
+    self.chosenValue = params.item ? encodeURIComponent(JSON.stringify(
       params.item.jsonObj
-    ));
+    )) : null;
   
     // https://knockoutjs.com/documentation/component-registration.html#specifying-a-viewmodel
     const element = componentInfo.element;
@@ -216,11 +222,20 @@ function MsgTemplateItemViewModel(params, componentInfo) {
       console.debug('KO Msg template item ready');
       console.debug(event.detail);
       console.debug(params);
+
+      const bc = Survey.ko.contextFor(componentInfo.element);
+      console.log("bc", bc);
+      // const question = bc.$component.question;
+       // NOT always setup, on first load, is null inside params...
+      const question = bc.question; // params.question;
+  
       if (self.chosenValue == event.detail.fromValue) {
-        event.detail.bindQuestion(params.question, params.item);
-        console.debug('choice-item-ready ok for ' + params.item.jsonObj?.id
-        + ' ' + params.item.jsonObj?.templateCategorySlug
-        + ' ' + params.item.jsonObj?.templateNameSlug);  
+        setTimeout(() => {
+          event.detail.bindQuestion(question, params.item);
+          console.debug('choice-item-ready ok for ' + params.item?.jsonObj?.id
+          + ' ' + params.item?.jsonObj?.templateCategorySlug
+          + ' ' + params.item?.jsonObj?.templateNameSlug);
+        }, 200);
       }
     };
     // jQuery('body').bind("mws-msg-template-choice-item-ready", function(e){console.log('mws-msg-template-choice-item-ready OK', e);});
@@ -228,22 +243,25 @@ function MsgTemplateItemViewModel(params, componentInfo) {
     // element.addEventListener('mws-msg-template-choice-item-ready', readyListener);
     // element.addEventListener('mws-msg-template-choice-item-ready', readyListener);
     // jQuery(element).bind("mws-msg-template-choice-item-ready", readyListener);
+    // self.readyListener = readyListener;
 
     // Nop, not working too, only the one on 'window' is working, need id check
     // since will get event from all, not only children events...
-    self.readyListener = readyListener;
+    //     data-bind="attr: {item : chosenValue}, event: { 'mws-msg-template-choice-item': function(event) { readyListener(event) }}"
     window.addEventListener('mws-msg-template-choice-item-ready', readyListener);
 
-    const bc = Survey.ko.contextFor(componentInfo.element);
-    console.log("bc", bc);
-    // const question = bc.$component.question;
-    const question = bc.question;
+    // const bc = Survey.ko.contextFor(componentInfo.element);
+    // console.log("bc", bc);
+    // // const question = bc.$component.question;
+    // const question = bc.question;
+
     // bc.$component.addEventListener('mws-msg-template-choice-item-ready', readyListener);
 
     // https://knockoutjs.com/documentation/component-binding.html
     // const parentDispose = self.dispose;
     self.dispose = () => {
       // parentDispose();
+      childrenDone.dispose();
       window.removeEventListener('mws-msg-template-choice-item-ready', readyListener);
       console.log('KO Msg template item disposed OK');
     }
@@ -267,7 +285,7 @@ Survey.ko.components.register('mws-msg-template-choice-item', {
   template:
     // https://copyprogramming.com/howto/knockoutjs-how-do-i-bind-change-event-of-select-without-firing-during-databinding
     `<s-mws-msg-template-choice-item
-    data-bind="attr: {item : chosenValue}, event: { 'mws-msg-template-choice-item': function(event) { readyListener(event) }}"
+    data-bind="attr: {item : chosenValue}"
     ></s-mws-msg-template-choice-item>`
 });
 

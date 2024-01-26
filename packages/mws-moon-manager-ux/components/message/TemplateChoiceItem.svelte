@@ -39,7 +39,7 @@
   // $: templateHtmlView = liveTemplateHtmlView ? liveTemplateHtmlView : templateHtmlView;
 
   itemData = (item && item != 'undefined') ? JSON.parse(decodeURIComponent(item)) : null;
-  console.log('Custom view for : ', question, itemData);
+  console.log('Custom view INIT : ', question, itemData);
 
   // TODO : below on:click is called when dropdown open itself too
   const reloadOffer = () => {
@@ -69,10 +69,12 @@
         // question?.on('change', () => {
         //   alert('Reload modal survey data with template values...')
         // })
+        console.log('Custom view for question : ', question);
 
         // https://surveyjs.answerdesk.io/ticket/details/t6188/adding-custom-event-validation-for-single-question
         // TODO : clean listener .remove ?
         question?.survey.onValueChanged.add(function(sender, options){
+          console.log('Survey value did change in template choice from ', sender);
           // TODO : not really efficient having ALL choice item to listen to value changes, should be root question only once ?
           if((!!options.question) && options.question.validateOnValueChanged) {
               options.question.hasErrors(true);
@@ -131,7 +133,7 @@
 <div bind:this={liveTemplateHtmlView} class="sv-tagbox__item-text mws-choice-item">
   <!-- // TIPS : will be called multiple time even if click on parent ...
   // reloadOffer() should work on value change instead... -->
-  <span class="sv-string-viewer" on:mousedown={
+  <span class="sv-string-viewer" on:click={
     () => (null)
   }>
     {#if itemData}
@@ -141,21 +143,23 @@
     {/if}
     <slot />
   </span>
-  <div class="mws-choice-detail">
-    <div class="relative">
-      <div>Proposition : { itemData.monwooAmount ?? '' }</div>
-      <div>Délais : { itemData.projectDelayInOpenDays ?? '' } jour(s) ouvrés</div>
-      {@html (itemData.messages ?? []).reduce(
-        // <pre>${msg.text}</pre>
-        (html, msg) => `
-            <div>${ msg.billingSourceFile ? msg.billingSourceFile[0]?.name : 'No billings'}</div>
-            <div class="max-w-full whitespace-break-spaces">${msg.text?.replaceAll('\n', '<br/>')}</div>
-          `
-          + html,
-        ``
-      )}  
+  {#if itemData}
+    <div class="mws-choice-detail">
+      <div class="relative">
+        <div>Proposition : { itemData?.monwooAmount ?? '' }</div>
+        <div>Délais : { itemData?.projectDelayInOpenDays ?? '' } jour(s) ouvrés</div>
+        {@html (itemData?.messages ?? []).reduce(
+          // <pre>${msg.text}</pre>
+          (html, msg) => `
+              <div>${ msg.billingSourceFile ? msg.billingSourceFile[0]?.name : 'No billings'}</div>
+              <div class="max-w-full whitespace-break-spaces">${msg.text?.replaceAll('\n', '<br/>')}</div>
+            `
+            + html,
+          ``
+        )}  
+      </div>
     </div>
-  </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -165,8 +169,9 @@
 
     .mws-choice-detail {
       // position: fixed;
-      display: none;
-      opacity: 0.8;
+      // display: none;
+      display: flex;
+      opacity: 0;
       pointer-events: none;
       flex-direction: column;
       flex-wrap: wrap;
@@ -177,7 +182,7 @@
       @apply rounded-md;
       @apply space-y-6;
       @apply fixed;
-      @apply z-50;
+      @apply z-50; // TODO hierarchy issue, do not go over detail view... => service to open menu detail popup instantiated in parent ?
       @apply left-0;
       @apply w-[35vw];
       @apply h-[30vh];
@@ -185,7 +190,7 @@
     }
     &:hover {
       .mws-choice-detail {
-        display: flex;
+        opacity: 0.8;
       }
     }
   }
