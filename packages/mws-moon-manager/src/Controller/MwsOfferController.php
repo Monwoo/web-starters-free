@@ -290,6 +290,104 @@ class MwsOfferController extends AbstractController
                      NOT JSON_EXTRACT(o.sourceDetail, '$.monwooOfferId') IS NULL
                     ");
                 }
+                if ($customFilter === "Est favoris") {
+                    $qb = $qb->andWhere("
+                     JSON_EXTRACT(o.sourceDetail, '$.isBookmark') = :isBookmark
+                    ")
+                    ->setParameter('isBookmark', true);
+                }
+                if ($customFilter === "Manque une réponse") {
+                    $autoResponse = 'Nous pouvons commencer par une étude de projet via sessions de 20 minutes en distanciel dès 125,76 € TTC';
+                    $msgInfo = '<span class="text-warning">'; // TODO : plateforme msg, not last users msgs
+                    $msgOwner = '<span class="font-bold">Moi</span>';
+                    // https://stackoverflow.com/questions/744289/how-to-increase-value-by-a-certain-number
+                    // https://stackoverflow.com/questions/9987279/possible-to-create-a-calculated-field-in-a-doctrine-query-you-can-then-retrieve
+                    // $qb = $qb->select("o, CAST((JSON_LENGTH('$.messages') - 1) as TEXT) as msg_length"); // TODO : should be computed and setup after all filters check, might be more computed values
+                    // $qb = $qb->select("o, (JSON_LENGTH('$.messages') - 1) as msgLength"); // TODO : should be computed and setup after all filters check, might be more computed values
+                    // https://stackoverflow.com/questions/44404855/how-to-get-last-element-in-a-mysql-json-array
+                    // // TIPS : fail with SQLITE, not additions in where clause... ?
+                    // nop CONCAT only accept 2 fields...
+                    // $qb = $qb->andWhere(" 
+                    //  JSON_EXTRACT(o.sourceDetail,
+                    //     CONCAT('$.messages[',JSON_LENGTH('$.messages') - 1,']')
+                    //  ) LIKE :msgOwner
+                    // ")
+                    
+                    // $qb = $qb->andWhere("
+                    //     JSON_EXTRACT(o.sourceDetail,
+                    //     " . $qb->expr()->concat(
+                    //         "'$.messages['", $qb->expr()->concat(
+                    //             // "'0'",// "JSON_LENGTH('$.messages')", // "o.clientUsername", // "'0'",
+                    //             $qb->expr()->diff("JSON_LENGTH('$.messages')", 1),
+                    //             "']'"
+                    //         )
+                    //     ) . "
+                    //     ) LIKE :msgOwner
+                    // ")
+
+                    $qb = $qb->andWhere("
+                        (
+                            JSON_EXTRACT(o.sourceDetail,
+                                MWS_CONCAT(
+                                    '$.messages[',
+                                    IIF(JSON_LENGTH(o.sourceDetail, '$.messages') > 0,
+                                        JSON_LENGTH(o.sourceDetail, '$.messages') - 1,
+                                        0
+                                    ),
+                                    ']'
+                                )
+                            ) NOT LIKE :msgOwner
+                        ) OR (
+                            JSON_EXTRACT(o.sourceDetail,
+                                MWS_CONCAT(
+                                    '$.messages[',
+                                    IIF(JSON_LENGTH(o.sourceDetail, '$.messages') > 0,
+                                        JSON_LENGTH(o.sourceDetail, '$.messages') - 1,
+                                        0
+                                    ),
+                                    ']'
+                                )
+                            ) LIKE :autoResponse
+                        )
+                    ")
+                    ->setParameter('msgOwner', '%' . $msgOwner . '%')
+                    ->setParameter('autoResponse', '%' . $autoResponse . '%');
+
+                    // https://database.guide/sqlite-json_array_length/
+                    // $qb = $qb->andWhere("
+                    //     JSON_LENGTH(o.sourceDetail, '$.messages') > 0
+                    // ");
+
+                    // dd($qb->getQuery()->getSQL());
+                    // dd($qb->expr()->);
+                }
+                if ($customFilter === "Ordonner par dernier tchat") {
+                    // $qb = $qb->andWhere("
+                    //  JSON_EXTRACT(o.sourceDetail, '$.messages[-1]') IS TRUE
+                    // ");
+
+                    // TODO : pre-compute and/or sanity scripts that remove unused
+                    //    uploads / computes values for deep filters as simple SQL query...
+                    // project.messages?.slice(-1)[0]
+                    //         // TIPS : hand picked way, from currend dataset to extract msd date :
+                    //         .split(`class="from-now mb-0" data-bs-original-title="`)[1]
+                    //         .split(`"`)[0]
+                }
+                if ($customFilter === "Ordonner par meilleure taux de réponse") {
+                    // $qb = $qb->andWhere("
+                    //  JSON_EXTRACT(o.sourceDetail, '$.isBookmark') IS TRUE
+                    // ");
+                    // TODO : pre-compute and/or sanity scripts that remove unused
+                    //    uploads / computes values for deep filters as simple SQL query...
+                    // projectKeys.sort((k1, k2) => {
+                    //     const p1 = sharedDataset.projects[k1];
+                    //     const p2 = sharedDataset.projects[k2];
+                    //     const p2Status = p2.projectStatus || "Fermé";
+                    //     const p1Status = p1.projectStatus || "Fermé";
+                    //     return (p2Status.includes("Ouvert") - p1Status.includes("Ouvert")) ||
+                    //         ((p2.projectOffersViewed / p2.projectOffers) - (p1.projectOffersViewed / p1.projectOffers));
+                    // });
+                }                
             }
         }
 
