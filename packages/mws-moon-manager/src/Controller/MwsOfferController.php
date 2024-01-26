@@ -373,6 +373,16 @@ class MwsOfferController extends AbstractController
                     //         .split(`class="from-now mb-0" data-bs-original-title="`)[1]
                     //         .split(`"`)[0]
                 }
+                if ($customFilter === "Ordonner par concurrence minimum") {
+                    $qb = $qb->orderBy("
+                        JSON_EXTRACT(o.sourceDetail, '$.projectOffers')
+                    ");
+
+                    // TODO : Remove other order by tags from KNP bundle ? or combine ?
+                    // $qb->addOrderBy($request->query->get('sort'),$request->query->get('direction'));
+                    $request->query->remove('sort');
+                    $request->query->remove('direction');
+                }                
                 if ($customFilter === "Ordonner par meilleure taux de réponse") {
                     // $qb = $qb->andWhere("
                     //  JSON_EXTRACT(o.sourceDetail, '$.isBookmark') IS TRUE
@@ -387,6 +397,29 @@ class MwsOfferController extends AbstractController
                     //     return (p2Status.includes("Ouvert") - p1Status.includes("Ouvert")) ||
                     //         ((p2.projectOffersViewed / p2.projectOffers) - (p1.projectOffersViewed / p1.projectOffers));
                     // });
+
+                    
+                    // $qb = $qb->select("o, (1.0 * JSON_EXTRACT(o.sourceDetail, '$.projectOffersViewed')
+                    // / JSON_EXTRACT(o.sourceDetail, '$.projectOffers')) as clientAnswerRatio");
+                    // $qb = $qb->orderBy("
+                    //     clientAnswerRatio
+                    // ", "DESC");
+
+                    // TIPS :
+                    // // Will ERROR :
+                    // 1.0 * JSON_EXTRACT(o.sourceDetail, '$.projectOffersViewed')
+                    // // Will be int casted, always 0 :
+                    // JSON_EXTRACT(o.sourceDetail, '$.projectOffersViewed')
+                    // / JSON_EXTRACT(o.sourceDetail, '$.projectOffers') * 1.0
+
+                    $qb = $qb->orderBy("
+                        JSON_EXTRACT(o.sourceDetail, '$.projectOffersViewed') * 1.0
+                        / JSON_EXTRACT(o.sourceDetail, '$.projectOffers')
+                    ", "DESC");
+
+                    // Remove other order by tags from KNP bundle ? or combine ?
+                    $request->query->remove('sort');
+                    $request->query->remove('direction');
                 }                
             }
         }
@@ -438,6 +471,7 @@ class MwsOfferController extends AbstractController
             ])
         ]);
 
+        // dd($offers->getItems());
         // TODO : also crossable with message sources,
         // same id from multiple source may not always be equal for same stuff behing...
         $messagesByProjectId = $mwsMessageRepository->getMessagesByProjectIdFromOffers(

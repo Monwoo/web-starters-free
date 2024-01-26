@@ -128,7 +128,7 @@
   });
 </script>
 
-<div bind:this={liveTemplateHtmlView} class="sv-tagbox__item-text">
+<div bind:this={liveTemplateHtmlView} class="sv-tagbox__item-text mws-choice-item">
   <!-- // TIPS : will be called multiple time even if click on parent ...
   // reloadOffer() should work on value change instead... -->
   <span class="sv-string-viewer" on:mousedown={
@@ -141,4 +141,52 @@
     {/if}
     <slot />
   </span>
+  <div class="mws-choice-detail">
+    <div class="relative">
+      <div>Proposition : { itemData.monwooAmount ?? '' }</div>
+      <div>Délais : { itemData.projectDelayInOpenDays ?? '' } jour(s) ouvrés</div>
+      {@html (itemData.messages ?? []).reduce(
+        // <pre>${msg.text}</pre>
+        (html, msg) => `
+            <div>${ msg.billingSourceFile ? msg.billingSourceFile[0]?.name : 'No billings'}</div>
+            <div class="max-w-full whitespace-break-spaces">${msg.text?.replaceAll('\n', '<br/>')}</div>
+          `
+          + html,
+        ``
+      )}  
+    </div>
+  </div>
 </div>
+
+<style lang="scss">
+  .mws-choice-item {
+    position: relative;
+    overflow: visible;
+
+    .mws-choice-detail {
+      // position: fixed;
+      display: none;
+      opacity: 0.8;
+      pointer-events: none;
+      flex-direction: column;
+      flex-wrap: wrap;
+
+      @apply p-6;
+      @apply bg-sky-400;
+      @apply overflow-scroll; // No effect since no pointer events...
+      @apply rounded-md;
+      @apply space-y-6;
+      @apply fixed;
+      @apply z-50;
+      @apply left-0;
+      @apply w-[35vw];
+      @apply h-[30vh];
+      @apply top-[10vh];
+    }
+    &:hover {
+      .mws-choice-detail {
+        display: flex;
+      }
+    }
+  }
+</style>
