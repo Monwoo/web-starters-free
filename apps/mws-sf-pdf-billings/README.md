@@ -64,6 +64,16 @@ open http://localhost:8000
 ## Build for Production
 
 ```bash
+# Clean all un-wanted files for production :
+rm -rf **/node_modules
+
+# re-install for production only :
+pnpm install --prod
+
+# TIPS : if you use optional features in packages.json :
+rm -rf **/node_modules
+pnpm install --prod --no-optional
+
 # tested under php 8.1.2
 # Other php versions might work, but it's not tested yet.
 php -v
@@ -83,6 +93,10 @@ echo 'APP_ENV=prod' > .env
 export APP_ENV=prod
 
 cp .env.prod.dist .env.prod # put your private info inside...
+
+# generate .env.local.php
+APP_ENV=prod composer dump-env prod
+
 # Build for prodution
 mkdir config/jwt
 # WARNING : use hard pass other than : jwt_test (and setup accordingly in .env.prod)
@@ -111,11 +125,13 @@ pnpm run build
 APP_ENV=prod composer dump-env prod
 rm -rf var/cache var/log 
 
-zip -r mws-sf-pdf-billings.zip .env.prod \
-.htaccess composer.json config public src \
+zip -r mws-sf-pdf-billings.zip \
+.htaccess composer.json package.json config public src \
 templates translations \
-vendor var .env .env.local.php
+vendor var .env.local.php
 
+# clean for local dev :
+rm .env.local.php
 ```
 
 <div style="page-break-before: always;"></div>

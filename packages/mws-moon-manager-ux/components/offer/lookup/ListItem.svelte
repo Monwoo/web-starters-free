@@ -70,7 +70,7 @@
 
 <tr>
   <td
-    class="sticky left-0 w-[3em] z-50
+    class="sticky left-0 w-[3em] z-10
     hover:bg-white/90 hover:opacity-100"
     class:opacity-0={isFirstColVisible}
   >
@@ -95,7 +95,7 @@
   </td>
   <th
     scope="row"
-    class="sticky left-[3em] w-[6em] z-50
+    class="sticky left-[3em] w-[6em] z-10
     hover:bg-white/90 hover:opacity-100"
     class:opacity-0={isSecondColVisible}
   >
@@ -119,7 +119,7 @@
     {offer.sourceDetail?.projectOffers}
   </th>
   <td
-    class="sticky left-[9em] w-[6em] z-50
+    class="sticky left-[9em] w-[6em] z-10
     hover:bg-white/90 hover:opacity-100
       overflow-x-scroll
     "
