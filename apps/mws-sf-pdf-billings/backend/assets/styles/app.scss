@@ -5,6 +5,11 @@
 // Libs (Scss AND PostCss syntax activated)
 ///////////////////////
 
+// https://github.com/parcel-bundler/parcel/issues/1930
+// :global {
+//     @import '~bootstrap/index.css'
+// }
+
 // Tailwind post css injection :
 @tailwind base;
 @tailwind components;

@@ -318,6 +318,9 @@ importers:
       '@hotwired/stimulus':
         specifier: ^3.0.0
         version: 3.0.0
+      '@preline/scrollspy':
+        specifier: ^2.0.2
+        version: 2.0.2
       '@symfony/stimulus-bridge':
         specifier: ^3.2.0
         version: 3.2.0(@hotwired/stimulus@3.0.0)
@@ -2561,6 +2564,10 @@ packages:
 
   /@popperjs/core@2.11.8:
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
+  /@preline/scrollspy@2.0.2:
+    resolution: {integrity: sha512-vjeHwpQDEZojFxASFhuybzCzRpEKm1S5hKPL/wqiLljgaUKf3hKTH3EiXq/up1k44j0EDIlrvjrd1Awi4VCl2w==}
+    dev: true
 
   /@rushstack/eslint-patch@1.2.0:
     resolution: {integrity: sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==}

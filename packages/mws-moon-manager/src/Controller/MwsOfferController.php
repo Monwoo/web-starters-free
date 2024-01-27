@@ -441,6 +441,7 @@ class MwsOfferController extends AbstractController
         //     "isTemplate" => true,
         // ]);
         // TODO : helper inside repository ?, factorize code
+        // TODO : remove code duplication
         $availableTQb = $mwsMessageRepository
         ->createQueryBuilder('m')
         ->where('m.isTemplate = :isTemplate')

@@ -16,6 +16,9 @@ initFlowbite();
 // TODO : improve flowbite integration ? really better or in dev lib ? :
 // https://flowbite.com/docs/getting-started/svelte/
 
+// TODO : integrate preline ? done svelte + jQuery way for now
+// require('@preline/scrollspy');
+
 // TIPS : should be init BEFORE registerSvelteControllerComponents that use it
 import Routing from 'fos-router';
 

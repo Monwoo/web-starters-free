@@ -14,6 +14,10 @@ module.exports = {
     "../../../packages/mws-moon-manager/assets/**/*.ts",
     "../../../packages/mws-moon-manager/templates/**/*.html.twig",
     "../../../packages/mws-moon-manager/src/**/*.php",
+    "../../../packages/mws-moon-manager/src/**/*.php",
+    // TODO : integrate preline ? done svelte + jQuery way for now
+    // '../../../packages/mws-moon-manager/node_modules/@preline/dist/*.js',
+    // '../../../packages/mws-moon-manager/node_modules/@preline/scrollspy/*.js',
     // Svelte UX package
     "../../../packages/mws-moon-manager-ux/components/**/*.{js,svelte,ts}",
     // https://flowbite.com/docs/getting-started/quickstart/
@@ -45,5 +49,9 @@ module.exports = {
     // https://github.com/tailwindlabs/tailwindcss-forms
     require('@tailwindcss/forms'),
     require('flowbite/plugin'),
+    // require('../../../packages/mws-moon-manager/node_modules/@preline/plugin')
+    // TODO : ReferenceError: self is not defined @preline/scrollspy/index.js:1:299 :
+    //        Why post css going up to this file ? tailwind check ? but ok on svelte file ?
+    // require('../../../packages/mws-moon-manager/node_modules/@preline/scrollspy')
   ],
 }
