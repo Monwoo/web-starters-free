@@ -89,13 +89,11 @@ rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
 # mv config/packages/debug.yaml config/packages/web_profiler.yaml \
 # config-disabled/packages/
 
-echo 'APP_ENV=prod' > .env
 export APP_ENV=prod
 
-cp .env.prod.dist .env.prod # put your private info inside...
-
-# generate .env.local.php
-APP_ENV=prod composer dump-env prod
+cp .env.prod.dist .env # Env for Symfony AND Svelte frontend
+# echo 'APP_ENV=prod' > .env
+# cp .env.prod.distXXX .env.prod # put your private extended PHP Symfony info inside...
 
 # Build for prodution
 mkdir config/jwt
@@ -108,19 +106,28 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 --no-interaction --no-scripts --no-progress \
 --optimize-autoloader
 
+# generate .env.local.php
+APP_ENV=prod composer dump-env prod
+
 # bootstrap database
 rm var/data.db.sqlite # clean old one
 php bin/console doctrine:migrations:migrate -n
-cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 # bootstrap one user ONLY to let it be change and do wiziwig updates :
 php bin/console mws:add-user -c 1
+
+cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
 # php bin/console fos:js-routing:dump
 bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
 
 # rebuild assets for production :
 pnpm run build
+
+# clean un-wanted node module files, all is now build
+cd - # DO it at repo root since may not follow symlinks for delete
+rm -rf **/node_modules
+cd -
 
 APP_ENV=prod composer dump-env prod
 rm -rf var/cache var/log 
