@@ -101,7 +101,7 @@ import "survey-jquery";
 import "select2";
 
 import {
-  inputmask
+  inputmask, autocomplete
 } from "surveyjs-widgets";
 import dayjs from 'dayjs';
 
@@ -305,6 +305,9 @@ const surveyFactory = (surveyForm, dataModel) => {
   // https://surveyjs.io/form-library/examples/control-data-entry-formats-with-input-masks/vuejs#content-code
   // https://surveyjs.io/form-library/examples/questiontype-matrixdropdown/vuejs
   inputmask(Survey);
+  // https://surveyjs.io/form-library/examples/enable-autocomplete-survey-form/vue3js#content-code
+  // require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
+  // autocomplete(Survey);
   console.debug("Survey dataModel :", dataModel);
   const surveyDataInput = $('[name$="[jsonResult]"]', surveyForm);
 

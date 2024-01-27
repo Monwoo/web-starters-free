@@ -177,7 +177,8 @@
       flex-wrap: wrap;
 
       @apply p-6;
-      @apply bg-sky-400;
+      @apply bg-gray-300;
+      @apply text-black;
       @apply overflow-scroll; // No effect since no pointer events...
       @apply rounded-md;
       @apply space-y-6;

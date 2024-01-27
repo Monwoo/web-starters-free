@@ -9,6 +9,7 @@ use IntlDateFormatter;
 use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsContact;
 use MWS\MoonManagerBundle\Entity\MwsContactTracking;
+use MWS\MoonManagerBundle\Entity\MwsMessage;
 use MWS\MoonManagerBundle\Entity\MwsOffer;
 use MWS\MoonManagerBundle\Entity\MwsOfferStatus;
 use MWS\MoonManagerBundle\Entity\MwsOfferTracking;
@@ -452,13 +453,28 @@ class MwsOfferController extends AbstractController
         // https://surveyjs.io/form-library/documentation/api-reference/survey-data-model#onLoadChoicesFromServer
         // https://surveyjs.io/form-library/examples/dropdown-box-with-custom-items/reactjs#content-code
 
+        // $availableTQb = $mwsMessageRepository
+        // ->createQueryBuilder('m')
+        // ->select('m.templateNameSlug')
+        // ->where('m.isTemplate = :isTemplate')
+        // ->setParameter('isTemplate', true);
+        $availableTemplateNameSlugs = array_map(function(MwsMessage $o) {
+            return $o->getTemplateNameSlug();
+        }, $availableTemplates);
+        $availableTemplateCategorySlugs = array_map(function(MwsMessage $o) {
+            return $o->getTemplateCategorySlug();
+        }, $availableTemplates);
 
         $addMessageConfig = [
             // "jsonResult" => rawurlencode(json_encode([])),
             "jsonResult" => rawurlencode('{}'),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsMessageType.json.twig",
-                ["availableTemplates" => $availableTemplates,]
+                [
+                    "availableTemplates" => $availableTemplates,
+                    "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+                    "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
+                ]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig, [
