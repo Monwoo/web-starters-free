@@ -75,7 +75,23 @@ class MwsMessageController extends AbstractController
             ->orderBy('m.templateCategorySlug')
             ->addOrderBy('m.templateNameSlug');
         $availableTemplates = $availableTQb->getQuery()->execute();
-
+        $availableTemplateNameSlugs = array_reduce($availableTemplates,
+        function($acc, MwsMessage $o) {
+            $slug = $o->getTemplateNameSlug();
+            // if (!in_array($slug, $acc, true)) { + insertionSort...
+            if (!in_array($slug, $acc)) {
+                $acc[] = $slug;
+            }
+            return $acc;
+        }, []);
+        $availableTemplateCategorySlugs = array_reduce($availableTemplates,
+        function($acc, MwsMessage $o) {
+            $slug = $o->getTemplateCategorySlug();
+            if (!in_array($slug, $acc)) {
+                $acc[] = $slug;
+            }
+            return $acc;
+        }, []);
 
         $addMessageConfig = [
             "jsonResult" => rawurlencode(json_encode([
@@ -83,7 +99,11 @@ class MwsMessageController extends AbstractController
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsMessageType.json.twig",
-                ["availableTemplates" => $availableTemplates]
+                [
+                    "availableTemplates" => $availableTemplates,
+                    "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+                    "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
+                ]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
         $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig);

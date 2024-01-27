@@ -306,8 +306,8 @@ const surveyFactory = (surveyForm, dataModel) => {
   // https://surveyjs.io/form-library/examples/questiontype-matrixdropdown/vuejs
   inputmask(Survey);
   // https://surveyjs.io/form-library/examples/enable-autocomplete-survey-form/vue3js#content-code
-  // require("easy-autocomplete/dist/jquery.easy-autocomplete.js");
-  // autocomplete(Survey);
+  require("easy-autocomplete/dist/jquery.easy-autocomplete.min.js");
+  autocomplete(Survey);
   console.debug("Survey dataModel :", dataModel);
   const surveyDataInput = $('[name$="[jsonResult]"]', surveyForm);
 

@@ -458,12 +458,33 @@ class MwsOfferController extends AbstractController
         // ->select('m.templateNameSlug')
         // ->where('m.isTemplate = :isTemplate')
         // ->setParameter('isTemplate', true);
-        $availableTemplateNameSlugs = array_map(function(MwsMessage $o) {
-            return $o->getTemplateNameSlug();
-        }, $availableTemplates);
-        $availableTemplateCategorySlugs = array_map(function(MwsMessage $o) {
-            return $o->getTemplateCategorySlug();
-        }, $availableTemplates);
+        // $availableTemplateNameSlugs = array_map(function(MwsMessage $o) {
+        //     return $o->getTemplateNameSlug();
+        // }, $availableTemplates);
+        $availableTemplateNameSlugs = array_reduce($availableTemplates,
+        function($acc, MwsMessage $o) {
+            $slug = $o->getTemplateNameSlug();
+            // if (!in_array($slug, $acc, true)) { + insertionSort...
+            if (!in_array($slug, $acc)) {
+                $acc[] = $slug;
+            }
+            return $acc;
+        }, []);
+        $availableTemplateCategorySlugs = array_reduce($availableTemplates,
+        function($acc, MwsMessage $o) {
+            $slug = $o->getTemplateCategorySlug();
+            if (!in_array($slug, $acc)) {
+                $acc[] = $slug;
+            }
+            return $acc;
+        }, []);
+
+        // TIPS : bad idea : autocomplet will re-order on
+        // function best match... + losing index remove full array feature ?
+        // natsort($availableTemplateNameSlugs);
+        // natsort($availableTemplateCategorySlugs);
+        // dd($availableTemplateCategorySlugs);
+        // dd($availableTemplateNameSlugs);
 
         $addMessageConfig = [
             // "jsonResult" => rawurlencode(json_encode([])),

@@ -15,9 +15,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 //     AbstractNormalizer::ATTRIBUTES =>
 //     ['projectId', 'owner' => ['id']]
 // ])] // Not for entity class....
-#[UniqueEntity(
-    fields: ['templateNameSlug', 'templateCategorySlug'],
-    errorPath: 'templateNameSlug',
+#[UniqueEntity( // TODO : UNIQUE Entity FAIL, it still save duplicated slugs...
+    // fields: ['templateNameSlug', 'templateCategorySlug'],
+    fields: ['template_name_slug', 'template_category_slug'],
+    // errorPath: 'templateNameSlug',
+    errorPath: 'template_name_slug',
     message: MwsMessage::slugAndCatNotUniqueError,
 )]
 #[ORM\Index(columns: ['project_id'])]

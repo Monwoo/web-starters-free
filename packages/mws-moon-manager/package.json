@@ -8,6 +8,7 @@
         "@symfony/webpack-encore": "^4.0.0",
         "core-js": "^3.23.0",
         "dayjs": "^1.11.10",
+        "easy-autocomplete": "^1.3.5",
         "fos-router": "link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources",
         "inputmask": "^5.0.8",
         "jquery": "^3.7.1",
