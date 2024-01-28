@@ -1,7 +1,16 @@
 monolog:
     channels:
-        - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
-
+      - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+    handlers:
+        # this "file_log" key could be anything
+        file_log:
+            # type: stream
+            type: rotating_file
+            max_files: 30
+            # log to var/log/(environment).log
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            # log *all* messages (debug is lowest level)
+            level: error
 when@dev:
     monolog:
         handlers:

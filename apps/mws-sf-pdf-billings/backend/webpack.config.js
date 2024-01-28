@@ -21,17 +21,21 @@ var dotenv = require('dotenv');
 const env = dotenv.config();
 
 // TODO : doc : Not starting with : "/"
-const baseHref = env.parsed?.BASE_HREF ?? "";
+// const baseHref = env.parsed?.BASE_HREF ?? "";
 // starting with : "/"
 const baseHrefFull = env.parsed?.BASE_HREF_FULL ?? ""; // TODO : duplication ? remove ? easy hack for now...
 const baseHrefPort = env.parsed?.BASE_HREF_PORT ?? null;
+
+console.warn("Base href : ", baseHrefFull);
+console.warn("Base port : ", baseHrefPort);
+
 Encore
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
-    .setPublicPath('/build')
+    .setPublicPath(baseHrefFull + '/build')
     // only needed for CDN's or subdirectory deploy
-    //.setManifestKeyPrefix('build/')
+    .setManifestKeyPrefix(baseHrefFull.length ? baseHrefFull.replace('/', '') + '/build/' : 'build/')
 
     // https://github.com/FriendsOfSymfony/FOSJsRoutingBundle/blob/master/Resources/doc/usage.rst
     // .addPlugin(new FosRouting()) // SOUND messed up with bundle load...
@@ -84,7 +88,7 @@ Encore
 
     .configureDefinePlugin(options => {
         options['process.env'] = options['process.env'] ?? {};
-        options['process.env'].BASE_HREF = JSON.stringify(baseHref);
+        // options['process.env'].BASE_HREF = JSON.stringify(baseHref);
         options['process.env'].BASE_HREF_FULL = JSON.stringify(baseHrefFull);
         options['process.env'].BASE_HREF_PORT = JSON.stringify(baseHrefPort);
         // TODO : strange : why below is having trouble to work ? :
@@ -108,7 +112,7 @@ Encore
     //.enableSassLoader()
     .enableSassLoader((options) => {
         options.additionalData = `
-            $baseHref: "${baseHref}";
+            $baseHref: "${baseHrefFull}";
         `;
         // don't forget the ;
         // now, the var 'faa' can be used in scss files

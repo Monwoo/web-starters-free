@@ -25,6 +25,9 @@ mkdir config/jwt
 openssl genrsa -out config/jwt/private.pem -aes256 4096 # pass : jwt_test
 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass : jwt_test
 
+rm .env.local.php
+cp .env.dev.dist .env # Env for Symfony AND Svelte frontend
+
 export APP_ENV=dev
 composer install
 php bin/console assets:install --symlink public
@@ -109,6 +112,10 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 # generate .env.local.php
 APP_ENV=prod composer dump-env prod
 
+# refresh assets :
+php bin/console assets:install --symlink public
+bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
+
 # bootstrap database
 rm var/data.db.sqlite # clean old one
 php bin/console doctrine:migrations:migrate -n
@@ -118,16 +125,13 @@ php bin/console mws:add-user -c 1
 
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
 
-# php bin/console fos:js-routing:dump
-bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
-
 # rebuild assets for production :
 pnpm run build
 
 # clean un-wanted node module files, all is now build
-cd - # DO it at repo root since may not follow symlinks for delete
-rm -rf **/node_modules
-cd -
+# cd - # DO it at repo root since may not follow symlinks for delete
+# rm -rf **/node_modules
+# cd - # TIPS : using " -x '**/node_modules/**'" to avoid node module
 
 APP_ENV=prod composer dump-env prod
 rm -rf var/cache var/log 
@@ -135,7 +139,8 @@ rm -rf var/cache var/log
 zip -r mws-sf-pdf-billings.zip \
 .htaccess composer.json package.json config public src \
 templates translations \
-vendor var .env.local.php
+vendor var .env.local.php \
+-x '**/node_modules/**' 
 
 # clean for local dev :
 rm .env.local.php

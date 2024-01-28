@@ -34,6 +34,12 @@ Routing.setRoutingData(routes);
 // TODO : no need to unparse ? done by webpack ?
 // const baseUrlFull = JSON.parse(process.env.BASE_HREF_FULL ?? "null");
 const baseUrlFull = process.env.BASE_HREF_FULL ?? null;
+
+console.debug("Having js side baseUrl Config to : ", baseUrlFull);
+// https://github.com/FriendsOfSymfony/FOSJsRoutingBundle/issues/233
+// TIPS : MUST start with '/', otherwise will be relative to base url...
+// cf config/packages/fos_js_routing.yaml for details
+
 Routing.setBaseUrl(baseUrlFull);
 // const baseUrlPort = JSON.parse(process.env.BASE_HREF_PORT ?? "null");
 const baseUrlPort = process.env.BASE_HREF_PORT ?? null;

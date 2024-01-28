@@ -30,7 +30,12 @@ framework:
             # vendor/symfony/serializer/Encoder/YamlEncoder.php:65
             yaml_inline: 7
             # yaml_indent: 2
-
+    # assets: // TODO : below mess-up base href computing with some wrong urls randomly ?
+    #     # base_path: '%BASE_HOST%%BASE_HREF_FULL%'
+    #     # base_path: '%env(BASE_HOST)%%env(BASE_HREF_FULL)%'
+    #     base_path: '%env(BASE_HREF_FULL)%'
+    #     # base_urls: // https:// etc...
+    #     #   - '%env(BASE_HREF_FULL)%'
 when@dev:
     framework:
         # https://symfony.com/doc/5.4/reference/configuration/framework.html#ide

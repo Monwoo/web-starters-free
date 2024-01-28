@@ -1,2 +1,3 @@
 fos_js_routing:
+    # TODO ? : request_context_base_url: '%env(BASE_HREF_FULL)%'
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing-sf4.xml"

@@ -1,1 +1,16 @@
-Non trouvé, 404
+{% set referer = app.request.server.get('http-referer')|default('?????') %}
+{# {% set referer = app.request.headers.get('referer')|default('?????') %} #}
+{# https://stackoverflow.com/questions/9378714/get-current-url-in-twig-template #}
+{# {{ path(app.request.attributes.get('_route'),
+     app.request.attributes.get('_route_params')) }} #}
+{% set url = app.request.getPathInfo %}
+{# {{ error|json }} #}
+<br/>
+[{{ app.request.getBaseUrl }}] {{ url }}
+<br/>
+Non trouvé, 404 
+<br/>
+Venant de : {{ referer }}
+<br/>
+<br/>
+<a href="{{ path('app_home') }}">Home</a>.
