@@ -29,6 +29,8 @@ rm .env.local.php
 cp .env.dev.dist .env # Env for Symfony AND Svelte frontend
 
 export APP_ENV=dev
+# Same for packages first : 
+(cd ../../../packages/mws-moon-manager && composer install)
 composer install
 php bin/console assets:install --symlink public
 php bin/console fos:js-routing:dump
@@ -43,6 +45,8 @@ symfony server:start
 # if you dev css/js side too, for watch mode :
 pnpm run watch
 
+# Same for packages first : 
+(cd ../../../packages/mws-moon-manager && composer install)
 # install with local PRIVATE bundles :
 COMPOSER=composer.private.json composer install
 # if already installed and did update package composer.json :
@@ -103,6 +107,12 @@ mkdir config/jwt
 # WARNING : use hard pass other than : jwt_test (and setup accordingly in .env.prod)
 openssl genrsa -out config/jwt/private.pem -aes256 4096
 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+
+# Same for packages first : 
+(cd ../../../packages/mws-moon-manager && composer install \
+ --no-ansi --no-dev \
+--no-interaction --no-scripts --no-progress \
+--optimize-autoloader)
 
 # APP_ENV=prod composer install --no-dev 
 APP_ENV=prod composer install --no-ansi --no-dev \
@@ -171,6 +181,9 @@ mkdir config/jwt
 openssl genrsa -out config/jwt/private.pem -aes256 4096
 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem # pass : jwt_test
 
+# Same for packages first : 
+(cd ../../../packages/mws-moon-manager && composer install)
+
 # APP_ENV=prod composer install --no-dev 
 composer install
 
@@ -200,6 +213,8 @@ alias composer="php -d memory_limit=2G '$PWD/composer.phar'"
 cd apps/mws-sf-pdf-billings/backend
 
 export APP_ENV=dev
+# Same for packages first : 
+(cd ../../../packages/mws-moon-manager && composer install)
 composer install
 
 # Re-do manually if you change some routes path :
@@ -224,6 +239,8 @@ symfony server:start
 ```bash
 # TIPS : in DEV ONLY : NEED
 export APP_ENV=dev
+# Same for packages first : 
+(cd ../../../packages/mws-moon-manager && composer install)
 composer install # in case of env change
 
 # usefull :
