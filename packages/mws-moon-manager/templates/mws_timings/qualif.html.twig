@@ -1,0 +1,61 @@
+{# 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block title %}Timings
+{% endblock %}
+{# // TODO : by project ? by tag or group of tags ?
+// (having project category tags,custom tag per projects ?) #}
+
+{% block storesInit %}
+	{{ parent() }}
+	<div
+	class="hidden"
+	{{ svelte_component('MwsReduxSync', {
+		'stateUpdate': {
+			'offerTagsByCatSlugAndSlug': offerTagsByCatSlugAndSlug,
+			'csrfOfferTagDelete': csrf_token('mws-csrf-offer-tag-delete'),
+			'csrfOfferTagAdd': csrf_token('mws-csrf-offer-tag-add'),
+		}|serialize('json')|e('html_attr'),
+	}) }}></div>
+{% endblock %}
+
+{% block body %}
+  {# TODO : subpath controller give hard debug time since components have same
+	name as the moon-manager-ux package one, all debug link go to wrong file... #}
+	<div class="mws-offer-lookup" {{ svelte_component('MwsOfferLookup', {
+		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+		'locale': app.locale,
+		'offers': offers|serialize('json')|e('html_attr'),
+		'messagesByProjectId': messagesByProjectId|serialize('json')|e('html_attr'),
+		'offersPaginator': block('offersPaginator'),
+		'offersHeaders': {
+			'clientUsername' : knp_pagination_sortable(offers, 'Nom du client', 'o.clientUsername'),
+			'contact1' : knp_pagination_sortable(offers, 'Contact', 'o.contact1'),
+			'contact2' : knp_pagination_sortable(offers, 'Contact bis', 'o.contact2'),
+			'leadStart' : knp_pagination_sortable(offers, 'Depuis le', 'o.leadStart'),
+			'budget' : knp_pagination_sortable(offers, 'Budget', 'o.budget'),
+		}|serialize('json')|e('html_attr'),
+		'lookup': lookupForm.vars.value|serialize('json')|e('html_attr'),
+		'lookupForm': (form_start(lookupForm, { 'attr' : {
+            'class': 'd-flex flex-wrap mws-survey-js-form'
+        } }) ~ form_widget(lookupForm)
+		~ form_end(lookupForm))|e('html_attr'),
+		'addMessageForm': (form_start(addMessageForm, { 'attr' : {
+				'class': 'd-flex flex-wrap mws-survey-js-form'
+		} }) ~ form_widget(addMessageForm)
+		~ form_end(addMessageForm))|e('html_attr'),
+		'viewTemplate' : viewTemplate,
+	} ) }}>
+        {{ block('header') }}
+        {% block offersPaginator %}
+			<div class="count">
+					[ {{ offers.getTotalItemCount }} éléments]
+			</div>
+			<div class="navigation">
+					{{ knp_pagination_render(offers) }}
+			</div>
+		{% endblock %}
+        {{ block('content') }}
+        {{ block('footer') }}
+	</div>
+{% endblock %}
