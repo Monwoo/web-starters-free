@@ -1,0 +1,42 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set model = {
+  description: "Rechercher"|trans,
+  goNextPageAutomatic: true,
+  completeText: {
+    en: "Seek in timings",
+    fr: "Rechercher dans les temps"
+  },
+  focusFirstQuestionAutomatic: false,
+  showQuestionNumbers: false,
+  elements: [{
+      name: "searchKeyword",
+      title: "Mot(s) clef(s)",
+      type: "comment",
+      "_cmt": "limited to 500 chars : ",
+      maxLength: 500,
+      validators: [],
+      minWidth: "20%",
+      isRequired: false,
+  }, {
+    name: "searchTags",
+    title: "Tags",
+    description: "Ajouter des tags à filtrer.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allTimingTags,
+  }, {
+    name: "searchTagsToAvoid",
+    title: "Eviter les tags",
+    description: "Ajouter des tags à exclure.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allTimingTags,
+  },
+  ]
+} %}
+
+{{ model|serialize('json')|raw }}

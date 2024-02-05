@@ -29,8 +29,8 @@
   console.debug('jsonResult :', jsonResult);
   // TODO : basehref ? => NOP, use Routing from fos-routing instead...
   const baseHref = '/mws';
-  const respUrl = `${baseHref}/${locale}/mws-offer/fetch-root-url?url=`
-  + encodeURIComponent(jsonResult.sourceRootLookupUrl);
+  // const respUrl = `${baseHref}/${locale}/mws-offer/fetch-root-url?url=`
+  // + encodeURIComponent(jsonResult.sourceRootLookupUrl);
 
   onMount(async () => {
     // // NOP, not common, will have security errors this way :

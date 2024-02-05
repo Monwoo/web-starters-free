@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
 
 #[ORM\Entity(repositoryClass: MwsTimeTagRepository::class)]
+#[ORM\Index(columns: ['slug'])]
 class MwsTimeTag
 {
     #[ORM\Id]

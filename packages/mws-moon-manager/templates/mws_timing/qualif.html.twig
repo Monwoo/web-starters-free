@@ -1,0 +1,41 @@
+{# 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% extends '@MoonManager/base.html.twig' %}
+
+{% block title %}Timings qualification
+{% endblock %}
+{# // TODO : by project ? by tag or group of tags ?
+// (having project category tags,custom tag per projects ?) #}
+
+{% block storesInit %}
+	{{ parent() }}
+	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': { 'csrftimingTagDelete': csrf_token('mws-csrf-timing-tag-delete'), 'csrftimingTagAdd': csrf_token('mws-csrf-timing-tag-add'), } |serialize('json')|e('html_attr'), }) }}></div>
+{% endblock %}
+
+{% block timingsPaginator %}
+	<div class="count">
+		[
+		{{ timings.getTotalItemCount }}
+		éléments]
+	</div>
+	<div class="navigation">
+		{{ knp_pagination_render(timings) }}
+	</div>
+{% endblock %}
+
+{% block content %}
+	{# TODO : subpath controller give hard debug time since components have same
+		name as the moon-manager-ux package one, all debug link go to wrong file... #}
+	<div class="mws-timings-qualif" {{ svelte_component('MwsTimingLookup', {
+		'locale': app.locale,
+		'timings': timings|serialize('json')|e('html_attr'),
+		'timingsPaginator': block('timingsPaginator'),
+		'timingsHeaders': {
+			'clientUsername' : knp_pagination_sortable(timings, 'Nom du client', 'o.clientUsername'),
+		} |serialize('json')|e('html_attr'),
+		'lookup' : lookupForm.vars.value|serialize('json')|e('html_attr'),
+		'lookupForm' : (form_start(lookupForm, {
+			'attr' : { 'class': 'd-flex flex-wrap mws-survey-js-form' }
+		}) ~ form_widget(lookupForm) ~ form_end(lookupForm))|e('html_attr'),
+		'viewTemplate' : viewTemplate,
+	} ) }}></div>
+{% endblock %}

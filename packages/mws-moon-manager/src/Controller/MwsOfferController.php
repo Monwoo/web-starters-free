@@ -99,7 +99,7 @@ class MwsOfferController extends AbstractController
         // dd($searchTagsToAvoid);
         
         $customFilters = $requestData['customFilters'] ?? [];
-        $sourceRootLookupUrl = $requestData['sourceRootLookupUrl'] ?? null;
+        // $sourceRootLookupUrl = $requestData['sourceRootLookupUrl'] ?? null;
         // dd($searchTags);
 
         $qb = $mwsOfferRepository->createQueryBuilder('o');
@@ -111,7 +111,7 @@ class MwsOfferController extends AbstractController
                 "searchTags" => $searchTags,
                 "searchTagsToAvoid" => $searchTagsToAvoid,
                 "customFilters" => $customFilters,
-                "sourceRootLookupUrl" => $sourceRootLookupUrl,
+                // "sourceRootLookupUrl" => $sourceRootLookupUrl,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsOfferLookupType.json.twig",
@@ -148,7 +148,7 @@ class MwsOfferController extends AbstractController
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
                 $customFilters = $surveyAnswers['customFilters'] ?? [];
                 // dd($searchTags);
-                $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
+                // $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
                 return $this->redirectToRoute(
                     'mws_offer_lookup',
                     array_merge($request->query->all(), [
@@ -158,7 +158,7 @@ class MwsOfferController extends AbstractController
                         "tagsToAvoid" => $searchTagsToAvoid,
                         "customFilters" => $customFilters,
                         "page" => 1,
-                        "sourceRootLookupUrl" => $sourceRootLookupUrl,
+                        // "sourceRootLookupUrl" => $sourceRootLookupUrl,
                     ]),
                     Response::HTTP_SEE_OTHER
                 );
