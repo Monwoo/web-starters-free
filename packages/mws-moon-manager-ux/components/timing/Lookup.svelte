@@ -3,6 +3,7 @@
   import Routing from "fos-router";
   // TODO : namespace
   import Base from "../layout/Base.svelte";
+  import Header from "../layout/Header.svelte";
   // import List from "./lookup/List.svelte";
   import { onMount } from "svelte";
 
@@ -31,58 +32,88 @@
   });
 </script>
 <div class="mws-timing-qualif">
-  <div class="p-3 flex flex-wrap">
-    <a href={ Routing.generate('mws_offer_import', {
-      '_locale': locale ?? '',
-      'viewTemplate': viewTemplate ?? '',
-    }) }>
-      <button class="btn btn-outline-primary p-1">Exporter des timings.</button>
-    </a>    
-    <a href={ Routing.generate('mws_offer_import', {
-      '_locale': locale ?? '',
-      'viewTemplate': viewTemplate ?? '',
-    }) }>
-      <button class="btn btn-outline-primary p-1">Importer des timings.</button>
-    </a>    
-  </div>
-  <div class="p-3 flex flex-wrap">
-    <div class="label">
+  <div class="mws-menu-wrapper">
+    <div class="flex">
       <button
-      data-collapse-toggle="search-timing-lookup"
+      data-collapse-toggle="menu-timing"
       type="button"
       class="rounded-lg "
       aria-controls="search-timing-lookup"
       aria-expanded="false"
-    >
-      Filtres de recherche
+      >
+        Menu
+      </button>
+      <div class="summary">
+        {@html jsonResult.searchTags && jsonResult.searchTags.length
+          ? '<strong>Tags : </strong>' +
+            jsonResult.searchTags.reduce((acc, f) => `
+              ${acc} [${f}]
+            `, ``) + '<br/>'
+          : ''
+        }
+        {@html jsonResult.searchTagsToAvoid && jsonResult.searchTagsToAvoid.length
+          ? '<strong>Tags à éviter : </strong>' +
+            jsonResult.searchTagsToAvoid.reduce((acc, f) => `
+              ${acc} [${f}]
+            `, ``) + '<br/>'
+          : ''
+        }
+        {@html jsonResult.searchKeyword
+          ? `<strong>Mots clefs : </strong>${jsonResult.searchKeyword}`
+          : ``
+        }
+        {@html timingsPaginator}      
+      </div>
+      <div>
+        <select>
+          <option>Auto qualif type 1</option>
+        </select> 
+      </div>
     </div>
-    <div id="search-timing-lookup" class="detail w-full hidden">
-      {@html lookupForm}
+    <div id="menu-timing"  class="detail w-full hidden">
+      <header class="bg-gray-700 text-white text-center">
+        <Header></Header>
+      </header>
+      <div class="p-3 flex flex-wrap">
+        <a href={ Routing.generate('mws_offer_import', {
+          '_locale': locale ?? '',
+          'viewTemplate': viewTemplate ?? '',
+        }) }>
+          <button class="btn btn-outline-primary p-1">Exporter des timings.</button>
+        </a>    
+        <a href={ Routing.generate('mws_offer_import', {
+          '_locale': locale ?? '',
+          'viewTemplate': viewTemplate ?? '',
+        }) }>
+          <button class="btn btn-outline-primary p-1">Importer des timings.</button>
+        </a>    
+      </div>
+      <div class="p-3 flex flex-wrap">
+        <div class="label">
+          <button
+          data-collapse-toggle="search-timing-lookup"
+          type="button"
+          class="rounded-lg "
+          aria-controls="search-timing-lookup"
+          aria-expanded="false"
+        >
+          Filtres de recherche
+        </div>
+        <div id="search-timing-lookup" class="detail w-full hidden">
+          {@html lookupForm}
+        </div>
+      </div>
     </div>
   </div>
-  {@html jsonResult.searchTags && jsonResult.searchTags.length
-    ? '<strong>Tags : </strong>' +
-      jsonResult.searchTags.reduce((acc, f) => `
-        ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
-  {@html jsonResult.searchTagsToAvoid && jsonResult.searchTagsToAvoid.length
-    ? '<strong>Tags à éviter : </strong>' +
-      jsonResult.searchTagsToAvoid.reduce((acc, f) => `
-        ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
-  {@html jsonResult.searchKeyword
-    ? `<strong>Mots clefs : </strong>${jsonResult.searchKeyword}`
-    : ``
-  }
-  {@html timingsPaginator}
 
-  <!-- { JSON.stringify(timings) } -->
-  <div class="mws-timing-qualif-board overflow-y-auto">
-    TODO : 28 * 16
+  <div class="flex flex-col h-[90vh] md:w-[100vw] md:flex-row">
+    <div class="mws-timing-qualif-board h-[50%] md:w-[50%] overflow-y-auto">
+      TODO : 1 + détail qualif + 'enter' to toggle qualif
+    </div>
+    <!-- { JSON.stringify(timings) } -->
+    <div class="mws-timing-qualif-list h-[50%] md:w-[50% overflow-y-auto">
+      TODO : 28 * 16 arrow navigation in thumbnail
+    </div>  
   </div>
   <div>{@html timingsPaginator}</div>
 </div>
