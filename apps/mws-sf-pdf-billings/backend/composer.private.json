@@ -1,13 +1,13 @@
 {
     "type": "project",
     "name": "monwoo/mws-sf-pdf-billings",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "license": "Apache-2.0_monwoo",
     "authors": [{
         "name": "Miguel Monwoo",
         "email": "service@monwoo.com"
     }],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": [
         {
@@ -18,6 +18,10 @@
             "type": "path",
             "url": "../../../../mws-sf-pdf-billings-lvl2",
             "_cmt_url": "../../../packages/mws-sf-pdf-billings-lvl2"
+        },
+        {
+            "type": "path",
+            "url": "../../../packages/mws-moon-manager"
         }
     ],
     "require": {
@@ -28,36 +32,44 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.14",
         "endroid/qr-code-bundle": "^4.3",
+        "friendsofsymfony/jsrouting-bundle": "^3.3",
+        "gedmo/doctrine-extensions": "^3.13",
+        "knplabs/knp-paginator-bundle": "^5.9",
         "lexik/jwt-authentication-bundle": "*",
-        "monwoo/mws-sf-pdf-billings-lvl1-bundle": "0.0.1",
-        "monwoo/mws-sf-pdf-billings-lvl2-bundle": "0.0.1",
+        "monwoo/mws-moon-manager-bundle": "^2.0",
+        "monwoo/mws-sf-pdf-billings-lvl1-bundle": "^0.0",
+        "monwoo/mws-sf-pdf-billings-lvl2-bundle": "^0.0.1",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.23",
         "qipsius/tcpdf-bundle": "^2.0",
+        "scienta/doctrine-json-functions": "^5.3",
         "sensio/framework-extra-bundle": "^6.2",
-        "symfony/asset": "5.4.*",
-        "symfony/console": "5.4.*",
-        "symfony/dotenv": "5.4.*",
-        "symfony/expression-language": "5.4.*",
+        "stof/doctrine-extensions-bundle": "^1.8",
+        "symfony/asset": "6.3.*",
+        "symfony/console": "6.3.*",
+        "symfony/dotenv": "6.3.*",
+        "symfony/expression-language": "6.3.*",
         "symfony/flex": "^1.17|^2",
-        "symfony/form": "5.4.*",
-        "symfony/framework-bundle": "5.4.*",
-        "symfony/http-client": "5.4.*",
-        "symfony/mime": "5.4.*",
+        "symfony/form": "6.3.*",
+        "symfony/framework-bundle": "6.3.*",
+        "symfony/mime": "6.3.*",
         "symfony/monolog-bundle": "^3.8",
-        "symfony/property-access": "5.4.*",
-        "symfony/property-info": "5.4.*",
-        "symfony/runtime": "5.4.*",
-        "symfony/security-bundle": "5.4.*",
-        "symfony/serializer": "5.4.*",
-        "symfony/translation": "5.4.*",
-        "symfony/twig-bundle": "5.4.*",
-        "symfony/validator": "5.4.*",
-        "symfony/yaml": "5.4.*",
+        "symfony/property-access": "6.3.*",
+        "symfony/property-info": "6.3.*",
+        "symfony/runtime": "6.3.*",
+        "symfony/security-bundle": "6.3.*",
+        "symfony/serializer": "6.3.*",
+        "symfony/translation": "6.3.*",
+        "symfony/twig-bundle": "6.3.*",
+        "symfony/ux-svelte": "^2.12",
+        "symfony/validator": "6.3.*",
+        "symfony/webpack-encore-bundle": "^2.1",
+        "symfony/yaml": "6.3.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3.6",
         "twig/string-extra": "^3.6",
-        "twig/twig": "^3.6"
+        "twig/twig": "^3.6",
+        "vich/uploader-bundle": "^2.3"
     },
     "config": {
         "allow-plugins": {
@@ -116,20 +128,25 @@
         },
         "symfony": {
             "allow-contrib": false,
-            "require": "5.4.*"
+            "require": "6.3.*"
         }
     },
     "require-dev": {
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-doctrine2": "^3.0",
+        "codeception/module-symfony": "^3.1",
+        "codeception/module-webdriver": "^3.2",
         "dbrekelmans/bdi": "^1.0",
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpunit/phpunit": "^9.5",
-        "symfony/browser-kit": "5.4.*",
-        "symfony/css-selector": "5.4.*",
-        "symfony/debug-bundle": "5.4.*",
+        "symfony/browser-kit": "6.3.*",
+        "symfony/css-selector": "6.3.*",
+        "symfony/debug-bundle": "6.3.*",
         "symfony/maker-bundle": "*",
         "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "^6.3",
-        "symfony/stopwatch": "5.4.*",
+        "symfony/stopwatch": "6.3.*",
         "symfony/thanks": "^1.2",
-        "symfony/web-profiler-bundle": "5.4.*"
+        "symfony/web-profiler-bundle": "6.3.*"
     }
 }
