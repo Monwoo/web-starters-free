@@ -6,6 +6,7 @@
   import Header from "../layout/Header.svelte";
   // import List from "./lookup/List.svelte";
   import { onMount } from "svelte";
+import SlotThumbnail from "./SlotThumbnail.svelte";
 
   export let locale;
   export let lookup;
@@ -113,12 +114,14 @@
   </div>
 
   <div class="flex flex-col h-[90vh] md:w-[100vw] md:flex-row">
-    <div class="mws-timing-qualif-board h-[50%] md:w-[50%] overflow-y-auto">
-      TODO : 1 + détail qualif + 'enter' to toggle qualif
+    <div class="mws-timing-qualif-board h-[50%] md:w-[50%] overflow-y-auto flex">
+      TODO : selected view + détail qualif + 'enter' to toggle qualif
     </div>
     <!-- { JSON.stringify(timings) } -->
-    <div class="mws-timing-qualif-list h-[50%] md:w-[50% overflow-y-auto">
-      TODO : 28 * 16 arrow navigation in thumbnail
+    <div class="mws-timing-qualif-list h-[50%] md:w-[50%] overflow-y-auto flex">
+      {#each timings as timingSlot}
+        <SlotThumbnail {timingSlot} />
+      {/each}
     </div>  
   </div>
   <div>{@html timingsPaginator}</div>

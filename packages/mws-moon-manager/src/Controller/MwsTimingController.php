@@ -181,4 +181,44 @@ class MwsTimingController extends AbstractController
             'controller_name' => 'MwsTimingController',
         ]);
     }
+
+    #[Route('/fetch-media-url', name: 'mws_timing_fetchMediatUrl')]
+    public function fetchRootUrl(
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+
+        $url = $request->query->get('url', null);
+        $this->logger->debug("Will fetch url : $url");
+
+        // TODO : secu : filter real path to allowed screenshot folders from .env only ?
+        if (false) {
+            throw $this->createAccessDeniedException('Media path not allowed');
+        }
+        
+        // Or use : https://symfony.com/doc/current/http_client.html
+        $respData = file_get_contents($url);
+        $response = new Response($respData);
+
+        // $response->headers->set('Content-Type', 'application/pdf');
+        // $mime = [
+        //     'json' => 'application/json',
+        //     'csv' => 'text/comma-separated-values',
+        //     'xml' => 'application/xml',
+        //     'yaml' => 'application/yaml',
+        // ][$format] ?? 'text/plain';
+        // if ($mime) {
+        //     $response->headers->set('Content-Type', $mime);
+        // }
+
+        // $response->headers->set('Cache-Control', 'no-cache');
+        // $response->headers->set('Pragma', 'no-chache');
+        // $response->headers->set('Expires', '0');
+        return $response;
+    }
+
 }

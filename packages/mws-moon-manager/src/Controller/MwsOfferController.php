@@ -915,30 +915,26 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/fetch-root-url', name: 'mws_offer_fetchRootUrl')]
-    public function fetchRootUrl(
-        Request $request,
-    ): Response {
-        $user = $this->getUser();
-
-        if (!$user) {
-            throw $this->createAccessDeniedException('Only for logged users');
-        }
-
-        $url = $request->query->get('url', null);
-        $this->logger->debug("Will fetch url : $url");
-
-        // Or use : https://symfony.com/doc/current/http_client.html
-        $respData = file_get_contents($url);
-        $response = new Response($respData);
-
-        // TIPS : too late after pdf echo...
-        $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set('Cache-Control', 'no-cache');
-        $response->headers->set('Pragma', 'no-chache');
-        $response->headers->set('Expires', '0');
-        return $response;
-    }
+    // #[Route('/fetch-root-url', name: 'mws_offer_fetchRootUrl')]
+    // public function fetchRootUrl(
+    //     Request $request,
+    // ): Response {
+    //     $user = $this->getUser();
+    //     if (!$user) {
+    //         throw $this->createAccessDeniedException('Only for logged users');
+    //     }
+    //     $url = $request->query->get('url', null);
+    //     $this->logger->debug("Will fetch url : $url");
+    //     // Or use : https://symfony.com/doc/current/http_client.html
+    //     $respData = file_get_contents($url); // TODO : secu issue, norrow to domain usage ONLY, disallow read of sensible files...
+    //     $response = new Response($respData);
+    //     // TIPS : too late after pdf echo...
+    //     $response->headers->set('Content-Type', 'application/pdf');
+    //     $response->headers->set('Cache-Control', 'no-cache');
+    //     $response->headers->set('Pragma', 'no-chache');
+    //     $response->headers->set('Expires', '0');
+    //     return $response;
+    // }
 
     #[Route(
         '/import/{viewTemplate<[^/]*>?}/{format}',
