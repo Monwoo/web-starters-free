@@ -4,6 +4,7 @@
 
   export let timingSlot;
   export let isSelected = false;
+  export let size = "50px";
   $: slotName = timingSlot.sourceStamp.split(/[\\/]/).pop();
   $: slotPath = timingSlot.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
@@ -15,15 +16,18 @@
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->
+<!-- https://svelte.dev/repl/cfcb6407b0c44b6298a4fd27f7aec109?version=3.35.0
+  event forwarding : use on:click without values ?
+-->
 <div
-  class="mws-timing-slot w-[50px] h-[50px]
+  on:click
+  class="mws-timing-slot
 flex justify-center items-center
 overflow-hidden border-solid border-4"
   class:border-gray-600={!isSelected}
   class:border-blue-600={isSelected}
-  on:click={() => {
-    isSelected = true;
-  }}
+  style:height={size}
+  style:width={size}
 >
   <img
     class="object-contain"
