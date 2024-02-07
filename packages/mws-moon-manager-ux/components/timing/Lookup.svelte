@@ -31,7 +31,7 @@
     // console.log('lookupSurveyJsData : ', lookupSurveyJsData);
   });
 </script>
-<div class="mws-timing-qualif">
+<div class="mws-timing-qualif overflow-y-auto h-[100vh]">
   <div class="mws-menu-wrapper">
     <div class="flex">
       <button
@@ -86,6 +86,12 @@
           'viewTemplate': viewTemplate ?? '',
         }) }>
           <button class="btn btn-outline-primary p-1">Importer des timings.</button>
+        </a>    
+        <a href={ Routing.generate('mws_offer_import', {
+          '_locale': locale ?? '',
+          'viewTemplate': viewTemplate ?? '',
+        }) }>
+          <button class="btn btn-outline-primary p-1">Nettoyer les timings.</button>
         </a>    
       </div>
       <div class="p-3 flex flex-wrap">

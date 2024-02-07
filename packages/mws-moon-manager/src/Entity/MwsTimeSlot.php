@@ -35,6 +35,12 @@ class MwsTimeSlot
     #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsTimeSlots')]
     private Collection $tags;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $keywords = null;
+
+    #[ORM\Column(length: 512)]
+    private ?string $sourceStamp = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -117,6 +123,30 @@ class MwsTimeSlot
     public function removeTag(MwsTimeTag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getKeywords(): ?string
+    {
+        return $this->keywords;
+    }
+
+    public function setKeywords(?string $keywords): static
+    {
+        $this->keywords = $keywords;
+
+        return $this;
+    }
+
+    public function getSourceStamp(): ?string
+    {
+        return $this->sourceStamp;
+    }
+
+    public function setSourceStamp(string $sourceStamp): static
+    {
+        $this->sourceStamp = $sourceStamp;
 
         return $this;
     }
