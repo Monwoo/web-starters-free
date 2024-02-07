@@ -5,7 +5,7 @@
   import "dayjs/locale/fr";
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
-  dayjs.locale("fr"); // Fr locale
+  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 
 </script>
 

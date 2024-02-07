@@ -7,6 +7,7 @@
   // import List from "./lookup/List.svelte";
   import { onMount } from "svelte";
   import SquareList from "./SquareList.svelte";
+  import SlotView from "./SlotView.svelte";
 
   export let locale;
   export let lookup;
@@ -15,6 +16,7 @@
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
+  export let lastSelectedIndex;
 
   console.debug(lookupForm);
 
@@ -134,14 +136,36 @@
     </div>
   </div>
 
+  <button
+    class="float-right m-1"
+    style:opacity={lastSelectedIndex < timings.length - 1 ? 1 : 0.7}
+    on:click={() => {
+      if (lastSelectedIndex < timings.length - 1) lastSelectedIndex++;
+    }}
+  >
+    Next.
+  </button>
+
+  <button
+    class="float-right m-1"
+    style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}
+    on:click={() => {
+      if (lastSelectedIndex > 0) lastSelectedIndex--;
+    }}
+  >
+    Prev.
+  </button>
   <div class="flex flex-col h-[90vh] md:w-[100vw] md:flex-row">
-    <div
-      class="mws-timing-qualif-board h-[50%] md:w-[50%] overflow-y-auto flex"
-    >
-      TODO : selected view + détail qualif + 'enter' to toggle qualif
-    </div>
     <!-- { JSON.stringify(timings) } -->
-    <SquareList {timings} class="h-[50%] md:w-[50%]" />
+    <SlotView
+      timingSlot={timings[lastSelectedIndex] ?? null}
+      class="h-[50%] md:w-[50%] md:h-[100%]"
+    />
+    <SquareList
+      bind:lastSelectedIndex
+      {timings}
+      class="h-[50%] md:w-[50%] md:h-[100%]"
+    />
   </div>
   <div>{@html timingsPaginator}</div>
 </div>

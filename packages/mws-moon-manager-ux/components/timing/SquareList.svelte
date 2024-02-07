@@ -37,11 +37,11 @@
   };
 
   function onKeyDown(e) {
-    if (isKey.left(e)) {
+    if (isKey.left(e) || isKey.up(e)) {
       lastSelectedIndex--;
       e.preventDefault();
     }
-    if (isKey.right(e)) {
+    if (isKey.right(e) || isKey.down(e)) {
       lastSelectedIndex++;
       e.preventDefault();
     }
