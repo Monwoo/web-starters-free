@@ -26,8 +26,11 @@ class MwsTimeSlot
     #[ORM\Column]
     private array $source = [];
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true)] // TODO : computed field, but hard computed for opti OK ?
     private ?int $rangeDayIdxBy10Min = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $maxPricePerHr = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $rangeDayIdxByCustomNorm = null;
@@ -63,6 +66,14 @@ class MwsTimeSlot
     public function setSourceTime(?\DateTimeInterface $sourceTime): static
     {
         $this->sourceTime = $sourceTime;
+
+        // TODO : ok here or better using event system ? (strong design will use other design patterns..)
+        // $dt = DateTime::createFromFormat("Y-m-d H:i:s", "2011-07-26 20:05:00");
+        // $hours = $dt->format('H'); // '20'
+        $minutes = intval($sourceTime->format('H')) * 60
+            + intval($sourceTime->format('i'));
+        $slotIdxBy10Min = $minutes / 10;
+        $this->setRangeDayIdxBy10Min($slotIdxBy10Min);
 
         return $this;
     }
@@ -117,6 +128,14 @@ class MwsTimeSlot
             $this->tags->add($tag);
         }
 
+        // TODO : ok here or better using event system ? (strong design will use other design patterns..)
+        $this->setMaxPricePerHr(
+            array_reduce($this->tags->toArray(), function ($acc, $t) {
+                $acc = max($t->getMaxPricePerHr(), $acc);
+                return $acc;
+            }, 0)
+        );
+
         return $this;
     }
 
@@ -124,6 +143,14 @@ class MwsTimeSlot
     {
         $this->tags->removeElement($tag);
 
+        // TODO : ok here or better using event system ? (strong design will use other design patterns..)
+        $this->setMaxPricePerHr(
+            array_reduce($this->tags->toArray(), function ($acc, $t) {
+                $acc = max($t->getMaxPricePerHr(), $acc);
+                return $acc;
+            }, 0)
+        );
+        
         return $this;
     }
 
@@ -147,6 +174,18 @@ class MwsTimeSlot
     public function setSourceStamp(string $sourceStamp): static
     {
         $this->sourceStamp = $sourceStamp;
+
+        return $this;
+    }
+
+    public function getMaxPricePerHr(): ?float
+    {
+        return $this->maxPricePerHr;
+    }
+
+    public function setMaxPricePerHr(?float $maxPricePerHr): static
+    {
+        $this->maxPricePerHr = $maxPricePerHr;
 
         return $this;
     }

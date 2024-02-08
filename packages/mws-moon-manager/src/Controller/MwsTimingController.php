@@ -120,14 +120,14 @@ class MwsTimingController extends AbstractController
             }
         }
 
-        $qb = $mwsTimeSlotRepository->createQueryBuilder('o');
+        $qb = $mwsTimeSlotRepository->createQueryBuilder('t');
         if ($keyword) {
             // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
             // ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
         }
 
         if (count($searchTags) || count($searchTagsToAvoid)) {
-            $qb = $qb->innerJoin('o.tags', 'tag');
+            $qb = $qb->innerJoin('t.tags', 'tag');
         }
         if (count($searchTags)) {
             $orClause = '';
@@ -150,12 +150,14 @@ class MwsTimingController extends AbstractController
                 $tag = $mwsTimeTagRepository->findOneBy([
                     'slug' => $slug,
                 ]);
-                $dql .= ":tagToAvoid$idx NOT MEMBER OF o.tags";
+                $dql .= ":tagToAvoid$idx NOT MEMBER OF t.tags";
                 $qb->setParameter("tagToAvoid$idx", $tag);
                 // dd($dql);
                 $qb = $qb->andWhere($dql);
             }
         }
+
+        $qb->orderBy("t.sourceTime", "ASC");
 
         $query = $qb->getQuery();
         // dd($query->getResult());    

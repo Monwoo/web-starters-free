@@ -84,6 +84,7 @@
 >
   <!-- {JSON.stringify(timingSlot)} -->
   <div>
+    [{timingSlot?.rangeDayIdxBy10Min}]
     {dayjs(timingSlot?.sourceTime).format("YYYY/MM/DD h:mm")}
   </div>
   <!-- {timingSlot?.sourceStamp} -->
@@ -96,7 +97,12 @@
     class:left-0={isFullScreen}
     class:right-0={isFullScreen}
   >
-    {#if isFullScreen && lastSelectedIndex !== null}
+    {#each timingSlot?.tags ?? [] as tag}
+        <span class="float-right m-1">
+          {tag.label}
+        </span>
+    {/each}
+    {#if isFullScreen}
       <button
         class="float-right m-1"
         style:opacity={!moveResp.isLast ? 1 : 0.7}

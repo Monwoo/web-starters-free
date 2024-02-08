@@ -29,16 +29,23 @@ class MwsTimeTag
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'mwsTimeTags')]
     private ?self $category = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $pricePerHr = null;
+
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: self::class)]
     private Collection $mwsTimeTags;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeSlot::class, mappedBy: 'tags')]
     private Collection $mwsTimeSlots;
 
+    #[ORM\ManyToMany(targetEntity: MwsTimeQualif::class, mappedBy: 'timeTags')]
+    private Collection $mwsTimeQualifs;
+
     public function __construct()
     {
         $this->mwsTimeTags = new ArrayCollection();
         $this->mwsTimeSlots = new ArrayCollection();
+        $this->mwsTimeQualifs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,6 +154,45 @@ class MwsTimeTag
         if ($this->mwsTimeSlots->removeElement($mwsTimeSlot)) {
             $mwsTimeSlot->removeTag($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsTimeQualif>
+     */
+    public function getMwsTimeQualifs(): Collection
+    {
+        return $this->mwsTimeQualifs;
+    }
+
+    public function addMwsTimeQualif(MwsTimeQualif $mwsTimeQualif): static
+    {
+        if (!$this->mwsTimeQualifs->contains($mwsTimeQualif)) {
+            $this->mwsTimeQualifs->add($mwsTimeQualif);
+            $mwsTimeQualif->addTimeTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsTimeQualif(MwsTimeQualif $mwsTimeQualif): static
+    {
+        if ($this->mwsTimeQualifs->removeElement($mwsTimeQualif)) {
+            $mwsTimeQualif->removeTimeTag($this);
+        }
+
+        return $this;
+    }
+
+    public function getPricePerHr(): ?float
+    {
+        return $this->pricePerHr;
+    }
+
+    public function setPricePerHr(?float $pricePerHr): static
+    {
+        $this->pricePerHr = $pricePerHr;
 
         return $this;
     }
