@@ -12,6 +12,7 @@
   export let locale;
   export let lookup;
   export let timings = [];
+  export let timeQualifs = [];
   export let timingsPaginator;
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
@@ -170,7 +171,7 @@
     <!-- { JSON.stringify(timings) } -->
     <SlotView
       bind:lastSelectedIndex
-      {moveSelectedIndex}
+      {moveSelectedIndex} {timeQualifs}
       timingSlot={timings[lastSelectedIndex] ?? null}
       class="h-[50%] md:w-[50%] md:h-[100%]"
     />

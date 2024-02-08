@@ -28,6 +28,7 @@
 	<div class="mws-timings-qualif" {{ svelte_component('MwsTimingLookup', {
 		'locale': app.locale,
 		'timings': timings|serialize('json')|e('html_attr'),
+		'timeQualifs': timeQualifs|serialize('json')|e('html_attr'),
 		'timingsPaginator': block('timingsPaginator'),
 		'timingsHeaders': {
 			'clientUsername' : knp_pagination_sortable(timings, 'Nom du client', 'o.clientUsername'),

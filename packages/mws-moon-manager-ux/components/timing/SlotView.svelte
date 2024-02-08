@@ -19,6 +19,7 @@
   export let isFullScreen = false;
   export let moveSelectedIndex;
   export let lastSelectedIndex = 0;
+  export let timeQualifs = [];
 
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
@@ -27,22 +28,12 @@
       })
     : null;
 
-  let qualifTemplates = [
-    {
-      shortcut: "1".charCodeAt(0),
-      label: "1",
-      toggleQualif: () => {
-        console.log("TODO : toggle qualif 1");
-      },
-    },
-    {
-      shortcut: "2".charCodeAt(0),
-      label: "2",
-      toggleQualif: () => {
-        console.log("TODO : toggle qualif 2");
-      },
-    },
-  ];
+  let qualifTemplates = timeQualifs.map(q => {
+    q.toggleQualif = () => {
+        console.log("TODO : toggle qualif " + q.label, q);
+      };
+    return q;
+  });
   let qualifShortcut = qualifTemplates.reduce((acc, qt) => {
     acc[qt.shortcut] = qt.toggleQualif;
     return acc;

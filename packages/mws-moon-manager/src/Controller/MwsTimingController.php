@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsTimeTag;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
+use MWS\MoonManagerBundle\Repository\MwsTimeQualifRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
@@ -54,6 +55,7 @@ class MwsTimingController extends AbstractController
         $viewTemplate,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
         MwsTimeTagRepository $mwsTimeTagRepository,
+        MwsTimeQualifRepository $mwsTimeQualifRepository,
         PaginatorInterface $paginator,
         Request $request,
     ): Response {
@@ -169,8 +171,11 @@ class MwsTimingController extends AbstractController
 
         $this->logger->debug("Succeed to list timings");
 
+        $timeQualifs = $mwsTimeQualifRepository->findAll();
+
         return $this->render('@MoonManager/mws_timing/qualif.html.twig', [
             'timings' => $timings,
+            'timeQualifs' => $timeQualifs,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,
         ]);

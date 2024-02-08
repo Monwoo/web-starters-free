@@ -11,6 +11,7 @@
   export let locale;
   export let lookup = '{}';
   export let timings;
+  export let timeQualifs;
   export let timingsPaginator;
   export let timingsHeaders = '{}'; // injected raw html
   export let viewTemplate;
@@ -27,6 +28,7 @@
 
   lookup = JSON.parse(decodeHtml(lookup));
   timings = JSON.parse(decodeHtml(timings));
+  timeQualifs = JSON.parse(decodeHtml(timeQualifs));
 
   timingsHeaders = JSON.parse(decodeHtml(timingsHeaders));
   timingsPaginator = decodeHtml(timingsPaginator);
@@ -36,7 +38,7 @@
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Lookup {lookup}
+<Lookup {lookup} {timeQualifs}
 {locale} {viewTemplate} {lookupForm} {timings}
 {timingsPaginator} {timingsHeaders}
 ></Lookup>
