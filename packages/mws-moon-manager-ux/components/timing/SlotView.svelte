@@ -75,7 +75,8 @@
 >
   <!-- {JSON.stringify(timingSlot)} -->
   <div>
-    [{timingSlot?.rangeDayIdxBy10Min}]
+    [{timingSlot?.rangeDayIdxBy10Min ?? '--'}]
+    [{timingSlot?.maxPricePerHr ?? '--'}]
     {dayjs(timingSlot?.sourceTime).format("YYYY/MM/DD h:mm")}
   </div>
   <!-- {timingSlot?.sourceStamp} -->

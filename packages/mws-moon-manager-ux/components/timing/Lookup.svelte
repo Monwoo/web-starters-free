@@ -8,6 +8,8 @@
   import { onMount } from "svelte";
   import SquareList from "./SquareList.svelte";
   import SlotView from "./SlotView.svelte";
+  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
 
   export let locale;
   export let lookup;
@@ -18,11 +20,13 @@
   export let viewTemplate;
   export let lookupForm;
   export let lastSelectedIndex = 0;
-
+  
   console.debug(lookupForm);
-
+  
   const jsonResult = JSON.parse(decodeURIComponent(lookup.jsonResult));
   console.debug("jsonResult :", jsonResult);
+  
+  let csrfTimingDelete = stateGet(get(state), 'csrfTimingDeleteAll');
 
   const moveSelectedIndex = (delta = 1) => {
     const lastValue = lastSelectedIndex;
@@ -122,16 +126,18 @@
             >Importer des timings.</button
           >
         </a>
-        <a
-          href={Routing.generate("mws_offer_import", {
-            _locale: locale ?? "",
-            viewTemplate: viewTemplate ?? "",
-          })}
+        <form action="{ Routing.generate('mws_timing_delete_all', {
+          '_locale': locale ?? '',
+          'viewTemplate': viewTemplate ?? '',
+        }) }"
+        method="post"
+        onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les suivi des temps ?');"
         >
-          <button class="btn btn-outline-primary p-1"
-            >Nettoyer les timings.</button
-          >
-        </a>
+          <input type="hidden" name="_csrf_token" value="{ csrfTimingDelete }" />
+          <button 
+          class="btn btn-outline-primary p-1 m-2"
+          type="submit">Supprimer les timings</button>
+        </form>
       </div>
       <div class="p-3 flex flex-wrap">
         <div class="label">

@@ -4,6 +4,7 @@ namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
 use MWS\MoonManagerBundle\Entity\MwsTimeTag;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Repository\MwsTimeQualifRepository;
@@ -17,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -42,7 +44,7 @@ class MwsTimingController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'mws_timings_lookup')]
+    #[Route('', name: 'mws_timings_lookup')] // TODO : refactor : same as qualif ?
     public function lookup(): Response
     {
         return $this->render('@MoonManager/mws_timing/lookup.html.twig', [
@@ -226,6 +228,44 @@ class MwsTimingController extends AbstractController
         // $response->headers->set('Pragma', 'no-chache');
         // $response->headers->set('Expires', '0');
         return $response;
+    }
+
+    #[Route(
+        '/delete-all/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_delete_all',
+        methods: ['POST'],
+    )]
+    public function deleteAll(
+        string|null $viewTemplate,
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) { // TODO : only for admin too ?
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-delete-all', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        $qb = $this->em->createQueryBuilder()
+            ->delete(MwsTimeSlot::class, 't');
+        $query = $qb->getQuery();
+        $query->execute();
+        $this->em->flush();
+
+        return $this->redirectToRoute(
+            'mws_timings_qualif',
+            [ // array_merge($request->query->all(), [
+                "viewTemplate" => $viewTemplate,
+                "page" => 1,
+            ], //),
+            Response::HTTP_SEE_OTHER
+        );
     }
 
 }
