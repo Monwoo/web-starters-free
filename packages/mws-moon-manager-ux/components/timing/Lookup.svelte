@@ -16,12 +16,27 @@
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
-  export let lastSelectedIndex;
+  export let lastSelectedIndex = 0;
 
   console.debug(lookupForm);
 
   const jsonResult = JSON.parse(decodeURIComponent(lookup.jsonResult));
   console.debug("jsonResult :", jsonResult);
+
+  const moveSelectedIndex = (delta = 1) => {
+    const lastValue = lastSelectedIndex;
+    lastSelectedIndex += delta;
+    if (lastSelectedIndex >= timings.length) {
+      lastSelectedIndex = timings.length - 1;
+    } else if (lastSelectedIndex < 0) {
+      lastSelectedIndex = 0;
+    }
+    return {
+      didChange: lastValue != lastSelectedIndex,
+      isFirst: lastSelectedIndex == 0,
+      isLast: lastSelectedIndex == timings.length - 1,
+    };
+  }
 
   onMount(async () => {
     const $ = window.$;
@@ -139,9 +154,7 @@
   <button
     class="float-right m-1"
     style:opacity={lastSelectedIndex < timings.length - 1 ? 1 : 0.7}
-    on:click={() => {
-      if (lastSelectedIndex < timings.length - 1) lastSelectedIndex++;
-    }}
+    on:click={() => moveSelectedIndex(1)}
   >
     Next.
   </button>
@@ -149,15 +162,15 @@
   <button
     class="float-right m-1"
     style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}
-    on:click={() => {
-      if (lastSelectedIndex > 0) lastSelectedIndex--;
-    }}
+    on:click={() => moveSelectedIndex(-1)}
   >
     Prev.
   </button>
   <div class="flex flex-col h-[90vh] md:w-[100vw] md:flex-row">
     <!-- { JSON.stringify(timings) } -->
     <SlotView
+      bind:lastSelectedIndex
+      {moveSelectedIndex}
       timingSlot={timings[lastSelectedIndex] ?? null}
       class="h-[50%] md:w-[50%] md:h-[100%]"
     />

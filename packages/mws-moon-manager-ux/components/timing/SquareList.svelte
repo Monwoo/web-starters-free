@@ -47,9 +47,11 @@
     }
 
     if (lastSelectedIndex < 0) {
-      lastSelectedIndex = timings.length - 1;
+      // lastSelectedIndex = timings.length - 1; // Loop
+      lastSelectedIndex = 0; // Do not move
     } else if (lastSelectedIndex >= timings.length) {
-      lastSelectedIndex = 0;
+      // lastSelectedIndex = 0; // Loop
+      lastSelectedIndex = timings.length - 1; // Do not move
     }
   }
 

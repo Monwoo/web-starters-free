@@ -17,6 +17,8 @@
   export { classNames as class };
   export let timingSlot;
   export let isFullScreen = false;
+  export let moveSelectedIndex;
+  export let lastSelectedIndex = 0;
 
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
@@ -25,7 +27,55 @@
       })
     : null;
 
+  let qualifTemplates = [
+    {
+      shortcut: "1".charCodeAt(0),
+      label: "1",
+      toggleQualif: () => {
+        console.log("TODO : toggle qualif 1");
+      },
+    },
+    {
+      shortcut: "2".charCodeAt(0),
+      label: "2",
+      toggleQualif: () => {
+        console.log("TODO : toggle qualif 2");
+      },
+    },
+  ];
+  let qualifShortcut = qualifTemplates.reduce((acc, qt) => {
+    acc[qt.shortcut] = qt.toggleQualif;
+    return acc;
+  }, {});
+
+  const isKey = {
+    space: (k) => k.keyCode == 32,
+    return: (k) => k.keyCode == 13,
+    qualifShortcut: (k) => qualifShortcut[k.keyCode] ?? null,
+  };
+
+  function onKeyDown(e) {
+    if (isKey.space(e)) {
+      isFullScreen = !isFullScreen;
+      e.preventDefault();
+    }
+    if (isKey.return(e)) {
+      // isFullScreen = !isFullScreen; // TOGGLE QUALIF tags ?
+      e.preventDefault();
+    }
+    if (isKey.qualifShortcut(e)) {
+      isKey.qualifShortcut(e)();
+      e.preventDefault();
+    }
+  }
+
+  let moveResp = moveSelectedIndex(0);
+  // TIPS : in conjunction with tests on lastSelectedIndex, will refresh move position:
+  $: lastSelectedIndex, moveResp = moveSelectedIndex(0);
+
 </script>
+
+<svelte:window on:keydown={onKeyDown} />
 
 <div
   class="mws-timing-slot-view overflow-y-auto
@@ -46,6 +96,31 @@
     class:left-0={isFullScreen}
     class:right-0={isFullScreen}
   >
+    {#if isFullScreen && lastSelectedIndex !== null}
+      <button
+        class="float-right m-1"
+        style:opacity={!moveResp.isLast ? 1 : 0.7}
+        on:click|stopPropagation={() => (moveResp = moveSelectedIndex(1))}
+      >
+        Next.
+      </button>
+
+      <button
+        class="float-right m-1"
+        style:opacity={!moveResp.isFirst ? 1 : 0.7}
+        on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
+      >
+        Prev.
+      </button>
+      {#each qualifTemplates ?? [] as qt, idx}
+        <button
+          class="float-right m-1"
+          on:click|stopPropagation={qt.toggleQualif}
+        >
+          Qualif {qt.label}
+        </button>
+      {/each}
+    {/if}
     <img
       class="object-contain"
       class:w-full={isFullScreen}
