@@ -910,7 +910,7 @@ class MwsOfferController extends AbstractController
 
         return $this->json([
             'newTags' => $offer->getTags(),
-            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-tag-delete')->getValue(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-tag-add')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
     }

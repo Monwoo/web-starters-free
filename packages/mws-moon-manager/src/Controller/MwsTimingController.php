@@ -168,7 +168,8 @@ class MwsTimingController extends AbstractController
         $timings = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
+            // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
+            $request->query->getInt('pageLimit', 124), /*page limit */
         );
 
         $this->logger->debug("Succeed to list timings");
@@ -268,4 +269,57 @@ class MwsTimingController extends AbstractController
         );
     }
 
+    #[Route(
+        '/tag/add/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_add',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagAdd(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-add', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $tagSlug = $request->request->get('tagSlug');
+        $tag = $mwsTimeTagRepository->findOneBy([
+            "slug" => $tagSlug,
+        ]);
+        if (!$tag) {
+            throw $this->createNotFoundException("Unknow time tag slug [$tagSlug]");
+        }
+        $timeSlotId = $request->request->get('timeSlotId');
+        $timeSlot = $mwsTimeSlotRepository->findOneBy([
+            'id' => $timeSlotId,
+        ]);
+        if (!$timeSlot) {
+            throw $this->createNotFoundException("Unknow time slot id [$timeSlotId]");
+        }
+        // dd($tag);
+        $timeSlot->addTag($tag);
+
+        $this->em->persist($timeSlot);
+        $this->em->flush();
+
+        return $this->json([
+            'newTags' => $timeSlot->getTags(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-add')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
 }

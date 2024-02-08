@@ -8,7 +8,7 @@
   import { onMount } from "svelte";
   import SquareList from "./SquareList.svelte";
   import SlotView from "./SlotView.svelte";
-  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
+  import { state, stateGet } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
 
   export let locale;
@@ -177,7 +177,7 @@
     <!-- { JSON.stringify(timings) } -->
     <SlotView
       bind:lastSelectedIndex
-      {moveSelectedIndex} {timeQualifs}
+      {moveSelectedIndex} {timeQualifs} {locale}
       timingSlot={timings[lastSelectedIndex] ?? null}
       class="h-[50%] md:w-[50%] md:h-[100%]"
     />

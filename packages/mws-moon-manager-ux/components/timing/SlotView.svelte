@@ -12,6 +12,8 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
+  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
 
   let classNames = "";
   export { classNames as class };
@@ -20,6 +22,51 @@
   export let moveSelectedIndex;
   export let lastSelectedIndex = 0;
   export let timeQualifs = [];
+  export let locale;
+
+  export let toggleQualif = async (tag) => {
+    // TODO : remove all tags from all available qualif
+    // + add qualif tags if was not fully present, keep cleaned otherwise
+  }
+
+  export let addTag = async (tag) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfTimingTagAdd'),
+      timeSlotId: timingSlot.id,
+      tagSlug: tag.slug,
+    };
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate('mws_timing_tag_add', {
+        _locale: locale,
+      }), {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        redirect: 'error',
+      }
+    ).then(async resp => {
+      console.log(resp);
+      if (!resp.ok) {
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+          const data = await resp.json();
+          timingSlot.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
+          console.debug("Did add tag", timingSlot.tags);
+          stateUpdate(state, {
+            csrfOfferTagDelete: data.newCsrf,
+          });
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+    });
+  };
 
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
@@ -29,8 +76,11 @@
     : null;
 
   let qualifTemplates = timeQualifs.map(q => {
-    q.toggleQualif = () => {
+    q.toggleQualif = async () => {
         console.log("TODO : toggle qualif " + q.label, q);
+        await q.timeTags.forEach(async t => {
+          await addTag(t);
+        });
       };
     return q;
   });
@@ -45,7 +95,7 @@
     qualifShortcut: (k) => qualifShortcut[k.keyCode] ?? null,
   };
 
-  function onKeyDown(e) {
+  const onKeyDown = async (e) => {
     if (isKey.space(e)) {
       isFullScreen = !isFullScreen;
       e.preventDefault();
@@ -55,7 +105,7 @@
       e.preventDefault();
     }
     if (isKey.qualifShortcut(e)) {
-      isKey.qualifShortcut(e)();
+      await isKey.qualifShortcut(e)(); // TODO : should not block event flow ? no await ?
       e.preventDefault();
     }
   }
@@ -77,7 +127,7 @@
   <div>
     [{timingSlot?.rangeDayIdxBy10Min ?? '--'}]
     [{timingSlot?.maxPricePerHr ?? '--'}]
-    {dayjs(timingSlot?.sourceTime).format("YYYY/MM/DD h:mm")}
+    {dayjs(timingSlot?.sourceTime).format("YYYY/MM/DD H:mm")}
   </div>
   <!-- {timingSlot?.sourceStamp} -->
   <div
@@ -89,11 +139,6 @@
     class:left-0={isFullScreen}
     class:right-0={isFullScreen}
   >
-    {#each timingSlot?.tags ?? [] as tag}
-        <span class="float-right m-1">
-          {tag.label}
-        </span>
-    {/each}
     {#if isFullScreen}
       <button
         class="float-right m-1"
@@ -119,6 +164,11 @@
         </button>
       {/each}
     {/if}
+    {#each timingSlot?.tags ?? [] as tag}
+        <span class="float-right m-1 text-white">
+          {tag.label}
+        </span>
+    {/each}
     <img
       class="object-contain"
       class:w-full={isFullScreen}

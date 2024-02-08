@@ -131,7 +131,7 @@ class MwsTimeSlot
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
         $this->setMaxPricePerHr(
             array_reduce($this->tags->toArray(), function ($acc, $t) {
-                $acc = max($t->getMaxPricePerHr(), $acc);
+                $acc = max($t->getPricePerHr(), $acc);
                 return $acc;
             }, 0)
         );
@@ -150,7 +150,7 @@ class MwsTimeSlot
                 return $acc;
             }, 0)
         );
-        
+
         return $this;
     }
 
