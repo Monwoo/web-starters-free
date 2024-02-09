@@ -7,9 +7,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsTimeTagRepository::class)]
 #[ORM\Index(columns: ['slug'])]
+// #[Serializer\Context(context: [
+//     AbstractNormalizer::ATTRIBUTES =>
+//     ['projectId', 'owner' => ['id']]
+// ])] // Not for entity class....
 class MwsTimeTag
 {
     #[ORM\Id]
@@ -36,9 +41,11 @@ class MwsTimeTag
     private Collection $mwsTimeTags;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeSlot::class, mappedBy: 'tags')]
+    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeSlots;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeQualif::class, mappedBy: 'timeTags')]
+    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeQualifs;
 
     public function __construct()

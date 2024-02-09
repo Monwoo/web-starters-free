@@ -24,30 +24,37 @@
   export let timeQualifs = [];
   export let locale;
 
+  let isLoading = false;
+  const urlParams = new URLSearchParams(window.location.search);
+  const pageNumber = urlParams.get("page") ?? "1";
+
   export let toggleQualif = async (qualif) => {
+    isLoading = true;
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfTimingToggleQualif'),
+      _csrf_token: stateGet(get(state), "csrfTimingToggleQualif"),
       timeSlotId: timingSlot.id,
       qualifId: qualif.id,
     };
-    const formData  = new FormData();      
-    for(const name in data) {
+    const formData = new FormData();
+    for (const name in data) {
       formData.append(name, data[name]);
     }
     const resp = await fetch(
-      Routing.generate('mws_timing_qualif_toggle', {
+      Routing.generate("mws_timing_qualif_toggle", {
         _locale: locale,
-      }), {
+      }),
+      {
         method: "POST",
         body: formData,
         credentials: "same-origin",
-        redirect: 'error',
+        redirect: "error",
       }
-    ).then(async resp => {
-      console.log(resp);
-      if (!resp.ok) {
-        throw new Error("Not 2xx response", {cause: resp});
-      } else {
+    )
+      .then(async (resp) => {
+        console.log(resp);
+        if (!resp.ok) {
+          throw new Error("Not 2xx response", { cause: resp });
+        } else {
           const data = await resp.json();
           // const data = await resp.text();
           // console.debug("resp", data);
@@ -57,38 +64,43 @@
           stateUpdate(state, {
             csrfTimingToggleQualif: data.newCsrf,
           });
-      }
-    }).catch(e => {
-      console.error(e);
-      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-      const shouldWait = confirm("Echec de l'enregistrement.");
-    });
-  }
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
+    isLoading = false;
+  };
 
   export let addTag = async (tag) => {
+    isLoading = true;
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfTimingTagAdd'),
+      _csrf_token: stateGet(get(state), "csrfTimingTagAdd"),
       timeSlotId: timingSlot.id,
       tagSlug: tag.slug,
     };
-    const formData  = new FormData();      
-    for(const name in data) {
+    const formData = new FormData();
+    for (const name in data) {
       formData.append(name, data[name]);
     }
     const resp = await fetch(
-      Routing.generate('mws_timing_tag_add', {
+      Routing.generate("mws_timing_tag_add", {
         _locale: locale,
-      }), {
+      }),
+      {
         method: "POST",
         body: formData,
         credentials: "same-origin",
-        redirect: 'error',
+        redirect: "error",
       }
-    ).then(async resp => {
-      console.log(resp);
-      if (!resp.ok) {
-        throw new Error("Not 2xx response", {cause: resp});
-      } else {
+    )
+      .then(async (resp) => {
+        console.log(resp);
+        if (!resp.ok) {
+          throw new Error("Not 2xx response", { cause: resp });
+        } else {
           const data = await resp.json();
           timingSlot.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
@@ -96,12 +108,14 @@
           stateUpdate(state, {
             csrfTimingTagAdd: data.newCsrf,
           });
-      }
-    }).catch(e => {
-      console.error(e);
-      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-      const shouldWait = confirm("Echec de l'enregistrement.");
-    });
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
+    isLoading = false;
   };
 
   $: slotPath = timingSlot?.source?.path
@@ -111,14 +125,14 @@
       })
     : null;
 
-  let qualifTemplates = timeQualifs.map(q => {
+  let qualifTemplates = timeQualifs.map((q) => {
     q.toggleQualif = async () => {
-        console.log("Toggle qualif " + q.label, q);
-        // await q.timeTags.forEach(async t => {
-        //   await addTag(t);
-        // });
-        await toggleQualif(q);
-      };
+      console.log("Toggle qualif " + q.label, q);
+      // await q.timeTags.forEach(async t => {
+      //   await addTag(t);
+      // });
+      await toggleQualif(q);
+    };
     return q;
   });
   let qualifShortcut = qualifTemplates.reduce((acc, qt) => {
@@ -145,25 +159,29 @@
       await isKey.qualifShortcut(e)(); // TODO : should not block event flow ? no await ?
       e.preventDefault();
     }
-  }
+  };
 
   let moveResp = moveSelectedIndex(0);
   // TIPS : in conjunction with tests on lastSelectedIndex, will refresh move position:
-  $: lastSelectedIndex, moveResp = moveSelectedIndex(0);
+  $: lastSelectedIndex, (moveResp = moveSelectedIndex(0));
 
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
 
+<!-- class:opacity-80={isLoading}
+style:opacity={isLoading ? 0.8 : 1} -->
 <div
   class="mws-timing-slot-view overflow-y-auto
   flex flex-row flex-wrap content-start
   {classNames}"
->
+  class:pointer-events-none={isLoading}
+  style::pointer-events={isLoading ? 'none' : 'auto'}
+  >
   <!-- {JSON.stringify(timingSlot)} -->
   <div>
-    [{timingSlot?.rangeDayIdxBy10Min ?? '--'}]
-    [{timingSlot?.maxPricePerHr ?? '--'}]
+    [{timingSlot?.rangeDayIdxBy10Min ?? "--"}] [{timingSlot?.maxPricePerHr ??
+      "--"}]
     {dayjs(timingSlot?.sourceTime).format("YYYY/MM/DD H:mm")}
   </div>
   <!-- {timingSlot?.sourceStamp} -->
@@ -176,6 +194,9 @@
     class:left-0={isFullScreen}
     class:right-0={isFullScreen}
   >
+    <span class="float-right m-1 text-white">
+      [{pageNumber}-{lastSelectedIndex}]
+    </span>
     {#if isFullScreen}
       <button
         class="float-right m-1"
@@ -192,20 +213,41 @@
       >
         Prev.
       </button>
-      {#each qualifTemplates ?? [] as qt, idx}
-        <button
-          class="float-right m-1"
-          on:click|stopPropagation={qt.toggleQualif}
-        >
-          Qualif {qt.label}
-        </button>
-      {/each}
     {/if}
-    {#each timingSlot?.tags ?? [] as tag}
-        <span class="float-right m-1 text-white">
-          {tag.label}
-        </span>
+    {#each qualifTemplates ?? [] as qt, idx}
+      <button
+        class="float-right m-1"
+        on:click|stopPropagation={qt.toggleQualif}
+      >
+        Qualif {qt.label}
+      </button>
     {/each}
+    {#each timingSlot?.tags ?? [] as tag}
+      <span class="float-right m-1 text-white">
+        {tag.label}
+      </span>
+    {/each}
+    {#if isLoading}
+      <span role="status">
+        <svg
+          aria-hidden="true"
+          class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+          viewBox="0 0 100 101"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+            fill="currentColor"
+          />
+          <path
+            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+            fill="currentFill"
+          />
+        </svg>
+        <span class="sr-only">Loading...</span>
+      </span>
+    {/if}
     <img
       class="object-contain"
       class:w-full={isFullScreen}

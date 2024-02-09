@@ -19,9 +19,21 @@
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
-  export let lastSelectedIndex = 0;
+  const urlParams = new URLSearchParams(window.location.search);
+  export let lastSelectedIndex = parseInt(urlParams.get("lastSelectedIndex") ?? "0");
   
   console.debug(lookupForm);
+  $: {
+    // https://stackoverflow.com/questions/1090948/change-url-parameters-and-specify-defaults-using-javascript
+    // window.location.search = jQuery.query.set("lastSelectedIndex", lastSelectedIndex);    
+    if (lastSelectedIndex != parseInt(urlParams.get("lastSelectedIndex") ?? "0")) {
+      urlParams.set("lastSelectedIndex", lastSelectedIndex);
+      // window.location.search = urlParams; // Force page reload
+      // https://stackoverflow.com/questions/824349/how-do-i-modify-the-url-without-reloading-the-page
+      const newUrl = window.location.origin + window.location.pathname + "?" + urlParams;
+      history.pushState({}, null, newUrl);
+    }
+  }
   
   const jsonResult = JSON.parse(decodeURIComponent(lookup.jsonResult));
   console.debug("jsonResult :", jsonResult);
