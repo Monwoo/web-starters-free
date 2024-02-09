@@ -1,4 +1,4 @@
-# 🌖🌖 Copyright Monwoo 2023 🌖🌖, re-build by Miguel Monwoo for AtoutConseil,
+# 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo
 # service@monwoo.com
 
 # https://gist.github.com/alch/7766993
@@ -33,7 +33,7 @@ RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 # RewriteRule ^(.*) index.php/$1 [L,QSA]
 # # RewriteRule ^(.*)$ index.php$1 [QSA,L]
 
-#RewriteBase /atoutconseil/
+#RewriteBase /pre-prod/
 #
 #RewriteCond %{THE_REQUEST} /public/([^\s?]*) [NC]
 #RewriteRule ^ %1 [L,NE,R=302]

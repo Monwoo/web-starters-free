@@ -1,4 +1,4 @@
-// 🌖🌖 Copyright Monwoo 2023 🌖🌖, added by Miguel Monwoo for AtoutConseil,
+// 🌖🌖 Copyright Monwoo 2024 🌖🌖, by Miguel Monwoo
 // service@monwoo.com
 
 // Biblio :

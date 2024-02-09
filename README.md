@@ -5,6 +5,12 @@
 
 Contain multiple free webstarters and parts of opened confidential starters (Optional full code under private license per domains, or for confidential knowledge with no rights to duplicate without appropriate notice or license)
 
+## Warning
+**Not for productions** without serious testings and cleanings.
+
+Want to give motivation for tests or other stuffs ? Donate with your comment on :
+[www.monwoo.com/don](https://www.monwoo.com/don)
+
 ## Apps and Packages
 
 ### Monwoo Web Starters
