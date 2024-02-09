@@ -52,7 +52,7 @@ class MwsTimingController extends AbstractController
         ]);
     }
 
-    #[Route('/qualif/{viewTemplate<[^/]*>?}', name: 'mws_timings_qualif')]
+    #[Route('/qualif/lookup/{viewTemplate<[^/]*>?}', name: 'mws_timings_qualif')]
     public function qualif(
         $viewTemplate,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
@@ -322,4 +322,75 @@ class MwsTimingController extends AbstractController
             'viewTemplate' => $viewTemplate,
         ]);
     }
+
+    #[Route(
+        '/qualif/toggle/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_qualif_toggle',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function qualifToggle(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        MwsTimeQualifRepository $mwsTimeQualifRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-toggle', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $qualifId = $request->request->get('qualifId');
+        $qualif = $mwsTimeQualifRepository->findOneBy([
+            "id" => $qualifId,
+        ]);
+        if (!$qualif) {
+            throw $this->createNotFoundException("Unknow qualif [$qualifId]");
+        }
+        $timeSlotId = $request->request->get('timeSlotId');
+        $timeSlot = $mwsTimeSlotRepository->findOneBy([
+            'id' => $timeSlotId,
+        ]);
+        if (!$timeSlot) {
+            throw $this->createNotFoundException("Unknow time slot id [$timeSlotId]");
+        }
+        $wasQualified = count(array_intersect(
+            $qualif->getTimeTags()->toArray(), $timeSlot->getTags()->toArray()
+        )) == count($qualif->getTimeTags()->toArray());
+
+        foreach ($mwsTimeQualifRepository->findAll() as $allQualif) {
+            // Clean all existing tags (toggle)
+            foreach ($allQualif->getTimeTags() as $tag) {
+                $timeSlot->removeTag($tag);
+            }
+        }
+
+        if (!$wasQualified) {
+            // Add tag if was not present, keep clean otherwise
+            foreach ($qualif->getTimeTags() as $tag) {
+                $timeSlot->addTag($tag);
+            }    
+        }
+
+        $this->em->persist($timeSlot);
+        $this->em->flush();
+
+        return $this->json([
+            'newTags' => $timeSlot->getTags(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-toggle')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
 }

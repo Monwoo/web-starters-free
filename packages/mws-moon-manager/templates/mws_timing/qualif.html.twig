@@ -8,7 +8,7 @@
 
 {% block storesInit %}
 	{{ parent() }}
-	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {  'csrfTimingDeleteAll': csrf_token('mws-csrf-timing-delete-all'), 'csrfTimingTagDelete': csrf_token('mws-csrf-timing-tag-delete'), 'csrfTimingTagAdd': csrf_token('mws-csrf-timing-tag-add'), } |serialize('json')|e('html_attr'), }) }}></div>
+	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {  'csrfTimingDeleteAll': csrf_token('mws-csrf-timing-delete-all'), 'csrfTimingTagDelete': csrf_token('mws-csrf-timing-tag-delete'), 'csrfTimingToggleQualif': csrf_token('mws-csrf-timing-qualif-toggle'), 'csrfTimingTagAdd': csrf_token('mws-csrf-timing-tag-add'), } |serialize('json')|e('html_attr'), }) }}></div>
 {% endblock %}
 
 {% block timingsPaginator %}

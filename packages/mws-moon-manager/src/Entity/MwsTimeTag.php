@@ -48,6 +48,11 @@ class MwsTimeTag
         $this->mwsTimeQualifs = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->slug;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

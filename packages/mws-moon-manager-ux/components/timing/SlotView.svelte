@@ -24,9 +24,45 @@
   export let timeQualifs = [];
   export let locale;
 
-  export let toggleQualif = async (tag) => {
-    // TODO : remove all tags from all available qualif
-    // + add qualif tags if was not fully present, keep cleaned otherwise
+  export let toggleQualif = async (qualif) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfTimingToggleQualif'),
+      timeSlotId: timingSlot.id,
+      qualifId: qualif.id,
+    };
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate('mws_timing_qualif_toggle', {
+        _locale: locale,
+      }), {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        redirect: 'error',
+      }
+    ).then(async resp => {
+      console.log(resp);
+      if (!resp.ok) {
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+          const data = await resp.json();
+          // const data = await resp.text();
+          // console.debug("resp", data);
+          timingSlot.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
+          console.debug("Did toggle qualif, updated tags : ", timingSlot.tags);
+          stateUpdate(state, {
+            csrfTimingToggleQualif: data.newCsrf,
+          });
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+    });
   }
 
   export let addTag = async (tag) => {
@@ -58,7 +94,7 @@
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
           console.debug("Did add tag", timingSlot.tags);
           stateUpdate(state, {
-            csrfOfferTagDelete: data.newCsrf,
+            csrfTimingTagAdd: data.newCsrf,
           });
       }
     }).catch(e => {
@@ -77,10 +113,11 @@
 
   let qualifTemplates = timeQualifs.map(q => {
     q.toggleQualif = async () => {
-        console.log("TODO : toggle qualif " + q.label, q);
-        await q.timeTags.forEach(async t => {
-          await addTag(t);
-        });
+        console.log("Toggle qualif " + q.label, q);
+        // await q.timeTags.forEach(async t => {
+        //   await addTag(t);
+        // });
+        await toggleQualif(q);
       };
     return q;
   });
