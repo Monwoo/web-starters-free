@@ -23,9 +23,11 @@
   on:click
   class="mws-timing-slot
 flex justify-center items-center
+m-1
 overflow-hidden border-solid border-4"
   class:border-gray-600={!isSelected}
   class:border-blue-600={isSelected}
+  class:border-green-400={!isSelected && timingSlot.tags?.length}
   style:height={size}
   style:width={size}
 >

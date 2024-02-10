@@ -21,7 +21,15 @@
   export let lookupForm;
   const urlParams = new URLSearchParams(window.location.search);
   export let lastSelectedIndex = parseInt(urlParams.get("lastSelectedIndex") ?? "0");
-  
+  const pageNumber = urlParams.get("page") ?? "1";
+
+  const movePageIndex = (delta) => {
+    const newPageNum  = parseInt(pageNumber) + delta;
+    // TODO : how to know max page num ? data.length / pageLimit, need to know details...
+    urlParams.set("page",  newPageNum < 1 ? 1 : newPageNum);
+    window.location.search = urlParams;
+  };
+
   console.debug(lookupForm);
   $: {
     // https://stackoverflow.com/questions/1090948/change-url-parameters-and-specify-defaults-using-javascript
@@ -185,18 +193,37 @@
   >
     Prev.
   </button>
-  <div class="flex flex-col h-[90vh] md:w-[100vw] md:flex-row">
+
+  <button
+    class="float-right m-1"
+    on:click|stopPropagation={() => movePageIndex(1)}
+  >
+    Next. Page
+  </button>
+  {#if pageNumber > 1}
+    <button
+      class="float-right m-1"
+      on:click|stopPropagation={() => movePageIndex(-1)}
+    >
+    Prev. Page
+    </button>
+  {/if}
+  <span class="float-right m-1 text-black">
+    [{pageNumber}-{lastSelectedIndex}]
+  </span>
+
+  <div class="flex flex-col h-[90vh] w-[100vw] md:flex-row">
     <!-- { JSON.stringify(timings) } -->
     <SlotView
       bind:lastSelectedIndex
       {moveSelectedIndex} {timeQualifs} {locale}
       timingSlot={timings[lastSelectedIndex] ?? null}
-      class="h-[50%] md:w-[50%] md:h-[100%]"
+      class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
     />
     <SquareList
       bind:lastSelectedIndex
       {timings}
-      class="h-[50%] md:w-[50%] md:h-[100%]"
+      class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
     />
   </div>
   <div>{@html timingsPaginator}</div>
