@@ -14,7 +14,9 @@
   import Routing from "fos-router";
   import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
-
+	import { tweened } from 'svelte/motion';
+import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
+  
   let classNames = "";
   export { classNames as class };
   export let timingSlot;
@@ -23,6 +25,40 @@
   export let lastSelectedIndex = 0;
   export let timeQualifs = [];
   export let locale;
+  // Timer start time. Use it to ensure delay,
+  // example : 507 page of 124 items
+  //          => 10 minutes per page = 5070 minutes for all items
+  //          = 5070/60 = 84.5 hours
+  //          => SMIC fr 35hr/week
+  //          = 84.5 / 35 = 2.4 week for SMIC peoples
+  //
+  // BUT ALL this is based on 10 minutes per page :
+  //          => May be SMIC peoples will not have skills to qualify
+  //          => 35hr/week with human life need time to go toilette etc...
+  //          => 1 page is 124 items to qualify in 10 minutes
+  //          = 124 / 10 = 12.4 items per minutes
+  //          = 12.4 / 60 = 0.21 items per secondes
+  //          => around 5 secondes to qualify one item...
+  export let timerStart = 5;
+	let timer = tweened(timerStart);
+
+  let tInterval = null;
+  const startTimer = () => {
+    tInterval && clearInterval(tInterval);
+    $timer = timerStart;
+    tInterval = setInterval(() => {
+      if ($timer > 0) {
+        $timer--;
+      } else {
+        $timer = 0;
+        clearInterval(tInterval);
+      }
+    }, 1000);
+  }
+  // startTimer();
+
+  // $: minutes = Math.floor($timer / 60);
+  $: lastSelectedIndex, startTimer();
 
   let isLoading = false;
   const urlParams = new URLSearchParams(window.location.search);
@@ -203,8 +239,16 @@ style:opacity={isLoading ? 0.8 : 1} -->
   >
     <div>
       <span class="float-right m-1 text-white">
+        <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
+        <!-- {$timer} -->
+        <ProgressIndicator
+        percent={1 - $timer / timerStart} 
+        textRenderer={(percent) => `${$timer.toFixed(0)}`}
+        />
+
         [{pageNumber}-{lastSelectedIndex}]
       </span>
+      
       {#if isFullScreen}
         <button
           class="float-right m-1"
