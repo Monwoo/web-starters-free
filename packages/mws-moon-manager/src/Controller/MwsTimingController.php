@@ -303,31 +303,34 @@ class MwsTimingController extends AbstractController
         $qb = $qb->leftJoin('t.tags', 'tag');
 
         $qb = $qb->select("
-            GROUP_CONCAT(tag.slug) as tags,
-            GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
-            GROUP_CONCAT(t.id) as ids,
-            t.rangeDayIdxBy10Min as rangeDayIdxBy10Min,
             count(t) as count,
             strftime('%Y-%m-%d', t.sourceTime) as sourceDate,
             strftime('%Y', t.sourceTime) as sourceYear,
             strftime('%m', t.sourceTime) as sourceMonth,
-            strftime('%d', t.sourceTime) as sourceWeekOfYear
+            strftime('%d', t.sourceTime) as sourceWeekOfYear,
+            GROUP_CONCAT(tag.slug) as tags,
+            GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
+            GROUP_CONCAT(tag.label) as labels,
+            GROUP_CONCAT(t.rangeDayIdxBy10Min) as allRangeDayIdxBy10Min,
+            GROUP_CONCAT(t.id) as ids
         ");
 
-        // $qb->groupBy("sourceYear");
-        // $qb->addGroupBy("sourceMonth");
-        // $qb->addGroupBy("sourceDate");
-        $qb->addGroupBy("t.rangeDayIdxBy10Min");
+        $qb->groupBy("sourceYear");
+        $qb->addGroupBy("sourceMonth");
+        $qb->addGroupBy("sourceDate");
+        $qb->addGroupBy("tag.slug");
+        // $qb->addGroupBy("t.rangeDayIdxBy10Min");
 
         $groupedQuery = $qb->getQuery();
         // dd($query->getDQL());    
         // dd($query->getResult());    
-        $timingsReport = $paginator->paginate(
-            $groupedQuery, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
-            $request->query->getInt('pageLimit', 200000), /*page limit */
-        );
+        // $timingsReport = $paginator->paginate(
+        //     $groupedQuery, /* query NOT result */
+        //     $request->query->getInt('page', 1), /*page number*/
+        //     // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
+        //     $request->query->getInt('pageLimit', 200000), /*page limit */
+        // ); // TIPS : will REMOVE the groupBy etc.... (select too ?)...
+        $timingsReport = $groupedQuery->getResult();
 
         // // TODO : too slow :
         // $timingsPage = $paginator->paginate(
