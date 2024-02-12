@@ -4,8 +4,8 @@
   export let locale;
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let lookup;
-  export let timings = [];
-  export let timeQualifs = [];
+  export let timingsReport = [];
+  // export let timings = [];
   export let timingsPaginator;
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
@@ -13,7 +13,8 @@
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
 
-  console.debug('Report having timings', timings);
+  console.debug('Report having timingsReport', timingsReport);
+  // console.debug('Report having timings', timings);
 </script>
 
 <a

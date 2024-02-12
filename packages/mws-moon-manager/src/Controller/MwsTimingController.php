@@ -257,24 +257,10 @@ class MwsTimingController extends AbstractController
         }
 
         $qb = $mwsTimeSlotRepository->createQueryBuilder('t');
-        // $qb = $qb->innerJoin('t.tags', 'tag');
-        // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
-        $qb = $qb->leftJoin('t.tags', 'tag');
         // https://stackoverflow.com/questions/17878237/doctrine-cannot-select-entity-through-identification-variables-without-choosing
         // ->from(MwsTimeTag::class, 'tag');
         // CONCAT_WS('-', tag.slug, tag.slug) as tags,
         // strftime('%W', t.sourceTime) as sourceWeekOfYear,
-        $qb = $qb->select("
-            GROUP_CONCAT(tag.slug) as tags,
-            GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
-            GROUP_CONCAT(t.id) as ids,
-            t.rangeDayIdxBy10Min as rangeDayIdxBy10Min,
-            count(t) as count,
-            strftime('%Y-%m-%d', t.sourceTime) as sourceDate,
-            strftime('%Y', t.sourceTime) as sourceYear,
-            strftime('%m', t.sourceTime) as sourceMonth,
-            strftime('%d', t.sourceTime) as sourceWeekOfYear
-        ");
 
         if ($keyword) {
             // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
@@ -310,29 +296,63 @@ class MwsTimingController extends AbstractController
         }
 
         $qb->orderBy("t.sourceTime", "ASC");
+
+        $query = $qb->getQuery();
+        // $qb = $qb->innerJoin('t.tags', 'tag');
+        // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
+        $qb = $qb->leftJoin('t.tags', 'tag');
+
+        $qb = $qb->select("
+            GROUP_CONCAT(tag.slug) as tags,
+            GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
+            GROUP_CONCAT(t.id) as ids,
+            t.rangeDayIdxBy10Min as rangeDayIdxBy10Min,
+            count(t) as count,
+            strftime('%Y-%m-%d', t.sourceTime) as sourceDate,
+            strftime('%Y', t.sourceTime) as sourceYear,
+            strftime('%m', t.sourceTime) as sourceMonth,
+            strftime('%d', t.sourceTime) as sourceWeekOfYear
+        ");
+
         // $qb->groupBy("sourceYear");
         // $qb->addGroupBy("sourceMonth");
         // $qb->addGroupBy("sourceDate");
         $qb->addGroupBy("t.rangeDayIdxBy10Min");
 
-        $query = $qb->getQuery();
+        $groupedQuery = $qb->getQuery();
         // dd($query->getDQL());    
         // dd($query->getResult());    
-        $timings = $paginator->paginate(
-            $query, /* query NOT result */
+        $timingsReport = $paginator->paginate(
+            $groupedQuery, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
             $request->query->getInt('pageLimit', 200000), /*page limit */
         );
 
+        // // TODO : too slow :
+        // $timingsPage = $paginator->paginate(
+        //     $query, /* query NOT result */
+        //     $request->query->getInt('page', 1), /*page number*/
+        //     // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
+        //     $request->query->getInt('pageLimit', 200000), /*page limit */
+        // );
+        // // TODO : too slow :
+        // // $timings = iterator_to_array($timingsPage->getItems());
+        // // $timingsById = [];
+        // // array_walk(
+        // //     $timings,
+        // //     function ($t) use (&$timingsById) {
+        // //         $timingsById[$t->getId()] = $t;
+        // //     }
+        // // );
+
         $this->logger->debug("Succeed to list timings");
 
-        $timeQualifs = $mwsTimeQualifRepository->findAll();
-
         return $this->render('@MoonManager/mws_timing/report.html.twig', [
-            'timings' => $timings,
+            'timingsReport' => $timingsReport,
+            // 'timingsById' => $timingsById,
+            // 'timings' => $timingsPage,
             'timingTags' => $timingTags,
-            'timeQualifs' => $timeQualifs,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,
         ]);

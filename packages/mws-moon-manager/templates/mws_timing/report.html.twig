@@ -20,25 +20,25 @@
 {% block timingsPaginator %}
 	<div class="count">
 		[
-		{{ timings.getTotalItemCount }}
+		{{ timingsReport.getTotalItemCount }}
 		éléments]
 	</div>
 	<div class="navigation">
-		{{ knp_pagination_render(timings) }}
+		{{ knp_pagination_render(timingsReport) }}
 	</div>
 {% endblock %}
 
 {% block content %}
   {# TODO : subpath controller give hard debug time since components have same
 	name as the moon-manager-ux package one, all debug link go to wrong file... #}
+		{# 'timings': timings|serialize('json')|e('html_attr'), #}
 	<div class="mws-offer-lookup" {{ svelte_component('MwsTimingReport', {
 		'locale': app.locale,
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
-		'timings': timings|serialize('json')|e('html_attr'),
-		'timeQualifs': timeQualifs|serialize('json')|e('html_attr'),
+		'timingsReport': timingsReport|serialize('json')|e('html_attr'),
 		'timingsPaginator': block('timingsPaginator'),
 		'timingsHeaders': {
-			'clientUsername' : knp_pagination_sortable(timings, 'Nom du client', 'o.clientUsername'),
+			'clientUsername' : knp_pagination_sortable(timingsReport, 'Nom du client', 'o.clientUsername'),
 		} |serialize('json')|e('html_attr'),
 		'lookup' : lookupForm.vars.value|serialize('json')|e('html_attr'),
 		'lookupForm' : (form_start(lookupForm, {

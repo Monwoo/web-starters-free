@@ -10,8 +10,8 @@
 
   export let locale;
   export let lookup = '{}';
-  export let timings;
-  export let timeQualifs;
+  export let timingsReport;
+  // export let timings;
   export let timingsPaginator;
   export let timingsHeaders = '{}'; // injected raw html
   export let viewTemplate;
@@ -27,8 +27,8 @@
   }
 
   lookup = JSON.parse(decodeHtml(lookup));
-  timings = JSON.parse(decodeHtml(timings));
-  timeQualifs = JSON.parse(decodeHtml(timeQualifs));
+  timingsReport = JSON.parse(decodeHtml(timingsReport));
+  // timings = JSON.parse(decodeHtml(timings));
 
   timingsHeaders = JSON.parse(decodeHtml(timingsHeaders));
   timingsPaginator = decodeHtml(timingsPaginator);
@@ -38,7 +38,7 @@
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Report {lookup} {timeQualifs}
-{locale} {viewTemplate} {lookupForm} {timings}
+<Report {lookup}
+{locale} {viewTemplate} {lookupForm} {timingsReport}
 {timingsPaginator} {timingsHeaders}
 ></Report>

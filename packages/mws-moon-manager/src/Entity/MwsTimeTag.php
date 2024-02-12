@@ -38,6 +38,7 @@ class MwsTimeTag
     private ?float $pricePerHr = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: self::class)]
+    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeTags;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeSlot::class, mappedBy: 'tags')]
