@@ -326,7 +326,7 @@ importers:
         version: 3.2.0(@hotwired/stimulus@3.0.0)
       '@symfony/ux-svelte':
         specifier: file:vendor/symfony/ux-svelte/assets
-        version: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@4.2.2)
+        version: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@3.58.0)
       '@symfony/webpack-encore':
         specifier: ^4.0.0
         version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss@8.4.31)(typescript@5.2.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
@@ -370,11 +370,11 @@ importers:
         specifier: ^1.9.112
         version: 1.9.112
       svelte:
-        specifier: ^4.2.2
-        version: 4.2.2
+        specifier: ^3.0
+        version: 3.58.0
       svelte-loader:
         specifier: ^3.1.9
-        version: 3.1.9(svelte@4.2.2)
+        version: 3.1.9(svelte@3.58.0)
       svelte-time:
         specifier: ^0.8.0
         version: 0.8.0
@@ -447,7 +447,7 @@ importers:
         version: 8.8.0(eslint@7.32.0)
       eslint-config-turbo:
         specifier: latest
-        version: 1.12.2(eslint@7.32.0)
+        version: 1.12.3(eslint@7.32.0)
       eslint-plugin-react:
         specifier: 7.31.8
         version: 7.31.8(eslint@7.32.0)
@@ -498,7 +498,7 @@ importers:
         version: 8.8.0(eslint@8.38.0)
       eslint-config-turbo:
         specifier: latest
-        version: 1.12.2(eslint@8.38.0)
+        version: 1.12.3(eslint@8.38.0)
       eslint-plugin-svelte3:
         specifier: ^4.0.0
         version: 4.0.0(eslint@8.38.0)(svelte@3.58.0)
@@ -1766,6 +1766,14 @@ packages:
       '@babel/helper-string-parser': 7.22.5
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@bpnetguy/webpack-inject-plugin@2.0.4(webpack@5.74.0):
+    resolution: {integrity: sha512-0dNtNKJZLktxpzSJEP9pWYRMkWUh5lb2DjIDn2GXQs4uBLKtVRy+9KqYNLVB4Zr80EwRfANt1+yEwpDPUK2Lxw==}
+    peerDependencies:
+      webpack: '>=5.0.0'
+    dependencies:
+      webpack: 5.74.0(webpack-cli@4.10.0)
     dev: true
 
   /@discoveryjs/json-ext@0.5.7:
@@ -5204,22 +5212,22 @@ packages:
       eslint: 8.38.0
     dev: false
 
-  /eslint-config-turbo@1.12.2(eslint@7.32.0):
-    resolution: {integrity: sha512-JHTGtDQuISBEWIorHenu5AeX1nv16NiDgDVRi1i0VyeYw0SiVh+lSQbv4BawXSnG1nOFpjbopAQdZvdB3PwXbQ==}
+  /eslint-config-turbo@1.12.3(eslint@7.32.0):
+    resolution: {integrity: sha512-Q46MEOiNJpJWC3Et5/YEuIYYhbOieS04yZwQOinO2hpZw3folEXV+hbwVo8M+ap/q8gtpjIWiRMZ1A4QxmhEqQ==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 7.32.0
-      eslint-plugin-turbo: 1.12.2(eslint@7.32.0)
+      eslint-plugin-turbo: 1.12.3(eslint@7.32.0)
     dev: false
 
-  /eslint-config-turbo@1.12.2(eslint@8.38.0):
-    resolution: {integrity: sha512-JHTGtDQuISBEWIorHenu5AeX1nv16NiDgDVRi1i0VyeYw0SiVh+lSQbv4BawXSnG1nOFpjbopAQdZvdB3PwXbQ==}
+  /eslint-config-turbo@1.12.3(eslint@8.38.0):
+    resolution: {integrity: sha512-Q46MEOiNJpJWC3Et5/YEuIYYhbOieS04yZwQOinO2hpZw3folEXV+hbwVo8M+ap/q8gtpjIWiRMZ1A4QxmhEqQ==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 8.38.0
-      eslint-plugin-turbo: 1.12.2(eslint@8.38.0)
+      eslint-plugin-turbo: 1.12.3(eslint@8.38.0)
     dev: false
 
   /eslint-import-resolver-node@0.3.7:
@@ -5380,8 +5388,8 @@ packages:
       svelte: 3.58.0
     dev: false
 
-  /eslint-plugin-turbo@1.12.2(eslint@7.32.0):
-    resolution: {integrity: sha512-/l0aGvZRzK1LMRTibRd6ZbEEuD5TtGotDTkZpxSIWA1FI764pWVvQduQMKBaRuz7aTuAo0WxatD8v1scK+qRWw==}
+  /eslint-plugin-turbo@1.12.3(eslint@7.32.0):
+    resolution: {integrity: sha512-7hEyxa+oP898EFNoxVenHlH8jtBwV1hbbIkdQWgqDcB0EmVNGVEZkYRo5Hm6BuMAjR433B+NISBJdj0bQo4/Lg==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
@@ -5389,8 +5397,8 @@ packages:
       eslint: 7.32.0
     dev: false
 
-  /eslint-plugin-turbo@1.12.2(eslint@8.38.0):
-    resolution: {integrity: sha512-/l0aGvZRzK1LMRTibRd6ZbEEuD5TtGotDTkZpxSIWA1FI764pWVvQduQMKBaRuz7aTuAo0WxatD8v1scK+qRWw==}
+  /eslint-plugin-turbo@1.12.3(eslint@8.38.0):
+    resolution: {integrity: sha512-7hEyxa+oP898EFNoxVenHlH8jtBwV1hbbIkdQWgqDcB0EmVNGVEZkYRo5Hm6BuMAjR433B+NISBJdj0bQo4/Lg==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
@@ -9244,6 +9252,15 @@ packages:
     resolution: {integrity: sha512-oU+Xv7Dl4kRU2kdFjsoPLfJfnt5hUhsFUZtuzI3Ku/f2iAFZqBoEuXOqK3N9ngD4dxQOmN4OKWPHVi3NeAeAfQ==}
     dev: true
 
+  /svelte-hmr@0.14.12(svelte@3.58.0):
+    resolution: {integrity: sha512-4QSW/VvXuqVcFZ+RhxiR8/newmwOCTlbYIezvkeN6302YFRE8cXy0naamHcjz8Y9Ce3ITTZtrHrIL0AGfyo61w==}
+    engines: {node: ^12.20 || ^14.13.1 || >= 16}
+    peerDependencies:
+      svelte: '>=3.19.0'
+    dependencies:
+      svelte: 3.58.0
+    dev: true
+
   /svelte-hmr@0.14.12(svelte@4.2.2):
     resolution: {integrity: sha512-4QSW/VvXuqVcFZ+RhxiR8/newmwOCTlbYIezvkeN6302YFRE8cXy0naamHcjz8Y9Ce3ITTZtrHrIL0AGfyo61w==}
     engines: {node: ^12.20 || ^14.13.1 || >= 16}
@@ -9322,6 +9339,17 @@ packages:
       - stylus
       - sugarss
     dev: false
+
+  /svelte-loader@3.1.9(svelte@3.58.0):
+    resolution: {integrity: sha512-RITPqze3TppOhaZF8SEFTDTwFHov17k3UkOjpxyL/No/YVrvckKmXWOEj7QEpsZZZSNQPb28tMZbHEI2xLhJMQ==}
+    peerDependencies:
+      svelte: ^3.0.0 || ^4.0.0-next.0
+    dependencies:
+      loader-utils: 2.0.4
+      svelte: 3.58.0
+      svelte-dev-helper: 1.1.9
+      svelte-hmr: 0.14.12(svelte@3.58.0)
+    dev: true
 
   /svelte-loader@3.1.9(svelte@4.2.2):
     resolution: {integrity: sha512-RITPqze3TppOhaZF8SEFTDTwFHov17k3UkOjpxyL/No/YVrvckKmXWOEj7QEpsZZZSNQPb28tMZbHEI2xLhJMQ==}
@@ -10550,6 +10578,7 @@ packages:
     id: file:apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources
     name: fos-router
     dependencies:
+      '@bpnetguy/webpack-inject-plugin': 2.0.4(webpack@5.74.0)
       webpack-inject-plugin: 1.5.5(webpack@5.74.0)
     transitivePeerDependencies:
       - webpack
@@ -10561,13 +10590,13 @@ packages:
     name: '@symfony/ux-svelte'
     peerDependencies:
       '@hotwired/stimulus': ^3.0.0
-      svelte: ^3.0
+      svelte: ^3.0 || ^4.0
     dependencies:
       '@hotwired/stimulus': 3.0.0
       svelte: 4.2.2
     dev: true
 
-  file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@4.2.2):
+  file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@3.58.0):
     resolution: {directory: packages/mws-moon-manager/vendor/symfony/ux-svelte/assets, type: directory}
     id: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets
     name: '@symfony/ux-svelte'
@@ -10576,5 +10605,5 @@ packages:
       svelte: ^3.0
     dependencies:
       '@hotwired/stimulus': 3.0.0
-      svelte: 4.2.2
+      svelte: 3.58.0
     dev: true

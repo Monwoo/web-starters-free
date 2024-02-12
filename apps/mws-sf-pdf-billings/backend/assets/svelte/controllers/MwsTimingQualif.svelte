@@ -9,6 +9,7 @@
   import Lookup from "mws-moon-manager-ux/components/timing/Lookup.svelte";
 
   export let locale;
+  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let lookup = '{}';
   export let timings;
   export let timeQualifs;
@@ -35,10 +36,12 @@
   lookupForm = decodeHtml(lookupForm);
 
   console.debug(lookup);
+  console.debug("Copyright", copyright);
+
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Lookup {lookup} {timeQualifs}
+<Lookup {lookup} {timeQualifs} {copyright}
 {locale} {viewTemplate} {lookupForm} {timings}
 {timingsPaginator} {timingsHeaders}
 ></Lookup>

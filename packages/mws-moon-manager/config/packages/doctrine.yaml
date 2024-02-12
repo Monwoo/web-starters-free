@@ -5,13 +5,12 @@ doctrine:
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
         server_version: '15'
-
-        profiling_collect_backtrace: '%kernel.debug%'
+        # TODO : ensure below is OK + generate/sync from recipe system...
+        # https://stackoverflow.com/questions/43356717/symfony-doctrine2-manytomany-relationship-not-removed-specific-to-sqlite
+        options:
+            'PRAGMA foreign_keys': 'ON'
     orm:
-        auto_generate_proxy_classes: true
-        enable_lazy_ghost_objects: true
-        report_fields_where_declared: true
-        validate_xml_mapping: true
+        auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
@@ -20,6 +19,109 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            # https://stackoverflow.com/questions/32317033/symfony-gedmo-blameable-not-working
+            # TODO : below have no effect, php bin/console mws:add-user -c 1 will fail if not setting up updatedAt etc...
+            # gedmo_tree:
+            #     type: annotation
+            #     prefix: Gedmo\Tree\Entity
+            #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
+            #     alias: GedmoTree
+            #     is_bundle: false
+            # gedmo_sortable:
+            #     type: annotation
+            #     prefix: Gedmo\Sortable\Entity
+            #     dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Sortable/Entity"
+            #     alias: GedmoTree
+            #     is_bundle: false
+
+            # TODO : inject from composer recipe for MoonManager OR from bundle loads ?
+            # https://github.com/doctrine-extensions/DoctrineExtensions/blob/main/doc/symfony.md
+            translatable:
+                type: attribute # or annotation or xml
+                alias: Gedmo
+                prefix: Gedmo\Translatable\Entity
+                # make sure vendor library location is correct
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
+            loggable:
+                type: attribute # or annotation or xml
+                alias: Gedmo
+                prefix: Gedmo\Loggable\Entity
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
+            tree:
+                type: attribute # or annotation or xml
+                alias: Gedmo
+                prefix: Gedmo\Tree\Entity
+                dir: "%kernel.project_dir%/vendor/gedmo/doctrine-extensions/src/Tree/Entity"
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+
+        # TODO : inject DQL string_functions from composer recipe for MoonManager OR from bundle loads ?
+        dql:
+            string_functions:
+                REPLACE: MWS\MoonManagerBundle\Query\Replace
+                CAST: MWS\MoonManagerBundle\Query\Cast
+                IIF: MWS\MoonManagerBundle\Query\Iif
+                MWS_CONCAT: MWS\MoonManagerBundle\Query\Concat
+                # https://github.com/ScientaNL/DoctrineJsonFunctions
+                JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonExtract
+                JSON_LENGTH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonArrayLength
+                # TODO : depending of target DB, change filters for plateforme :
+                # JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
+                # JSON_LENGTH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonLength
+                # JSON: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\Json
+                # JSON_SEARCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonSearch
+
+                # https://github.com/beberlei/DoctrineExtensions/blob/v1.3.0/config/sqlite.yml
+                # binary: DoctrineExtensions\Query\Sqlite\Binary
+                # char_length: DoctrineExtensions\Query\Sqlite\CharLength
+                concat_ws: DoctrineExtensions\Query\Sqlite\ConcatWs
+                # countif: DoctrineExtensions\Query\Sqlite\CountIf
+                # crc32: DoctrineExtensions\Query\Sqlite\Crc32
+                # degrees: DoctrineExtensions\Query\Sqlite\Degrees
+                # field: DoctrineExtensions\Query\Sqlite\Field
+                # find_in_set: DoctrineExtensions\Query\Sqlite\FindInSet
+                # group_concat: DoctrineExtensions\Query\Sqlite\GroupConcat
+                greatest: DoctrineExtensions\Query\Sqlite\Greatest
+                ifelse: DoctrineExtensions\Query\Sqlite\IfElse
+                ifnull: DoctrineExtensions\Query\Sqlite\IfNull
+                least: DoctrineExtensions\Query\Sqlite\Least
+                # match: DoctrineExtensions\Query\Sqlite\MatchAgainst
+                # md5: DoctrineExtensions\Query\Sqlite\Md5
+                # nullif: DoctrineExtensions\Query\Sqlite\NullIf
+                # radians: DoctrineExtensions\Query\Sqlite\Radians
+                random: DoctrineExtensions\Query\Sqlite\Random
+                # regexp: DoctrineExtensions\Query\Sqlite\Regexp
+                replace: DoctrineExtensions\Query\Sqlite\Replace
+                # sha1: DoctrineExtensions\Query\Sqlite\Sha1
+                # sha2: DoctrineExtensions\Query\Sqlite\Sha2
+                # soundex: DoctrineExtensions\Query\Sqlite\Soundex
+                # uuid_short: DoctrineExtensions\Query\Sqlite\UuidShort
+
+            # https://github.com/beberlei/DoctrineExtensions/blob/v1.3.0/config/sqlite.yml
+            datetime_functions:
+                second: DoctrineExtensions\Query\Sqlite\Second
+                minute: DoctrineExtensions\Query\Sqlite\Minute
+                hour: DoctrineExtensions\Query\Sqlite\Hour
+                day: DoctrineExtensions\Query\Sqlite\Day
+                dayname: DoctrineExtensions\Query\Sqlite\DayName
+                #monthname: DoctrineExtensions\Query\Sqlite\MonthName
+                month: DoctrineExtensions\Query\Sqlite\Month
+                week: DoctrineExtensions\Query\Sqlite\Week
+                weekday: DoctrineExtensions\Query\Sqlite\WeekDay
+                year: DoctrineExtensions\Query\Sqlite\Year
+                date: DoctrineExtensions\Query\Sqlite\Date
+                date_format: DoctrineExtensions\Query\Sqlite\DateFormat
+                #dateadd: DoctrineExtensions\Query\Sqlite\DateAdd
+                #datediff: DoctrineExtensions\Query\Sqlite\DateDiff
+                julianday: DoctrineExtensions\Query\Sqlite\JulianDay
+                strftime: DoctrineExtensions\Query\Sqlite\StrfTime
+                #strtodate: DoctrineExtensions\Query\Sqlite\StrToDate
+                #time: DoctrineExtensions\Query\Sqlite\Time
+                #timestampadd: DoctrineExtensions\Query\Sqlite\TimestampAdd
+                #timestampdiff: DoctrineExtensions\Query\Sqlite\TimestampDiff
+            numeric_functions:
+                round: DoctrineExtensions\Query\Sqlite\Round
 
 when@test:
     doctrine:

@@ -9,6 +9,10 @@
   // import TemplateChoiceItem from '../message/TemplateChoiceItem.svelte';
 
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let headerClass = "md:py-5";
+  export let mainClass = "p-5";
+  export let footerClass = "py-4";
+   
   export let locale;
   export let viewTemplate;
 
@@ -26,20 +30,24 @@
 
 <slot name="mws-body">
   <div class="flex flex-col h-screen">
-    <header class="md:py-5 bg-gray-700 text-white text-center">
-      <Header {locale} {viewTemplate}>
-        <slot name="mws-header">
-            Sticky Header and Footer with Tailwind 😎
-        </slot>
-      </Header>
-    </header>
-    <main class="flex-1 overflow-y-auto p-5">
+    <slot name="mws-header-container">
+      <header class="bg-gray-700 text-white text-center {headerClass}">
+        <Header {locale} {viewTemplate}>
+          <slot name="mws-header">
+              Sticky Header and Footer with Tailwind 😎
+          </slot>
+        </Header>
+      </header>
+    </slot>
+    <main class="flex-1 overflow-y-auto {mainClass}">
       <slot />
     </main>
-    <footer class="py-5 bg-gray-700 text-gray-300 text-center text-white">
-      <Footer {copyright}>
-        <slot name="mws-footer" />
-      </Footer>
-    </footer>
+    <slot name="mws-footer-container">
+      <footer class="bg-gray-700 text-gray-300 text-center text-white {footerClass}">
+        <Footer {copyright}>
+          <slot name="mws-footer" />
+        </Footer>
+      </footer>
+    </slot>
   </div>
 </slot>

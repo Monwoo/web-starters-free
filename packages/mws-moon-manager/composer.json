@@ -38,7 +38,8 @@
         "stof/doctrine-extensions-bundle": "^1.8",
         "symfony/form": "6.3.*",
         "symfony/validator": "6.3.*",
-        "vich/uploader-bundle": "^2.3"
+        "vich/uploader-bundle": "^2.3",
+        "beberlei/doctrineextensions": "^1.4"
     },
     "autoload": {
         "psr-4": {

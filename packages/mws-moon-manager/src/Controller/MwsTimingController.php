@@ -44,15 +44,7 @@ class MwsTimingController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'mws_timings_lookup')] // TODO : refactor : same as qualif ?
-    public function lookup(): Response
-    {
-        return $this->render('@MoonManager/mws_timing/lookup.html.twig', [
-            'controller_name' => 'MwsTimingController',
-        ]);
-    }
-
-    #[Route('/qualif/lookup/{viewTemplate<[^/]*>?}', name: 'mws_timings_qualif')]
+    #[Route('/qualif/{viewTemplate<[^/]*>?}', name: 'mws_timings_qualif')]
     public function qualif(
         $viewTemplate,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
@@ -184,11 +176,165 @@ class MwsTimingController extends AbstractController
         ]);
     }
 
-    #[Route('reports', name: 'mws_timings_report')]
-    public function report(): Response
-    {
+    #[Route('/report/{viewTemplate<[^/]*>?}', name: 'mws_timings_report')]
+    public function report(
+        $viewTemplate,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        MwsTimeQualifRepository $mwsTimeQualifRepository,
+        PaginatorInterface $paginator,
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        if (!$user) {
+            // TIPS : redondant, but better if used without routing system secu...
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+
+        $requestData = $request->query->all();
+        $keyword = $requestData['keyword'] ?? null;
+        $searchTags = $requestData['tags'] ?? []; // []);
+        $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
+
+        $tagQb = $mwsTimeTagRepository->createQueryBuilder("t");
+        // $timingTags = array_map(
+        //     function (MwsTimeTag $tag) {
+        //         return $tag->getSlug();
+        //     },
+        //     $tagQb // ->where($tagQb->expr()->isNotNull("t.category"))
+        //         ->getQuery()->getResult()
+        // );
+        $timingTags = $tagQb->getQuery()->getResult();
+
+        $lastSearch = [
+            // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
+            "jsonResult" => rawurlencode(json_encode([
+                "searchKeyword" => $keyword,
+                "searchTags" => $searchTags,
+                "searchTagsToAvoid" => $searchTagsToAvoid,
+            ])),
+            "surveyJsModel" => rawurlencode($this->renderView(
+                "@MoonManager/survey_js_models/MwsTimingLookupType.json.twig",
+                [
+                    'allTimingTags' => array_map(
+                        function (MwsTimeTag $tag) {
+                            return $tag->getSlug();
+                        },
+                        $timingTags
+                    ),
+                ]
+            )),
+        ];
+        $filterForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
+        $filterForm->handleRequest($request);
+
+        if ($filterForm->isSubmitted()) {
+            $this->logger->debug("Did submit search form");
+
+            if ($filterForm->isValid()) {
+                $this->logger->debug("Search form ok");
+                // dd($filterForm);
+                $surveyAnswers = json_decode(
+                    urldecode($filterForm->get('jsonResult')->getData()),
+                    true
+                );
+                $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
+                // dd($searchTags);
+                return $this->redirectToRoute(
+                    'mws_timings_qualif',
+                    array_merge($request->query->all(), [
+                        "viewTemplate" => $viewTemplate,
+                        "keyword" => $keyword,
+                        "tags" => $searchTags,
+                        "tagsToAvoid" => $searchTagsToAvoid,
+                        "page" => 1,
+                    ]),
+                    Response::HTTP_SEE_OTHER
+                );
+            }
+        }
+
+        $qb = $mwsTimeSlotRepository->createQueryBuilder('t');
+        // $qb = $qb->innerJoin('t.tags', 'tag');
+        // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
+        $qb = $qb->leftJoin('t.tags', 'tag');
+        // https://stackoverflow.com/questions/17878237/doctrine-cannot-select-entity-through-identification-variables-without-choosing
+        // ->from(MwsTimeTag::class, 'tag');
+        // CONCAT_WS('-', tag.slug, tag.slug) as tags,
+        // strftime('%W', t.sourceTime) as sourceWeekOfYear,
+        $qb = $qb->select("
+            GROUP_CONCAT(tag.slug) as tags,
+            GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
+            GROUP_CONCAT(t.id) as ids,
+            t.rangeDayIdxBy10Min as rangeDayIdxBy10Min,
+            count(t) as count,
+            strftime('%Y-%m-%d', t.sourceTime) as sourceDate,
+            strftime('%Y', t.sourceTime) as sourceYear,
+            strftime('%m', t.sourceTime) as sourceMonth,
+            strftime('%d', t.sourceTime) as sourceWeekOfYear
+        ");
+
+        if ($keyword) {
+            // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
+            // ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
+        }
+
+        if (count($searchTags)) {
+            $orClause = '';
+            foreach ($searchTags as $idx => $slug) {
+                if ($idx) {
+                    $orClause .= ' OR ';
+                }
+                $orClause .= "( :tagSlug$idx = tag.slug )";
+                // $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
+                $qb->setParameter("tagSlug$idx", $slug);
+                // $qb->setParameter("tagCategory$idx", $category);
+            }
+            $qb = $qb->andWhere($orClause);
+        }
+
+        if (count($searchTagsToAvoid)) {
+            // dd($searchTagsToAvoid);
+            foreach ($searchTagsToAvoid as $idx => $slug) {
+                $dql = '';
+                $tag = $mwsTimeTagRepository->findOneBy([
+                    'slug' => $slug,
+                ]);
+                $dql .= ":tagToAvoid$idx NOT MEMBER OF t.tags";
+                $qb->setParameter("tagToAvoid$idx", $tag);
+                // dd($dql);
+                $qb = $qb->andWhere($dql);
+            }
+        }
+
+        $qb->orderBy("t.sourceTime", "ASC");
+        // $qb->groupBy("sourceYear");
+        // $qb->addGroupBy("sourceMonth");
+        // $qb->addGroupBy("sourceDate");
+        $qb->addGroupBy("t.rangeDayIdxBy10Min");
+
+        $query = $qb->getQuery();
+        // dd($query->getDQL());    
+        // dd($query->getResult());    
+        $timings = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
+            $request->query->getInt('pageLimit', 200000), /*page limit */
+        );
+
+        $this->logger->debug("Succeed to list timings");
+
+        $timeQualifs = $mwsTimeQualifRepository->findAll();
+
         return $this->render('@MoonManager/mws_timing/report.html.twig', [
-            'controller_name' => 'MwsTimingController',
+            'timings' => $timings,
+            'timingTags' => $timingTags,
+            'timeQualifs' => $timeQualifs,
+            'lookupForm' => $filterForm,
+            'viewTemplate' => $viewTemplate,
         ]);
     }
 

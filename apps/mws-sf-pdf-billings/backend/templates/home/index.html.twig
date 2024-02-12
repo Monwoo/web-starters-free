@@ -2,6 +2,8 @@
 
 {% block title %}{{ 'mws.home.title'|trans }}{% endblock %}
 
+{# TODO : security issue if using
+ 'copyright': 'mws.copyright'|trans, ? not escaped ? #}
 {% block body %}
     <div {{ svelte_component('Home', {
         'copyright': 'mws.copyright'|trans,

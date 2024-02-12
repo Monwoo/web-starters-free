@@ -25,8 +25,9 @@
 {% block body %}
 	{# TODO : subpath controller give hard debug time since components have same
 		name as the moon-manager-ux package one, all debug link go to wrong file... #}
-	<div class="mws-timings-qualif" {{ svelte_component('MwsTimingLookup', {
+	<div class="mws-timings-qualif" {{ svelte_component('MwsTimingQualif', {
 		'locale': app.locale,
+		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'timings': timings|serialize('json')|e('html_attr'),
 		'timeQualifs': timeQualifs|serialize('json')|e('html_attr'),
 		'timingsPaginator': block('timingsPaginator'),
