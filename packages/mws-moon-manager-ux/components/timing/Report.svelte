@@ -13,38 +13,51 @@
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
 
-  console.debug('Report having timingsReport', timingsReport);
+  console.debug("Report having timingsReport", timingsReport);
   // console.debug('Report having timings', timings);
   const timingsByIds = {};
 
-  timingsReport.forEach(tSum => {
-    const ids = tSum.ids.split(',');
-    const tags = tSum.tags?.split(',');
-    const labels = tSum.labels?.split(',');
-    const allRangeDayIdxBy10Min = tSum.allRangeDayIdxBy10Min.split(',');
-    const pricesPerHr = tSum.pricesPerHr?.split(',');
-    console.assert(!tags || tags.length == ids.length, "Wrong DATASET, <> tags found");
-    console.assert(allRangeDayIdxBy10Min.length == ids.length, "Wrong DATASET, <> allRangeDayIdxBy10Min found");
-    console.assert(!pricesPerHr || pricesPerHr.length == ids.length, "Wrong DATASET, <> pricesPerHr found");
+  timingsReport.forEach((tSum) => {
+    const ids = tSum.ids.split(",");
+    const tags = tSum.tags?.split(",");
+    const labels = tSum.labels?.split(",");
+    const allRangeDayIdxBy10Min = tSum.allRangeDayIdxBy10Min.split(",");
+    const pricesPerHr = tSum.pricesPerHr?.split(",");
+    console.assert(
+      !tags || tags.length == ids.length,
+      "Wrong DATASET, <> tags found"
+    );
+    console.assert(
+      allRangeDayIdxBy10Min.length == ids.length,
+      "Wrong DATASET, <> allRangeDayIdxBy10Min found"
+    );
+    console.assert(
+      !pricesPerHr || pricesPerHr.length == ids.length,
+      "Wrong DATASET, <> pricesPerHr found"
+    );
     // const srcStamps = tSum.srcStamps.split(',');
     ids.forEach((tId, idx) => {
       const tagSlug = tags ? tags[idx] ?? null : null;
       const rangeDayIdxBy10Min = allRangeDayIdxBy10Min[idx];
       const pricePerHr = pricesPerHr ? pricesPerHr[idx] ?? null : null;
       const label = labels ? labels[idx] ?? null : null;
-      
+
       timingsByIds[tId] = {
         id: tId,
         rangeDayIdxBy10Min: rangeDayIdxBy10Min,
         tags: {
-          ... (tagSlug ? {[tagSlug]:{
-            label: label,
-            pricePerHr: pricePerHr,
-            // slug: tagSlug,
-          }} : {}),
+          ...(tagSlug
+            ? {
+                [tagSlug]: {
+                  label: label,
+                  pricePerHr: pricePerHr,
+                  // slug: tagSlug,
+                },
+              }
+            : {}),
           // Keep last known tags
-          ... (timingsByIds[tId]?.tags ?? {})
-        }
+          ...(timingsByIds[tId]?.tags ?? {}),
+        },
         // tags: timingsByIds[tId]?.tags ?? {},
       };
     });
@@ -54,24 +67,59 @@
     // }
   });
 
-  console.log("timingsByIds :", timingsByIds);
+  let summaryByDays = {};
+  let summaryTotals = {
+    sumOfBookedHrs: 0,
+  };
+  timingsReport.forEach((tReport) => {
+    const ids = tReport.ids.split(",");
+    
+    ids.forEach((tId) => {
+      const t = timingsByIds[tId];
+      if (!(summaryByDays[tReport.sourceDate] ?? null)) {
+        summaryByDays[tReport.sourceDate] = {
+          bookedTimeSlot: {},
+          sumOfBookedHrs: 0,
+        };
+      };
+      if (!(summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min]??null)) {
+        const delta = 10/60.0;
+        summaryByDays[tReport.sourceDate].sumOfBookedHrs += delta;
+        summaryTotals.sumOfBookedHrs += delta;
+      }
+      summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] = true;
+    });
+  });
+
+  console.log(
+    "timingsByIds :",
+    timingsByIds[Object.keys(timingsByIds)[0]] ?? null
+  );
+  console.log("timingsByIds :", summaryByDays);
+
 </script>
 
 <a
-href={Routing.generate("mws_timings_qualif", {
-  '_locale': locale ?? '',
-}, true)}
-class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+  href={Routing.generate(
+    "mws_timings_qualif",
+    {
+      _locale: locale ?? "",
+    },
+    true
+  )}
+  class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
 >
-<button>Timings Qualifications</button>
+  <button>Timings Qualifications</button>
 </a>
 <div class="mws-timing-report">
   <!-- {JSON.stringify(timings)} -->
   <div>{@html timingsPaginator}</div>
-  {#each timingsReport ?? [] as tReport, idx}
+  <div>{summaryTotals.sumOfBookedHrs} hours for all</div>
+  {#each Object.keys(summaryByDays) ?? [] as day, idx}
     <div>
-      [{tReport.sourceDate}] 
-      {tReport.count}
+      [{day}]
+      {summaryByDays[day].sumOfBookedHrs.toFixed(2)} hour(s) for slots :
+      {JSON.stringify(summaryByDays[day].bookedTimeSlot)}
     </div>
   {/each}
 </div>
