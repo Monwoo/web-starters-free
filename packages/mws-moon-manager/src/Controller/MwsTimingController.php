@@ -302,6 +302,9 @@ class MwsTimingController extends AbstractController
         // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
         $qb = $qb->leftJoin('t.tags', 'tag');
 
+        // Fetching 'source' is too slow, and splitting with , might have issue with ','...
+        // GROUP_CONCAT(t.source) as source,            
+
         $qb = $qb->select("
             count(t) as count,
             strftime('%Y-%m-%d', t.sourceTime) as sourceDate,
@@ -310,6 +313,7 @@ class MwsTimingController extends AbstractController
             strftime('%d', t.sourceTime) as sourceWeekOfYear,
             GROUP_CONCAT(tag.slug) as tags,
             GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
+            GROUP_CONCAT(t.sourceStamp) as sourceStamps,
             GROUP_CONCAT(tag.label) as labels,
             GROUP_CONCAT(t.rangeDayIdxBy10Min) as allRangeDayIdxBy10Min,
             GROUP_CONCAT(t.id) as ids

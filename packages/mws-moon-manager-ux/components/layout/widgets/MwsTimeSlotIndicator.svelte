@@ -26,7 +26,7 @@
     return acc + ((true === (slots[idx + maxSlots / 2] ?? false)) ? ` 0 ${dSize}` :  ` ${dSize} 0`);
   }, '');
 
-  console.debug('Slots for indicator : ', slots);
+  // console.debug('Slots for indicator : ', slots);
 </script>
 
 <span class="inline-flex items-center justify-center relative">

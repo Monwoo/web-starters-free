@@ -29,9 +29,9 @@
 </script>
 
 <slot name="mws-body">
-  <div class="flex flex-col h-screen">
+  <div class="flex flex-col h-screen print:h-auto">
     <slot name="mws-header-container">
-      <header class="bg-gray-700 text-white text-center {headerClass}">
+      <header class="bg-gray-700 text-white text-center print:hidden {headerClass}">
         <Header {locale} {viewTemplate}>
           <slot name="mws-header">
               Sticky Header and Footer with Tailwind 😎
@@ -39,7 +39,7 @@
         </Header>
       </header>
     </slot>
-    <main class="flex-1 overflow-y-auto {mainClass}">
+    <main class="flex-1 overflow-y-auto header print: {mainClass}">
       <slot />
     </main>
     <slot name="mws-footer-container">
