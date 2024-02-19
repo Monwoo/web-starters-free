@@ -1,3 +1,14 @@
+<script context="module">
+  // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
+  // import "dayjs/esm/locale/fr";
+  // import dayjs from "dayjs/esm";
+  import "dayjs/locale/fr";
+  // import "dayjs/locale/en";
+  import dayjs from "dayjs";
+  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
+
+</script>
+
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -73,7 +84,7 @@
   };
   timingsReport.forEach((tReport) => {
     const ids = tReport.ids.split(",");
-    
+
     ids.forEach((tId) => {
       const t = timingsByIds[tId];
       if (!(summaryByDays[tReport.sourceDate] ?? null)) {
@@ -81,14 +92,59 @@
           bookedTimeSlot: {},
           sumOfBookedHrs: 0,
         };
-      };
-      if (!(summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min]??null)) {
-        const delta = 10/60.0;
+      }
+      if (
+        !(
+          summaryByDays[tReport.sourceDate].bookedTimeSlot[
+            t.rangeDayIdxBy10Min
+          ] ?? null
+        )
+      ) {
+        const delta = 10 / 60.0;
         summaryByDays[tReport.sourceDate].sumOfBookedHrs += delta;
         summaryTotals.sumOfBookedHrs += delta;
       }
-      summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] = true;
+      summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] =
+        true;
     });
+  });
+
+  let summaryByYears = {};
+
+  Object.keys(summaryByDays).forEach((tDay) => {
+    const tDate = dayjs(tDay);
+    const tMonth = tDate.format("MM");
+    const tYear = tDate.format("YYYY");
+    const summary = summaryByDays[tDay];
+    if (!(summaryByYears[tYear] ?? null)) {
+      summaryByYears[tYear] = {
+        bookedTimeSlot: {},
+        sumOfBookedHrs: 0,
+        months: {},
+      };
+    }
+    if (!(summaryByYears[tYear].months[tMonth] ?? null)) {
+      summaryByYears[tYear].months[tMonth] = {
+        bookedTimeSlot: {},
+        sumOfBookedHrs: 0,
+        days: {},
+      };
+    }
+
+    summaryByYears[tYear].bookedTimeSlot = {
+      ...summaryByYears[tYear].bookedTimeSlot,
+      ...summary,
+    };
+    summaryByYears[tYear].sumOfBookedHrs += summary.sumOfBookedHrs;
+
+    summaryByYears[tYear].months[tMonth].bookedTimeSlot = {
+      ...summaryByYears[tYear].months[tMonth].bookedTimeSlot,
+      ...summary,
+    };
+    summaryByYears[tYear].months[tMonth].sumOfBookedHrs +=
+      summary.sumOfBookedHrs;
+
+    summaryByYears[tYear].months[tMonth].days[tDay] = true; //summary;
   });
 
   console.log(
@@ -115,11 +171,38 @@
   <!-- {JSON.stringify(timings)} -->
   <div>{@html timingsPaginator}</div>
   <div>{summaryTotals.sumOfBookedHrs} hours for all</div>
-  {#each Object.keys(summaryByDays) ?? [] as day, idx}
+
+  {#each Object.keys(summaryByYears) ?? [] as year, idx}
+    <div class="m-3">
+      [{year}]
+      {summaryByYears[year].sumOfBookedHrs.toFixed(2)} hour(s) for slots :
+      {JSON.stringify(summaryByYears[year].bookedTimeSlot)}
+
+      {#each Object.keys(summaryByYears[year].months) ?? [] as month, idx}
+        <div>
+          [{month}]
+          {summaryByYears[year].months[month].sumOfBookedHrs.toFixed(2)} hour(s)
+          for slots :
+          {JSON.stringify(summaryByYears[year].months[month].bookedTimeSlot)}
+
+          {#each Object.keys(summaryByYears[year].months[month].days) ??
+            [] as day, idx}
+            <!-- <div>
+              [{day}]
+              {summaryByDays[day].sumOfBookedHrs.toFixed(2)} hour(s) for slots :
+              {JSON.stringify(summaryByDays[day].bookedTimeSlot)}
+            </div> -->
+          {/each}
+        </div>
+      {/each}
+    </div>
+  {/each}
+
+  <!-- {#each Object.keys(summaryByDays) ?? [] as day, idx}
     <div>
       [{day}]
       {summaryByDays[day].sumOfBookedHrs.toFixed(2)} hour(s) for slots :
       {JSON.stringify(summaryByDays[day].bookedTimeSlot)}
     </div>
-  {/each}
+  {/each} -->
 </div>
