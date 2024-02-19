@@ -436,7 +436,7 @@
               </tr>
 
               <!-- TODO : showing all timings for ONE years is TOO slow, only show in expanded mode ? -->
-              {#each daySummary.ids?.slice(0, 1) ?? [] as tId}
+              {#each daySummary.ids?.slice(0, 0) ?? [] as tId}
                 {@const timings = timingsByIds[tId]}
                 <tr>
                   <td

@@ -126,6 +126,9 @@ table {
 
 html body {
     height:100vh; // Mandatory for flex sub windows using h-full...
+    @media print {
+        height:auto;
+    }
 }
 
 .mws-window {

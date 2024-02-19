@@ -49,7 +49,10 @@ body {
 // Fixing double size main scroll bug :
 html, body, footer {
     overflow:hidden;
-    overflow-clip-margin: unset;    
+    overflow-clip-margin: unset;
+    @media print {
+        overflow:auto;
+    }
 }
 
 // Customize survey JS :
