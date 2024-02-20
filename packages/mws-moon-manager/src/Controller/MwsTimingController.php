@@ -376,6 +376,7 @@ class MwsTimingController extends AbstractController
         }
 
         $url = $request->query->get('url', null);
+        $keepOriginalSize = $request->query->get('keepOriginalSize', null);
         $this->logger->debug("Will fetch url : $url");
 
         // TODO : secu : filter real path to allowed screenshot folders from .env only ?
@@ -384,8 +385,39 @@ class MwsTimingController extends AbstractController
         }
         
         // Or use : https://symfony.com/doc/current/http_client.html
-        $respData = file_get_contents($url);
-        $response = new Response($respData);
+        // $respData = file_get_contents($url);
+
+        // TODO : for efficiency, resize image before usage :
+        // https://www.php.net/manual/en/imagick.resizeimage.php
+        // or :
+        // https://stackoverflow.com/questions/14649645/resize-image-in-php
+        // https://www.php.net/manual/en/function.imagecopyresized.php (GD)
+        // 
+        // and/or js size ? : 
+        // https://github.com/fabricjs/fabric.js
+        // https://imagekit.io/blog/how-to-resize-image-in-javascript/
+        // https://stackoverflow.com/questions/39762102/resizing-image-while-printing-html
+        // $imagick = new \Imagick(realpath($url));
+        $imagick = new \Imagick($url);
+        if (!$keepOriginalSize) {
+            $targetW = 300; // px, // TODO : from session or db config params
+            $factor = $targetW / $imagick->getImageWidth();
+            $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
+                $imagick->getImageWidth()*$factor,
+                $imagick->getImageHeight()*$factor,
+                // https://urmaul.com/blog/imagick-filters-comparison/
+                \Imagick::FILTER_CATROM, 0);
+                // https://www.php.net/manual/fr/imagick.resizeimage.php#94493
+                // FILTER_POINT is 4 times faster
+            // $imagick->scaleimage(
+            //     $imagick->getImageWidth() * 4,
+            //     $imagick->getImageHeight() * 4
+            // );    
+        }
+
+        // $response = new Response($respData);
+        $response = new Response($imagick->getImageBlob());
+        $response->headers->set('Content-Type', 'image/jpg');
 
         // $response->headers->set('Content-Type', 'application/pdf');
         // $mime = [

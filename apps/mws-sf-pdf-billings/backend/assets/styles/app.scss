@@ -30,6 +30,12 @@ $mws-background-light-rgb: 242, 234, 145;
 
 $mws-background-over-scroll-rgb: 44, 42, 24;
 
+// TODO : print white bg do not reduce pdf size
+// $mws-print-background: 255, 255, 255;
+$mws-print-background-rgb: $mws-background-rgb;
+$mws-print-background-light-rgb: $mws-background-light-rgb;
+$mws-print-background-over-scroll-rgb: $mws-background-over-scroll-rgb;
+
 :root {
     --mws-primary-rgb: #{$mws-primary-rgb};
     // --mws-secondary-rgb: #{$mws-secondary-rgb};
@@ -37,6 +43,12 @@ $mws-background-over-scroll-rgb: 44, 42, 24;
     --mws-background-rgb: #{$mws-background-rgb};
     --mws-background-light-rgb: #{$mws-background-light-rgb};
     --mws-background-over-scroll-rgb: #{$mws-background-over-scroll-rgb};
+
+    @media print {
+        --mws-background-rgb: #{$mws-print-background-rgb};
+        --mws-background-light-rgb: #{$mws-print-background-light-rgb};
+        --mws-background-over-scroll-rgb: #{$mws-print-background-over-scroll-rgb};            
+    }
 }
 
 html {
@@ -60,7 +72,6 @@ html {
             RGB(var(--mws-background-rgb))
         );
     }
-
     // https://stackoverflow.com/questions/68552282/give-different-color-to-top-and-bottom-of-the-webpage-body-overscroll
     // overscroll-behavior-y: none;
     // body {

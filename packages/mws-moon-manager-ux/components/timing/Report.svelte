@@ -22,6 +22,8 @@
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
+  export let showDetails = true;
+  export let showPictures = false;
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
 
@@ -435,61 +437,72 @@
                 </td>
               </tr>
 
-              <!-- TODO : showing all timings for ONE years is TOO slow, only show in expanded mode ? -->
-              {#each daySummary.ids?.slice(0, 0) ?? [] as tId}
-                {@const timings = timingsByIds[tId]}
-                <tr>
-                  <td
-                    class="border-t-0 px-6 align-middle
-                  border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                  >
-                    {timings.rangeDayIdxBy10Min}
-                    <img
-                      class="object-contain border-solid border-4 max-w-[100px]"
-                      class:border-gray-600={!timings.tags?.length}
-                      class:border-green-400={timings.tags?.length}
-                      src={slotPath(timings)}
-                    />              
-                  </td>
-                  <td
-                    class="border-t-0 px-6 align-middle
-                    border-l-0 border-r-0 text-xs whitespace-break-spaces p-4"
-                  >
-                    [{timings.sourceStamp ?? timings.id}]
-                    {#each Object.keys(timings.tags ?? {}).sort() ??
-                      [] as tagSlug}
-                      {@const tag = timings.tags[tagSlug]}
-                      <span
-                        class="inline-flex
-                      text-base font-medium p-1 text-center
-                      border border-blue-800"
-                      >
-                        {tag.label} {
-                          tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €]` : ''
-                        }
-                      </span>
-                    {/each}
-                  </td>
-                  <td
-                    class="border-t-0 px-6 align-middle
+              <!-- TIPS : showing all timings for ONE years is TOO slow,
+                only show in expanded mode ?
+                + 60000 picture is too long to load from server...
+                like some hours to display one page,
+                that will be too heavy for pdf export ?
+                Same base issue as for MoonManager 2018 (Angular),
+                video might be solution... -->
+              {#if showDetails }
+                <!-- {#each daySummary.ids?.slice(0, 0) ?? [] as tId} -->
+                {#each daySummary.ids?.slice(0) ?? [] as tId}
+                  {@const timings = timingsByIds[tId]}
+                  <tr>
+                    <td
+                      class="border-t-0 px-6 align-middle
                     border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                  >
-                    {(10/60).toFixed(2)} hr
-                  </td>
-                  <td
-                    class="border-t-0 px-6 align-middle
-                    border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                  >
-                    {timings.maxPricePerHr?.toFixed(2)} €
-                  </td>
-                  <td
-                    class="border-t-0 px-6 align-middle
-                    border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
-                  >
-                    {((timings.maxPricePerHr ?? 0) * (10/60)).toFixed(2)} €
-                  </td>
-                </tr>
-              {/each}
+                    >
+                      {timings.rangeDayIdxBy10Min}
+                      {#if showPictures }
+                        <img
+                          class="object-contain border-solid border-4 max-w-[100px]"
+                          class:border-gray-600={!timings.tags?.length}
+                          class:border-green-400={timings.tags?.length}
+                          src={slotPath(timings)}
+                        />
+                      {/if}            
+                    </td>
+                    <td
+                      class="border-t-0 px-6 align-middle
+                      border-l-0 border-r-0 text-xs whitespace-break-spaces p-4"
+                    >
+                      [{timings.sourceStamp ?? timings.id}]
+                      {#each Object.keys(timings.tags ?? {}).sort() ??
+                        [] as tagSlug}
+                        {@const tag = timings.tags[tagSlug]}
+                        <span
+                          class="inline-flex
+                        text-base font-medium p-1 text-center
+                        border border-blue-800"
+                        >
+                          {tag.label} {
+                            tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €]` : ''
+                          }
+                        </span>
+                      {/each}
+                    </td>
+                    <td
+                      class="border-t-0 px-6 align-middle
+                      border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                    >
+                      {(10/60).toFixed(2)} hr
+                    </td>
+                    <td
+                      class="border-t-0 px-6 align-middle
+                      border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                    >
+                      {timings.maxPricePerHr?.toFixed(2)} €
+                    </td>
+                    <td
+                      class="border-t-0 px-6 align-middle
+                      border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                    >
+                      {((timings.maxPricePerHr ?? 0) * (10/60)).toFixed(2)} €
+                    </td>
+                  </tr>
+                {/each}
+              {/if}            
             {/each}
           {/each}
 
