@@ -22,7 +22,7 @@
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
-  export let showDetails = true;
+  export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
   export let showPictures = false;
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
@@ -467,7 +467,7 @@
                       class="border-t-0 px-6 align-middle
                       border-l-0 border-r-0 text-xs whitespace-break-spaces p-4"
                     >
-                      [{timings.sourceStamp ?? timings.id}]
+                      [{timings.sourceStamp?.split('/').slice(-1) ?? timings.id}]
                       {#each Object.keys(timings.tags ?? {}).sort() ??
                         [] as tagSlug}
                         {@const tag = timings.tags[tagSlug]}

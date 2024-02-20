@@ -6,9 +6,16 @@
 Contain multiple free webstarters and parts of opened confidential starters (Optional full code under private license per domains, or for confidential knowledge with no rights to duplicate without appropriate notice or license)
 
 ## Warning
-**Not for productions** without serious testings and cleanings.
 
-Want to give motivation for tests or other stuffs ? Donate with your comment on :
+**mws-sf-pdf-billings Not for productions** without serious testings and cleanings.
+
+**Be carefull with cloud** since this solution might consume huge bandwidth for timeSlot pictures reports and qualification.
+
+For example, 1 year of jobs with 60 000 images will load and reload those for qualification(s) or reports. At full size, it's around 100Go of media data. (10 times imports might be 1To without optimisations...)
+
+**Want to give motivation for tests or other stuffs ?**
+
+Donate with your comment on :
 [www.monwoo.com/don](https://www.monwoo.com/don)
 
 ## Apps and Packages
