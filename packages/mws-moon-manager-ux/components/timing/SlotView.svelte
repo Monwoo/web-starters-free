@@ -165,6 +165,7 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
     ? Routing.generate("mws_timing_fetchMediatUrl", {
         // encodeURI('file://' + timingSlot.source.path)
         url: "file://" + timingSlot.source.path,
+        keepOriginalSize: true,
       })
     : null;
 

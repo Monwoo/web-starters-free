@@ -40,6 +40,8 @@ when@dev:
     framework:
         # https://symfony.com/doc/5.4/reference/configuration/framework.html#ide
         ide: '%env(resolve:CODE_EDITOR)%'
+        # https://symfony.com/doc/6.2/the-fast-track/en/21-cache.html
+        http_cache: true
 
 when@test:
     framework:

@@ -398,8 +398,11 @@ class MwsTimingController extends AbstractController
         // https://imagekit.io/blog/how-to-resize-image-in-javascript/
         // https://stackoverflow.com/questions/39762102/resizing-image-while-printing-html
         // $imagick = new \Imagick(realpath($url));
-        $imagick = new \Imagick($url);
-        if (!$keepOriginalSize) {
+        if ($keepOriginalSize) {
+            // TODO : filter url outside of allowed server folders ?
+            $respData = file_get_contents($url);
+        } else {
+            $imagick = new \Imagick($url);
             $targetW = 300; // px, // TODO : from session or db config params
             $factor = $targetW / $imagick->getImageWidth();
             $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
@@ -412,12 +415,20 @@ class MwsTimingController extends AbstractController
             // $imagick->scaleimage(
             //     $imagick->getImageWidth() * 4,
             //     $imagick->getImageHeight() * 4
-            // );    
+            // );
+            $respData = $imagick->getImageBlob();
         }
 
-        // $response = new Response($respData);
-        $response = new Response($imagick->getImageBlob());
+        $response = new Response($respData);
         $response->headers->set('Content-Type', 'image/jpg');
+        // https://symfony.com/doc/6.2/the-fast-track/en/21-cache.html
+        $maxAge = 3600 * 5;
+        $response->setSharedMaxAge($maxAge);
+        // max-age=604800, must-revalidate
+        $response->headers->set('Cache-Control', "max-age=$maxAge");
+        $response->headers->set('Expires', "$maxAge");
+        // For legacy browsers (no cache):
+        // $response->headers->set('Pragma', 'no-chache');
 
         // $response->headers->set('Content-Type', 'application/pdf');
         // $mime = [
