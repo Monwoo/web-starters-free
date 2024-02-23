@@ -75,7 +75,7 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
     isLoading = true;
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingToggleQualif"),
-      timeSlotId: timingSlot.id,
+      timeSlotId: timingSlot?.id,
       qualifId: qualif.id,
     };
     const formData = new FormData();
@@ -101,9 +101,9 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
           const data = await resp.json();
           // const data = await resp.text();
           // console.debug("resp", data);
-          timingSlot.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
-          console.debug("Did toggle qualif, updated tags : ", timingSlot.tags);
+          console.debug("Did toggle qualif, updated tags : ", timingSlot?.tags);
           stateUpdate(state, {
             csrfTimingToggleQualif: data.newCsrf,
           });
@@ -121,7 +121,7 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
     isLoading = true;
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingTagAdd"),
-      timeSlotId: timingSlot.id,
+      timeSlotId: timingSlot?.id,
       tagSlug: tag.slug,
     };
     const formData = new FormData();
@@ -145,9 +145,9 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
           throw new Error("Not 2xx response", { cause: resp });
         } else {
           const data = await resp.json();
-          timingSlot.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
-          console.debug("Did add tag", timingSlot.tags);
+          console.debug("Did add tag", timingSlot?.tags);
           stateUpdate(state, {
             csrfTimingTagAdd: data.newCsrf,
           });
@@ -163,8 +163,8 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
 
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
-        // encodeURI('file://' + timingSlot.source.path)
-        url: "file://" + timingSlot.source.path,
+        // encodeURI('file://' + timingSlot?.source.path)
+        url: "file://" + timingSlot?.source.path,
         keepOriginalSize: true,
       })
     : null;
@@ -322,8 +322,8 @@ style:opacity={isLoading ? 0.8 : 1} -->
       class="object-contain border-solid border-4"
       class:w-full={isFullScreen}
       class:max-h-[85%]={isFullScreen}
-      class:border-gray-600={!timingSlot.tags?.length}
-      class:border-green-400={timingSlot.tags?.length}
+      class:border-gray-600={!timingSlot?.tags?.length}
+      class:border-green-400={timingSlot?.tags?.length}
       src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
     />
   </div>

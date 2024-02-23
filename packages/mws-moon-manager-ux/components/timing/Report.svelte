@@ -24,8 +24,11 @@
   export let lookupForm;
   export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
   export let showPictures = false;
+  export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
+
+  const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
 
   console.debug("Report having timingsReport", timingsReport);
   // console.debug('Report having timings', timings);
@@ -224,19 +227,72 @@
 
 </script>
 
-<a
-  href={Routing.generate(
-    "mws_timings_qualif",
-    {
-      _locale: locale ?? "",
-    },
-    true
-  )}
-  class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
->
-  <button>Timings Qualifications</button>
-</a>
+
 <div class="mws-timing-report">
+  <button>
+    <a
+      href={Routing.generate(
+        "mws_timings_qualif",
+        {
+          _locale: locale ?? "",
+        },
+        true
+      )}
+      class=""
+    >
+      Timings Qualifications
+    </a>
+  </button>
+  <button on:click={() => showDetails = !showDetails} class="p-3">
+    { showDetails ? 'Hide' : 'Show'} details
+  </button>
+  {#if showDetails }
+    <button on:click={() => showPictures = !showPictures} class="p-3">
+      { showPictures ? 'Hide' : 'Show'} screenshots
+    </button>
+  {/if}
+
+  <div class="p-3 flex flex-wrap">
+    <div class="label">
+      <button
+      data-collapse-toggle="search-offer-lookup"
+      type="button"
+      class="rounded-lg "
+      aria-controls="search-offer-lookup"
+      aria-expanded="false"
+    >
+      Filtres de recherche
+    </div>
+    <div id="search-offer-lookup" class="detail w-full hidden">
+      {@html lookupForm}
+    </div>
+  </div>
+  {@html jsonLookup.customFilters && jsonLookup.customFilters.length
+    ? '<strong>Filtres actifs : </strong>' +
+      jsonLookup.customFilters.reduce((acc, f) => `
+        ${acc} [${f}]
+      `, ``) + '<br/>'
+    : ''
+  }
+  {@html jsonLookup.searchTags && jsonLookup.searchTags.length
+    ? '<strong>Tags : </strong>' +
+      jsonLookup.searchTags.reduce((acc, f) => `
+        ${acc} [${f}]
+      `, ``) + '<br/>'
+    : ''
+  }
+  {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
+    ? '<strong>Tags à éviter : </strong>' +
+      jsonLookup.searchTagsToAvoid.reduce((acc, f) => `
+        ${acc} [${f}]
+      `, ``) + '<br/>'
+    : ''
+  }
+  {@html jsonLookup.searchKeyword
+    ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
+    : ``
+  }
+
   <!-- {JSON.stringify(timings)} -->
   <div>{@html timingsPaginator}</div>
   <div>{summaryTotals.sumOfBookedHrs.toFixed(2)} hours for all</div>
@@ -290,7 +346,7 @@
       </thead>
       <tbody>
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
-          <tr>
+          <tr class="bg-gray-400">
             <td
               class="border-t-0 px-6 align-middle
             border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
@@ -339,7 +395,7 @@
           </tr>
           {#each Object.keys(summaryByYears[year].months).sort() ?? [] as month}
             {@const monthSummary = summaryByYears[year].months[month]}
-            <tr>
+            <tr class="bg-gray-200">
               <td
                 class="border-t-0 px-6 align-middle
               border-l-0 border-r-0 text-xs whitespace-nowrap p-4"

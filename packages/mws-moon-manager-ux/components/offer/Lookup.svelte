@@ -25,18 +25,18 @@
   console.debug(viewTemplate);
   console.debug(lookupForm);
 
-  const jsonResult = JSON.parse(decodeURIComponent(lookup.jsonResult));
-  console.debug('jsonResult :', jsonResult);
+  const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
+  console.debug('jsonLookup :', jsonLookup);
   // TODO : basehref ? => NOP, use Routing from fos-routing instead...
   const baseHref = '/mws';
   // const respUrl = `${baseHref}/${locale}/mws-offer/fetch-root-url?url=`
-  // + encodeURIComponent(jsonResult.sourceRootLookupUrl);
+  // + encodeURIComponent(jsonLookup.sourceRootLookupUrl);
 
   onMount(async () => {
     // // NOP, not common, will have security errors this way :
     // const htmlResp = await fetch(respUrl);
     // console.debug(htmlResp);
-    // // const win = window.open(jsonResult.sourceRootLookupUrl, "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+    // // const win = window.open(jsonLookup.sourceRootLookupUrl, "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
     // const win = window.open('', "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
     // // win.document.body.innerHTML = "HTML";
     // win.document.body.innerHTML = await htmlResp.text();
@@ -45,8 +45,8 @@
     const htmlLookup = $(lookupForm); 
     // console.log(htmlLookup);
     const lookupSurveyJsFormData = Object.fromEntries((new FormData(htmlLookup[0])).entries());
-    const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonResult]'])); // TODO : from param or config
-    // TIPS : same as jsonResult, updated by survey js or other if using ref element instead of raw string... :
+    const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonLookup]'])); // TODO : from param or config
+    // TIPS : same as jsonLookup, updated by survey js or other if using ref element instead of raw string... :
     console.log('lookupSurveyJsData : ', lookupSurveyJsData);
   });
 
@@ -77,29 +77,29 @@
       {@html lookupForm}
     </div>
   </div>
-  {@html jsonResult.customFilters && jsonResult.customFilters.length
+  {@html jsonLookup.customFilters && jsonLookup.customFilters.length
     ? '<strong>Filtres actifs : </strong>' +
-      jsonResult.customFilters.reduce((acc, f) => `
+      jsonLookup.customFilters.reduce((acc, f) => `
         ${acc} [${f}]
       `, ``) + '<br/>'
     : ''
   }
-  {@html jsonResult.searchTags && jsonResult.searchTags.length
+  {@html jsonLookup.searchTags && jsonLookup.searchTags.length
     ? '<strong>Tags : </strong>' +
-      jsonResult.searchTags.reduce((acc, f) => `
+      jsonLookup.searchTags.reduce((acc, f) => `
         ${acc} [${f}]
       `, ``) + '<br/>'
     : ''
   }
-  {@html jsonResult.searchTagsToAvoid && jsonResult.searchTagsToAvoid.length
+  {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
     ? '<strong>Tags à éviter : </strong>' +
-      jsonResult.searchTagsToAvoid.reduce((acc, f) => `
+      jsonLookup.searchTagsToAvoid.reduce((acc, f) => `
         ${acc} [${f}]
       `, ``) + '<br/>'
     : ''
   }
-  {@html jsonResult.searchKeyword
-    ? `<strong>Mots clefs : </strong>${jsonResult.searchKeyword}`
+  {@html jsonLookup.searchKeyword
+    ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
     : ``
   }
   {@html offersPaginator}

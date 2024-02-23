@@ -243,7 +243,7 @@ class MwsTimingController extends AbstractController
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
                 // dd($searchTags);
                 return $this->redirectToRoute(
-                    'mws_timings_qualif',
+                    'mws_timings_report',
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
@@ -273,10 +273,15 @@ class MwsTimingController extends AbstractController
                 if ($idx) {
                     $orClause .= ' OR ';
                 }
-                $orClause .= "( :tagSlug$idx = tag.slug )";
-                // $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
-                $qb->setParameter("tagSlug$idx", $slug);
+                // $orClause .= "( :tagSlug$idx = tag.slug )";
+                // // $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
+                // $qb->setParameter("tagSlug$idx", $slug);
                 // $qb->setParameter("tagCategory$idx", $category);
+                $tag = $mwsTimeTagRepository->findOneBy([
+                    'slug' => $slug,
+                ]);
+                $orClause .= "( :tag$idx MEMBER OF t.tags )";
+                $qb->setParameter("tag$idx", $tag);
             }
             $qb = $qb->andWhere($orClause);
         }
@@ -297,7 +302,7 @@ class MwsTimingController extends AbstractController
 
         $qb->orderBy("t.sourceTime", "ASC");
 
-        $query = $qb->getQuery();
+        // $query = $qb->getQuery();
         // $qb = $qb->innerJoin('t.tags', 'tag');
         // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
         $qb = $qb->leftJoin('t.tags', 'tag');
