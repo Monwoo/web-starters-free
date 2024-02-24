@@ -1,0 +1,62 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set model = {
+  description: "Rechercher"|trans,
+  goNextPageAutomatic: true,
+  completeText: {
+    en: "Configure report",
+    fr: "Configurer le rapport"
+  },
+  focusFirstQuestionAutomatic: false,
+  showQuestionNumbers: false,
+  elements: [{
+    name: "lvl1Tags",
+    title: "Tags de niveau 1",
+    description: "Ajouter des tags pour le niveau 1.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allTimingTags,
+  },{
+    name: "lvl2Tags",
+    title: "Tags de niveau 2",
+    description: "Ajouter des tags pour le niveau 2.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allTimingTags,
+  },{
+    name: "lvl3Tags",
+    title: "Tags de niveau 3",
+    description: "Ajouter des tags pour le niveau 3.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allTimingTags,
+  },{
+    name: "lvl4Tags",
+    title: "Tags de niveau 4",
+    description: "Ajouter des tags pour le niveau 4.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allTimingTags,
+  },{
+    name: "lvl5Tags",
+    title: "Tags de niveau 5",
+    description: "Ajouter des tags pour le niveau 5.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allTimingTags,
+  },
+  ]
+} %}
+
+{{ model|serialize('json')|raw }}
+
+{# // TODO : drag and drop tags to re-order ? delete and add for now. #}

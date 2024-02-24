@@ -16,6 +16,8 @@
   export let timingsHeaders = '{}'; // injected raw html
   export let viewTemplate;
   export let lookupForm;
+  export let report = '{}';
+  export let reportForm;
 
   // TODO : remove code duplication and put this in some 'mws-utils' package ?
   // https://stackoverflow.com/questions/5796718/html-entity-decode
@@ -34,11 +36,14 @@
   timingsPaginator = decodeHtml(timingsPaginator);
   lookupForm = decodeHtml(lookupForm);
 
+  report = JSON.parse(decodeHtml(report));
+  reportForm = decodeHtml(reportForm);
+
   console.debug(lookup);
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Report {lookup}
+<Report {lookup} {report} {reportForm}
 {locale} {viewTemplate} {lookupForm} {timingsReport}
 {timingsPaginator} {timingsHeaders}
 ></Report>

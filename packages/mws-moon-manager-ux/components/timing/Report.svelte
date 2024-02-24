@@ -22,6 +22,9 @@
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
+  export let report;
+  export let reportForm;
+
   export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
@@ -265,16 +268,29 @@
   <div class="p-3 flex flex-wrap">
     <div class="label">
       <button
-      data-collapse-toggle="search-offer-lookup"
+      data-collapse-toggle="search-timing-lookup"
       type="button"
       class="rounded-lg "
-      aria-controls="search-offer-lookup"
+      aria-controls="search-timing-lookup"
       aria-expanded="false"
     >
       Filtres de recherche
     </div>
-    <div id="search-offer-lookup" class="detail w-full hidden">
+    <div id="search-timing-lookup" class="detail w-full hidden">
       {@html lookupForm}
+    </div>
+    <div class="label">
+      <button
+      data-collapse-toggle="config-report"
+      type="button"
+      class="rounded-lg "
+      aria-controls="config-report"
+      aria-expanded="false"
+    >
+      Configuration du rapport
+    </div>
+    <div id="config-report" class="detail w-full hidden">
+      {@html reportForm}
     </div>
   </div>
   {@html jsonLookup.customFilters && jsonLookup.customFilters.length
@@ -318,7 +334,7 @@
       <thead class="sticky">
         <tr>
           <th
-            class="px-6 align-middle border border-solid
+            class="px-6 text-middle border border-solid
           py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
@@ -326,7 +342,7 @@
             Segment(s)
           </th>
           <th
-            class="px-6 align-middle border border-solid
+            class="px-6 text-left border border-solid
           py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
@@ -334,7 +350,7 @@
             Tag(s)
           </th>
           <th
-            class="px-6 align-middle border border-solid
+            class="px-6 text-right border border-solid
           py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
@@ -342,7 +358,7 @@
             Total en heure(s)
           </th>
           <th
-            class="px-6 align-middle border border-solid
+            class="px-6 text-right border border-solid
           py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
@@ -350,7 +366,7 @@
             € max par heure(s)
           </th>
           <th
-            class="px-6 align-middle border border-solid
+            class="px-6 text-right border border-solid
           py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
@@ -363,7 +379,7 @@
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
           <tr class="bg-gray-400 font-extrabold">
             <td
-              class="border-t-0 px-6 align-middle
+              class="border-t-0 px-6 text-middle
             border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               <MwsTimeSlotIndicator
@@ -371,7 +387,7 @@
               />
             </td>
             <td
-              class="border-t-0 px-6 align-middle
+              class="border-t-0 px-6 text-left
               border-l-0 border-r-0 text-lg whitespace-break-spaces p-4"
             >
               <div class="text-lg">[{year}]</div>
@@ -390,19 +406,19 @@
               {/each}
             </td>
             <td
-              class="border-t-0 px-6 align-middle
+              class="border-t-0 px-6 text-right
               border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               {summaryByYears[year].sumOfBookedHrs.toPrettyNum(2)} hr
             </td>
             <td
-              class="border-t-0 px-6 align-middle
+              class="border-t-0 px-6 text-right
               border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               {summaryByYears[year].maxPPH.toPrettyNum(2)} €
             </td>
             <td
-              class="border-t-0 px-6 align-middle
+              class="border-t-0 px-6 text-right
               border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               {summaryByYears[year].sumOfMaxPPH.toPrettyNum(2)} €
@@ -412,7 +428,7 @@
             {@const monthSummary = summaryByYears[year].months[month]}
             <tr class="bg-gray-200 font-bold">
               <td
-                class="border-t-0 px-6 align-middle
+                class="border-t-0 px-6 text-middle
               border-l-0 border-r-0 text-lg whitespace-nowrap p-4 pl-8"
               >
                 <MwsTimeSlotIndicator
@@ -420,7 +436,7 @@
                 />
               </td>
               <td
-                class="border-t-0 px-6 align-middle
+                class="border-t-0 px-6 text-left
                 border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-8"
               >
                 <div class="text-lg">[{year}-{month}]</div>
@@ -439,19 +455,19 @@
                 {/each}
               </td>
               <td
-                class="border-t-0 px-6 align-middle
+                class="border-t-0 px-6 text-right
                 border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
                 {monthSummary.sumOfBookedHrs.toPrettyNum(2)} hr
               </td>
               <td
-                class="border-t-0 px-6 align-middle
+                class="border-t-0 px-6 text-right
                 border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
                 {monthSummary.maxPPH.toPrettyNum(2)} €
               </td>
               <td
-                class="border-t-0 px-6 align-middle
+                class="border-t-0 px-6 text-right
                 border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
                 {monthSummary.sumOfMaxPPH.toPrettyNum(2)} €
@@ -462,7 +478,7 @@
               {@const daySummary = summaryByDays[day]}
               <tr class="font-semibold">
                 <td
-                  class="border-t-0 px-6 align-middle
+                  class="border-t-0 px-6 text-middle
                 border-l-0 border-r-0 text-lg whitespace-nowrap p-4 pl-12"
                 >
                   <MwsTimeSlotIndicator
@@ -470,7 +486,7 @@
                   />
                 </td>
                 <td
-                  class="border-t-0 px-6 align-middle
+                  class="border-t-0 px-6 text-left
                   border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-12"
                 >
                   <div class="text-lg">[{day}]</div>
@@ -489,19 +505,19 @@
                   {/each}
                 </td>
                 <td
-                  class="border-t-0 px-6 align-middle
+                  class="border-t-0 px-6 text-right
                   border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
                   {daySummary.sumOfBookedHrs?.toPrettyNum(2)} hr
                 </td>
                 <td
-                  class="border-t-0 px-6 align-middle
+                  class="border-t-0 px-6 text-right
                   border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
                   {daySummary.maxPPH?.toPrettyNum(2)} €
                 </td>
                 <td
-                  class="border-t-0 px-6 align-middle
+                  class="border-t-0 px-6 text-right
                   border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
                   {daySummary.sumOfMaxPPH?.toPrettyNum(2)} €
@@ -521,7 +537,7 @@
                   {@const timings = timingsByIds[tId]}
                   <tr class="text-gray-600">
                     <td
-                      class="border-t-0 px-6 align-middle text-right
+                      class="border-t-0 px-6 text-middle text-right
                     border-l-0 border-r-0 text-lg whitespace-nowrap p-4 pl-16"
                     >
                       {timings.rangeDayIdxBy10Min}
@@ -535,7 +551,7 @@
                       {/if}            
                     </td>
                     <td
-                      class="border-t-0 px-6 align-middle
+                      class="border-t-0 px-6 text-left
                       border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-16"
                     >
                       <div class="text-lg">
@@ -556,19 +572,19 @@
                       {/each}
                     </td>
                     <td
-                      class="border-t-0 px-6 align-middle
+                      class="border-t-0 px-6 text-right
                       border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
                       {(10/60).toPrettyNum(2)} hr
                     </td>
                     <td
-                      class="border-t-0 px-6 align-middle
+                      class="border-t-0 px-6 text-right
                       border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
                       {timings.maxPricePerHr?.toPrettyNum(2)} €
                     </td>
                     <td
-                      class="border-t-0 px-6 align-middle
+                      class="border-t-0 px-6 text-right
                       border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
                       {((timings.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)} €

@@ -46,6 +46,10 @@
 		'lookupForm' : (form_start(lookupForm, {
 			'attr' : { 'class': 'd-flex flex-wrap mws-survey-js-form' }
 		}) ~ form_widget(lookupForm) ~ form_end(lookupForm))|e('html_attr'),
+		'report' : reportForm.vars.value|serialize('json')|e('html_attr'),
+		'reportForm' : (form_start(reportForm, {
+			'attr' : { 'class': 'd-flex flex-wrap mws-survey-js-form' }
+		}) ~ form_widget(reportForm) ~ form_end(reportForm))|e('html_attr'),
 		'viewTemplate' : viewTemplate,
 	} ) }}></div>
 {% endblock %}

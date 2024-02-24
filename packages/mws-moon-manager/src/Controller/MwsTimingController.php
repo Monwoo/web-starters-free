@@ -256,6 +256,54 @@ class MwsTimingController extends AbstractController
             }
         }
 
+        $lastReport = [
+            // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
+            "jsonResult" => rawurlencode(json_encode([
+                "searchKeyword" => $keyword,
+            ])),
+            "surveyJsModel" => rawurlencode($this->renderView(
+                "@MoonManager/survey_js_models/MwsTimingReportType.json.twig",
+                [
+                    'allTimingTags' => array_map(
+                        function (MwsTimeTag $tag) {
+                            return $tag->getSlug();
+                        },
+                        $timingTags
+                    ),
+                ]
+            )),
+        ];
+        $reportForm = $this->createForm(MwsSurveyJsType::class, $lastReport);
+        $reportForm->handleRequest($request);
+
+        if ($reportForm->isSubmitted()) {
+            $this->logger->debug("Did submit search form");
+
+            if ($reportForm->isValid()) {
+                $this->logger->debug("Search form ok");
+                // dd($reportForm);
+                $surveyAnswers = json_decode(
+                    urldecode($reportForm->get('jsonResult')->getData()),
+                    true
+                );
+                $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
+                // dd($searchTags);
+                return $this->redirectToRoute(
+                    'mws_timings_report',
+                    array_merge($request->query->all(), [
+                        "viewTemplate" => $viewTemplate,
+                        "keyword" => $keyword,
+                        "tags" => $searchTags,
+                        "tagsToAvoid" => $searchTagsToAvoid,
+                        "page" => 1,
+                    ]),
+                    Response::HTTP_SEE_OTHER
+                );
+            }
+        }
+
         $qb = $mwsTimeSlotRepository->createQueryBuilder('t');
         // https://stackoverflow.com/questions/17878237/doctrine-cannot-select-entity-through-identification-variables-without-choosing
         // ->from(MwsTimeTag::class, 'tag');
@@ -366,6 +414,7 @@ class MwsTimingController extends AbstractController
             // 'timings' => $timingsPage,
             'timingTags' => $timingTags,
             'lookupForm' => $filterForm,
+            'reportForm' => $reportForm,
             'viewTemplate' => $viewTemplate,
         ]);
     }
