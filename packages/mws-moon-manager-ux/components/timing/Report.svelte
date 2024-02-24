@@ -229,7 +229,6 @@
 
 
 <div class="mws-timing-report">
-  <button>
     <a
       href={Routing.generate(
         "mws_timings_qualif",
@@ -240,15 +239,16 @@
       )}
       class=""
     >
-      Timings Qualifications
+      <button>
+        Qualification des temps
+      </button>
     </a>
-  </button>
-  <button on:click={() => showDetails = !showDetails} class="p-3">
-    { showDetails ? 'Hide' : 'Show'} details
+  <button on:click={() => showDetails = !showDetails}>
+    { showDetails ? 'Cacher' : 'Show'} les details
   </button>
   {#if showDetails }
-    <button on:click={() => showPictures = !showPictures} class="p-3">
-      { showPictures ? 'Hide' : 'Show'} screenshots
+    <button on:click={() => showPictures = !showPictures}>
+      { showPictures ? 'Cacher' : 'Voir'} les screenshots
     </button>
   {/if}
 
@@ -295,8 +295,9 @@
 
   <!-- {JSON.stringify(timings)} -->
   <div>{@html timingsPaginator}</div>
-  <div>{summaryTotals.sumOfBookedHrs.toFixed(2)} hours for all</div>
-  <div>{summaryTotals.sumOfMaxPPH.toFixed(2)} € for all</div>
+  <div>Rapport des temps via segmentations de 10 minutes.</div>
+  <div>{summaryTotals.sumOfBookedHrs.toFixed(2)} hours au total.</div>
+  <div>{summaryTotals.sumOfMaxPPH.toFixed(2)} € en tout.</div>
 
   <div class="block w-full overflow-x-auto ">
     <table class="items-center w-full bg-transparent border-collapse">
@@ -304,7 +305,7 @@
         <tr>
           <th
             class="px-6 align-middle border border-solid
-          py-3 text-xs uppercase border-l-0 border-r-0
+          py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
           >
@@ -312,7 +313,7 @@
           </th>
           <th
             class="px-6 align-middle border border-solid
-          py-3 text-xs uppercase border-l-0 border-r-0
+          py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
           >
@@ -320,7 +321,7 @@
           </th>
           <th
             class="px-6 align-middle border border-solid
-          py-3 text-xs uppercase border-l-0 border-r-0
+          py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
           >
@@ -328,7 +329,7 @@
           </th>
           <th
             class="px-6 align-middle border border-solid
-          py-3 text-xs uppercase border-l-0 border-r-0
+          py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
           >
@@ -336,7 +337,7 @@
           </th>
           <th
             class="px-6 align-middle border border-solid
-          py-3 text-xs uppercase border-l-0 border-r-0
+          py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
           bg-gray-600 text-white border-gray-800"
           >
@@ -346,10 +347,10 @@
       </thead>
       <tbody>
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
-          <tr class="bg-gray-400">
+          <tr class="bg-gray-400 font-extrabold">
             <td
               class="border-t-0 px-6 align-middle
-            border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+            border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               <MwsTimeSlotIndicator
                 slots={summaryByYears[year].bookedTimeSlot}
@@ -357,48 +358,48 @@
             </td>
             <td
               class="border-t-0 px-6 align-middle
-              border-l-0 border-r-0 text-xs whitespace-break-spaces p-4"
+              border-l-0 border-r-0 text-lg whitespace-break-spaces p-4"
             >
-              [{year}]
+              <div class="text-lg">[{year}]</div>
               {#each Object.keys(summaryByYears[year].tags).sort() ??
                 [] as tagSlug}
                 {@const tag = summaryByYears[year].tags[tagSlug]}
                 <span
                   class="inline-flex
-                 text-base font-medium p-1 text-center
+                  text-xs font-medium p-1 text-center
                  border border-blue-800"
                 >
                   {tag.label} {
-                    tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €]` : ''
+                    tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
                   }
                 </span>
               {/each}
             </td>
             <td
               class="border-t-0 px-6 align-middle
-              border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+              border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               {summaryByYears[year].sumOfBookedHrs.toFixed(2)} hr
             </td>
             <td
               class="border-t-0 px-6 align-middle
-              border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+              border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               {summaryByYears[year].maxPPH.toFixed(2)} €
             </td>
             <td
               class="border-t-0 px-6 align-middle
-              border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+              border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
               {summaryByYears[year].sumOfMaxPPH.toFixed(2)} €
             </td>
           </tr>
           {#each Object.keys(summaryByYears[year].months).sort() ?? [] as month}
             {@const monthSummary = summaryByYears[year].months[month]}
-            <tr class="bg-gray-200">
+            <tr class="bg-gray-200 font-bold">
               <td
                 class="border-t-0 px-6 align-middle
-              border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+              border-l-0 border-r-0 text-lg whitespace-nowrap p-4 pl-8"
               >
                 <MwsTimeSlotIndicator
                   slots={monthSummary.bookedTimeSlot}
@@ -406,38 +407,38 @@
               </td>
               <td
                 class="border-t-0 px-6 align-middle
-                border-l-0 border-r-0 text-xs whitespace-break-spaces p-4"
+                border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-8"
               >
-                [{year}-{month}]
+                <div class="text-lg">[{year}-{month}]</div>
                 {#each Object.keys(monthSummary.tags).sort() ??
                   [] as tagSlug}
                   {@const tag = monthSummary.tags[tagSlug]}
                   <span
                     class="inline-flex
-                  text-base font-medium p-1 text-center
+                  text-xs font-medium p-1 text-center
                   border border-blue-800"
                   >
                     {tag.label} {
-                      tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €]` : ''
+                      tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
                     }
                   </span>
                 {/each}
               </td>
               <td
                 class="border-t-0 px-6 align-middle
-                border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
                 {monthSummary.sumOfBookedHrs.toFixed(2)} hr
               </td>
               <td
                 class="border-t-0 px-6 align-middle
-                border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
                 {monthSummary.maxPPH.toFixed(2)} €
               </td>
               <td
                 class="border-t-0 px-6 align-middle
-                border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
                 {monthSummary.sumOfMaxPPH.toFixed(2)} €
               </td>
@@ -445,10 +446,10 @@
 
             {#each Object.keys(monthSummary.days).sort() ?? [] as day}
               {@const daySummary = summaryByDays[day]}
-              <tr>
+              <tr class="font-semibold">
                 <td
                   class="border-t-0 px-6 align-middle
-                border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                border-l-0 border-r-0 text-lg whitespace-nowrap p-4 pl-12"
                 >
                   <MwsTimeSlotIndicator
                     slots={daySummary.bookedTimeSlot}
@@ -456,38 +457,38 @@
                 </td>
                 <td
                   class="border-t-0 px-6 align-middle
-                  border-l-0 border-r-0 text-xs whitespace-break-spaces p-4"
+                  border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-12"
                 >
-                  [{day}]
+                  <div class="text-lg">[{day}]</div>
                   {#each Object.keys(daySummary.tags ?? {}).sort() ??
                     [] as tagSlug}
                     {@const tag = daySummary.tags[tagSlug]}
                     <span
                       class="inline-flex
-                    text-base font-medium p-1 text-center
+                    text-xs font-medium p-1 text-center
                     border border-blue-800"
                     >
                       {tag.label} {
-                        tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €]` : ''
+                        tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
                       }
                     </span>
                   {/each}
                 </td>
                 <td
                   class="border-t-0 px-6 align-middle
-                  border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
                   {daySummary.sumOfBookedHrs?.toFixed(2)} hr
                 </td>
                 <td
                   class="border-t-0 px-6 align-middle
-                  border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
                   {daySummary.maxPPH?.toFixed(2)} €
                 </td>
                 <td
                   class="border-t-0 px-6 align-middle
-                  border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                  border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
                   {daySummary.sumOfMaxPPH?.toFixed(2)} €
                 </td>
@@ -504,10 +505,10 @@
                 <!-- {#each daySummary.ids?.slice(0, 0) ?? [] as tId} -->
                 {#each daySummary.ids?.slice(0) ?? [] as tId}
                   {@const timings = timingsByIds[tId]}
-                  <tr>
+                  <tr class="text-gray-600">
                     <td
-                      class="border-t-0 px-6 align-middle
-                    border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                      class="border-t-0 px-6 align-middle text-right
+                    border-l-0 border-r-0 text-lg whitespace-nowrap p-4 pl-16"
                     >
                       {timings.rangeDayIdxBy10Min}
                       {#if showPictures }
@@ -521,38 +522,40 @@
                     </td>
                     <td
                       class="border-t-0 px-6 align-middle
-                      border-l-0 border-r-0 text-xs whitespace-break-spaces p-4"
+                      border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-16"
                     >
-                      [{timings.sourceStamp?.split('/').slice(-1) ?? timings.id}]
+                      <div class="text-lg">
+                        [{timings.sourceStamp?.split('/').slice(-1) ?? timings.id}]
+                      </div>
                       {#each Object.keys(timings.tags ?? {}).sort() ??
                         [] as tagSlug}
                         {@const tag = timings.tags[tagSlug]}
                         <span
                           class="inline-flex
-                        text-base font-medium p-1 text-center
+                          text-xs font-medium p-1 text-center
                         border border-blue-800"
                         >
                           {tag.label} {
-                            tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €]` : ''
+                            tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
                           }
                         </span>
                       {/each}
                     </td>
                     <td
                       class="border-t-0 px-6 align-middle
-                      border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                      border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
                       {(10/60).toFixed(2)} hr
                     </td>
                     <td
                       class="border-t-0 px-6 align-middle
-                      border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                      border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
                       {timings.maxPricePerHr?.toFixed(2)} €
                     </td>
                     <td
                       class="border-t-0 px-6 align-middle
-                      border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+                      border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
                       {((timings.maxPricePerHr ?? 0) * (10/60)).toFixed(2)} €
                     </td>
