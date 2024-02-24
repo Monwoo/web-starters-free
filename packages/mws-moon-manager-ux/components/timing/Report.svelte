@@ -225,6 +225,16 @@
     url: "file://" + timingSlot.sourceStamp,
   });
 
+  // Number.prototype.toPrettyNum = (length: number) => {
+  Number.prototype.toPrettyNum = function (this : Number, length: number) {
+    var s = this;
+    return s.toFixed(length).replace('.', ',')
+    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  declare interface Number {
+    toPrettyNum(length : number) : string;
+  }
 </script>
 
 
@@ -295,9 +305,13 @@
 
   <!-- {JSON.stringify(timings)} -->
   <div>{@html timingsPaginator}</div>
-  <div>Rapport des temps via segmentations de 10 minutes.</div>
-  <div>{summaryTotals.sumOfBookedHrs.toFixed(2)} hours au total.</div>
-  <div>{summaryTotals.sumOfMaxPPH.toFixed(2)} € en tout.</div>
+  <br/>
+  <div class="text-lg">Rapport des temps via segmentations de 10 minutes.</div>
+  <br/>
+  <div class="text-lg font-extrabold">{summaryTotals.sumOfBookedHrs.toPrettyNum(2)} hours au total.</div>
+  <div class="text-lg font-extrabold">{summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € en tout.</div>
+  <br/>
+  <br/>
 
   <div class="block w-full overflow-x-auto ">
     <table class="items-center w-full bg-transparent border-collapse">
@@ -370,7 +384,7 @@
                  border border-blue-800"
                 >
                   {tag.label} {
-                    tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
+                    tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
                   }
                 </span>
               {/each}
@@ -379,19 +393,19 @@
               class="border-t-0 px-6 align-middle
               border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
-              {summaryByYears[year].sumOfBookedHrs.toFixed(2)} hr
+              {summaryByYears[year].sumOfBookedHrs.toPrettyNum(2)} hr
             </td>
             <td
               class="border-t-0 px-6 align-middle
               border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
-              {summaryByYears[year].maxPPH.toFixed(2)} €
+              {summaryByYears[year].maxPPH.toPrettyNum(2)} €
             </td>
             <td
               class="border-t-0 px-6 align-middle
               border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
             >
-              {summaryByYears[year].sumOfMaxPPH.toFixed(2)} €
+              {summaryByYears[year].sumOfMaxPPH.toPrettyNum(2)} €
             </td>
           </tr>
           {#each Object.keys(summaryByYears[year].months).sort() ?? [] as month}
@@ -419,7 +433,7 @@
                   border border-blue-800"
                   >
                     {tag.label} {
-                      tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
+                      tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
                     }
                   </span>
                 {/each}
@@ -428,19 +442,19 @@
                 class="border-t-0 px-6 align-middle
                 border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
-                {monthSummary.sumOfBookedHrs.toFixed(2)} hr
+                {monthSummary.sumOfBookedHrs.toPrettyNum(2)} hr
               </td>
               <td
                 class="border-t-0 px-6 align-middle
                 border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
-                {monthSummary.maxPPH.toFixed(2)} €
+                {monthSummary.maxPPH.toPrettyNum(2)} €
               </td>
               <td
                 class="border-t-0 px-6 align-middle
                 border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
               >
-                {monthSummary.sumOfMaxPPH.toFixed(2)} €
+                {monthSummary.sumOfMaxPPH.toPrettyNum(2)} €
               </td>
             </tr>
 
@@ -469,7 +483,7 @@
                     border border-blue-800"
                     >
                       {tag.label} {
-                        tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
+                        tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
                       }
                     </span>
                   {/each}
@@ -478,19 +492,19 @@
                   class="border-t-0 px-6 align-middle
                   border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
-                  {daySummary.sumOfBookedHrs?.toFixed(2)} hr
+                  {daySummary.sumOfBookedHrs?.toPrettyNum(2)} hr
                 </td>
                 <td
                   class="border-t-0 px-6 align-middle
                   border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
-                  {daySummary.maxPPH?.toFixed(2)} €
+                  {daySummary.maxPPH?.toPrettyNum(2)} €
                 </td>
                 <td
                   class="border-t-0 px-6 align-middle
                   border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                 >
-                  {daySummary.sumOfMaxPPH?.toFixed(2)} €
+                  {daySummary.sumOfMaxPPH?.toPrettyNum(2)} €
                 </td>
               </tr>
 
@@ -536,7 +550,7 @@
                         border border-blue-800"
                         >
                           {tag.label} {
-                            tag.pricePerHr ? `[${tag.pricePerHr.toFixed(2)} €/hr]` : ''
+                            tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
                           }
                         </span>
                       {/each}
@@ -545,19 +559,19 @@
                       class="border-t-0 px-6 align-middle
                       border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
-                      {(10/60).toFixed(2)} hr
+                      {(10/60).toPrettyNum(2)} hr
                     </td>
                     <td
                       class="border-t-0 px-6 align-middle
                       border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
-                      {timings.maxPricePerHr?.toFixed(2)} €
+                      {timings.maxPricePerHr?.toPrettyNum(2)} €
                     </td>
                     <td
                       class="border-t-0 px-6 align-middle
                       border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
                     >
-                      {((timings.maxPricePerHr ?? 0) * (10/60)).toFixed(2)} €
+                      {((timings.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)} €
                     </td>
                   </tr>
                 {/each}
