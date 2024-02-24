@@ -209,6 +209,11 @@ class MwsTimingController extends AbstractController
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
+                // TODO : createForm 
+                // $form = $formFactory->createNamed('custom_form_name', CustomType::class);
+                // or : https://stackoverflow.com/questions/37005899/symfony3-is-it-possible-to-change-the-name-of-a-form
+                // add public function getBlockPrefix() in form type....
+                "MwsTimingLookupType" => true,
                 "searchKeyword" => $keyword,
                 "searchTags" => $searchTags,
                 "searchTagsToAvoid" => $searchTagsToAvoid,
@@ -233,33 +238,48 @@ class MwsTimingController extends AbstractController
 
             if ($filterForm->isValid()) {
                 $this->logger->debug("Search form ok");
+
+                // dd($filterForm->get('surveyJsModel'));
                 // dd($filterForm);
                 $surveyAnswers = json_decode(
                     urldecode($filterForm->get('jsonResult')->getData()),
                     true
                 );
-                $keyword = $surveyAnswers['searchKeyword'] ?? null;
-                $searchTags = $surveyAnswers['searchTags'] ?? [];
-                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
-                // dd($searchTags);
-                return $this->redirectToRoute(
-                    'mws_timings_report',
-                    array_merge($request->query->all(), [
-                        "viewTemplate" => $viewTemplate,
-                        "keyword" => $keyword,
-                        "tags" => $searchTags,
-                        "tagsToAvoid" => $searchTagsToAvoid,
-                        "page" => 1,
-                    ]),
-                    Response::HTTP_SEE_OTHER
-                );
+                if ($surveyAnswers['MwsTimingLookupType'] ?? false) {
+                    $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                    $searchTags = $surveyAnswers['searchTags'] ?? [];
+                    $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
+                    // dd($searchTags);
+                    return $this->redirectToRoute(
+                        'mws_timings_report',
+                        array_merge($request->query->all(), [
+                            "viewTemplate" => $viewTemplate,
+                            "keyword" => $keyword,
+                            "tags" => $searchTags,
+                            "tagsToAvoid" => $searchTagsToAvoid,
+                            "page" => 1,
+                        ]),
+                        Response::HTTP_SEE_OTHER
+                    );
+                }
             }
         }
+
+        $reportTagsLvl1 = $requestData['lvl1Tags'] ?? []; // []);
+        $reportTagsLvl2 = $requestData['lvl2Tags'] ?? []; // []);
+        $reportTagsLvl3 = $requestData['lvl3Tags'] ?? []; // []);
+        $reportTagsLvl4 = $requestData['lvl4Tags'] ?? []; // []);
+        $reportTagsLvl5 = $requestData['lvl5Tags'] ?? []; // []);
 
         $lastReport = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
-                "searchKeyword" => $keyword,
+                "MwsTimingReportType" => true,
+                "lvl1Tags" => $reportTagsLvl1,
+                "lvl2Tags" => $reportTagsLvl2,
+                "lvl3Tags" => $reportTagsLvl3,
+                "lvl4Tags" => $reportTagsLvl4,
+                "lvl5Tags" => $reportTagsLvl5,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsTimingReportType.json.twig",
@@ -286,21 +306,27 @@ class MwsTimingController extends AbstractController
                     urldecode($reportForm->get('jsonResult')->getData()),
                     true
                 );
-                $keyword = $surveyAnswers['searchKeyword'] ?? null;
-                $searchTags = $surveyAnswers['searchTags'] ?? [];
-                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
-                // dd($searchTags);
-                return $this->redirectToRoute(
-                    'mws_timings_report',
-                    array_merge($request->query->all(), [
-                        "viewTemplate" => $viewTemplate,
-                        "keyword" => $keyword,
-                        "tags" => $searchTags,
-                        "tagsToAvoid" => $searchTagsToAvoid,
-                        "page" => 1,
-                    ]),
-                    Response::HTTP_SEE_OTHER
-                );
+                if ($surveyAnswers['MwsTimingReportType'] ?? false) {
+                    $reportTagsLvl1 = $surveyAnswers['lvl1Tags'] ?? [];
+                    $reportTagsLvl2 = $surveyAnswers['lvl2Tags'] ?? [];
+                    $reportTagsLvl3 = $surveyAnswers['lvl3Tags'] ?? [];
+                    $reportTagsLvl4 = $surveyAnswers['lvl4Tags'] ?? [];
+                    $reportTagsLvl5 = $surveyAnswers['lvl5Tags'] ?? [];
+                    dd($reportTagsLvl1);
+                    return $this->redirectToRoute(
+                        'mws_timings_report',
+                        array_merge($request->query->all(), [
+                            "viewTemplate" => $viewTemplate,
+                            "page" => 1,
+                            "lvl1Tags" => $reportTagsLvl1,
+                            "lvl2Tags" => $reportTagsLvl2,
+                            "lvl3Tags" => $reportTagsLvl3,
+                            "lvl4Tags" => $reportTagsLvl4,
+                            "lvl5Tags" => $reportTagsLvl5,        
+                        ]),
+                        Response::HTTP_SEE_OTHER
+                    );
+                }
             }
         }
 
@@ -414,6 +440,13 @@ class MwsTimingController extends AbstractController
             // 'timings' => $timingsPage,
             'timingTags' => $timingTags,
             'lookupForm' => $filterForm,
+            'report' => [
+                "lvl1Tags" => $reportTagsLvl1,
+                "lvl2Tags" => $reportTagsLvl2,
+                "lvl3Tags" => $reportTagsLvl3,
+                "lvl4Tags" => $reportTagsLvl4,
+                "lvl5Tags" => $reportTagsLvl5,
+            ],
             'reportForm' => $reportForm,
             'viewTemplate' => $viewTemplate,
         ]);

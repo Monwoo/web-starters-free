@@ -155,6 +155,9 @@
     });
   });
 
+  const jsonReport = JSON.parse(decodeURIComponent(report.jsonResult));
+  console.debug("Report : ", jsonReport);
+
   let summaryByYears = {};
 
   Object.keys(summaryByDays).forEach((tDay) => {
