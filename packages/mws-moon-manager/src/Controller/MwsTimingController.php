@@ -312,7 +312,7 @@ class MwsTimingController extends AbstractController
                     $reportTagsLvl3 = $surveyAnswers['lvl3Tags'] ?? [];
                     $reportTagsLvl4 = $surveyAnswers['lvl4Tags'] ?? [];
                     $reportTagsLvl5 = $surveyAnswers['lvl5Tags'] ?? [];
-                    dd($reportTagsLvl1);
+                    // dd($reportTagsLvl1);
                     return $this->redirectToRoute(
                         'mws_timings_report',
                         array_merge($request->query->all(), [

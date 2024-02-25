@@ -31,10 +31,23 @@
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
 
+  const ensurePath = (obj, path, val = {}) => {
+    path.forEach(key => {
+        if (! (key in obj)) {
+            obj[key] = val;
+        }
+        obj = obj[key];
+    });
+  }
+
   const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
 
   console.debug("Report having timingsReport", timingsReport);
   // console.debug('Report having timings', timings);
+
+  const jsonReport = JSON.parse(decodeURIComponent(report.jsonResult));
+  console.debug("Report : ", jsonReport);
+
   const timingsByIds = {};
 
   timingsReport.forEach((tSum) => {
@@ -104,6 +117,11 @@
     // }
   });
 
+  let summaryByLevels = {
+    sumOfBookedHrs: 0,
+    sumOfMaxPPH: 0,
+    levels: []
+  };
   let summaryByDays = {};
   let summaryTotals = {
     sumOfBookedHrs: 0,
@@ -114,6 +132,51 @@
 
     ids.forEach((tId) => {
       const t = timingsByIds[tId];
+      const delta = 10 / 60.0;
+      const deltaOfMaxPPH = delta * (t.maxPricePerHr ?? 0);
+
+      // summaryByLevels
+      let usedByReport = false;
+      jsonReport.lvl1Tags.forEach((tag, idx) => {
+        if (tag in t.tags) {
+          ensurePath(summaryByLevels, ["levels", 1], []);
+          ensurePath(summaryByLevels, ["levels", 1, idx], {});
+          ensurePath(summaryByLevels, ["levels", 1, idx, "bookedTimeSlot"], []);
+          ensurePath(summaryByLevels, ["levels", 1, idx, "maxPPH"], 0);
+          ensurePath(summaryByLevels, ["levels", 1, idx, "sumOfBookedHrs"], 0);
+          ensurePath(summaryByLevels, ["levels", 1, idx, "sumOfMaxPPH"], 0);
+          ensurePath(summaryByLevels, ["levels", 1, idx, "tags"], {});
+          // TODO : reduce by time point + sub levels.
+          summaryByLevels.levels[1][idx].sumOfBookedHrs += delta;
+          // TODO : wrong max, only max of fist booked slot :
+          summaryByLevels.levels[1][idx].sumOfMaxPPH += deltaOfMaxPPH;
+          summaryByLevels.levels[1][idx].sumOfBookedHrs += delta;
+          summaryByLevels.levels[1][idx].sumOfMaxPPH += deltaOfMaxPPH;
+
+          summaryByLevels.levels[1][idx].ids = [
+            ...(summaryByLevels.levels[1][idx].ids ?? []),
+            ...[ t.id ],
+          ];
+          summaryByLevels.levels[1][idx].tags = {
+            ...(summaryByLevels.levels[1][idx].tags ?? {}),
+            ...(t.tags ?? {}),
+          };
+          summaryByLevels.levels[1][idx].maxPPH = Math.max(
+            summaryByLevels.levels[1][idx]?.maxPPH ?? 0,
+            (t.maxPricePerHr ?? 0)
+          );
+          summaryByLevels.levels[1][idx].bookedTimeSlot[t.rangeDayIdxBy10Min] =
+            true;
+
+          usedByReport = true;
+        }        
+      });
+
+      if (usedByReport) {
+        // do not summary in days or total report if already in configured report.
+        return;
+      }
+
       if (!(summaryByDays[tReport.sourceDate] ?? null)) {
         summaryByDays[tReport.sourceDate] = {
           bookedTimeSlot: {},
@@ -130,8 +193,6 @@
           ] ?? null
         )
       ) {
-        const delta = 10 / 60.0;
-        const deltaOfMaxPPH = delta * (t.maxPricePerHr ?? 0);
         summaryByDays[tReport.sourceDate].sumOfBookedHrs += delta;
         // TODO : wrong max, only max of fist booked slot :
         summaryByDays[tReport.sourceDate].sumOfMaxPPH += deltaOfMaxPPH;
@@ -155,9 +216,6 @@
     });
   });
 
-  const jsonReport = JSON.parse(decodeURIComponent(report.jsonResult));
-  console.debug("Report : ", jsonReport);
-
   let summaryByYears = {};
 
   Object.keys(summaryByDays).forEach((tDay) => {
@@ -165,6 +223,11 @@
     const tMonth = tDate.format("MM");
     const tYear = tDate.format("YYYY");
     const summary = summaryByDays[tDay];
+    // // TIPS : scan lvl + add + should filter detail tags....
+    // //        might be better to scan at previous data transform ?
+    // //        => summaryByDays will keep not matched time slots in summaryByLevels
+    // if (!(summaryByLevels[lvlTag] ?? null)) {
+    // }
     if (!(summaryByYears[tYear] ?? null)) {
       summaryByYears[tYear] = {
         bookedTimeSlot: {},
@@ -221,10 +284,11 @@
   });
 
   console.log(
-    "timingsByIds :",
+    "timingsByIds[0] :",
     timingsByIds[Object.keys(timingsByIds)[0]] ?? null
   );
-  console.log("timingsByIds :", summaryByDays);
+  console.log("summaryByYears :", summaryByYears);
+  console.log("summaryByLevels :", summaryByLevels);
 
   const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
     // encodeURI('file://' + timingSlot.source.path)
@@ -286,7 +350,7 @@
       <button
       data-collapse-toggle="config-report"
       type="button"
-      class="rounded-lg "
+      class="rounded-lg ml-3"
       aria-controls="config-report"
       aria-expanded="false"
     >
