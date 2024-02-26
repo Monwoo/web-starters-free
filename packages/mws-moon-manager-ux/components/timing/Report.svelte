@@ -13,6 +13,7 @@
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
+import ReportSummaryRows from "./ReportSummaryRows.svelte";
   export let locale;
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let lookup;
@@ -395,6 +396,8 @@
   <div class="text-lg font-extrabold">{summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € en tout.</div>
   <br/>
   <br/>
+
+<ReportSummaryRows></ReportSummaryRows>
 
   <div class="block w-full overflow-x-auto ">
     <table class="items-center w-full bg-transparent border-collapse">
