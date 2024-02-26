@@ -11,7 +11,7 @@
 
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-import Routing from "fos-router";
+  import Routing from "fos-router";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
 import ReportSummaryRows from "./ReportSummaryRows.svelte";
   export let locale;
@@ -397,6 +397,8 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
   <br/>
   <br/>
 
+<ReportSummaryRows></ReportSummaryRows>
+
   <div class="block w-full overflow-x-auto ">
     <table class="items-center w-full bg-transparent border-collapse">
       <thead class="sticky">
@@ -444,11 +446,6 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
         </tr>
       </thead>
       <tbody>
-        {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
-          <ReportSummaryRows summary={summaryByYears[year]} label={year} subLevelKeys={
-            Object.keys(summaryByYears[year].months).sort() ?? []
-          }></ReportSummaryRows>
-        {/each}
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
           <tr class="bg-gray-400 font-extrabold">
             <td
