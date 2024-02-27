@@ -33,46 +33,70 @@
     toPrettyNum(length : number) : string;
   }
 
-  const haveSubPath = (subKey) => {
-    return (summary.months ?? [])[subKey] ?? summary.days[subKey] ?? false;
+  const haveSubPath = (subKey, showDetails) => {
+    const exist = (summary.months ?? [])[subKey]
+    ?? (summary.days ?? [])[subKey]
+    // TIPS : inefficient to search in un-sorted array ? remove and directly search in timingsByIds ?
+    // ?? (showDetails && (summary.ids ?? []).includes(subKey))
+    ?? (showDetails && (summary.ids ?? false) && (timingsByIds[subKey] ?? false))
+    ?? false;
+    // console.debug('subKey', subKey, ' have path ', !!exist);
+    return !!exist;
   };
-  const getSubSummary = (subKey) => {
+  const getSubSummary = (subKey, showDetails) => {
+    // TIPS : showDetails not used, but NEEDED for Svelte reactiveness
+    //         to recompute function result on param change only...
     // console.debug('stub lbl',summary.days[subKey]);
     // return (summary.months ?? [])[subKey] ?? summary.days[subKey];
 
     if ((summary.days ?? [])[subKey]??false) {
       // { @ const daySummary = summaryByDays[day]}
-      console.debug('day summary', subKey, summaryByDays[subKey]);
+      // console.debug('day summary', subKey, summaryByDays[subKey]);
       return summaryByDays[subKey];
     }
     // { @ const timings = timingsByIds[tId]}
+    // TIPS : inefficient to search in un-sorted array ? remove and directly search in timingsByIds ?
+    // if ((summary.ids ?? []).includes(subKey)) {
+    if ((timingsByIds[subKey] ?? false)) {
+      return timingsByIds[subKey];
+    }
     return (summary.months ?? [])[subKey] ?? null;
   };
-  const getSubLabel = (subKey) => {
-    if ((summary.days ?? [])[subKey]??false) {
+  const getSubLabel = (subKey, showDetails) => {
+    if ((summary.days ?? {})[subKey]??false) {
       return `${subKey}`;
+    }
+    // TIPS : inefficient to search in un-sorted array ? remove and directly search in timingsByIds ?
+    // if ((summary.ids ?? []).includes(subKey)) {
+    if ((timingsByIds[subKey] ?? false)) {
+      return timingsByIds[subKey]
+      .sourceStamp?.split('/').slice(-1) ?? subKey;
     }
     return `${label}-${subKey}`;
   };
-  const getSubKeys = (subKey) => {
-    if ((summary.months ?? [])[subKey]?.days) {
-      return Object.keys(summary.months[subKey].days).sort();
+  const getSubLvlKeys = (subKey, showDetails) => {
+    let subLvlKeys = [];
+    if ((summary.months ?? [])[subKey]?.days ?? false) {
+      subLvlKeys = Object.keys(summary.months[subKey].days).sort();
+    } else if (
+      (summary.days ?? {})[subKey] ?? false
+    ) {
+      subLvlKeys = summaryByDays[subKey]?.ids; //.slice(0,0);
     }
-    if (summary.days[subKey]?.ids) {
-      return summary.days[subKey]?.ids?.slice(0,0);
-    }
-    return [];
+    // console.debug('subKey', subKey, ' have sub keys ', subLvlKeys);
+    return subLvlKeys;
   };
-  const getSubRowClass = (subKey) => {
-    if ((summary.months ?? [])[subKey]?.days) {
+  const getSubRowClass = (subKey, showDetails) => {
+    if ((summary.months ?? [])[subKey]?? false) {
       return "bg-gray-200 font-bold";
     }
-    if (summary.days[subKey]?.ids) {
+    if ((summary.days ?? [])[subKey]??false) {
       return "";
     }
-    return "";
+    return "text-gray-600";
   };
   
+  const tagSlugs = Object.keys(summary.tags ?? {}).sort();
 </script>
 
 <tr class="{rowClass}">
@@ -85,14 +109,22 @@
         slots={summary.bookedTimeSlot}
       />
     {/if}
+    {summary.rangeDayIdxBy10Min ?? ''}
+    {#if showPictures && summary.sourceStamp }
+      <img
+        class="object-contain border-solid border-4 max-w-[100px]"
+        class:border-gray-600={!tagSlugs.length}
+        class:border-green-400={tagSlugs.length}
+        src={slotPath(summary)}
+      />
+    {/if}
   </td>
   <td
     class="border-t-0 px-6 text-left
     border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-{indent}"
   >
     <div class="text-lg">[{label}]</div>
-    {#each Object.keys(summary.tags ?? {}).sort() ??
-      [] as tagSlug}
+    {#each tagSlugs as tagSlug}
       {@const tag = summary.tags[tagSlug]}
       <span
         class="inline-flex
@@ -109,31 +141,38 @@
     class="border-t-0 px-6 text-right
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    {summary.sumOfBookedHrs?.toPrettyNum(2) ?? '-'} hr
+    {(summary.sumOfBookedHrs ?? null) === null
+    ? (10/60).toPrettyNum(2)
+    : (summary.sumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr
   </td>
   <td
     class="border-t-0 px-6 text-right
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    {summary.maxPPH?.toPrettyNum(2) ?? '-'} €
+    {(summary.maxPPH ?? null) === null
+    ? summary.maxPricePerHr?.toPrettyNum(2) ?? '-'
+    : (summary.maxPPH?.toPrettyNum(2) ?? '-')} €
   </td>
   <td
     class="border-t-0 px-6 text-right
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    {summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-'} €
+    {(summary.sumOfMaxPPH ?? null) === null
+    ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
+    : (summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-')} €
   </td>
 </tr>
 
 {#if subLevelKeys.length}
   {#each subLevelKeys as subKey}
-    {#if haveSubPath(subKey)}
+    {#if haveSubPath(subKey, showDetails)}
       <ReportSummaryRows
-      label={getSubLabel(subKey)}
-      summary={getSubSummary(subKey)}
-      subLevelKeys={getSubKeys(subKey)}
-      rowClass={getSubRowClass(subKey)}
+      label={getSubLabel(subKey, showDetails)}
+      summary={getSubSummary(subKey, showDetails)}
+      subLevelKeys={getSubLvlKeys(subKey, showDetails)}
+      rowClass={getSubRowClass(subKey, showDetails)}
       indent={indent + 4}
+      {showDetails} {showPictures}
       {summaryByDays} {timingsByIds}>
       </ReportSummaryRows>   
     {/if}
