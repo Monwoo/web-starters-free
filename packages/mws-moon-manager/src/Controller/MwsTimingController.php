@@ -44,7 +44,7 @@ class MwsTimingController extends AbstractController
     ) {
     }
 
-    #[Route('/qualif/{viewTemplate<[^/]*>?}', name: 'mws_timings_qualif')]
+    #[Route('/qualif/view/{viewTemplate<[^/]*>?}', name: 'mws_timings_qualif')]
     public function qualif(
         $viewTemplate,
         MwsTimeSlotRepository $mwsTimeSlotRepository,

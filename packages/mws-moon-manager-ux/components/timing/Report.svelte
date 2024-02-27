@@ -11,9 +11,9 @@
 
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-import Routing from "fos-router";
+  import Routing from "fos-router";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
-import ReportSummaryRows from "./ReportSummaryRows.svelte";
+  import ReportSummaryRows from "./ReportSummaryRows.svelte";
   export let locale;
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let lookup;
@@ -33,13 +33,13 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
   const pageNumber = urlParams.get("page") ?? "1";
 
   const ensurePath = (obj, path, val = {}) => {
-    path.forEach(key => {
-        if (! (key in obj)) {
-            obj[key] = val;
-        }
-        obj = obj[key];
+    path.forEach((key) => {
+      if (!(key in obj)) {
+        obj[key] = val;
+      }
+      obj = obj[key];
     });
-  }
+  };
 
   const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
 
@@ -58,7 +58,7 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
     const allRangeDayIdxBy10Min = tSum.allRangeDayIdxBy10Min.split(",");
     const pricesPerHr = tSum.pricesPerHr?.split(",");
     const sourceStamps = tSum.sourceStamps?.split(",");
-    
+
     console.assert(
       !tagSlugs || tagSlugs.length == ids.length,
       "Wrong DATASET, <> tagSlugs found"
@@ -71,7 +71,7 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
       !pricesPerHr || pricesPerHr.length == ids.length,
       "Wrong DATASET, <> pricesPerHr found"
     );
-    
+
     console.assert(
       !sourceStamps || sourceStamps.length == ids.length,
       "Wrong DATASET, <> sourceStamps found"
@@ -121,7 +121,7 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
   let summaryByLevels = {
     sumOfBookedHrs: 0,
     sumOfMaxPPH: 0,
-    levels: []
+    levels: [],
   };
   let summaryByDays = {};
   let summaryTotals = {
@@ -148,15 +148,14 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
           ensurePath(summaryByLevels, ["levels", 1, idx, "sumOfMaxPPH"], 0);
           ensurePath(summaryByLevels, ["levels", 1, idx, "tags"], {});
           // TODO : reduce by time point + sub levels.
+          summaryByLevels.levels[1][idx].label = tag; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
           summaryByLevels.levels[1][idx].sumOfBookedHrs += delta;
           // TODO : wrong max, only max of fist booked slot :
-          summaryByLevels.levels[1][idx].sumOfMaxPPH += deltaOfMaxPPH;
-          summaryByLevels.levels[1][idx].sumOfBookedHrs += delta;
           summaryByLevels.levels[1][idx].sumOfMaxPPH += deltaOfMaxPPH;
 
           summaryByLevels.levels[1][idx].ids = [
             ...(summaryByLevels.levels[1][idx].ids ?? []),
-            ...[ t.id ],
+            ...[t.id],
           ];
           summaryByLevels.levels[1][idx].tags = {
             ...(summaryByLevels.levels[1][idx].tags ?? {}),
@@ -164,13 +163,13 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
           };
           summaryByLevels.levels[1][idx].maxPPH = Math.max(
             summaryByLevels.levels[1][idx]?.maxPPH ?? 0,
-            (t.maxPricePerHr ?? 0)
+            t.maxPricePerHr ?? 0
           );
           summaryByLevels.levels[1][idx].bookedTimeSlot[t.rangeDayIdxBy10Min] =
             true;
 
           usedByReport = true;
-        }        
+        }
       });
 
       if (usedByReport) {
@@ -202,7 +201,7 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
       }
       summaryByDays[tReport.sourceDate].ids = [
         ...(summaryByDays[tReport.sourceDate].ids ?? []),
-        ...[ t.id ],
+        ...[t.id],
       ];
       summaryByDays[tReport.sourceDate].tags = {
         ...(summaryByDays[tReport.sourceDate].tags ?? {}),
@@ -210,7 +209,7 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
       };
       summaryByDays[tReport.sourceDate].maxPPH = Math.max(
         summaryByDays[tReport.sourceDate]?.maxPPH ?? 0,
-        (t.maxPricePerHr ?? 0)
+        t.maxPricePerHr ?? 0
       );
       summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] =
         true;
@@ -292,112 +291,156 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
   console.debug("summaryByYears :", summaryByYears);
   console.debug("summaryByLevels :", summaryByLevels);
 
-  const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
-    // encodeURI('file://' + timingSlot.source.path)
-    url: "file://" + timingSlot.sourceStamp,
-  });
+  const slotPath = (timingSlot) =>
+    Routing.generate("mws_timing_fetchMediatUrl", {
+      // encodeURI('file://' + timingSlot.source.path)
+      url: "file://" + timingSlot.sourceStamp,
+    });
 
   // Number.prototype.toPrettyNum = (length: number) => {
-  Number.prototype.toPrettyNum = function (this : Number, length: number) {
+  Number.prototype.toPrettyNum = function (this: Number, length: number) {
     var s = this;
-    return s.toFixed(length).replace('.', ',')
-    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return s
+      .toFixed(length)
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
   declare interface Number {
-    toPrettyNum(length : number) : string;
+    toPrettyNum(length: number): string;
   }
+
 </script>
 
-
 <div class="mws-timing-report">
-    <a
-      href={Routing.generate(
-        "mws_timings_qualif",
-        {
-          _locale: locale ?? "",
-        },
-        true
-      )}
-      class=""
-    >
-      <button>
-        Qualification des temps
-      </button>
-    </a>
-  <button on:click={() => showDetails = !showDetails}>
-    { showDetails ? 'Cacher' : 'Show'} les details
+  <a
+    href={Routing.generate(
+      "mws_timings_qualif",
+      {
+        _locale: locale ?? "",
+      },
+      true
+    )}
+    class=""
+  >
+    <button> Qualification des temps </button>
+  </a>
+  <button on:click={() => (showDetails = !showDetails)}>
+    {showDetails ? "Cacher" : "Show"} les details
   </button>
-  {#if showDetails }
-    <button on:click={() => showPictures = !showPictures}>
-      { showPictures ? 'Cacher' : 'Voir'} les screenshots
+  {#if showDetails}
+    <button on:click={() => (showPictures = !showPictures)}>
+      {showPictures ? "Cacher" : "Voir"} les screenshots
     </button>
   {/if}
 
   <div class="p-3 flex flex-wrap">
     <div class="label">
       <button
-      data-collapse-toggle="search-timing-lookup"
-      type="button"
-      class="rounded-lg "
-      aria-controls="search-timing-lookup"
-      aria-expanded="false"
-    >
-      Filtres de recherche
+        data-collapse-toggle="search-timing-lookup"
+        type="button"
+        class="rounded-lg "
+        aria-controls="search-timing-lookup"
+        aria-expanded="false"
+      >
+        Filtres de recherche
+      </button>
     </div>
     <div id="search-timing-lookup" class="detail w-full hidden">
       {@html lookupForm}
     </div>
     <div class="label">
       <button
-      data-collapse-toggle="config-report"
-      type="button"
-      class="rounded-lg ml-3"
-      aria-controls="config-report"
-      aria-expanded="false"
-    >
-      Configuration du rapport
+        data-collapse-toggle="config-report"
+        type="button"
+        class="rounded-lg ml-3"
+        aria-controls="config-report"
+        aria-expanded="false"
+      >
+        Configuration du rapport
+      </button>
     </div>
     <div id="config-report" class="detail w-full hidden">
       {@html reportForm}
     </div>
   </div>
-  {@html jsonLookup.customFilters && jsonLookup.customFilters.length
-    ? '<strong>Filtres actifs : </strong>' +
-      jsonLookup.customFilters.reduce((acc, f) => `
-        ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
-  {@html jsonLookup.searchTags && jsonLookup.searchTags.length
-    ? '<strong>Tags : </strong>' +
-      jsonLookup.searchTags.reduce((acc, f) => `
-        ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
-  {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
-    ? '<strong>Tags à éviter : </strong>' +
-      jsonLookup.searchTagsToAvoid.reduce((acc, f) => `
-        ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
-  {@html jsonLookup.searchKeyword
-    ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
-    : ``
-  }
+  <div>
+    {#each [1, 2, 3, 4, 5] as lvl}
+      {@html (jsonReport[`lvl${lvl}Tags`] ?? false) &&
+      jsonReport[`lvl${lvl}Tags`].length
+        ? `<strong>Tags du rapport de niveau ${lvl} : </strong>` +
+          jsonReport[`lvl${lvl}Tags`].reduce(
+            (acc, f) => `
+            ${acc} [${f}]
+          `,
+            ``
+          ) +
+          "<br/>"
+        : ""}
+    {/each}
+  </div>
+  <div>
+    {@html jsonLookup.customFilters && jsonLookup.customFilters.length
+      ? "<strong>Filtres actifs : </strong>" +
+        jsonLookup.customFilters.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+    {@html jsonLookup.searchTags && jsonLookup.searchTags.length
+      ? "<strong>Tags à rechercher : </strong>" +
+        jsonLookup.searchTags.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+    {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
+      ? "<strong>Tags à éviter : </strong>" +
+        jsonLookup.searchTagsToAvoid.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+    {@html jsonLookup.searchKeyword
+      ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
+      : ``}
+  </div>
 
   <!-- {JSON.stringify(timings)} -->
   <!-- <div>{@html timingsPaginator}</div> // TODO : not used, synth all... -->
-  <div>{Object.keys(timingsByIds).length} points de contrôles sur {Object.keys(summaryByDays).length} jours</div>
-  <br/>
+  <div>
+    {Object.keys(timingsByIds).length} points de contrôles sur {Object.keys(
+      summaryByDays
+    ).length} jours
+  </div>
+  <br />
   <div class="text-lg">Rapport des temps via segmentations de 10 minutes.</div>
-  <br/>
-  <div class="text-lg font-extrabold">{summaryTotals.sumOfBookedHrs.toPrettyNum(2)} hours au total.</div>
-  <div class="text-lg font-extrabold">{summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € en tout.</div>
-  <br/>
-  <br/>
+  <br />
+  <div class="text-lg font-extrabold">
+    {summaryByLevels.sumOfBookedHrs.toPrettyNum(2)} hours au total.
+  </div>
+  <div class="text-lg font-extrabold">
+    {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout.
+  </div>
+  <br />
+  <br />
+  <div class="text-lg font-extrabold">
+    {summaryTotals.sumOfBookedHrs.toPrettyNum(2)} hours annexes.
+  </div>
+  <div class="text-lg font-extrabold">
+    {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes.
+  </div>
+  <br />
+  <br />
 
   <div class="block w-full overflow-x-auto ">
     <table class="items-center w-full bg-transparent border-collapse">
@@ -446,12 +489,36 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
         </tr>
       </thead>
       <tbody>
+        {#each summaryByLevels.levels ?? [] as lvlTags, lvl}
+          {#each lvlTags ?? [] as lvlTagData, tagIdx}
+            <ReportSummaryRows
+              summary={lvlTagData}
+              label={lvlTagData.label}
+              subLevelKeys={lvlTagData.levels ?? []}
+              {showDetails}
+              {showPictures}
+              {summaryByDays}
+              {timingsByIds}
+            />
+          {/each}
+        {/each}
+        <!-- // https://shuffle.dev/tailwind/classes/grid/col-span-1+%25_F+.col-span-* ? -->
+        <tr class="border-2 border-blue-600">
+          <td colspan="100%">
+            <br /><br />
+            Reste à qualifier :
+          </td>
+        </tr>
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
-          <ReportSummaryRows summary={summaryByYears[year]} label={year} subLevelKeys={
-            Object.keys(summaryByYears[year].months).sort() ?? []
-          }
-          {showDetails} {showPictures}
-          {summaryByDays} {timingsByIds}></ReportSummaryRows>
+          <ReportSummaryRows
+            summary={summaryByYears[year]}
+            label={year}
+            subLevelKeys={Object.keys(summaryByYears[year].months).sort() ?? []}
+            {showDetails}
+            {showPictures}
+            {summaryByDays}
+            {timingsByIds}
+          />
         {/each}
       </tbody>
     </table>
