@@ -190,8 +190,6 @@
             )) {
               subTag.bookedTimeSlotWithDate[slotWithDate] = true;
               subTag.deepSumOfBookedHrs += delta;
-              // TODO : wrong max, only max of fist booked slot :
-              subTag.deepSumOfMaxPPH += deltaOfMaxPPH; // TODO : compute on next loop with maxPPH ?
             }
 
             if (!(
@@ -199,8 +197,6 @@
             )) {
               bookedTimeSlotWithDate[slotWithDate] = true;
               subTag.sumOfBookedHrs += delta;
-              // TODO : wrong max, only max of fist booked slot :
-              subTag.sumOfMaxPPH += deltaOfMaxPPH; // TODO : compute on next loop with maxPPH ?
             }
 
             subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
@@ -267,6 +263,24 @@
         true;
     });
   });
+
+  const postprocessLevel = (level, currentSubTags) => {
+    currentSubTags.forEach((subTag) => {
+      const deepDelta = subTag.deepSumOfBookedHrs;
+      // TODO : wrong subTag.maxPPH ? max for all, need per daySlot ?
+      const deepDeltaOfMaxPPH = deepDelta * (subTag.maxPPH ?? 0);
+      subTag.deepSumOfMaxPPH += deepDeltaOfMaxPPH;
+
+      const delta = subTag.sumOfBookedHrs;
+      const deltaOfMaxPPH = delta * (subTag.maxPPH ?? 0);
+      subTag.sumOfMaxPPH += deltaOfMaxPPH;
+      if (level <= 5) {
+        postprocessLevel(level + 1, subTag.subTags);
+      }
+    });
+  };
+
+  postprocessLevel(1, summaryByLevels.subTags);
 
   let summaryByYears = {};
 
