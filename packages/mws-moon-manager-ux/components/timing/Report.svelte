@@ -25,7 +25,6 @@
   export let lookupForm;
   export let report;
   export let reportForm;
-
   export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
@@ -105,6 +104,7 @@
 
       timingsByIds[tId] = {
         id: tId,
+        sourceDate: tSum.sourceDate,
         sourceStamp: sourceStamp,
         rangeDayIdxBy10Min: rangeDayIdxBy10Min,
         maxPricePerHr: maxPPH,
@@ -121,13 +121,14 @@
   let summaryByLevels = {
     sumOfBookedHrs: 0,
     sumOfMaxPPH: 0,
-    levels: [],
+    subTags: [],
   };
   let summaryByDays = {};
   let summaryTotals = {
     sumOfBookedHrs: 0,
     sumOfMaxPPH: 0,
   };
+  const bookedTimeSlotWithDate = {};
   timingsReport.forEach((tReport) => {
     const ids = tReport.ids.split(",");
 
@@ -138,40 +139,91 @@
 
       // summaryByLevels
       let usedByReport = false;
-      jsonReport.lvl1Tags.forEach((tag, idx) => {
-        if (tag in t.tags) {
-          ensurePath(summaryByLevels, ["levels", 1], []);
-          ensurePath(summaryByLevels, ["levels", 1, idx], {});
-          ensurePath(summaryByLevels, ["levels", 1, idx, "bookedTimeSlot"], []);
-          ensurePath(summaryByLevels, ["levels", 1, idx, "maxPPH"], 0);
-          ensurePath(summaryByLevels, ["levels", 1, idx, "sumOfBookedHrs"], 0);
-          ensurePath(summaryByLevels, ["levels", 1, idx, "sumOfMaxPPH"], 0);
-          ensurePath(summaryByLevels, ["levels", 1, idx, "tags"], {});
-          // TODO : reduce by time point + sub levels.
-          summaryByLevels.levels[1][idx].label = tag; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
-          summaryByLevels.levels[1][idx].sumOfBookedHrs += delta;
-          // TODO : wrong max, only max of fist booked slot :
-          summaryByLevels.levels[1][idx].sumOfMaxPPH += deltaOfMaxPPH;
+      /*
+      {
+        subTags: [ // LVL 1
+          {
+            bookedTimeSlot:...,
+            subTags: [ // LVL 2
+              {
+                subTags: [ // LVL 3
+                  ... etc...
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      */
+      // const currentSubTags = summaryByLevels.subTags;
+      // let lvlStack = [];
+      // [1, 2, 3, 4, 5].forEach((level) => {
+      //   lvlStack = lvlStack.concat([]);
+      //   jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
+      //     if (tag in t.tags) {
+      //       ensurePath(currentSubTags, [tagIdx], {});
+      //       const subTag = currentSubTags[tagIdx];
+      const loadLevel = (level, currentSubTags) => {
+        jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
+          if (tag in t.tags) {
+            ensurePath(currentSubTags, [tagIdx], {
+              "deepLvl": level,
+            });
+            const subTag = currentSubTags[tagIdx];
+            ensurePath(subTag, ["bookedTimeSlot"], {});
+            ensurePath(subTag, ["bookedTimeSlotWithDate"], {});
+            ensurePath(subTag, ["maxPPH"], 0);
+            ensurePath(subTag, ["sumOfBookedHrs"], 0);
+            ensurePath(subTag, ["sumOfMaxPPH"], 0);
+            ensurePath(subTag, ["deepSumOfBookedHrs"], 0);
+            ensurePath(subTag, ["deepSumOfMaxPPH"], 0);
+            ensurePath(subTag, ["tags"], {});
 
-          summaryByLevels.levels[1][idx].ids = [
-            ...(summaryByLevels.levels[1][idx].ids ?? []),
-            ...[t.id],
-          ];
-          summaryByLevels.levels[1][idx].tags = {
-            ...(summaryByLevels.levels[1][idx].tags ?? {}),
-            ...(t.tags ?? {}),
-          };
-          summaryByLevels.levels[1][idx].maxPPH = Math.max(
-            summaryByLevels.levels[1][idx]?.maxPPH ?? 0,
-            t.maxPricePerHr ?? 0
-          );
-          summaryByLevels.levels[1][idx].bookedTimeSlot[t.rangeDayIdxBy10Min] =
-            true;
+            ensurePath(subTag, ["subTags"], []);
+            if (level <= 5) {
+              loadLevel(level + 1, subTag.subTags);
+            }
 
-          usedByReport = true;
-        }
-      });
+            const slotWithDate = t.sourceDate + '-' + t.rangeDayIdxBy10Min;
+            if (!(
+              subTag.bookedTimeSlotWithDate[slotWithDate] ?? null
+            )) {
+              subTag.bookedTimeSlotWithDate[slotWithDate] = true;
+              subTag.deepSumOfBookedHrs += delta;
+              // TODO : wrong max, only max of fist booked slot :
+              subTag.deepSumOfMaxPPH += deltaOfMaxPPH; // TODO : compute on next loop with maxPPH ?
+            }
 
+            if (!(
+              bookedTimeSlotWithDate[slotWithDate] ?? null
+            )) {
+              bookedTimeSlotWithDate[slotWithDate] = true;
+              subTag.sumOfBookedHrs += delta;
+              // TODO : wrong max, only max of fist booked slot :
+              subTag.sumOfMaxPPH += deltaOfMaxPPH; // TODO : compute on next loop with maxPPH ?
+            }
+
+            subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+            subTag.ids = [
+              ...(subTag.ids ?? []),
+              ...[t.id],
+            ];
+            subTag.tags = {
+              ...(subTag.tags ?? {}),
+              ...(t.tags ?? {}),
+            };
+            subTag.maxPPH = Math.max(
+              subTag?.maxPPH ?? 0,
+              t.maxPricePerHr ?? 0
+            );
+            subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] =
+              true;
+
+            usedByReport = true;
+          }
+        });
+      };
+      loadLevel(1, summaryByLevels.subTags);
       if (usedByReport) {
         // do not summary in days or total report if already in configured report.
         return;
@@ -489,26 +541,29 @@
         </tr>
       </thead>
       <tbody>
-        {#each summaryByLevels.levels ?? [] as lvlTags, lvl}
-          {#each lvlTags ?? [] as lvlTagData, tagIdx}
+        {#each summaryByLevels.subTags ?? [] as subTag, tagIdx}
+          {#if subTag ?? false}
             <ReportSummaryRows
-              summary={lvlTagData}
-              label={lvlTagData.label}
-              subLevelKeys={lvlTagData.levels ?? []}
+              summary={subTag}
+              label={subTag.label}
+              subLevelKeys={Array.from(subTag.subTags?.keys() ?? [])}
+              rowClass="bg-gray-300 font-bold"
               {showDetails}
               {showPictures}
               {summaryByDays}
               {timingsByIds}
             />
-          {/each}
+          {/if}
         {/each}
-        <!-- // https://shuffle.dev/tailwind/classes/grid/col-span-1+%25_F+.col-span-* ? -->
-        <tr class="border-2 border-blue-600">
-          <td colspan="100%">
-            <br /><br />
-            Reste à qualifier :
-          </td>
-        </tr>
+        {#if Object.keys(summaryByYears).length}
+          <!-- // https://shuffle.dev/tailwind/classes/grid/col-span-1+%25_F+.col-span-* ? -->
+          <tr class="border-2 border-blue-600">
+            <td colspan="100%">
+              <br /><br />
+              Reste à qualifier :
+            </td>
+          </tr>
+        {/if}
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
           <ReportSummaryRows
             summary={summaryByYears[year]}

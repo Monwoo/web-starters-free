@@ -17,6 +17,8 @@
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
 
+  console.debug('subLevelKeys', subLevelKeys);
+
   const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
     // encodeURI('file://' + timingSlot.source.path)
     url: "file://" + timingSlot.sourceStamp,
@@ -34,8 +36,9 @@
   }
 
   const haveSubPath = (subKey, showDetails) => {
-    const exist = (summary.months ?? [])[subKey]
-    ?? (summary.days ?? [])[subKey]
+    const exist = (summary.subTags ?? {})[subKey]
+    ?? (summary.months ?? {})[subKey]
+    ?? (summary.days ?? {})[subKey]
     // TIPS : inefficient to search in un-sorted array ? remove and directly search in timingsByIds ?
     // ?? (showDetails && (summary.ids ?? []).includes(subKey))
     ?? (showDetails && (summary.ids ?? false) && (timingsByIds[subKey] ?? false))
@@ -48,8 +51,11 @@
     //         to recompute function result on param change only...
     // console.debug('stub lbl',summary.days[subKey]);
     // return (summary.months ?? [])[subKey] ?? summary.days[subKey];
+    if ((summary.subTags ?? {})[subKey]??false) {
+      return summary.subTags[subKey];
+    }
 
-    if ((summary.days ?? [])[subKey]??false) {
+    if ((summary.days ?? {})[subKey]??false) {
       // { @ const daySummary = summaryByDays[day]}
       // console.debug('day summary', subKey, summaryByDays[subKey]);
       return summaryByDays[subKey];
@@ -63,6 +69,10 @@
     return (summary.months ?? [])[subKey] ?? null;
   };
   const getSubLabel = (subKey, showDetails) => {
+    if ((summary.subTags ?? {})[subKey]??false) {
+      return summary.subTags[subKey].label ?? subKey;
+    }
+
     if ((summary.days ?? {})[subKey]??false) {
       return `${subKey}`;
     }
@@ -76,6 +86,9 @@
   };
   const getSubLvlKeys = (subKey, showDetails) => {
     let subLvlKeys = [];
+    if ((summary.subTags ?? {})[subKey]?.subTags ?? false) {
+      return Array.from(summary.subTags[subKey].subTags.keys());
+    }
     if ((summary.months ?? [])[subKey]?.days ?? false) {
       subLvlKeys = Object.keys(summary.months[subKey].days).sort();
     } else if (
@@ -87,10 +100,25 @@
     return subLvlKeys;
   };
   const getSubRowClass = (subKey, showDetails) => {
-    if ((summary.months ?? [])[subKey]?? false) {
+    if ((summary.subTags ?? {})[subKey] ?? false) {
+      if (summary.subTags[subKey].deepLvl == 1) {
+        return "bg-gray-300 font-bold";
+      }
+      if (summary.subTags[subKey].deepLvl == 2) {
+        return "bg-gray-100 font-bold";
+      }
+      if (summary.subTags[subKey].deepLvl == 3) {
+        return "bg-gray-100 font-bold";
+      }
+      if (summary.subTags[subKey].deepLvl == 4) {
+        return "bg-gray-100 font-bold";
+      }
+      return "bg-gray-100 font-bold";
+    }
+    if ((summary.months ?? {})[subKey]?? false) {
       return "bg-gray-200 font-bold";
     }
-    if ((summary.days ?? [])[subKey]??false) {
+    if ((summary.days ?? {})[subKey]??false) {
       return "";
     }
     return "text-gray-600";
@@ -144,6 +172,13 @@
     {(summary.sumOfBookedHrs ?? null) === null
     ? (10/60).toPrettyNum(2)
     : (summary.sumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr
+
+    {#if summary.deepSumOfBookedHrs !== null}
+      <br />
+      <span class="text-gray-400">
+        {summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-'} hr
+      </span>
+    {/if}
   </td>
   <td
     class="border-t-0 px-6 text-right
@@ -160,6 +195,12 @@
     {(summary.sumOfMaxPPH ?? null) === null
     ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
     : (summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-')} €
+    {#if summary.deepSumOfMaxPPH !== null}
+      <br />
+      <span class="text-gray-400">
+        {summary.deepSumOfMaxPPH?.toPrettyNum(2) ?? '-'} €
+      </span>
+    {/if}
   </td>
 </tr>
 
