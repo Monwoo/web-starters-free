@@ -284,12 +284,13 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
     summaryByYears[tYear].months[tMonth].days[tDay] = true; //summary;
   });
 
-  console.log(
+  console.debug(
     "timingsByIds[0] :",
     timingsByIds[Object.keys(timingsByIds)[0]] ?? null
   );
-  console.log("summaryByYears :", summaryByYears);
-  console.log("summaryByLevels :", summaryByLevels);
+  console.debug("summaryByDays :", summaryByDays);
+  console.debug("summaryByYears :", summaryByYears);
+  console.debug("summaryByLevels :", summaryByLevels);
 
   const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
     // encodeURI('file://' + timingSlot.source.path)
@@ -447,8 +448,9 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
           <ReportSummaryRows summary={summaryByYears[year]} label={year} subLevelKeys={
             Object.keys(summaryByYears[year].months).sort() ?? []
-          }></ReportSummaryRows>
+          } {summaryByDays} {timingsByIds}></ReportSummaryRows>
         {/each}
+
         {#each Object.keys(summaryByYears).sort() ?? [] as year, idx}
           <tr class="bg-gray-400 font-extrabold">
             <td

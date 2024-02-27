@@ -8,8 +8,14 @@
   export let indent = 4;
   export let label = "";
   export let summary = {};
+  export let summaryByDays = {};
+  export let timingsByIds = {};
+
   export let subLevelKeys = [];
-  export let haveChild = true;
+  // CF .legacy files, for details and pictures loadings, but not efficient, rethink, expand/collapse with lazy loads ?
+  export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
+  export let showPictures = false;
+  export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
 
   const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
     // encodeURI('file://' + timingSlot.source.path)
@@ -31,7 +37,16 @@
     return (summary.months ?? [])[subKey] ?? summary.days[subKey] ?? false;
   };
   const getSubSummary = (subKey) => {
-    return (summary.months ?? [])[subKey] ?? summary.days[subKey];
+    // console.debug('stub lbl',summary.days[subKey]);
+    // return (summary.months ?? [])[subKey] ?? summary.days[subKey];
+
+    if ((summary.days ?? [])[subKey]??false) {
+      // { @ const daySummary = summaryByDays[day]}
+      console.debug('day summary', subKey, summaryByDays[subKey]);
+      return summaryByDays[subKey];
+    }
+    // { @ const timings = timingsByIds[tId]}
+    return (summary.months ?? [])[subKey] ?? null;
   };
   const getSubLabel = (subKey) => {
     if ((summary.days ?? [])[subKey]??false) {
@@ -118,7 +133,8 @@
       summary={getSubSummary(subKey)}
       subLevelKeys={getSubKeys(subKey)}
       rowClass={getSubRowClass(subKey)}
-      indent={indent + 4}>
+      indent={indent + 4}
+      {summaryByDays} {timingsByIds}>
       </ReportSummaryRows>   
     {/if}
   {/each}
