@@ -389,7 +389,8 @@ import ReportSummaryRows from "./ReportSummaryRows.svelte";
   }
 
   <!-- {JSON.stringify(timings)} -->
-  <div>{@html timingsPaginator}</div>
+  <!-- <div>{@html timingsPaginator}</div> // TODO : not used, synth all... -->
+  <div>{Object.keys(timingsByIds).length} points de contrôles sur {Object.keys(summaryByDays).length} jours</div>
   <br/>
   <div class="text-lg">Rapport des temps via segmentations de 10 minutes.</div>
   <br/>
