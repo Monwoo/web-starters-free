@@ -164,16 +164,28 @@
       //       ensurePath(currentSubTags, [tagIdx], {});
       //       const subTag = currentSubTags[tagIdx];
       const loadLevel = (level, currentSubTags) => {
+        // console.debug("Load lvl",level, jsonReport);
+        const notClassifiedIdx = jsonReport[`lvl${level}Tags`]?.length ?? 0;
         let subLevelOk = !jsonReport[`lvl${level}Tags`].length;
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
           if (tag in t.tags) {
             ensurePath(currentSubTags, [tagIdx], {
               deepLvl: level,
             });
-            const subTag = currentSubTags[tagIdx];
+            let subTag = currentSubTags[tagIdx];
             if (level <= 5) {
               ensurePath(subTag, ["subTags"], []);
               subLevelOk = loadLevel(level + 1, subTag.subTags);
+              if (!subLevelOk) {
+                tagIdx = notClassifiedIdx;
+                tag = `${t.tags[tag].label} - Non classé`;
+                ensurePath(currentSubTags, [tagIdx], {
+                  label: tag,
+                  deepLvl: level,
+                });
+                subTag = currentSubTags[tagIdx];
+                subLevelOk = true;                
+              }
             } else {
               subLevelOk = true;
             }
@@ -201,7 +213,7 @@
                 subTag.sumOfBookedHrs += delta;
               }
 
-              subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+              subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
               subTag.ids = [...(subTag.ids ?? []), ...[t.id]];
               subTag.tags = {
                 ...(subTag.tags ?? {}),
