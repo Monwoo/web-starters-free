@@ -164,60 +164,72 @@
       //       ensurePath(currentSubTags, [tagIdx], {});
       //       const subTag = currentSubTags[tagIdx];
       const loadLevel = (level, currentSubTags) => {
+        let subLevelOk = !jsonReport[`lvl${level}Tags`].length;
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
           if (tag in t.tags) {
             ensurePath(currentSubTags, [tagIdx], {
-              "deepLvl": level,
+              deepLvl: level,
             });
             const subTag = currentSubTags[tagIdx];
-            ensurePath(subTag, ["bookedTimeSlot"], {});
-            ensurePath(subTag, ["bookedTimeSlotWithDate"], {});
-            ensurePath(subTag, ["maxPPH"], 0);
-            ensurePath(subTag, ["sumOfBookedHrs"], 0);
-            ensurePath(subTag, ["sumOfMaxPPH"], 0);
-            ensurePath(subTag, ["deepSumOfBookedHrs"], 0);
-            ensurePath(subTag, ["deepSumOfMaxPPH"], 0);
-            ensurePath(subTag, ["tags"], {});
-
-            ensurePath(subTag, ["subTags"], []);
             if (level <= 5) {
-              loadLevel(level + 1, subTag.subTags);
+              ensurePath(subTag, ["subTags"], []);
+              subLevelOk = loadLevel(level + 1, subTag.subTags);
+            } else {
+              subLevelOk = true;
             }
+            if (subLevelOk) {
+              ensurePath(subTag, ["bookedTimeSlot"], {});
+              ensurePath(subTag, ["bookedTimeSlotWithDate"], {});
+              ensurePath(subTag, ["maxPPH"], 0);
+              ensurePath(subTag, ["sumOfBookedHrs"], 0);
+              ensurePath(subTag, ["sumOfMaxPPH"], 0);
+              ensurePath(subTag, ["deepSumOfBookedHrs"], 0);
+              ensurePath(subTag, ["deepSumOfMaxPPH"], 0);
+              ensurePath(subTag, ["tags"], {});
 
-            const slotWithDate = t.sourceDate + '-' + t.rangeDayIdxBy10Min;
-            if (!(
-              subTag.bookedTimeSlotWithDate[slotWithDate] ?? null
-            )) {
-              subTag.bookedTimeSlotWithDate[slotWithDate] = true;
-              subTag.deepSumOfBookedHrs += delta;
+              ensurePath(subTag, ["subTags"], []);
+
+              const slotWithDate = t.sourceDate + "-" + t.rangeDayIdxBy10Min;
+              if (!(subTag.bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+                subTag.bookedTimeSlotWithDate[slotWithDate] = true;
+                subTag.deepSumOfBookedHrs += delta;
+              }
+
+              if (!(bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+                bookedTimeSlotWithDate[slotWithDate] = true;
+                // TIPS : below will be ok si childe level is previously loaded by recursion
+                subTag.sumOfBookedHrs += delta;
+              }
+
+              subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+              subTag.ids = [...(subTag.ids ?? []), ...[t.id]];
+              subTag.tags = {
+                ...(subTag.tags ?? {}),
+                ...(t.tags ?? {}),
+              };
+              subTag.maxPPH = Math.max(
+                subTag?.maxPPH ?? 0,
+                t.maxPricePerHr ?? 0
+              );
+              subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] = true;
+
+              usedByReport = true;
+              subLevelOk = true;
             }
-
-            if (!(
-              bookedTimeSlotWithDate[slotWithDate] ?? null
-            )) {
-              bookedTimeSlotWithDate[slotWithDate] = true;
-              subTag.sumOfBookedHrs += delta;
-            }
-
-            subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
-            subTag.ids = [
-              ...(subTag.ids ?? []),
-              ...[t.id],
-            ];
-            subTag.tags = {
-              ...(subTag.tags ?? {}),
-              ...(t.tags ?? {}),
-            };
-            subTag.maxPPH = Math.max(
-              subTag?.maxPPH ?? 0,
-              t.maxPricePerHr ?? 0
-            );
-            subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] =
-              true;
-
-            usedByReport = true;
+          } else {
+            // console.debug('No tag found in ', t.tags, ' for ', tag)
           }
         });
+        // currentSubTags = currentSubTags.filter(v => v !== null);
+        // In place filter :
+        // https://stackoverflow.com/questions/37318808/what-is-the-in-place-alternative-to-array-prototype-filter
+        currentSubTags.splice(
+          0, 
+          currentSubTags.length,
+          ...currentSubTags.filter(v => !! (v?.tags ?? false) )
+        );
+
+        return subLevelOk;
       };
       loadLevel(1, summaryByLevels.subTags);
       if (usedByReport) {
@@ -266,21 +278,31 @@
 
   const postprocessLevel = (level, currentSubTags) => {
     currentSubTags.forEach((subTag) => {
+      // TIPS : recursion first to have child result computed in parent recursion
+      if (level <= 5) {
+        postprocessLevel(level + 1, subTag.subTags);
+      }
+
       const deepDelta = subTag.deepSumOfBookedHrs;
       // TODO : wrong subTag.maxPPH ? max for all, need per daySlot ?
       const deepDeltaOfMaxPPH = deepDelta * (subTag.maxPPH ?? 0);
       subTag.deepSumOfMaxPPH += deepDeltaOfMaxPPH;
 
-      const delta = subTag.sumOfBookedHrs;
+      const subTagsDelta = subTag.subTags.reduce((acc, v) => acc + v.sumOfBookedHrs, 0);
+      // TIPS : post process child subTags amounts since slots are globally booked :
+      const delta = subTag.sumOfBookedHrs + subTagsDelta;
+      subTag.sumOfBookedHrs = delta;
       const deltaOfMaxPPH = delta * (subTag.maxPPH ?? 0);
       subTag.sumOfMaxPPH += deltaOfMaxPPH;
-      if (level <= 5) {
-        postprocessLevel(level + 1, subTag.subTags);
-      }
     });
   };
 
   postprocessLevel(1, summaryByLevels.subTags);
+
+  summaryByLevels.subTags.forEach(subTag => {
+    summaryByLevels.sumOfBookedHrs += subTag.sumOfBookedHrs;
+    summaryByLevels.sumOfMaxPPH += subTag.sumOfMaxPPH;
+  });
 
   let summaryByYears = {};
 

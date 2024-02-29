@@ -17,7 +17,7 @@
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
 
-  console.debug('subLevelKeys', subLevelKeys);
+  // console.debug('subLevelKeys', subLevelKeys);
 
   const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
     // encodeURI('file://' + timingSlot.source.path)
