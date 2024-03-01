@@ -256,10 +256,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
           percent={1 - $timer / timerStart}
           textRenderer={(percent) => `${$timer.toFixed(0)}`}
         />
-
-        [{pageNumber}-{lastSelectedIndex}]
+        <span class="flex w-[6em]">
+          [{pageNumber}-{lastSelectedIndex}]
+          {dayjs(timingSlot?.sourceTime)
+          .tz("Europe/London")
+          .format("YYYY/MM/DD H:mm:ss")
+          }  
+        </span>
       </span>
-
       {#if isFullScreen}
         <button
           class="float-right m-1"
