@@ -135,7 +135,7 @@
 </script>
 
 <tr class="{rowClass}"
-class:font-extrabold={summary.usedForTotal}
+class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
 >
   <td
     class="border-t-0 px-6 text-middle

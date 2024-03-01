@@ -209,14 +209,17 @@
 
               const slotWithDate = t.sourceDate + "-" + t.rangeDayIdxBy10Min;
               if (!(subTag.bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+                // TODO : save max one, post process.... ?
                 subTag.bookedTimeSlotWithDate[slotWithDate] = {
                   ...(subTag.bookedTimeSlotWithDate[slotWithDate] ?? {}),
                   ...{ [t.id]: true },
                 };
                 subTag.deepSumOfBookedHrs += delta;
+                t.usedForDeepTotal = true; // TODO : post process compute ?
               }
 
               if (!(bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+                // TODO : save max one, post process....
                 bookedTimeSlotWithDate[slotWithDate] = {
                   ...(bookedTimeSlotWithDate[slotWithDate] ?? {}),
                   ...{ [t.id]: true },
@@ -277,19 +280,19 @@
           tags: {},
         };
       }
-      if (
-        !(
-          summaryByDays[tReport.sourceDate].bookedTimeSlot[
-            t.rangeDayIdxBy10Min
-          ] ?? null
-        )
-      ) {
-        summaryByDays[tReport.sourceDate].sumOfBookedHrs += delta;
-        // TODO : wrong max, only max of fist booked slot :
-        summaryByDays[tReport.sourceDate].sumOfMaxPPH += deltaOfMaxPPH;
-        summaryTotals.sumOfBookedHrs += delta;
-        summaryTotals.sumOfMaxPPH += deltaOfMaxPPH;
-      }
+      // if (
+      //   !(
+      //     summaryByDays[tReport.sourceDate].bookedTimeSlot[
+      //       t.rangeDayIdxBy10Min
+      //     ] ?? null
+      //   )
+      // ) {
+      //   summaryByDays[tReport.sourceDate].sumOfBookedHrs += delta;
+      //   // TODO : wrong max, only max of fist booked slot :
+      //   summaryByDays[tReport.sourceDate].sumOfMaxPPH += deltaOfMaxPPH;
+      //   summaryTotals.sumOfBookedHrs += delta;
+      //   summaryTotals.sumOfMaxPPH += deltaOfMaxPPH;
+      // }
       if (!summaryByDays[tReport.sourceDate].ids?.includes(t.id)) {
         summaryByDays[tReport.sourceDate].ids = [
           ...(summaryByDays[tReport.sourceDate].ids ?? []),
@@ -300,10 +303,10 @@
         ...(summaryByDays[tReport.sourceDate].tags ?? {}),
         ...(t.tags ?? {}),
       };
-      summaryByDays[tReport.sourceDate].maxPPH = Math.max(
-        summaryByDays[tReport.sourceDate]?.maxPPH ?? 0,
-        t.maxPricePerHr ?? 0
-      );
+      // summaryByDays[tReport.sourceDate].maxPPH = Math.max(
+      //   summaryByDays[tReport.sourceDate]?.maxPPH ?? 0,
+      //   t.maxPricePerHr ?? 0
+      // );
       summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] = {
         ...(summaryByDays[tReport.sourceDate].bookedTimeSlot[
           t.rangeDayIdxBy10Min
@@ -428,6 +431,11 @@
       // TODO : only count for not used time slot for regular price...
       const delta = 10 / 60; // TODO : const for segment config instead of '10'
       const deltaPrice = (maxSlot?.maxPricePerHr ?? 0) * delta;
+      summaryByYears[tYear].sumOfBookedHrs += delta;
+      summaryByYears[tYear].sumOfMaxPPH += deltaPrice;
+      summaryByYears[tYear].months[tMonth].sumOfBookedHrs += delta;
+      summaryByYears[tYear].months[tMonth].sumOfMaxPPH += deltaPrice;
+
       summaryByYears[tYear].deepSumOfBookedHrs += delta;
       summaryByYears[tYear].deepSumOfMaxPPH += deltaPrice;
       summaryByYears[tYear].months[tMonth].deepSumOfBookedHrs += delta;
@@ -438,8 +446,15 @@
       ensurePath(daySummary, ["deepSumOfMaxPPH"], 0);
       daySummary.deepSumOfBookedHrs += delta;
       daySummary.deepSumOfMaxPPH += deltaPrice;
+      daySummary.maxPPH = maxSlot?.maxPricePerHr ?? 0;
+
+      daySummary.sumOfBookedHrs += delta;
+      daySummary.sumOfMaxPPH += deltaPrice;
+      summaryTotals.sumOfBookedHrs += delta;
+      summaryTotals.sumOfMaxPPH += deltaPrice;
 
       if (maxSlot) {
+        maxSlot.usedForDeepTotal = true;
         maxSlot.usedForTotal = true;
       }
     });
