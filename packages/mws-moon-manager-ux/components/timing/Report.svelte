@@ -227,7 +227,10 @@
               }
 
               subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
-              subTag.ids = [...(subTag.ids ?? []), ...[t.id]];
+              if (!subTag.ids?.includes(t.id)) {
+                // only add once
+                subTag.ids = [...(subTag.ids ?? []), ...[t.id]];
+              }
               subTag.tags = {
                 ...(subTag.tags ?? {}),
                 ...(t.tags ?? {}),
@@ -286,10 +289,12 @@
         summaryTotals.sumOfBookedHrs += delta;
         summaryTotals.sumOfMaxPPH += deltaOfMaxPPH;
       }
-      summaryByDays[tReport.sourceDate].ids = [
-        ...(summaryByDays[tReport.sourceDate].ids ?? []),
-        ...[t.id],
-      ];
+      if (!summaryByDays[tReport.sourceDate].ids?.includes(t.id)) {
+        summaryByDays[tReport.sourceDate].ids = [
+          ...(summaryByDays[tReport.sourceDate].ids ?? []),
+          ...[t.id],
+        ];
+      }
       summaryByDays[tReport.sourceDate].tags = {
         ...(summaryByDays[tReport.sourceDate].tags ?? {}),
         ...(t.tags ?? {}),
