@@ -238,9 +238,18 @@
               // }
 
               subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
-              if (!subTag.ids?.includes(t.id)) {
+              if (!subTag.haveIds) {
+                subTag.haveIds = subTag.ids?.reduce((acc, tId) => {
+                  acc[tId] = true;
+                  return acc;
+                }, {}) ?? {};
+              }
+
+              // if (!subTag.ids?.includes(t.id)) {
+              if (!(subTag.haveIds[t.id] ?? null)) {
                 // only add once
                 subTag.ids = [...(subTag.ids ?? []), ...[t.id]];
+                subTag.haveIds[t.id] = true;
               }
               subTag.tags = {
                 ...(subTag.tags ?? {}),
@@ -300,11 +309,22 @@
       //   summaryTotals.sumOfBookedHrs += delta;
       //   summaryTotals.sumOfMaxPPH += deltaOfMaxPPH;
       // }
-      if (!summaryByDays[tReport.sourceDate].ids?.includes(t.id)) {
+
+      if (!summaryByDays[tReport.sourceDate].haveIds) {
+        summaryByDays[tReport.sourceDate].haveIds =
+        summaryByDays[tReport.sourceDate].ids?.reduce((acc, tId) => {
+          acc[tId] = true;
+          return acc;
+        }, {}) ?? {};
+      }
+
+      // if (!summaryByDays[tReport.sourceDate].ids?.includes(t.id)) {
+      if (!(summaryByDays[tReport.sourceDate].haveIds[t.id] ?? false)) {
         summaryByDays[tReport.sourceDate].ids = [
           ...(summaryByDays[tReport.sourceDate].ids ?? []),
           ...[t.id],
         ];
+        summaryByDays[tReport.sourceDate].haveIds[t.id] = true;
       }
       summaryByDays[tReport.sourceDate].tags = {
         ...(summaryByDays[tReport.sourceDate].tags ?? {}),
@@ -340,10 +360,18 @@
           }
         });
         // TODO : Opti : use object hashmap instead of includes ?
-        if (maxSlot?.usedForTotal || !subTag.ids.includes(maxSlot.id)) {
+        if (!subTag.haveIds) {
+          subTag.haveIds = subTag.ids.reduce((acc, tId) => {
+            acc[tId] = true;
+            return acc;
+          }, {});
+        }
+        // if (maxSlot?.usedForTotal || !subTag.ids.includes(maxSlot.id)) {
+        if (maxSlot?.usedForTotal || !(subTag.haveIds[maxSlot.id] ?? false)) {
           return; // Do not re-compute if already added for TOTAL
         }
-        const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+        // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+        const delta = 10 / 60; // TODO : const for segment config instead of '10'
         const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
         const deltaPrice = maxPPH * delta;
         subTag.sumOfBookedHrs += delta;
@@ -360,12 +388,13 @@
             maxSlot = timeSlot;
           }
         });
-        // // TODO : Opti : use object hashmap instead of includes ?
+        // // TODO : Opti : use object hashmap instead of includes ? No need for deep compute ?
         // if (maxSlot?.usedForDeepTotal || !subTag.ids.includes(maxSlot.id)) {
         //   return; // Do not re-compute if already added for deep TOTAL
         // }
 
-        const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+        // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+        const delta = 10 / 60; // TODO : const for segment config instead of '10'
         const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
         const deltaPrice = maxPPH * delta;
         subTag.deepSumOfBookedHrs += delta;
@@ -483,7 +512,8 @@
         }
       });
       // TODO : only count for not used time slot for regular price...
-      const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+      // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+      const delta = 10 / 60; // TODO : const for segment config instead of '10'
       const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
       const deltaPrice = maxPPH * delta;
 
