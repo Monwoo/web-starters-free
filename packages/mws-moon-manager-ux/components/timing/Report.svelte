@@ -5,8 +5,13 @@
   import "dayjs/locale/fr";
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
-  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
-
+  // https://day.js.org/docs/en/timezone/set-default-timezone
+  // https://day.js.org/docs/en/plugin/timezone
+  var utc = require('dayjs/plugin/utc')
+  var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+  dayjs.extend(utc);
+  dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
+  dayjs.tz.setDefault("Europe/Paris");
 </script>
 
 <script lang="ts">
@@ -39,6 +44,8 @@
       obj = obj[key];
     });
   };
+
+  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 
   const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
 
@@ -105,6 +112,7 @@
       timingsByIds[tId] = {
         id: tId,
         sourceDate: tSum.sourceDate,
+        sourceTime: tSum.sourceTime,
         sourceStamp: sourceStamp,
         rangeDayIdxBy10Min: rangeDayIdxBy10Min,
         maxPricePerHr: maxPPH,
@@ -198,6 +206,7 @@
             if (subLevelOk) {
               ensurePath(subTag, ["bookedTimeSlot"], {});
               ensurePath(subTag, ["bookedTimeSlotWithDate"], {});
+              // TODO : below init ok, but used at postprocess, so lazy init in postprocess only ?
               ensurePath(subTag, ["maxPPH"], 0);
               ensurePath(subTag, ["sumOfBookedHrs"], 0);
               ensurePath(subTag, ["sumOfMaxPPH"], 0);
@@ -208,27 +217,25 @@
               ensurePath(subTag, ["subTags"], []);
 
               const slotWithDate = t.sourceDate + "-" + t.rangeDayIdxBy10Min;
-              if (!(subTag.bookedTimeSlotWithDate[slotWithDate] ?? null)) {
-                // TODO : save max one, post process.... ?
-                subTag.bookedTimeSlotWithDate[slotWithDate] = {
-                  ...(subTag.bookedTimeSlotWithDate[slotWithDate] ?? {}),
-                  ...{ [t.id]: true },
-                };
-                subTag.deepSumOfBookedHrs += delta;
-                t.usedForDeepTotal = true; // TODO : post process compute ?
-              }
-
-              if (!(bookedTimeSlotWithDate[slotWithDate] ?? null)) {
-                // TODO : save max one, post process....
-                bookedTimeSlotWithDate[slotWithDate] = {
-                  ...(bookedTimeSlotWithDate[slotWithDate] ?? {}),
-                  ...{ [t.id]: true },
-                };
-                t.usedForTotal = true; // TODO : post process compute ?
-
-                // TIPS : below will be ok si childe level is previously loaded by recursion
-                subTag.sumOfBookedHrs += delta;
-              }
+              // if (!(subTag.bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+              //   // TODO : save max one, post process.... ?
+              subTag.bookedTimeSlotWithDate[slotWithDate] = {
+                ...(subTag.bookedTimeSlotWithDate[slotWithDate] ?? {}),
+                ...{ [t.id]: true },
+              };
+              //   subTag.deepSumOfBookedHrs += delta;
+              //   t.usedForDeepTotal = true; // TODO : post process compute ?
+              // }
+              // if (!(bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+              //   // TODO : save max one, post process....
+              bookedTimeSlotWithDate[slotWithDate] = {
+                ...(bookedTimeSlotWithDate[slotWithDate] ?? {}),
+                ...{ [t.id]: true },
+              };
+              //   t.usedForTotal = true; // TODO : post process compute ?
+              //   // TIPS : below will be ok si childe level is previously loaded by recursion
+              //   subTag.sumOfBookedHrs += delta;
+              // }
 
               subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
               if (!subTag.ids?.includes(t.id)) {
@@ -239,10 +246,10 @@
                 ...(subTag.tags ?? {}),
                 ...(t.tags ?? {}),
               };
-              subTag.maxPPH = Math.max(
-                subTag?.maxPPH ?? 0,
-                t.maxPricePerHr ?? 0
-              );
+              // subTag.maxPPH = Math.max(
+              //   subTag?.maxPPH ?? 0,
+              //   t.maxPricePerHr ?? 0
+              // );
               subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] = {
                 ...(subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] ?? {}),
                 ...{ [t.id]: true },
@@ -323,20 +330,67 @@
         postprocessLevel(level + 1, subTag.subTags);
       }
 
-      const deepDelta = subTag.deepSumOfBookedHrs;
-      // TODO : wrong subTag.maxPPH ? max for all, need per daySlot ?
-      const deepDeltaOfMaxPPH = deepDelta * (subTag.maxPPH ?? 0);
-      subTag.deepSumOfMaxPPH += deepDeltaOfMaxPPH;
+      Object.keys(bookedTimeSlotWithDate).forEach((slotSegment) => {
+        const slotIds = bookedTimeSlotWithDate[slotSegment];
+        let maxSlot = null;
+        Object.keys(slotIds).forEach((slotId) => {
+          const timeSlot = timingsByIds[slotId] ?? null;
+          if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
+            maxSlot = timeSlot;
+          }
+        });
+        // TODO : Opti : use object hashmap instead of includes ?
+        if (maxSlot?.usedForTotal || !subTag.ids.includes(maxSlot.id)) {
+          return; // Do not re-compute if already added for TOTAL
+        }
+        const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+        const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
+        const deltaPrice = maxPPH * delta;
+        subTag.sumOfBookedHrs += delta;
+        subTag.sumOfMaxPPH += deltaPrice;
+        subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, maxPPH);
+        maxSlot?.usedForTotal = true;
+      });
+      Object.keys(subTag.bookedTimeSlotWithDate).forEach((slotSegment) => {
+        const slotIds = subTag.bookedTimeSlotWithDate[slotSegment];
+        let maxSlot = null;
+        Object.keys(slotIds).forEach((slotId) => {
+          const timeSlot = timingsByIds[slotId] ?? null;
+          if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
+            maxSlot = timeSlot;
+          }
+        });
+        // // TODO : Opti : use object hashmap instead of includes ?
+        // if (maxSlot?.usedForDeepTotal || !subTag.ids.includes(maxSlot.id)) {
+        //   return; // Do not re-compute if already added for deep TOTAL
+        // }
 
-      const subTagsDelta = subTag.subTags.reduce(
-        (acc, v) => acc + v.sumOfBookedHrs,
-        0
-      );
-      // TIPS : post process child subTags amounts since slots are globally booked :
-      const delta = subTag.sumOfBookedHrs + subTagsDelta;
-      subTag.sumOfBookedHrs = delta;
-      const deltaOfMaxPPH = delta * (subTag.maxPPH ?? 0);
-      subTag.sumOfMaxPPH += deltaOfMaxPPH;
+        const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+        const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
+        const deltaPrice = maxPPH * delta;
+        subTag.deepSumOfBookedHrs += delta;
+        subTag.deepSumOfMaxPPH += deltaPrice;
+        // TODO : deepMaxPPH <> of maxPPH or not usefull ?
+        subTag.deepMaxPPH = Math.max(subTag.deepMaxPPH ?? 0, maxPPH);
+        maxSlot?.usedForDeepTotal = true;
+      });
+      subTag.subTags.forEach(childSubTag => {
+        // Add child TOTAL, ok since after recursion call, child are computed first
+        subTag.sumOfBookedHrs += childSubTag.sumOfBookedHrs;
+        subTag.sumOfMaxPPH += childSubTag.sumOfMaxPPH;
+        subTag.maxPPH = Math.max(
+          subTag.maxPPH ?? 0,
+          childSubTag.maxPPH ?? 0,
+        );
+
+        // subTag.deepSumOfBookedHrs += childSubTag.deepSumOfBookedHrs;
+        // subTag.deepSumOfMaxPPH += childSubTag.deepSumOfMaxPPH;
+        // subTag.deepMaxPPH = Math.max(
+        //   subTag.deepMaxPPH ?? 0,
+        //   childSubTag.deepMaxPPH ?? 0,
+        // );
+      });
+
     });
   };
 
@@ -429,24 +483,35 @@
         }
       });
       // TODO : only count for not used time slot for regular price...
-      const delta = 10 / 60; // TODO : const for segment config instead of '10'
-      const deltaPrice = (maxSlot?.maxPricePerHr ?? 0) * delta;
+      const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+      const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
+      const deltaPrice = maxPPH * delta;
+
       summaryByYears[tYear].sumOfBookedHrs += delta;
       summaryByYears[tYear].sumOfMaxPPH += deltaPrice;
+      summaryByYears[tYear].maxPPH = Math.max(
+        summaryByYears[tYear].maxPPH ?? 0, maxPPH
+      );
       summaryByYears[tYear].months[tMonth].sumOfBookedHrs += delta;
       summaryByYears[tYear].months[tMonth].sumOfMaxPPH += deltaPrice;
+      summaryByYears[tYear].months[tMonth].maxPPH = Math.max(
+        summaryByYears[tYear].months[tMonth].maxPPH ?? 0, maxPPH
+      );
 
       summaryByYears[tYear].deepSumOfBookedHrs += delta;
       summaryByYears[tYear].deepSumOfMaxPPH += deltaPrice;
       summaryByYears[tYear].months[tMonth].deepSumOfBookedHrs += delta;
       summaryByYears[tYear].months[tMonth].deepSumOfMaxPPH += deltaPrice;
+      // summaryByYears[tYear].months[tMonth].deepPaxPPH = Math.max(
+      //   summaryByYears[tYear].months[tMonth].deepPaxPPH, maxPPH
+      // );
 
       const daySummary = summaryByDays[tDay];
       ensurePath(daySummary, ["deepSumOfBookedHrs"], 0);
       ensurePath(daySummary, ["deepSumOfMaxPPH"], 0);
       daySummary.deepSumOfBookedHrs += delta;
       daySummary.deepSumOfMaxPPH += deltaPrice;
-      daySummary.maxPPH = maxSlot?.maxPricePerHr ?? 0;
+      daySummary.maxPPH = Math.max(daySummary.maxPPH, maxPPH);
 
       daySummary.sumOfBookedHrs += delta;
       daySummary.sumOfMaxPPH += deltaPrice;

@@ -20,10 +20,10 @@
   export let slots = {};
 
   $: svgAmDasharray = dasharrayAm.reduce((acc, dSize, idx) => {
-    return acc + ((true === (slots[idx] ?? false)) ? ` 0 ${dSize}` :  ` ${dSize} 0`);
+    return acc + ((slots[idx] ?? false) ? ` 0 ${dSize}` :  ` ${dSize} 0`);
   }, '');
   $: svgPmDasharray = dasharrayPm.reduce((acc, dSize, idx) => {
-    return acc + ((true === (slots[idx + maxSlots / 2] ?? false)) ? ` 0 ${dSize}` :  ` ${dSize} 0`);
+    return acc + ((slots[idx + maxSlots / 2] ?? false) ? ` 0 ${dSize}` :  ` ${dSize} 0`);
   }, '');
 
   // console.debug('Slots for indicator : ', slots);

@@ -3,6 +3,7 @@
   import Routing from "fos-router";
   import ReportSummaryRows from "./ReportSummaryRows";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
+  import dayjs from "dayjs";
 
   export let rowClass = "bg-gray-400 font-extrabold";
   export let indent = 4;
@@ -80,8 +81,9 @@
     // TIPS : inefficient to search in un-sorted array ? remove and directly search in timingsByIds ?
     // if ((summary.ids ?? []).includes(subKey)) {
     if ((timingsByIds[subKey] ?? false)) {
-      return timingsByIds[subKey]
-      .sourceStamp?.split('/').slice(-1) ?? subKey;
+      const t = timingsByIds[subKey];
+      return dayjs(t.sourceTime).format("YYYY/MM/DD H:mm:ss") + ' : '
+      + (t.sourceStamp?.split('/').slice(-1) ?? subKey);
     }
     return `${label}-${subKey}`;
   };
@@ -193,9 +195,9 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
 
     <!-- <br /> -->
     <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
-      {(summary.deepSumOfBookedHrs ?? null) === null
+      {(summary.deepSumOfBookedHrs ?? null) === null && summary.usedForDeepTotal
         ? (10/60).toPrettyNum(2)
-        : summary.deepSumOfBookedHrs.toPrettyNum(2) ?? '-'} hr
+        : summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-'} hr
     </span>
   </td>
   <td
@@ -224,9 +226,9 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     </span>
       <!-- <br /> -->
     <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
-      {(summary.deepSumOfMaxPPH ?? null) === null
+      {(summary.deepSumOfMaxPPH ?? null) === null && summary.usedForDeepTotal
       ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
-      : summary.deepSumOfMaxPPH.toPrettyNum(2) ?? '-'} €
+      : summary.deepSumOfMaxPPH?.toPrettyNum(2) ?? '-'} €
     </span>
   </td>
 </tr>
