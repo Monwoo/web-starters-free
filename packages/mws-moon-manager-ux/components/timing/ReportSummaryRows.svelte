@@ -41,7 +41,8 @@
     ?? (summary.days ?? {})[subKey]
     // TIPS : inefficient to search in un-sorted array ? remove and directly search in timingsByIds ?
     // ?? (showDetails && (summary.ids ?? []).includes(subKey))
-    ?? (showDetails && (summary.ids ?? false) && (timingsByIds[subKey] ?? false))
+    // ?? (showDetails && (summary.ids ?? false) && (timingsByIds[subKey] ?? false))
+    ?? (showDetails && (summary.ids ?? false))
     ?? false;
     // console.debug('subKey', subKey, ' have path ', !!exist);
     return !!exist;
@@ -86,15 +87,18 @@
   };
   const getSubLvlKeys = (subKey, showDetails) => {
     let subLvlKeys = [];
-    if ((summary.subTags ?? {})[subKey]?.subTags ?? false) {
+    if ((summary.subTags ?? {})[subKey]?.subTags?.length ?? false) {
       return Array.from(summary.subTags[subKey].subTags.keys());
     }
     if ((summary.months ?? [])[subKey]?.days ?? false) {
       subLvlKeys = Object.keys(summary.months[subKey].days).sort();
     } else if (
-      (summary.days ?? {})[subKey] ?? false
+      // (summary.days ?? {})[subKey] ?? false
+      summaryByDays[subKey] ?? false
     ) {
       subLvlKeys = summaryByDays[subKey]?.ids; //.slice(0,0);
+    } else {
+      subLvlKeys = (summary.subTags ?? {})[subKey]?.ids ?? [];
     }
     // console.debug('subKey', subKey, ' have sub keys ', subLvlKeys);
     return subLvlKeys;
@@ -166,16 +170,19 @@
     {/each}
   </td>
   <td
-    class="border-t-0 px-6 text-right
+    class="border-t-0 px-6 text-right flex flex-col
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    {(summary.sumOfBookedHrs ?? null) === null
-    ? (10/60).toPrettyNum(2)
-    : (summary.sumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr
+
+    <span class="p-1 bg-white rounded-md rounded-b-none">
+      {(summary.sumOfBookedHrs ?? null) === null
+      ? (10/60).toPrettyNum(2)
+      : (summary.sumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr
+    </span>
 
     {#if summary.deepSumOfBookedHrs !== null}
-      <br />
-      <span class="text-gray-400">
+      <!-- <br /> -->
+      <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
         {summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-'} hr
       </span>
     {/if}
@@ -189,15 +196,17 @@
     : (summary.maxPPH?.toPrettyNum(2) ?? '-')} €
   </td>
   <td
-    class="border-t-0 px-6 text-right
+    class="border-t-0 px-6 text-right flex flex-col
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    {(summary.sumOfMaxPPH ?? null) === null
-    ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
-    : (summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-')} €
+    <span class="p-1 bg-white rounded-md rounded-b-none">
+      {(summary.sumOfMaxPPH ?? null) === null
+      ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
+      : (summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-')} €
+    </span>
     {#if summary.deepSumOfMaxPPH !== null}
-      <br />
-      <span class="text-gray-400">
+      <!-- <br /> -->
+      <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
         {summary.deepSumOfMaxPPH?.toPrettyNum(2) ?? '-'} €
       </span>
     {/if}

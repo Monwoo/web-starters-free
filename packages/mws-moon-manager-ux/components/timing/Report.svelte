@@ -163,9 +163,22 @@
       //     if (tag in t.tags) {
       //       ensurePath(currentSubTags, [tagIdx], {});
       //       const subTag = currentSubTags[tagIdx];
+
+      // return false if want to keep outside of report :
+      const loadUnclassified = (level, currentSubTags) => {
+        // tagIdx = notClassifiedIdx;
+        //         tag = `${t.tags[tag].label} - Non classé`;
+        //         ensurePath(subTag.subTags, [tagIdx], {
+        //           label: tag,
+        //           deepLvl: level,
+        //         });
+        //         subTag = subTag.subTags[tagIdx];
+        return false;
+      }
+
       const loadLevel = (level, currentSubTags) => {
         // console.debug("Load lvl",level, jsonReport);
-        const notClassifiedIdx = jsonReport[`lvl${level}Tags`]?.length ?? 0;
+        const notClassifiedIdx = 7;// jsonReport[`lvl${level}Tags`]?.length ?? 0;
         let subLevelOk = !jsonReport[`lvl${level}Tags`].length;
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
           if (tag in t.tags) {
@@ -177,14 +190,7 @@
               ensurePath(subTag, ["subTags"], []);
               subLevelOk = loadLevel(level + 1, subTag.subTags);
               if (!subLevelOk) {
-                tagIdx = notClassifiedIdx;
-                tag = `${t.tags[tag].label} - Non classé`;
-                ensurePath(currentSubTags, [tagIdx], {
-                  label: tag,
-                  deepLvl: level,
-                });
-                subTag = currentSubTags[tagIdx];
-                subLevelOk = true;                
+                subLevelOk = loadUnclassified(level, currentSubTags);                
               }
             } else {
               subLevelOk = true;
