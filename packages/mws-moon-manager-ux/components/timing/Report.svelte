@@ -174,11 +174,11 @@
         //         });
         //         subTag = subTag.subTags[tagIdx];
         return false;
-      }
+      };
 
       const loadLevel = (level, currentSubTags) => {
         // console.debug("Load lvl",level, jsonReport);
-        const notClassifiedIdx = 7;// jsonReport[`lvl${level}Tags`]?.length ?? 0;
+        const notClassifiedIdx = 7; // jsonReport[`lvl${level}Tags`]?.length ?? 0;
         let subLevelOk = !jsonReport[`lvl${level}Tags`].length;
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
           if (tag in t.tags) {
@@ -190,7 +190,7 @@
               ensurePath(subTag, ["subTags"], []);
               subLevelOk = loadLevel(level + 1, subTag.subTags);
               if (!subLevelOk) {
-                subLevelOk = loadUnclassified(level, currentSubTags);                
+                subLevelOk = loadUnclassified(level, currentSubTags);
               }
             } else {
               subLevelOk = true;
@@ -209,12 +209,19 @@
 
               const slotWithDate = t.sourceDate + "-" + t.rangeDayIdxBy10Min;
               if (!(subTag.bookedTimeSlotWithDate[slotWithDate] ?? null)) {
-                subTag.bookedTimeSlotWithDate[slotWithDate] = true;
+                subTag.bookedTimeSlotWithDate[slotWithDate] = {
+                  ...(subTag.bookedTimeSlotWithDate[slotWithDate] ?? {}),
+                  ...{ [t.id]: true },
+                };
                 subTag.deepSumOfBookedHrs += delta;
               }
 
               if (!(bookedTimeSlotWithDate[slotWithDate] ?? null)) {
-                bookedTimeSlotWithDate[slotWithDate] = true;
+                bookedTimeSlotWithDate[slotWithDate] = {
+                  ...(bookedTimeSlotWithDate[slotWithDate] ?? {}),
+                  ...{ [t.id]: true },
+                };
+
                 // TIPS : below will be ok si childe level is previously loaded by recursion
                 subTag.sumOfBookedHrs += delta;
               }
@@ -229,8 +236,10 @@
                 subTag?.maxPPH ?? 0,
                 t.maxPricePerHr ?? 0
               );
-              subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] = true;
-
+              subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] = {
+                ...(subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] ?? {}),
+                ...{ [t.id]: true },
+              };
               usedByReport = true;
               subLevelOk = true;
             }
@@ -242,9 +251,9 @@
         // In place filter :
         // https://stackoverflow.com/questions/37318808/what-is-the-in-place-alternative-to-array-prototype-filter
         currentSubTags.splice(
-          0, 
+          0,
           currentSubTags.length,
-          ...currentSubTags.filter(v => !! (v?.tags ?? false) )
+          ...currentSubTags.filter((v) => !!(v?.tags ?? false))
         );
 
         return subLevelOk;
@@ -289,8 +298,12 @@
         summaryByDays[tReport.sourceDate]?.maxPPH ?? 0,
         t.maxPricePerHr ?? 0
       );
-      summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] =
-        true;
+      summaryByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] = {
+        ...(summaryByDays[tReport.sourceDate].bookedTimeSlot[
+          t.rangeDayIdxBy10Min
+        ] ?? {}),
+        ...{ [t.id]: true },
+      };
     });
   });
 
@@ -306,7 +319,10 @@
       const deepDeltaOfMaxPPH = deepDelta * (subTag.maxPPH ?? 0);
       subTag.deepSumOfMaxPPH += deepDeltaOfMaxPPH;
 
-      const subTagsDelta = subTag.subTags.reduce((acc, v) => acc + v.sumOfBookedHrs, 0);
+      const subTagsDelta = subTag.subTags.reduce(
+        (acc, v) => acc + v.sumOfBookedHrs,
+        0
+      );
       // TIPS : post process child subTags amounts since slots are globally booked :
       const delta = subTag.sumOfBookedHrs + subTagsDelta;
       subTag.sumOfBookedHrs = delta;
@@ -317,7 +333,7 @@
 
   postprocessLevel(1, summaryByLevels.subTags);
 
-  summaryByLevels.subTags.forEach(subTag => {
+  summaryByLevels.subTags.forEach((subTag) => {
     summaryByLevels.sumOfBookedHrs += subTag.sumOfBookedHrs;
     summaryByLevels.sumOfMaxPPH += subTag.sumOfMaxPPH;
   });
@@ -339,6 +355,8 @@
         bookedTimeSlot: {},
         sumOfBookedHrs: 0,
         sumOfMaxPPH: 0,
+        deepSumOfBookedHrs: 0,
+        deepSumOfMaxPPH: 0,
         maxPPH: 0,
         tags: {},
         months: {},
@@ -349,6 +367,8 @@
         bookedTimeSlot: {},
         sumOfBookedHrs: 0,
         sumOfMaxPPH: 0,
+        deepSumOfBookedHrs: 0,
+        deepSumOfMaxPPH: 0,
         maxPPH: 0,
         tags: {},
         days: {},
@@ -361,6 +381,22 @@
     };
     summaryByYears[tYear].sumOfBookedHrs += summary.sumOfBookedHrs;
     summaryByYears[tYear].sumOfMaxPPH += summary.sumOfMaxPPH;
+
+    Object.keys(summary.bookedTimeSlot).forEach((slotSegment) => {
+      const slotIds = summary.bookedTimeSlot[slotSegment];
+      let maxSlot = null;
+      Object.keys(slotIds).forEach((slotId) => {
+        const timeSlot = timingsByIds[slotId] ?? null;
+        if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
+          maxSlot = timeSlot;
+        }
+      });
+      // TODO : only count for not used time slot for regular price...
+      const delta = 10 / 60; // TODO : const for segment config instead of '10'
+      summaryByYears[tYear].deepSumOfBookedHrs += delta;
+      summaryByYears[tYear].deepSumOfMaxPPH += (maxSlot?.maxPricePerHr ?? 0) * delta;
+    });
+
     summaryByYears[tYear].maxPPH = Math.max(
       summaryByYears[tYear]?.maxPPH ?? 0,
       summary.maxPPH ?? 0
@@ -377,6 +413,12 @@
     summaryByYears[tYear].months[tMonth].sumOfBookedHrs +=
       summary.sumOfBookedHrs;
     summaryByYears[tYear].months[tMonth].sumOfMaxPPH += summary.sumOfMaxPPH;
+
+    summaryByYears[tYear].months[tMonth].deepSumOfBookedHrs +=
+      summary.deepSumOfBookedHrs;
+    summaryByYears[tYear].months[tMonth].deepSumOfMaxPPH +=
+      summary.deepSumOfMaxPPH;
+
     summaryByYears[tYear].months[tMonth].maxPPH = Math.max(
       summaryByYears[tYear]?.months[tMonth]?.maxPPH ?? 0,
       summary.maxPPH ?? 0
@@ -432,7 +474,7 @@
     <button> Qualification des temps </button>
   </a>
   <button on:click={() => (showDetails = !showDetails)}>
-    {showDetails ? "Cacher" : "Show"} les details
+    {showDetails ? "Cacher" : "Voir"} les details
   </button>
   {#if showDetails}
     <button on:click={() => (showPictures = !showPictures)}>
