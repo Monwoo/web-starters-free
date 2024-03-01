@@ -382,21 +382,6 @@
     summaryByYears[tYear].sumOfBookedHrs += summary.sumOfBookedHrs;
     summaryByYears[tYear].sumOfMaxPPH += summary.sumOfMaxPPH;
 
-    Object.keys(summary.bookedTimeSlot).forEach((slotSegment) => {
-      const slotIds = summary.bookedTimeSlot[slotSegment];
-      let maxSlot = null;
-      Object.keys(slotIds).forEach((slotId) => {
-        const timeSlot = timingsByIds[slotId] ?? null;
-        if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
-          maxSlot = timeSlot;
-        }
-      });
-      // TODO : only count for not used time slot for regular price...
-      const delta = 10 / 60; // TODO : const for segment config instead of '10'
-      summaryByYears[tYear].deepSumOfBookedHrs += delta;
-      summaryByYears[tYear].deepSumOfMaxPPH += (maxSlot?.maxPricePerHr ?? 0) * delta;
-    });
-
     summaryByYears[tYear].maxPPH = Math.max(
       summaryByYears[tYear]?.maxPPH ?? 0,
       summary.maxPPH ?? 0
@@ -414,11 +399,6 @@
       summary.sumOfBookedHrs;
     summaryByYears[tYear].months[tMonth].sumOfMaxPPH += summary.sumOfMaxPPH;
 
-    summaryByYears[tYear].months[tMonth].deepSumOfBookedHrs +=
-      summary.deepSumOfBookedHrs;
-    summaryByYears[tYear].months[tMonth].deepSumOfMaxPPH +=
-      summary.deepSumOfMaxPPH;
-
     summaryByYears[tYear].months[tMonth].maxPPH = Math.max(
       summaryByYears[tYear]?.months[tMonth]?.maxPPH ?? 0,
       summary.maxPPH ?? 0
@@ -429,6 +409,31 @@
     };
 
     summaryByYears[tYear].months[tMonth].days[tDay] = true; //summary;
+
+    Object.keys(summary.bookedTimeSlot).forEach((slotSegment) => {
+      const slotIds = summary.bookedTimeSlot[slotSegment];
+      let maxSlot = null;
+      Object.keys(slotIds).forEach((slotId) => {
+        const timeSlot = timingsByIds[slotId] ?? null;
+        if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
+          maxSlot = timeSlot;
+        }
+      });
+      // TODO : only count for not used time slot for regular price...
+      const delta = 10 / 60; // TODO : const for segment config instead of '10'
+      const deltaPrice = (maxSlot?.maxPricePerHr ?? 0) * delta;
+      summaryByYears[tYear].deepSumOfBookedHrs += delta;
+      summaryByYears[tYear].deepSumOfMaxPPH += deltaPrice;
+      summaryByYears[tYear].months[tMonth].deepSumOfBookedHrs += delta;
+      summaryByYears[tYear].months[tMonth].deepSumOfMaxPPH += deltaPrice;
+
+      const daySummary = summaryByDays[tDay];
+      ensurePath(daySummary, ["deepSumOfBookedHrs"], 0);
+      ensurePath(daySummary, ["deepSumOfMaxPPH"], 0);
+      daySummary.deepSumOfBookedHrs += delta;
+      daySummary.deepSumOfMaxPPH += deltaPrice;
+    });
+
   });
 
   console.debug(
