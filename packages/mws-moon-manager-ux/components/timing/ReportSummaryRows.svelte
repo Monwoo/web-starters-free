@@ -82,7 +82,10 @@
     // if ((summary.ids ?? []).includes(subKey)) {
     if ((timingsByIds[subKey] ?? false)) {
       const t = timingsByIds[subKey];
-      return dayjs(t.sourceTime).format("YYYY/MM/DD H:mm:ss") + ' : '
+      // TODO : why timezone ok for reportt need to be forced like for lookup qualifs ?
+      // no .tz ? : http://localhost:8000/mws/fr/mws-timings/report?page=1&tags%5B0%5D=joshcrm-v1&tags%5B1%5D=joshcrm-v2&lvl1Tags%5B0%5D=miguel-monwoo&lvl1Tags%5B1%5D=joshcrm-v1&lvl4Tags%5B0%5D=etude-devis
+      // return dayjs(t.sourceTime).format("YYYY/MM/DD H:mm:ss :)))").tz("Europe/London", true) + ' : '
+      return dayjs(t.sourceTime).tz("Europe/London").format("YYYY/MM/DD H:mm:ss") + ' : '
       + (t.sourceStamp?.split('/').slice(-1) ?? subKey);
     }
     return `${label}-${subKey}`;

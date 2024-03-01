@@ -11,7 +11,8 @@
   var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
   dayjs.extend(utc);
   dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
-  dayjs.tz.setDefault("Europe/Paris");
+  // dayjs.tz.setDefault("Europe/Paris");
+  dayjs.tz.setDefault("Europe/London");
 </script>
 
 <script lang="ts">
@@ -112,7 +113,7 @@
       timingsByIds[tId] = {
         id: tId,
         sourceDate: tSum.sourceDate,
-        sourceTime: tSum.sourceTime,
+        sourceTime: dayjs.unix(tSum.sourceTimestamp),
         sourceStamp: sourceStamp,
         rangeDayIdxBy10Min: rangeDayIdxBy10Min,
         maxPricePerHr: maxPPH,
@@ -237,7 +238,10 @@
               //   subTag.sumOfBookedHrs += delta;
               // }
 
-              subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+              // TODO : why reusing existing label is messing up tags for childs for :
+              // http://localhost:8000/mws/fr/mws-timings/report?page=1&tags%5B0%5D=miguel-monwoo&lvl1Tags%5B0%5D=miguel-monwoo&lvl2Tags%5B0%5D=swann&lvl3Tags%5B0%5D=suivi-des-formations-pour-swann&lvl3Tags%5B1%5D=es-google-meet ?
+              // subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+              subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
               if (!subTag.haveIds) {
                 subTag.haveIds = subTag.ids?.reduce((acc, tId) => {
                   acc[tId] = true;
@@ -762,12 +766,20 @@
         </tr>
       </thead>
       <tbody>
+        <!-- subLevelKeys={Array.from(subTag.subTags?.keys() ?? [])} -->
         {#each summaryByLevels.subTags ?? [] as subTag, tagIdx}
           {#if subTag ?? false}
             <ReportSummaryRows
               summary={subTag}
               label={subTag.label}
-              subLevelKeys={Array.from(subTag.subTags?.keys() ?? [])}
+              subLevelKeys={
+                Array.from(
+                  ((subTag.subTags?.length || null) &&
+                  subTag.subTags.keys())
+                  ?? subTag.ids
+                  ?? []
+                )
+              }
               rowClass="bg-gray-300 font-bold"
               {showDetails}
               {showPictures}

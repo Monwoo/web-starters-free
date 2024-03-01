@@ -1,3 +1,20 @@
+<!-- <script context="module">
+  // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
+  // import "dayjs/esm/locale/fr";
+  // import dayjs from "dayjs/esm";
+  import "dayjs/locale/fr";
+  // import "dayjs/locale/en";
+  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
+  var utc = require('dayjs/plugin/utc')
+  var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+  dayjs.extend(utc);
+  dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
+  // dayjs.tz.setDefault("Europe/Paris");
+  // https://www.timeanddate.com/time/map/#!cities=136
+  // https://www.timeanddate.com/worldclock/uk/london
+  // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#LONDON
+  dayjs.tz.setDefault("Europe/London");
+</script> -->
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -30,6 +47,7 @@
     urlParams.set("page",  newPageNum < 1 ? 1 : newPageNum);
     window.location.search = urlParams;
   };
+  // dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 
   console.debug(lookupForm);
   $: {

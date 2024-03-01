@@ -383,12 +383,14 @@ class MwsTimingController extends AbstractController
 
         // Fetching 'source' is too slow, and splitting with , might have issue with ','...
         // GROUP_CONCAT(t.source) as source,            
+        // strftime('%Y-%m-%d %H:%M:%S', t.sourceTime) as sourceTime,
+
 
         // https://www.php.net/manual/fr/function.strftime.php
         $qb = $qb->select("
             count(t) as count,
             strftime('%Y-%m-%d', t.sourceTime) as sourceDate,
-            strftime('%Y-%m-%d %H:%M:%S', t.sourceTime) as sourceTime,
+            strftime('%s', t.sourceTime) as sourceTimestamp,
             strftime('%Y', t.sourceTime) as sourceYear,
             strftime('%m', t.sourceTime) as sourceMonth,
             strftime('%d', t.sourceTime) as sourceWeekOfYear,

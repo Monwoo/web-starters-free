@@ -1,22 +1,26 @@
-<script context="module">
+<script lang="ts">
+  // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+  import Routing from "fos-router";
+  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
+  import { tweened } from "svelte/motion";
+  import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
+  // import dayjs from "dayjs"; // TIPS : MODULE import will be useless if double import... ( not configured new instance)
   // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
   // import "dayjs/esm/locale/fr";
   // import dayjs from "dayjs/esm";
   import "dayjs/locale/fr";
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
-  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
+  // https://day.js.org/docs/en/timezone/set-default-timezone
+  // https://day.js.org/docs/en/plugin/timezone
+  var utc = require('dayjs/plugin/utc')
+  var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+  dayjs.extend(utc);
+  dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
+  // dayjs.tz.setDefault("Europe/Paris");
+  dayjs.tz.setDefault("Europe/London");
 
-</script>
-
-<script lang="ts">
-  // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-  import Routing from "fos-router";
-  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
-  import { get } from "svelte/store";
-	import { tweened } from 'svelte/motion';
-import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
-  
   let classNames = "";
   export { classNames as class };
   export let timingSlot;
@@ -40,7 +44,7 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
   //          = 12.4 / 60 = 0.21 items per secondes
   //          => around 5 secondes to qualify one item...
   export let timerStart = 5;
-	let timer = tweened(timerStart);
+  let timer = tweened(timerStart);
 
   let tInterval = null;
   const startTimer = () => {
@@ -54,8 +58,10 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
         clearInterval(tInterval);
       }
     }, 1000);
-  }
+  };
   // startTimer();
+  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
+  dayjs.tz.setDefault("Europe/London");
 
   // $: minutes = Math.floor($timer / 60);
   $: lastSelectedIndex, startTimer();
@@ -65,9 +71,9 @@ import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
   const pageNumber = urlParams.get("page") ?? "1";
 
   const movePageIndex = (delta) => {
-    const newPageNum  = parseInt(pageNumber) + delta;
+    const newPageNum = parseInt(pageNumber) + delta;
     // TODO : how to know max page num ? data.length / pageLimit, need to know details...
-    urlParams.set("page",  newPageNum < 1 ? 1 : newPageNum);
+    urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
     window.location.search = urlParams;
   };
 
@@ -220,13 +226,17 @@ style:opacity={isLoading ? 0.8 : 1} -->
   flex flex-row flex-wrap content-start max-h-full
   {classNames}"
   class:pointer-events-none={isLoading}
-  style::pointer-events={isLoading ? 'none' : 'auto'}
-  >
+  style::pointer-events={isLoading ? "none" : "auto"}
+>
   <!-- {JSON.stringify(timingSlot)} -->
   <div>
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}] [{timingSlot?.maxPricePerHr ??
       "--"}]
-    {dayjs(timingSlot?.sourceTime).format("YYYY/MM/DD H:mm")}
+    {dayjs(timingSlot?.sourceTime)
+    .tz("Europe/London")
+    .format("YYYY/MM/DD H:mm:ss")
+    }
+    {timingSlot.sourceStamp?.split("/").slice(-1) ?? subKey}
   </div>
   <!-- {timingSlot?.sourceStamp} -->
   <div
@@ -243,13 +253,13 @@ style:opacity={isLoading ? 0.8 : 1} -->
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
         <!-- {$timer} -->
         <ProgressIndicator
-        percent={1 - $timer / timerStart} 
-        textRenderer={(percent) => `${$timer.toFixed(0)}`}
+          percent={1 - $timer / timerStart}
+          textRenderer={(percent) => `${$timer.toFixed(0)}`}
         />
 
         [{pageNumber}-{lastSelectedIndex}]
       </span>
-      
+
       {#if isFullScreen}
         <button
           class="float-right m-1"
@@ -278,7 +288,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
             class="float-right m-1"
             on:click|stopPropagation={() => movePageIndex(-1)}
           >
-          Prev. Page
+            Prev. Page
           </button>
         {/if}
       {/if}
@@ -287,7 +297,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
           class="float-right m-1"
           on:click|stopPropagation={qt.toggleQualif}
         >
-        [{String.fromCharCode(qt.shortcut)}] {qt.label}
+          [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each}
       {#each timingSlot?.tags ?? [] as tag}
