@@ -236,7 +236,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     .tz("Europe/London")
     .format("YYYY/MM/DD H:mm:ss")
     }
-    {timingSlot.sourceStamp?.split("/").slice(-1) ?? subKey}
+    {timingSlot?.sourceStamp?.split("/").slice(-1) ?? '--'}
   </div>
   <!-- {timingSlot?.sourceStamp} -->
   <div
