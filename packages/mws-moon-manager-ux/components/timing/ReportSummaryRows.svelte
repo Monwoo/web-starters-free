@@ -134,7 +134,9 @@
   const tailwindForceCss = "pl-4 pl-8 pl-12 pl-16 pl-20 pl-24 pl-28 pl-32 pl-36 pl-40";
 </script>
 
-<tr class="{rowClass}">
+<tr class="{rowClass}"
+class:font-extrabold={summary.usedForTotal}
+>
   <td
     class="border-t-0 px-6 text-middle
   border-l-0 border-r-0 text-lg whitespace-nowrap p-4 pl-{indent}"
@@ -177,18 +179,24 @@
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
 
-    <span class="p-1 bg-white rounded-md rounded-b-none">
+    <span class="p-1 bg-white rounded-md rounded-b-none"
+    class:border-2={summary.usedForTotal}
+    class:border-green-400={summary.usedForTotal}
+    >
       {(summary.sumOfBookedHrs ?? null) === null
-      ? (10/60).toPrettyNum(2)
+      ?  (summary.usedForTotal
+        ? (10/60).toPrettyNum(2)
+        : '-'
+      )
       : (summary.sumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr
     </span>
 
-    {#if summary.deepSumOfBookedHrs !== null}
-      <!-- <br /> -->
-      <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
-        {summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-'} hr
-      </span>
-    {/if}
+    <!-- <br /> -->
+    <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
+      {(summary.deepSumOfBookedHrs ?? null) === null
+        ? (10/60).toPrettyNum(2)
+        : summary.deepSumOfBookedHrs.toPrettyNum(2) ?? '-'} hr
+    </span>
   </td>
   <td
     class="border-t-0 px-6 text-right
@@ -202,17 +210,24 @@
     class="border-t-0 px-6 text-right flex flex-col
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    <span class="p-1 bg-white rounded-md rounded-b-none">
+    <span class="p-1 bg-white rounded-md rounded-b-none"
+    class:border-2={summary.usedForTotal}
+    class:border-green-400={summary.usedForTotal}
+    >
       {(summary.sumOfMaxPPH ?? null) === null
-      ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
+      ? (
+        summary.usedForTotal
+        ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
+        : '-'
+      )
       : (summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-')} €
     </span>
-    {#if summary.deepSumOfMaxPPH !== null}
       <!-- <br /> -->
-      <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
-        {summary.deepSumOfMaxPPH?.toPrettyNum(2) ?? '-'} €
-      </span>
-    {/if}
+    <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
+      {(summary.deepSumOfMaxPPH ?? null) === null
+      ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
+      : summary.deepSumOfMaxPPH.toPrettyNum(2) ?? '-'} €
+    </span>
   </td>
 </tr>
 

@@ -432,6 +432,10 @@
       ensurePath(daySummary, ["deepSumOfMaxPPH"], 0);
       daySummary.deepSumOfBookedHrs += delta;
       daySummary.deepSumOfMaxPPH += deltaPrice;
+
+      if (maxSlot) {
+        maxSlot.usedForTotal = true;
+      }
     });
 
   });
