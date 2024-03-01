@@ -221,6 +221,7 @@
                   ...(bookedTimeSlotWithDate[slotWithDate] ?? {}),
                   ...{ [t.id]: true },
                 };
+                t.usedForTotal = true; // TODO : post process compute ?
 
                 // TIPS : below will be ok si childe level is previously loaded by recursion
                 subTag.sumOfBookedHrs += delta;
