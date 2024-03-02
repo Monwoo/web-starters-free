@@ -186,17 +186,18 @@
     return q;
   });
   let qualifShortcut = qualifTemplates.reduce((acc, qt) => {
-    acc[qt.shortcut] = qt.toggleQualif;
+    acc[String.fromCharCode(qt.shortcut).charCodeAt(0)] = qt.toggleQualif;
     return acc;
   }, {});
 
   const isKey = {
     space: (k) => k.keyCode == 32,
     return: (k) => k.keyCode == 13,
-    qualifShortcut: (k) => qualifShortcut[k.keyCode] ?? null,
+    qualifShortcut: (k) => qualifShortcut[k.key.charCodeAt(0)] ?? null,
   };
 
   const onKeyDown = async (e) => {
+    console.debug("Key down : ", e);
     if (isKey.space(e)) {
       isFullScreen = !isFullScreen;
       e.preventDefault();

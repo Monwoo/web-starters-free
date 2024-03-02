@@ -37,6 +37,9 @@
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
 
+  // DEV stuffs : TODO : from user confogs or app configs if build in debug mode ?
+  const debugReport = false;
+
   const ensurePath = (obj, path, val = {}) => {
     path.forEach((key) => {
       if (!(key in obj)) {
@@ -195,6 +198,11 @@
               deepLvl: level,
             });
             let subTag = currentSubTags[tagIdx];
+            debugReport && (console.debug(
+              `[loadLevel][${level}] at ${tagIdx}  for ${tag}`,
+            ) || console.debug(
+              `[loadLevel][${level}][${tagIdx}] ${tag} INIT`, subTag
+            ));
             if (level <= 5) {
               ensurePath(subTag, ["subTags"], []);
               subLevelOk = loadLevel(level + 1, subTag.subTags);
@@ -240,8 +248,8 @@
 
               // TODO : why reusing existing label is messing up tags for childs for :
               // http://localhost:8000/mws/fr/mws-timings/report?page=1&tags%5B0%5D=miguel-monwoo&lvl1Tags%5B0%5D=miguel-monwoo&lvl2Tags%5B0%5D=swann&lvl3Tags%5B0%5D=suivi-des-formations-pour-swann&lvl3Tags%5B1%5D=es-google-meet ?
-              // subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
-              subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+              subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+              // subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
               if (!subTag.haveIds) {
                 subTag.haveIds = subTag.ids?.reduce((acc, tId) => {
                   acc[tId] = true;
@@ -270,18 +278,24 @@
               usedByReport = true;
               subLevelOk = true;
             }
+
+            debugReport && console.debug(
+              `[loadLevel][${level}][${tagIdx}] ${tag} DONE`, subTag
+            );
           } else {
-            // console.debug('No tag found in ', t.tags, ' for ', tag)
+            // debugReport && console.debug('No tag found in ', t.tags, ' for ', tag)
           }
-        });
+       });
         // currentSubTags = currentSubTags.filter(v => v !== null);
         // In place filter :
         // https://stackoverflow.com/questions/37318808/what-is-the-in-place-alternative-to-array-prototype-filter
-        currentSubTags.splice(
-          0,
-          currentSubTags.length,
-          ...currentSubTags.filter((v) => !!(v?.tags ?? false))
-        );
+
+        // TIPS : BELOW will BREAK index order, do afterward instead
+        // currentSubTags.splice(
+        //   0,
+        //   currentSubTags.length,
+        //   ...currentSubTags.filter((v) => !!(v?.tags ?? false))
+        // );
 
         return subLevelOk;
       };

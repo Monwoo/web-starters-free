@@ -72,7 +72,7 @@ class MwsTimeSlot
         // $hours = $dt->format('H'); // '20'
         $minutes = intval($sourceTime->format('H')) * 60
             + intval($sourceTime->format('i'));
-        $slotIdxBy10Min = $minutes / 10;
+        $slotIdxBy10Min = intval($minutes / 10);
         $this->setRangeDayIdxBy10Min($slotIdxBy10Min);
 
         return $this;
