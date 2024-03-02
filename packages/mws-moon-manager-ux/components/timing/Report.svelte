@@ -379,10 +379,10 @@
         });
         // TODO : Opti : use object hashmap instead of includes ?
         if (!subTag.haveIds) {
-          subTag.haveIds = subTag.ids.reduce((acc, tId) => {
+          subTag.haveIds = subTag.ids?.reduce((acc, tId) => {
             acc[tId] = true;
             return acc;
-          }, {});
+          }, {}) ?? {};
         }
         // if (maxSlot?.usedForTotal || !subTag.ids.includes(maxSlot.id)) {
         if (maxSlot?.usedForTotal || !(subTag.haveIds[maxSlot.id] ?? false)) {
@@ -397,7 +397,7 @@
         subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, maxPPH);
         maxSlot?.usedForTotal = true;
       });
-      Object.keys(subTag.bookedTimeSlotWithDate).forEach((slotSegment) => {
+      Object.keys(subTag.bookedTimeSlotWithDate ?? {}).forEach((slotSegment) => {
         const slotIds = subTag.bookedTimeSlotWithDate[slotSegment];
         let maxSlot = null;
         Object.keys(slotIds).forEach((slotId) => {

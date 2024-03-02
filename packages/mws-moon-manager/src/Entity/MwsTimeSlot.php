@@ -72,6 +72,7 @@ class MwsTimeSlot
 
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
         // TODO : rethink timzone stuff, is gmt date, need update on tz changes ?
+        //    => get from CRM root configs... (param or env or db ?)
         // $dt = DateTime::createFromFormat("Y-m-d H:i:s", "2011-07-26 20:05:00");
         // $hours = $dt->format('H'); // '20'
         $localTz = new DateTimeZone('Europe/Paris');
