@@ -11,8 +11,8 @@
   var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
   dayjs.extend(utc);
   dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
-  // dayjs.tz.setDefault("Europe/Paris");
-  dayjs.tz.setDefault("Europe/London");
+  dayjs.tz.setDefault("Europe/Paris");
+  // dayjs.tz.setDefault("Europe/London");
 </script>
 
 <script lang="ts">

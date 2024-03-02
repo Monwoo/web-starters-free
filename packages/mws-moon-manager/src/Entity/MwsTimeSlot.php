@@ -2,6 +2,8 @@
 
 namespace MWS\MoonManagerBundle\Entity;
 
+use DateTime;
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -20,6 +22,7 @@ class MwsTimeSlot
     #[ORM\Column]
     private ?int $id = null;
 
+    // TIPS : will miss the timezone, for simplicity, will be GMT time...
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $sourceTime = null;
 
@@ -68,12 +71,18 @@ class MwsTimeSlot
         $this->sourceTime = $sourceTime;
 
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
+        // TODO : rethink timzone stuff, is gmt date, need update on tz changes ?
         // $dt = DateTime::createFromFormat("Y-m-d H:i:s", "2011-07-26 20:05:00");
         // $hours = $dt->format('H'); // '20'
-        $minutes = intval($sourceTime->format('H')) * 60
-            + intval($sourceTime->format('i'));
+        $localTz = new DateTimeZone('Europe/Paris');
+        
+        $localTime = new DateTime($sourceTime->format(DateTime::ATOM));
+        $localTime->setTimezone($localTz);
+        $minutes = intval($localTime->format('H')) * 60
+            + intval($localTime->format('i'));
         $slotIdxBy10Min = intval($minutes / 10);
         $this->setRangeDayIdxBy10Min($slotIdxBy10Min);
+
 
         return $this;
     }

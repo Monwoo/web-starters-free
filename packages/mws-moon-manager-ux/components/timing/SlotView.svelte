@@ -19,7 +19,7 @@
   dayjs.extend(utc);
   dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
   // dayjs.tz.setDefault("Europe/Paris");
-  dayjs.tz.setDefault("Europe/London");
+  dayjs.tz.setDefault("Europe/Paris");
 
   let classNames = "";
   export { classNames as class };
@@ -61,7 +61,7 @@
   };
   // startTimer();
   dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
-  dayjs.tz.setDefault("Europe/London");
+  dayjs.tz.setDefault("Europe/Paris");
 
   // $: minutes = Math.floor($timer / 60);
   $: lastSelectedIndex, startTimer();
@@ -234,7 +234,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}] [{timingSlot?.maxPricePerHr ??
       "--"}]
     {dayjs(timingSlot?.sourceTime)
-    .tz("Europe/London")
+    .tz("Europe/Paris")
     .format("YYYY/MM/DD H:mm:ss")
     }
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? '--'}
@@ -260,7 +260,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         <span class="flex w-[6em]">
           [{pageNumber}-{lastSelectedIndex}]
           {dayjs(timingSlot?.sourceTime)
-          .tz("Europe/London")
+          .tz("Europe/Paris")
           .format("YYYY/MM/DD H:mm:ss")
           }  
         </span>
