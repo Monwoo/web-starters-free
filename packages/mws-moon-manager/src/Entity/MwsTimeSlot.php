@@ -12,7 +12,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 
 #[ORM\Entity(repositoryClass: MwsTimeSlotRepository::class)]
-#[ORM\Index(columns: ['source_time'])]
+#[ORM\Index(columns: ['source_time_gmt'])]
 #[ORM\Index(columns: ['range_day_idx_by10_min'])]
 #[ORM\Index(columns: ['range_day_idx_by_custom_norm'])]
 class MwsTimeSlot
