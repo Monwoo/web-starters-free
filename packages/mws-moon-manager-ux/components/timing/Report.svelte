@@ -7,8 +7,8 @@
   import dayjs from "dayjs";
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
-  var utc = require('dayjs/plugin/utc')
-  var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+  var utc = require("dayjs/plugin/utc");
+  var timezone = require("dayjs/plugin/timezone"); // dependent on utc plugin
   dayjs.extend(utc);
   dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
   dayjs.tz.setDefault("Europe/Paris");
@@ -151,6 +151,72 @@
 
       // summaryByLevels
       let usedByReport = false;
+      const ensureLevelItem = (subTag, t, tag) => {
+        ensurePath(subTag, ["bookedTimeSlot"], {});
+        ensurePath(subTag, ["bookedTimeSlotWithDate"], {});
+        // TODO : below init ok, but used at postprocess, so lazy init in postprocess only ?
+        ensurePath(subTag, ["maxPPH"], 0);
+        ensurePath(subTag, ["sumOfBookedHrs"], 0);
+        ensurePath(subTag, ["sumOfMaxPPH"], 0);
+        ensurePath(subTag, ["deepSumOfBookedHrs"], 0);
+        ensurePath(subTag, ["deepSumOfMaxPPH"], 0);
+        ensurePath(subTag, ["tags"], {});
+
+        ensurePath(subTag, ["subTags"], []);
+
+        const slotWithDate = t.sourceDate + "-" + t.rangeDayIdxBy10Min;
+        // if (!(subTag.bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+        //   // TODO : save max one, post process.... ?
+        subTag.bookedTimeSlotWithDate[slotWithDate] = {
+          ...(subTag.bookedTimeSlotWithDate[slotWithDate] ?? {}),
+          ...{ [t.id]: true },
+        };
+        //   subTag.deepSumOfBookedHrs += delta;
+        //   t.usedForDeepTotal = true; // TODO : post process compute ?
+        // }
+        // if (!(bookedTimeSlotWithDate[slotWithDate] ?? null)) {
+        //   // TODO : save max one, post process....
+        bookedTimeSlotWithDate[slotWithDate] = {
+          ...(bookedTimeSlotWithDate[slotWithDate] ?? {}),
+          ...{ [t.id]: true },
+        };
+        //   t.usedForTotal = true; // TODO : post process compute ?
+        //   // TIPS : below will be ok si childe level is previously loaded by recursion
+        //   subTag.sumOfBookedHrs += delta;
+        // }
+
+        // TODO : why reusing existing label is messing up tags for childs for :
+        // http://localhost:8000/mws/fr/mws-timings/report?page=1&tags%5B0%5D=miguel-monwoo&lvl1Tags%5B0%5D=miguel-monwoo&lvl2Tags%5B0%5D=swann&lvl3Tags%5B0%5D=suivi-des-formations-pour-swann&lvl3Tags%5B1%5D=es-google-meet ?
+        subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+        // subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
+        if (!subTag.haveIds) {
+          subTag.haveIds =
+            subTag.ids?.reduce((acc, tId) => {
+              acc[tId] = true;
+              return acc;
+            }, {}) ?? {};
+        }
+
+        // if (!subTag.ids?.includes(t.id)) {
+        if (!(subTag.haveIds[t.id] ?? null)) {
+          // only add once
+          subTag.ids = [...(subTag.ids ?? []), ...[t.id]];
+          subTag.haveIds[t.id] = true;
+        }
+        subTag.tags = {
+          ...(subTag.tags ?? {}),
+          ...(t.tags ?? {}),
+        };
+        // subTag.maxPPH = Math.max(
+        //   subTag?.maxPPH ?? 0,
+        //   t.maxPricePerHr ?? 0
+        // );
+        subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] = {
+          ...(subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] ?? {}),
+          ...{ [t.id]: true },
+        };
+        usedByReport = true;
+      };
       /*
       {
         subTags: [ // LVL 1
@@ -177,7 +243,7 @@
       //       const subTag = currentSubTags[tagIdx];
 
       // return false if want to keep outside of report :
-      const loadUnclassified = (level, currentSubTags) => {
+      const loadUnclassified = (level, currentSubTags, subTag) => {
         // tagIdx = notClassifiedIdx;
         //         tag = `${t.tags[tag].label} - Non classé`;
         //         ensurePath(subTag.subTags, [tagIdx], {
@@ -185,12 +251,52 @@
         //           deepLvl: level,
         //         });
         //         subTag = subTag.subTags[tagIdx];
-        return false;
+
+        if (level === 1) {
+          // Will go in by years/months/days left to qualify report :
+          return false;
+        }
+        // TODO : bring sub labels up in hierarchy if exists (ex : etude-devis without devis number)
+        // + use '--' tag if no sub tag for lefts ones
+        // subTag.label = "--";
+
+        jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
+          if (tag in t.tags) {
+            ensurePath(currentSubTags, [tagIdx], {
+              deepLvl: level,
+            });
+            let subTag = currentSubTags[tagIdx];
+            debugReport &&
+              (console.debug(
+                `[loadUnclassified][${level}] at ${tagIdx}  for ${tag}`
+              ) ||
+                console.debug(
+                  `[loadUnclassified][${level}][${tagIdx}] ${tag} INIT`,
+                  subTag
+                ));
+            if (level <= 5) {
+              ensurePath(subTag, ["subTags"], []);
+              loadUnclassified(level + 1, subTag.subTags, subTag);
+            }
+            ensureLevelItem(subTag, t, tag);
+
+            debugReport &&
+              console.debug(
+                `[loadUnclassified][${level}][${tagIdx}] ${tag} DONE`,
+                subTag
+              );
+          } else {
+            // debugReport && console.debug('No tag found in ', t.tags, ' for ', tag)
+          }
+        });
+
+        return true;
       };
 
       const loadLevel = (level, currentSubTags) => {
         // console.debug("Load lvl",level, jsonReport);
-        const notClassifiedIdx = 7; // jsonReport[`lvl${level}Tags`]?.length ?? 0;
+        // const notClassifiedIdx = 7; // jsonReport[`lvl${level}Tags`]?.length ?? 0;
+        const notClassifiedIdx = jsonReport[`lvl${level}Tags`]?.length ?? 0;
         let subLevelOk = !jsonReport[`lvl${level}Tags`].length;
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
           if (tag in t.tags) {
@@ -198,94 +304,36 @@
               deepLvl: level,
             });
             let subTag = currentSubTags[tagIdx];
-            debugReport && (console.debug(
-              `[loadLevel][${level}] at ${tagIdx}  for ${tag}`,
-            ) || console.debug(
-              `[loadLevel][${level}][${tagIdx}] ${tag} INIT`, subTag
-            ));
+            debugReport &&
+              (console.debug(
+                `[loadLevel][${level}] at ${tagIdx}  for ${tag}`
+              ) ||
+                console.debug(
+                  `[loadLevel][${level}][${tagIdx}] ${tag} INIT`,
+                  subTag
+                ));
             if (level <= 5) {
               ensurePath(subTag, ["subTags"], []);
               subLevelOk = loadLevel(level + 1, subTag.subTags);
               if (!subLevelOk) {
-                subLevelOk = loadUnclassified(level, currentSubTags);
+                subLevelOk = loadUnclassified(level, currentSubTags, subTag);
               }
             } else {
               subLevelOk = true;
             }
             if (subLevelOk) {
-              ensurePath(subTag, ["bookedTimeSlot"], {});
-              ensurePath(subTag, ["bookedTimeSlotWithDate"], {});
-              // TODO : below init ok, but used at postprocess, so lazy init in postprocess only ?
-              ensurePath(subTag, ["maxPPH"], 0);
-              ensurePath(subTag, ["sumOfBookedHrs"], 0);
-              ensurePath(subTag, ["sumOfMaxPPH"], 0);
-              ensurePath(subTag, ["deepSumOfBookedHrs"], 0);
-              ensurePath(subTag, ["deepSumOfMaxPPH"], 0);
-              ensurePath(subTag, ["tags"], {});
-
-              ensurePath(subTag, ["subTags"], []);
-
-              const slotWithDate = t.sourceDate + "-" + t.rangeDayIdxBy10Min;
-              // if (!(subTag.bookedTimeSlotWithDate[slotWithDate] ?? null)) {
-              //   // TODO : save max one, post process.... ?
-              subTag.bookedTimeSlotWithDate[slotWithDate] = {
-                ...(subTag.bookedTimeSlotWithDate[slotWithDate] ?? {}),
-                ...{ [t.id]: true },
-              };
-              //   subTag.deepSumOfBookedHrs += delta;
-              //   t.usedForDeepTotal = true; // TODO : post process compute ?
-              // }
-              // if (!(bookedTimeSlotWithDate[slotWithDate] ?? null)) {
-              //   // TODO : save max one, post process....
-              bookedTimeSlotWithDate[slotWithDate] = {
-                ...(bookedTimeSlotWithDate[slotWithDate] ?? {}),
-                ...{ [t.id]: true },
-              };
-              //   t.usedForTotal = true; // TODO : post process compute ?
-              //   // TIPS : below will be ok si childe level is previously loaded by recursion
-              //   subTag.sumOfBookedHrs += delta;
-              // }
-
-              // TODO : why reusing existing label is messing up tags for childs for :
-              // http://localhost:8000/mws/fr/mws-timings/report?page=1&tags%5B0%5D=miguel-monwoo&lvl1Tags%5B0%5D=miguel-monwoo&lvl2Tags%5B0%5D=swann&lvl3Tags%5B0%5D=suivi-des-formations-pour-swann&lvl3Tags%5B1%5D=es-google-meet ?
-              subTag.label = subTag.label ?? t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
-              // subTag.label = t.tags[tag].label; // TODO : slot count and how to reduce duplicated booked slot and extract maxPPH from it...
-              if (!subTag.haveIds) {
-                subTag.haveIds = subTag.ids?.reduce((acc, tId) => {
-                  acc[tId] = true;
-                  return acc;
-                }, {}) ?? {};
-              }
-
-              // if (!subTag.ids?.includes(t.id)) {
-              if (!(subTag.haveIds[t.id] ?? null)) {
-                // only add once
-                subTag.ids = [...(subTag.ids ?? []), ...[t.id]];
-                subTag.haveIds[t.id] = true;
-              }
-              subTag.tags = {
-                ...(subTag.tags ?? {}),
-                ...(t.tags ?? {}),
-              };
-              // subTag.maxPPH = Math.max(
-              //   subTag?.maxPPH ?? 0,
-              //   t.maxPricePerHr ?? 0
-              // );
-              subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] = {
-                ...(subTag.bookedTimeSlot[t.rangeDayIdxBy10Min] ?? {}),
-                ...{ [t.id]: true },
-              };
-              usedByReport = true;
-              subLevelOk = true;
+              ensureLevelItem(subTag, t, tag);
             }
 
-            debugReport && console.debug(
-              `[loadLevel][${level}][${tagIdx}] ${tag} DONE`, subTag
-            );
+            debugReport &&
+              console.debug(
+                `[loadLevel][${level}][${tagIdx}] ${tag} DONE`,
+                subTag
+              );
           } else {
             // debugReport && console.debug('No tag found in ', t.tags, ' for ', tag)
           }
-       });
+        });
         // currentSubTags = currentSubTags.filter(v => v !== null);
         // In place filter :
         // https://stackoverflow.com/questions/37318808/what-is-the-in-place-alternative-to-array-prototype-filter
@@ -330,10 +378,10 @@
 
       if (!summaryByDays[tReport.sourceDate].haveIds) {
         summaryByDays[tReport.sourceDate].haveIds =
-        summaryByDays[tReport.sourceDate].ids?.reduce((acc, tId) => {
-          acc[tId] = true;
-          return acc;
-        }, {}) ?? {};
+          summaryByDays[tReport.sourceDate].ids?.reduce((acc, tId) => {
+            acc[tId] = true;
+            return acc;
+          }, {}) ?? {};
       }
 
       // if (!summaryByDays[tReport.sourceDate].ids?.includes(t.id)) {
@@ -379,10 +427,11 @@
         });
         // TODO : Opti : use object hashmap instead of includes ?
         if (!subTag.haveIds) {
-          subTag.haveIds = subTag.ids?.reduce((acc, tId) => {
-            acc[tId] = true;
-            return acc;
-          }, {}) ?? {};
+          subTag.haveIds =
+            subTag.ids?.reduce((acc, tId) => {
+              acc[tId] = true;
+              return acc;
+            }, {}) ?? {};
         }
         // if (maxSlot?.usedForTotal || !subTag.ids.includes(maxSlot.id)) {
         if (maxSlot?.usedForTotal || !(subTag.haveIds[maxSlot.id] ?? false)) {
@@ -390,45 +439,46 @@
         }
         // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
         const delta = 10 / 60; // TODO : const for segment config instead of '10'
-        const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
+        const maxPPH = maxSlot?.maxPricePerHr ?? 0;
         const deltaPrice = maxPPH * delta;
         subTag.sumOfBookedHrs += delta;
         subTag.sumOfMaxPPH += deltaPrice;
         subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, maxPPH);
         maxSlot?.usedForTotal = true;
       });
-      Object.keys(subTag.bookedTimeSlotWithDate ?? {}).forEach((slotSegment) => {
-        const slotIds = subTag.bookedTimeSlotWithDate[slotSegment];
-        let maxSlot = null;
-        Object.keys(slotIds).forEach((slotId) => {
-          const timeSlot = timingsByIds[slotId] ?? null;
-          if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
-            maxSlot = timeSlot;
-          }
-        });
-        // // TODO : Opti : use object hashmap instead of includes ? No need for deep compute ?
-        // if (maxSlot?.usedForDeepTotal || !subTag.ids.includes(maxSlot.id)) {
-        //   return; // Do not re-compute if already added for deep TOTAL
-        // }
+      Object.keys(subTag.bookedTimeSlotWithDate ?? {}).forEach(
+        (slotSegment) => {
+          const slotIds = subTag.bookedTimeSlotWithDate[slotSegment];
+          let maxSlot = null;
+          Object.keys(slotIds).forEach((slotId) => {
+            const timeSlot = timingsByIds[slotId] ?? null;
+            if (
+              (timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)
+            ) {
+              maxSlot = timeSlot;
+            }
+          });
+          // // TODO : Opti : use object hashmap instead of includes ? No need for deep compute ?
+          // if (maxSlot?.usedForDeepTotal || !subTag.ids.includes(maxSlot.id)) {
+          //   return; // Do not re-compute if already added for deep TOTAL
+          // }
 
-        // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
-        const delta = 10 / 60; // TODO : const for segment config instead of '10'
-        const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
-        const deltaPrice = maxPPH * delta;
-        subTag.deepSumOfBookedHrs += delta;
-        subTag.deepSumOfMaxPPH += deltaPrice;
-        // TODO : deepMaxPPH <> of maxPPH or not usefull ?
-        subTag.deepMaxPPH = Math.max(subTag.deepMaxPPH ?? 0, maxPPH);
-        maxSlot?.usedForDeepTotal = true;
-      });
-      subTag.subTags.forEach(childSubTag => {
+          // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
+          const delta = 10 / 60; // TODO : const for segment config instead of '10'
+          const maxPPH = maxSlot?.maxPricePerHr ?? 0;
+          const deltaPrice = maxPPH * delta;
+          subTag.deepSumOfBookedHrs += delta;
+          subTag.deepSumOfMaxPPH += deltaPrice;
+          // TODO : deepMaxPPH <> of maxPPH or not usefull ?
+          subTag.deepMaxPPH = Math.max(subTag.deepMaxPPH ?? 0, maxPPH);
+          maxSlot?.usedForDeepTotal = true;
+        }
+      );
+      subTag.subTags.forEach((childSubTag) => {
         // Add child TOTAL, ok since after recursion call, child are computed first
         subTag.sumOfBookedHrs += childSubTag.sumOfBookedHrs;
         subTag.sumOfMaxPPH += childSubTag.sumOfMaxPPH;
-        subTag.maxPPH = Math.max(
-          subTag.maxPPH ?? 0,
-          childSubTag.maxPPH ?? 0,
-        );
+        subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, childSubTag.maxPPH ?? 0);
 
         // subTag.deepSumOfBookedHrs += childSubTag.deepSumOfBookedHrs;
         // subTag.deepSumOfMaxPPH += childSubTag.deepSumOfMaxPPH;
@@ -437,7 +487,6 @@
         //   childSubTag.deepMaxPPH ?? 0,
         // );
       });
-
     });
   };
 
@@ -532,18 +581,20 @@
       // TODO : only count for not used time slot for regular price...
       // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
       const delta = 10 / 60; // TODO : const for segment config instead of '10'
-      const maxPPH = (maxSlot?.maxPricePerHr ?? 0);
+      const maxPPH = maxSlot?.maxPricePerHr ?? 0;
       const deltaPrice = maxPPH * delta;
 
       summaryByYears[tYear].sumOfBookedHrs += delta;
       summaryByYears[tYear].sumOfMaxPPH += deltaPrice;
       summaryByYears[tYear].maxPPH = Math.max(
-        summaryByYears[tYear].maxPPH ?? 0, maxPPH
+        summaryByYears[tYear].maxPPH ?? 0,
+        maxPPH
       );
       summaryByYears[tYear].months[tMonth].sumOfBookedHrs += delta;
       summaryByYears[tYear].months[tMonth].sumOfMaxPPH += deltaPrice;
       summaryByYears[tYear].months[tMonth].maxPPH = Math.max(
-        summaryByYears[tYear].months[tMonth].maxPPH ?? 0, maxPPH
+        summaryByYears[tYear].months[tMonth].maxPPH ?? 0,
+        maxPPH
       );
 
       summaryByYears[tYear].deepSumOfBookedHrs += delta;
@@ -571,7 +622,6 @@
         maxSlot.usedForTotal = true;
       }
     });
-
   });
 
   console.debug(
@@ -600,7 +650,6 @@
   declare interface Number {
     toPrettyNum(length: number): string;
   }
-
 </script>
 
 <div class="mws-timing-report">
@@ -786,14 +835,11 @@
             <ReportSummaryRows
               summary={subTag}
               label={subTag.label}
-              subLevelKeys={
-                Array.from(
-                  ((subTag.subTags?.length || null) &&
-                  subTag.subTags.keys())
-                  ?? subTag.ids
-                  ?? []
-                )
-              }
+              subLevelKeys={Array.from(
+                ((subTag.subTags?.length || null) && subTag.subTags.keys()) ??
+                  subTag.ids ??
+                  []
+              )}
               rowClass="bg-gray-300 font-bold"
               {showDetails}
               {showPictures}

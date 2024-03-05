@@ -237,10 +237,10 @@ importers:
         version: 1.4.15
       '@sveltejs/adapter-auto':
         specifier: latest
-        version: 3.1.1(@sveltejs/kit@2.5.0)
+        version: 3.1.1(@sveltejs/kit@2.5.2)
       '@sveltejs/kit':
         specifier: latest
-        version: 2.5.0(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0)
+        version: 2.5.2(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0)
       '@types/sass':
         specifier: ^1.45.0
         version: 1.45.0
@@ -277,10 +277,10 @@ importers:
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: latest
-        version: 3.1.1(@sveltejs/kit@2.5.0)
+        version: 3.1.1(@sveltejs/kit@2.5.2)
       '@sveltejs/kit':
         specifier: latest
-        version: 2.5.0(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0)
+        version: 2.5.2(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0)
       eslint-config-svelte:
         specifier: workspace:*
         version: link:../../packages/svelte-eslint-config
@@ -447,7 +447,7 @@ importers:
         version: 8.8.0(eslint@7.32.0)
       eslint-config-turbo:
         specifier: latest
-        version: 1.12.3(eslint@7.32.0)
+        version: 1.12.4(eslint@7.32.0)
       eslint-plugin-react:
         specifier: 7.31.8
         version: 7.31.8(eslint@7.32.0)
@@ -498,7 +498,7 @@ importers:
         version: 8.8.0(eslint@8.38.0)
       eslint-config-turbo:
         specifier: latest
-        version: 1.12.3(eslint@8.38.0)
+        version: 1.12.4(eslint@8.38.0)
       eslint-plugin-svelte3:
         specifier: ^4.0.0
         version: 4.0.0(eslint@8.38.0)(svelte@3.58.0)
@@ -2585,12 +2585,12 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@sveltejs/adapter-auto@3.1.1(@sveltejs/kit@2.5.0):
+  /@sveltejs/adapter-auto@3.1.1(@sveltejs/kit@2.5.2):
     resolution: {integrity: sha512-6LeZft2Fo/4HfmLBi5CucMYmgRxgcETweQl/yQoZo/895K3S9YWYN4Sfm/IhwlIpbJp3QNvhKmwCHbsqQNYQpw==}
     peerDependencies:
       '@sveltejs/kit': ^2.0.0
     dependencies:
-      '@sveltejs/kit': 2.5.0(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0)
+      '@sveltejs/kit': 2.5.2(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0)
       import-meta-resolve: 4.0.0
     dev: true
 
@@ -2622,8 +2622,8 @@ packages:
       - supports-color
     dev: true
 
-  /@sveltejs/kit@2.5.0(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0):
-    resolution: {integrity: sha512-1uyXvzC2Lu1FZa30T4y5jUAC21R309ZMRG0TPt+PPPbNUoDpy8zSmSNVWYaBWxYDqLGQ5oPNWvjvvF2IjJ1jmA==}
+  /@sveltejs/kit@2.5.2(@sveltejs/vite-plugin-svelte@3.0.1)(svelte@3.58.0)(vite@4.3.0):
+    resolution: {integrity: sha512-1Pm2lsBYURQsjnLyZa+jw75eVD4gYHxGRwPyFe4DAmB3FjTVR8vRNWGeuDLGFcKMh/B1ij6FTUrc9GrerogCng==}
     engines: {node: '>=18.13'}
     hasBin: true
     requiresBuild: true
@@ -5212,22 +5212,22 @@ packages:
       eslint: 8.38.0
     dev: false
 
-  /eslint-config-turbo@1.12.3(eslint@7.32.0):
-    resolution: {integrity: sha512-Q46MEOiNJpJWC3Et5/YEuIYYhbOieS04yZwQOinO2hpZw3folEXV+hbwVo8M+ap/q8gtpjIWiRMZ1A4QxmhEqQ==}
+  /eslint-config-turbo@1.12.4(eslint@7.32.0):
+    resolution: {integrity: sha512-5hqEaV6PNmAYLL4RTmq74OcCt8pgzOLnfDVPG/7PUXpQ0Mpz0gr926oCSFukywKKXjdum3VHD84S7Z9A/DqTAw==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 7.32.0
-      eslint-plugin-turbo: 1.12.3(eslint@7.32.0)
+      eslint-plugin-turbo: 1.12.4(eslint@7.32.0)
     dev: false
 
-  /eslint-config-turbo@1.12.3(eslint@8.38.0):
-    resolution: {integrity: sha512-Q46MEOiNJpJWC3Et5/YEuIYYhbOieS04yZwQOinO2hpZw3folEXV+hbwVo8M+ap/q8gtpjIWiRMZ1A4QxmhEqQ==}
+  /eslint-config-turbo@1.12.4(eslint@8.38.0):
+    resolution: {integrity: sha512-5hqEaV6PNmAYLL4RTmq74OcCt8pgzOLnfDVPG/7PUXpQ0Mpz0gr926oCSFukywKKXjdum3VHD84S7Z9A/DqTAw==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 8.38.0
-      eslint-plugin-turbo: 1.12.3(eslint@8.38.0)
+      eslint-plugin-turbo: 1.12.4(eslint@8.38.0)
     dev: false
 
   /eslint-import-resolver-node@0.3.7:
@@ -5388,8 +5388,8 @@ packages:
       svelte: 3.58.0
     dev: false
 
-  /eslint-plugin-turbo@1.12.3(eslint@7.32.0):
-    resolution: {integrity: sha512-7hEyxa+oP898EFNoxVenHlH8jtBwV1hbbIkdQWgqDcB0EmVNGVEZkYRo5Hm6BuMAjR433B+NISBJdj0bQo4/Lg==}
+  /eslint-plugin-turbo@1.12.4(eslint@7.32.0):
+    resolution: {integrity: sha512-3AGmXvH7E4i/XTWqBrcgu+G7YKZJV/8FrEn79kTd50ilNsv+U3nS2IlcCrQB6Xm2m9avGD9cadLzKDR1/UF2+g==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
@@ -5397,8 +5397,8 @@ packages:
       eslint: 7.32.0
     dev: false
 
-  /eslint-plugin-turbo@1.12.3(eslint@8.38.0):
-    resolution: {integrity: sha512-7hEyxa+oP898EFNoxVenHlH8jtBwV1hbbIkdQWgqDcB0EmVNGVEZkYRo5Hm6BuMAjR433B+NISBJdj0bQo4/Lg==}
+  /eslint-plugin-turbo@1.12.4(eslint@8.38.0):
+    resolution: {integrity: sha512-3AGmXvH7E4i/XTWqBrcgu+G7YKZJV/8FrEn79kTd50ilNsv+U3nS2IlcCrQB6Xm2m9avGD9cadLzKDR1/UF2+g==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
