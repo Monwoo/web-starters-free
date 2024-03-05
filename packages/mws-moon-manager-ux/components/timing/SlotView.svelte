@@ -233,7 +233,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
   <div>
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}] [{timingSlot?.maxPricePerHr ??
       "--"}]
-    {dayjs(timingSlot?.sourceTime)
+    {dayjs(timingSlot?.sourceTimeGMT)
     .tz("Europe/Paris")
     .format("YYYY/MM/DD H:mm:ss")
     }
@@ -259,7 +259,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         />
         <span class="flex w-[6em]">
           [{pageNumber}-{lastSelectedIndex}]
-          {dayjs(timingSlot?.sourceTime)
+          {dayjs(timingSlot?.sourceTimeGMT)
           .tz("Europe/Paris")
           .format("YYYY/MM/DD H:mm:ss")
           }  

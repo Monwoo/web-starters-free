@@ -153,7 +153,7 @@ class MwsTimingController extends AbstractController
             }
         }
 
-        $qb->orderBy("t.sourceTime", "ASC");
+        $qb->orderBy("t.sourceTimeGMT", "ASC");
 
         $query = $qb->getQuery();
         // dd($query->getResult());    
@@ -334,7 +334,7 @@ class MwsTimingController extends AbstractController
         // https://stackoverflow.com/questions/17878237/doctrine-cannot-select-entity-through-identification-variables-without-choosing
         // ->from(MwsTimeTag::class, 'tag');
         // CONCAT_WS('-', tag.slug, tag.slug) as tags,
-        // strftime('%W', t.sourceTime) as sourceWeekOfYear,
+        // strftime('%W', t.sourceTimeGMT) as sourceWeekOfYear,
 
         if ($keyword) {
             // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
@@ -374,7 +374,7 @@ class MwsTimingController extends AbstractController
             }
         }
 
-        $qb->orderBy("t.sourceTime", "ASC");
+        $qb->orderBy("t.sourceTimeGMT", "ASC");
 
         // $query = $qb->getQuery();
         // $qb = $qb->innerJoin('t.tags', 'tag');
@@ -383,17 +383,17 @@ class MwsTimingController extends AbstractController
 
         // Fetching 'source' is too slow, and splitting with , might have issue with ','...
         // GROUP_CONCAT(t.source) as source,            
-        // strftime('%Y-%m-%d %H:%M:%S', t.sourceTime) as sourceTime,
+        // strftime('%Y-%m-%d %H:%M:%S', t.sourceTimeGMT) as sourceTimeGMT,
 
 
         // https://www.php.net/manual/fr/function.strftime.php
         $qb = $qb->select("
             count(t) as count,
-            strftime('%Y-%m-%d', t.sourceTime) as sourceDate,
-            strftime('%s', t.sourceTime) as sourceTimestamp,
-            strftime('%Y', t.sourceTime) as sourceYear,
-            strftime('%m', t.sourceTime) as sourceMonth,
-            strftime('%d', t.sourceTime) as sourceWeekOfYear,
+            strftime('%Y-%m-%d', t.sourceTimeGMT) as sourceDate,
+            strftime('%s', t.sourceTimeGMT) as sourceTimeGMTstamp,
+            strftime('%Y', t.sourceTimeGMT) as sourceYear,
+            strftime('%m', t.sourceTimeGMT) as sourceMonth,
+            strftime('%d', t.sourceTimeGMT) as sourceWeekOfYear,
             GROUP_CONCAT(tag.slug) as tags,
             GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
             GROUP_CONCAT(t.sourceStamp) as sourceStamps,

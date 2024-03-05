@@ -116,7 +116,7 @@
       timingsByIds[tId] = {
         id: tId,
         sourceDate: tSum.sourceDate,
-        sourceTime: dayjs.unix(tSum.sourceTimestamp),
+        sourceTimeGMT: dayjs.unix(tSum.sourceTimeGMTstamp),
         sourceStamp: sourceStamp,
         rangeDayIdxBy10Min: rangeDayIdxBy10Min,
         maxPricePerHr: maxPPH,

@@ -24,7 +24,7 @@ class MwsTimeSlot
 
     // TIPS : will miss the timezone, for simplicity, will be GMT time...
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $sourceTime = null;
+    private ?\DateTimeInterface $sourceTimeGMT = null;
 
     #[ORM\Column]
     private array $source = [];
@@ -61,14 +61,14 @@ class MwsTimeSlot
         return $this->id;
     }
 
-    public function getSourceTime(): ?\DateTimeInterface
+    public function getsourceTimeGMT(): ?\DateTimeInterface
     {
-        return $this->sourceTime;
+        return $this->sourceTimeGMT;
     }
 
-    public function setSourceTime(?\DateTimeInterface $sourceTime): static
+    public function setsourceTimeGMT(?\DateTimeInterface $sourceTimeGMT): static
     {
-        $this->sourceTime = $sourceTime;
+        $this->sourceTimeGMT = $sourceTimeGMT;
 
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
         // TODO : rethink timzone stuff, is gmt date, need update on tz changes ?
@@ -77,7 +77,7 @@ class MwsTimeSlot
         // $hours = $dt->format('H'); // '20'
         $localTz = new DateTimeZone('Europe/Paris');
         
-        $localTime = new DateTime($sourceTime->format(DateTime::ATOM));
+        $localTime = new DateTime($sourceTimeGMT->format(DateTime::ATOM));
         $localTime->setTimezone($localTz);
         $minutes = intval($localTime->format('H')) * 60
             + intval($localTime->format('i'));

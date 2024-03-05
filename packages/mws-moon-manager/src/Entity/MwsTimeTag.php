@@ -37,6 +37,18 @@ class MwsTimeTag
     #[ORM\Column(nullable: true)]
     private ?float $pricePerHr = null;
 
+    // if pricePerHr is not set, check pricePerHrRules...
+    // foreach rules, use chosen price if fit rules...
+    // TODO : centralized RulesSystemManager.php service ?
+    // 0 =>
+    //   price => 80
+    //   withTags => [ mise-en-oeuvre-experte ]
+    // 1 =>
+    //   price => 60
+    //   withTags => [ mise-en-oeuvre-simple ]
+    #[ORM\Column(nullable: true)]
+    private ?array $pricePerHrRules = null;
+
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: self::class)]
     #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeTags;
@@ -206,6 +218,18 @@ class MwsTimeTag
     public function setPricePerHr(?float $pricePerHr): static
     {
         $this->pricePerHr = $pricePerHr;
+
+        return $this;
+    }
+
+    public function getPricePerHrRules(): ?array
+    {
+        return $this->pricePerHrRules;
+    }
+
+    public function setPricePerHrRules(?array $pricePerHrRules): static
+    {
+        $this->pricePerHrRules = $pricePerHrRules;
 
         return $this;
     }
