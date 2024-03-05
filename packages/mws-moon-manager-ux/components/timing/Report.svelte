@@ -268,6 +268,12 @@
           subTags: [],
         });
         const notClassifiedTag = currentSubTags[notClassifiedIdx];
+        ensureLevelItem(notClassifiedTag, t, '--');
+        if (notClassifiedTag.subTags.length) {
+          // should not keeo ids for details of parent item, only for leafs nodes
+          notClassifiedTag.ids = null;
+        }
+
         currentSubTags = notClassifiedTag.subTags;
         level += 1;
 
@@ -303,13 +309,13 @@
           } else {
             // Try one deep level
             if (level <= 5) {
-              // loadLevel(level, currentSubTags);
-              loadUnclassified(level, currentSubTags);
+              loadLevel(level, currentSubTags);
+              // loadUnclassified(level, currentSubTags);
             }
             // debugReport && console.debug('No tag found in ', t.tags, ' for ', tag)
           }
         });
-        ensureLevelItem(notClassifiedTag, t, '--');
+        // ensureLevelItem(notClassifiedTag, t, '--');
 
         return true;
       };

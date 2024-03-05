@@ -18,7 +18,8 @@
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
 
-  // console.debug('subLevelKeys', subLevelKeys);
+  console.debug('[ReportSummaryRows] label', label);
+  console.debug('[ReportSummaryRows] subLevelKeys', subLevelKeys);
 
   const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
     // encodeURI('file://' + timingSlot.source.path)
@@ -165,8 +166,14 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     class="border-t-0 px-6 text-left
     border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-{indent}"
   >
-    <div class="text-lg">[{label}]</div>
-    {#each tagSlugs as tagSlug}
+    <div class="text-lg">
+      <!-- { Array.apply(null, {length: indent / 4})
+        .map(Number.call, (n) => '*').join(' ')
+      } [{label}]</div> -->
+       <!-- <span class="text-gray-500">[{indent / 4}]</span> -->
+       <span class="">[{label}]</span>
+    </div>
+  {#each tagSlugs as tagSlug}
       {@const tag = summary.tags[tagSlug]}
       <span
         class="inline-flex
