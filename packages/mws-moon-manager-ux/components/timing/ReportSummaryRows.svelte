@@ -74,6 +74,8 @@
   const getSubLabel = (subKey, showDetails) => {
     if ((summary.subTags ?? {})[subKey]??false) {
       return summary.subTags[subKey].label ?? subKey;
+      // return summary.label + ' | '
+      // + (summary.subTags[subKey].label ?? subKey);
     }
 
     if ((summary.days ?? {})[subKey]??false) {
