@@ -243,7 +243,7 @@
       //       const subTag = currentSubTags[tagIdx];
 
       // return false if want to keep outside of report :
-      const loadUnclassified = (level, currentSubTags, subTag) => {
+      const loadUnclassified = (level, currentSubTags) => {
         // tagIdx = notClassifiedIdx;
         //         tag = `${t.tags[tag].label} - Non classé`;
         //         ensurePath(subTag.subTags, [tagIdx], {
@@ -259,6 +259,20 @@
         // TODO : bring sub labels up in hierarchy if exists (ex : etude-devis without devis number)
         // + use '--' tag if no sub tag for lefts ones
         // subTag.label = "--";
+
+        // const notClassifiedIdx = 7; // jsonReport[`lvl${level}Tags`]?.length ?? 0;
+        const notClassifiedIdx = jsonReport[`lvl${level}Tags`]?.length ?? 0;
+        ensurePath(currentSubTags, [notClassifiedIdx], {
+          label: '--',
+          deepLvl: level,
+          subTags: [],
+        });
+        const notClassifiedTag = currentSubTags[notClassifiedIdx];
+        currentSubTags = notClassifiedTag.subTags;
+        level += 1;
+
+        // TODO : why not simply reuse with extra params ? : 
+        // loadLevel(level + 1, notClassifiedTag.subTags);
 
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
           if (tag in t.tags) {
@@ -276,7 +290,8 @@
                 ));
             if (level <= 5) {
               ensurePath(subTag, ["subTags"], []);
-              loadUnclassified(level + 1, subTag.subTags, subTag);
+              loadLevel(level + 1, subTag.subTags);
+              // loadUnclassified(level + 1, subTag.subTags, subTag);
             }
             ensureLevelItem(subTag, t, tag);
 
@@ -288,7 +303,8 @@
           } else {
             // Try one deep level
             if (level <= 5) {
-              loadUnclassified(level + 1, subTag.subTags, subTag);
+              // loadLevel(level, currentSubTags);
+              loadUnclassified(level, currentSubTags);
             }
             // debugReport && console.debug('No tag found in ', t.tags, ' for ', tag)
           }
@@ -299,8 +315,6 @@
 
       const loadLevel = (level, currentSubTags) => {
         // console.debug("Load lvl",level, jsonReport);
-        // const notClassifiedIdx = 7; // jsonReport[`lvl${level}Tags`]?.length ?? 0;
-        const notClassifiedIdx = jsonReport[`lvl${level}Tags`]?.length ?? 0;
         let subLevelOk = !jsonReport[`lvl${level}Tags`].length;
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
           if (tag in t.tags) {
@@ -320,7 +334,7 @@
               ensurePath(subTag, ["subTags"], []);
               subLevelOk = loadLevel(level + 1, subTag.subTags);
               if (!subLevelOk) {
-                subLevelOk = loadUnclassified(level, currentSubTags, subTag);
+                subLevelOk = loadUnclassified(level + 1, subTag.subTags);
               }
             } else {
               subLevelOk = true;
