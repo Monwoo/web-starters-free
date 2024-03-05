@@ -309,6 +309,7 @@
             // debugReport && console.debug('No tag found in ', t.tags, ' for ', tag)
           }
         });
+        ensureLevelItem(notClassifiedTag, t, '--');
 
         return true;
       };
