@@ -286,6 +286,10 @@
                 subTag
               );
           } else {
+            // Try one deep level
+            if (level <= 5) {
+              loadUnclassified(level + 1, subTag.subTags, subTag);
+            }
             // debugReport && console.debug('No tag found in ', t.tags, ' for ', tag)
           }
         });
