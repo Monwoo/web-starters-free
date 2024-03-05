@@ -123,6 +123,49 @@
     isLoading = false;
   };
 
+  export let removeAllTags = async () => {
+    isLoading = true;
+    const data = {
+      _csrf_token: stateGet(get(state), "csrfTimingTagRemoveAll"),
+      timeSlotId: timingSlot?.id,
+    };
+    const formData = new FormData();
+    for (const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate("mws_timing_tag_remove_all", {
+        _locale: locale,
+      }),
+      {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        redirect: "error",
+      }
+    )
+      .then(async (resp) => {
+        console.log(resp);
+        if (!resp.ok) {
+          throw new Error("Not 2xx response", { cause: resp });
+        } else {
+          const data = await resp.json();
+          timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
+          console.debug("Did add tag", timingSlot?.tags);
+          stateUpdate(state, {
+            csrfTimingTagRemoveAll: data.newCsrf,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
+    isLoading = false;
+  }
+
   export let addTag = async (tag) => {
     isLoading = true;
     const data = {
@@ -188,7 +231,9 @@
   let qualifShortcut = qualifTemplates.reduce((acc, qt) => {
     acc[String.fromCharCode(qt.shortcut).charCodeAt(0)] = qt.toggleQualif;
     return acc;
-  }, {});
+  }, {
+    ['d'.charCodeAt(0)]: removeAllTags
+  });
 
   const isKey = {
     space: (k) => k.keyCode == 32,
@@ -297,6 +342,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
           </button>
         {/if}
       {/if}
+      <!-- <TagsInput bind:tags={offer.tags} {offer} {locale} /> -->
+      <button
+        class="bg-red-500 float-right m-1"
+        on:click|stopPropagation={removeAllTags}
+      >
+        [d] Supprimer tous les tags
+      </button>
+
       {#each qualifTemplates ?? [] as qt, idx}
         <button
           class="float-right m-1"
