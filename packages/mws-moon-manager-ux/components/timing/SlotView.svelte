@@ -12,6 +12,7 @@
   import "dayjs/locale/fr";
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
+import TagsInput from "./tags/TagsInput.svelte";
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
   var utc = require('dayjs/plugin/utc')
@@ -166,50 +167,6 @@
     isLoading = false;
   }
 
-  export let addTag = async (tag) => {
-    isLoading = true;
-    const data = {
-      _csrf_token: stateGet(get(state), "csrfTimingTagAdd"),
-      timeSlotId: timingSlot?.id,
-      tagSlug: tag.slug,
-    };
-    const formData = new FormData();
-    for (const name in data) {
-      formData.append(name, data[name]);
-    }
-    const resp = await fetch(
-      Routing.generate("mws_timing_tag_add", {
-        _locale: locale,
-      }),
-      {
-        method: "POST",
-        body: formData,
-        credentials: "same-origin",
-        redirect: "error",
-      }
-    )
-      .then(async (resp) => {
-        console.log(resp);
-        if (!resp.ok) {
-          throw new Error("Not 2xx response", { cause: resp });
-        } else {
-          const data = await resp.json();
-          timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
-          console.debug("Did add tag", timingSlot?.tags);
-          stateUpdate(state, {
-            csrfTimingTagAdd: data.newCsrf,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-        const shouldWait = confirm("Echec de l'enregistrement.");
-      });
-    isLoading = false;
-  };
-
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
         // encodeURI('file://' + timingSlot?.source.path)
@@ -287,15 +244,19 @@ style:opacity={isLoading ? 0.8 : 1} -->
   <!-- {timingSlot?.sourceStamp} -->
   <div
     on:click={() => (isFullScreen = !isFullScreen)}
-    class="full-screen-container bg-black"
+    class="full-screen-container bg-black text-white overflow-scroll"
     class:fixed={isFullScreen}
     class:top-0={isFullScreen}
     class:bottom-0={isFullScreen}
     class:left-0={isFullScreen}
     class:right-0={isFullScreen}
   >
-    <div>
-      <span class="float-right m-1 text-white">
+  <!-- <div class="max-h-[7rem] overflow-hidden
+  hover:max-h-fit hover:overflow-scroll"> -->
+  <div class="max-h-[7rem] overflow-scroll">
+    <!-- <span class="float-right right-0 top-0 m-1 sticky
+    pointer-events-none opacity-75 hover:opacity-100"> -->
+    <span class="float-right m-1">
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
         <!-- {$timer} -->
         <ProgressIndicator
@@ -303,15 +264,17 @@ style:opacity={isLoading ? 0.8 : 1} -->
           textRenderer={(percent) => `${$timer.toFixed(0)}`}
         />
         <span class="flex w-[6em]">
-          [{pageNumber}-{lastSelectedIndex}]
           {dayjs(timingSlot?.sourceTimeGMT)
           .tz("Europe/Paris")
           .format("YYYY/MM/DD H:mm:ss")
           }  
         </span>
       </span>
+      <span class="float-right right-0 top-0 w-[6em] sticky pointer-events-none">
+        [{pageNumber}-{lastSelectedIndex}]
+      </span>
       {#if isFullScreen}
-        <button
+      <button
           class="float-right m-1"
           style:opacity={!moveResp.isLast ? 1 : 0.7}
           on:click|stopPropagation={() => (moveResp = moveSelectedIndex(1))}
@@ -342,7 +305,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
           </button>
         {/if}
       {/if}
-      <!-- <TagsInput bind:tags={offer.tags} {offer} {locale} /> -->
+      <!-- <TagsInput bind:tags={timingSlot?.tags} {timingSlot} {locale} /> -->
       <button
         class="bg-red-500 float-right m-1"
         on:click|stopPropagation={removeAllTags}

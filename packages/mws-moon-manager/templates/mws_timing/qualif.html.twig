@@ -8,10 +8,11 @@
 
 {% block storesInit %}
 	{{ parent() }}
-	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': { 
+	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
+		'allTagsList': allTagsList,
 		'csrfTimingDeleteAll': csrf_token('mws-csrf-timing-delete-all'),
-		'csrfTimingTagDelete': csrf_token('mws-csrf-timing-tag-delete'),
 		'csrfTimingToggleQualif': csrf_token('mws-csrf-timing-qualif-toggle'),
+		'csrfTimingTagDelete': csrf_token('mws-csrf-timing-tag-delete'),
 		'csrfTimingTagAdd': csrf_token('mws-csrf-timing-tag-add'),
 		'csrfTimingTagRemoveAll': csrf_token('mws-csrf-timing-tag-remove-all'),
 	} |serialize('json')|e('html_attr'), }) }}></div>

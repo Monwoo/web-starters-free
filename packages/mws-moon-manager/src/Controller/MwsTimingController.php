@@ -167,9 +167,11 @@ class MwsTimingController extends AbstractController
         $this->logger->debug("Succeed to list timings");
 
         $timeQualifs = $mwsTimeQualifRepository->findAll();
+        $allTagsList = $mwsTimeTagRepository->findAll();
 
         return $this->render('@MoonManager/mws_timing/qualif.html.twig', [
             'timings' => $timings,
+            'allTagsList' => $allTagsList,
             'timeQualifs' => $timeQualifs,
             'lookupForm' => $filterForm,
             'viewTemplate' => $viewTemplate,

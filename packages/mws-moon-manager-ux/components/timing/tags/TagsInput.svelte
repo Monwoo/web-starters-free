@@ -1,9 +1,8 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
-  import { state, offerTagsByCatSlugAndSlug, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
-  import FunnelModal from "./FunnelModal.svelte";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
 
@@ -13,15 +12,18 @@
   // import * as fbs from 'flowbite-svelte';
 
   export let locale;
-  export let offer;
+  export let timing;
+  export let allTagsList;
   export let tags;
   export let modalId;
+
+  allTagsList = allTagsList ?? stateGet(get(state), 'allTagsList');
 
   let addedTagKey;
   export let removeTag = async (tag, comment = null) => {
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfOfferTagDelete'),
-      offerSlug: offer.slug,
+      _csrf_token: stateGet(get(state), 'csrfTimingTagDelete'),
+      timingId: timing.id,
       tagSlug: tag.slug,
       comment, // TODO : allow optional comment on status switch ?
       tagCategorySlug: tag.categorySlug,
@@ -39,7 +41,7 @@
     const resp = await fetch(
       // TODO : build back Api, will return new csrf to use on success, will error othewise,
       // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
-      Routing.generate('mws_offer_tag_delete', {
+      Routing.generate('mws_timing_tag_delete', {
         _locale: locale,
       }), {
         method: "POST",
@@ -62,7 +64,7 @@
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
           stateUpdate(state, {
-            csrfOfferTagDelete: data.newCsrf,
+            csrfTimingTagDelete: data.newCsrf,
           });
       }
     }).catch(e => {
@@ -81,7 +83,7 @@
 
     const data = {
       _csrf_token: stateGet(get(state), 'csrfOfferTagAdd'),
-      offerSlug: offer.slug,
+      timingId: timing.id,
       tagSlug: tagSlug,
       comment, // TODO : allow optional comment on status switch ?
       tagCategorySlug: tagCategorySlug,
@@ -120,27 +122,10 @@
     });
   };
 
-  const offerTagsByCatSlugAndSlugMap = stateGet(get(state), 'offerTagsByCatSlugAndSlug');
-  const groupedTags = {};
-
-  // TODO : opti server side or service side (avoid re-compute on all components loads...)
-  for (const slug in offerTagsByCatSlugAndSlugMap) {
-    // if (Object.prototype.hasOwnProperty.call(object, key)) {
-    const tag = offerTagsByCatSlugAndSlugMap[slug];
-    const categoryTag = offerTagsByCatSlugAndSlugMap[`|${tag.categorySlug}`] ?? null;
-    const groupLabel = categoryTag?.label;
-    if (!groupLabel) continue; // TODO : doc, we ASSUME that tag WITHOUT categorySlug are ROOT category tags, not usable for offers value switch
-    if (!(groupedTags[groupLabel] ?? null)) {
-      groupedTags[groupLabel] = [];
-    }
-    groupedTags[groupLabel].push(tag);
-  }
-  console.debug(groupedTags);
+  console.debug('allTagsList', allTagsList);
 </script>
 
 
-<!-- Modal toggle -->
-<FunnelModal bind:modalId={modalId} {locale} />
 {#each (tags ?? []) as tag, idx}
   <!-- {@const UID = newUniqueId()} -->
 
@@ -193,11 +178,7 @@ bind:value={addedTagKey} on:change={() => {
 }}
 class="opacity-30 hover:opacity-100 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
   <option value="null" selected>Ajouter un tag</option>
-  {#each Object.keys(groupedTags) as groupLabel}
-    <optgroup label={ groupLabel }>
-      {#each groupedTags[groupLabel] as tag}
-        <option value={`${tag.categorySlug}|${tag.slug}`}>{tag.label}</option>
-      {/each}
-    </optgroup>
+  {#each allTagsList as tag}
+    <option value={`${tag.categorySlug}|${tag.slug}`}>{tag.label}</option>
   {/each}
 </select>
