@@ -31,6 +31,7 @@ import AddModal from "../message/AddModal.svelte";
   export let lastSelectedIndex = 0;
   export let timeQualifs = [];
   export let locale;
+  export let isHeaderExpanded = false;
   // Timer start time. Use it to ensure delay,
   // example : 507 page of 124 items
   //          => 10 minutes per page = 5070 minutes for all items
@@ -258,10 +259,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
   hover:max-h-fit hover:overflow-scroll"> -->
     <div
     on:click|stopPropagation
-    class="max-h-[7rem] overflow-scroll">
+    class="overflow-scroll"
+    class:max-h-[7rem]={!isHeaderExpanded}
+    >
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
-      <span class="float-right m-1">
+      <span class="float-right m-1 cursor-context-menu"
+      on:click|stopPropagation={() => isHeaderExpanded = !isHeaderExpanded}
+      >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
         <!-- {$timer} -->
         <ProgressIndicator

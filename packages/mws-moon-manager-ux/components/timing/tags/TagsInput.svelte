@@ -23,10 +23,9 @@
   export let removeTag = async (tag, comment = null) => {
     const data = {
       _csrf_token: stateGet(get(state), 'csrfTimingTagDelete'),
-      timingId: timing.id,
+      timeSlotId: timing.id,
       tagSlug: tag.slug,
       comment, // TODO : allow optional comment on status switch ?
-      tagCategorySlug: tag.categorySlug,
     };
 		// let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
 		let headers = {};
@@ -82,8 +81,8 @@
     modalBtn.click();
 
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfOfferTagAdd'),
-      timingId: timing.id,
+      _csrf_token: stateGet(get(state), 'csrfTimingTagAdd'),
+      timeSlotId: timing.id,
       tagSlug: tagSlug,
       comment, // TODO : allow optional comment on status switch ?
       tagCategorySlug: tagCategorySlug,
@@ -93,7 +92,7 @@
       formData.append(name, data[name]);
     }
     const resp = await fetch(
-      Routing.generate('mws_offer_tag_add', {
+      Routing.generate('mws_timing_tag_add', {
         _locale: locale,
       }), {
         method: "POST",
@@ -111,7 +110,7 @@
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           console.debug("Did add tag", tags);
           stateUpdate(state, {
-            csrfOfferTagAdd: data.newCsrf,
+            csrfTimingTagAdd: data.newCsrf,
           });
       }
     }).catch(e => {

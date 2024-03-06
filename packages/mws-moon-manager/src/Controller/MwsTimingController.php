@@ -651,6 +651,60 @@ class MwsTimingController extends AbstractController
     }
 
     #[Route(
+        '/tag/delete/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_delete',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagDelete(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-delete', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $tagSlug = $request->request->get('tagSlug');
+        $tag = $mwsTimeTagRepository->findOneBy([
+            "slug" => $tagSlug,
+        ]);
+        if (!$tag) {
+            throw $this->createNotFoundException("Unknow time tag slug [$tagSlug]");
+        }
+        $timeSlotId = $request->request->get('timeSlotId');
+        $timeSlot = $mwsTimeSlotRepository->findOneBy([
+            'id' => $timeSlotId,
+        ]);
+        if (!$timeSlot) {
+            throw $this->createNotFoundException("Unknow time slot id [$timeSlotId]");
+        }
+        // dd($tag);
+
+        $timeSlot->removeTag($tag); // TODO : MUST set inverse relation ship ? but no same issue with import ?
+        $this->em->persist($timeSlot);
+        $this->em->flush();
+
+        return $this->json([
+            'newTags' => $timeSlot->getTags(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-delete')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
         '/tag/remove-all/{viewTemplate<[^/]*>?}',
         name: 'mws_timing_tag_remove_all',
         methods: ['POST'],
