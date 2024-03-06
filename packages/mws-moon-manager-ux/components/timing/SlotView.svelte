@@ -12,11 +12,11 @@
   import "dayjs/locale/fr";
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
-import TagsInput from "./tags/TagsInput.svelte";
+  import TagsInput from "./tags/TagsInput.svelte";
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
-  var utc = require('dayjs/plugin/utc')
-  var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+  var utc = require("dayjs/plugin/utc");
+  var timezone = require("dayjs/plugin/timezone"); // dependent on utc plugin
   dayjs.extend(utc);
   dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
   // dayjs.tz.setDefault("Europe/Paris");
@@ -165,7 +165,7 @@ import TagsInput from "./tags/TagsInput.svelte";
         const shouldWait = confirm("Echec de l'enregistrement.");
       });
     isLoading = false;
-  }
+  };
 
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
@@ -185,12 +185,15 @@ import TagsInput from "./tags/TagsInput.svelte";
     };
     return q;
   });
-  let qualifShortcut = qualifTemplates.reduce((acc, qt) => {
-    acc[String.fromCharCode(qt.shortcut).charCodeAt(0)] = qt.toggleQualif;
-    return acc;
-  }, {
-    ['d'.charCodeAt(0)]: removeAllTags
-  });
+  let qualifShortcut = qualifTemplates.reduce(
+    (acc, qt) => {
+      acc[String.fromCharCode(qt.shortcut).charCodeAt(0)] = qt.toggleQualif;
+      return acc;
+    },
+    {
+      ["d".charCodeAt(0)]: removeAllTags,
+    }
+  );
 
   const isKey = {
     space: (k) => k.keyCode == 32,
@@ -236,10 +239,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}] [{timingSlot?.maxPricePerHr ??
       "--"}]
     {dayjs(timingSlot?.sourceTimeGMT)
-    .tz("Europe/Paris")
-    .format("YYYY/MM/DD H:mm:ss")
-    }
-    {timingSlot?.sourceStamp?.split("/").slice(-1) ?? '--'}
+      .tz("Europe/Paris")
+      .format("YYYY/MM/DD H:mm:ss")}
+    {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
   <!-- {timingSlot?.sourceStamp} -->
   <div
@@ -251,12 +253,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
     class:left-0={isFullScreen}
     class:right-0={isFullScreen}
   >
-  <!-- <div class="max-h-[7rem] overflow-hidden
+    <!-- <div class="max-h-[7rem] overflow-hidden
   hover:max-h-fit hover:overflow-scroll"> -->
-  <div class="max-h-[7rem] overflow-scroll">
-    <!-- <span class="float-right right-0 top-0 m-1 sticky
+    <div
+    on:click|stopPropagation
+    class="max-h-[7rem] overflow-scroll">
+      <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
-    <span class="float-right m-1">
+      <span class="float-right m-1">
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
         <!-- {$timer} -->
         <ProgressIndicator
@@ -265,17 +269,18 @@ style:opacity={isLoading ? 0.8 : 1} -->
         />
         <span class="flex w-[6em]">
           {dayjs(timingSlot?.sourceTimeGMT)
-          .tz("Europe/Paris")
-          .format("YYYY/MM/DD H:mm:ss")
-          }  
+            .tz("Europe/Paris")
+            .format("YYYY/MM/DD H:mm:ss")}
         </span>
       </span>
-      <span class="float-right right-0 top-0 w-[6em] sticky pointer-events-none">
+      <span
+        class="float-right right-0 top-0 w-[6em] sticky pointer-events-none"
+      >
         [{pageNumber}-{lastSelectedIndex}]
       </span>
       {#if isFullScreen}
-      <button
-          class="float-right m-1"
+        <button
+          class="float-right m-1 top-0 sticky"
           style:opacity={!moveResp.isLast ? 1 : 0.7}
           on:click|stopPropagation={() => (moveResp = moveSelectedIndex(1))}
         >
@@ -283,14 +288,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </button>
         {#if moveResp.isLast}
           <button
-            class="float-right m-1"
+            class="float-right m-1 top-0 sticky"
             on:click|stopPropagation={() => movePageIndex(1)}
           >
             Next. Page
           </button>
         {/if}
         <button
-          class="float-right m-1"
+          class="float-right m-1 top-0 sticky"
           style:opacity={!moveResp.isFirst ? 1 : 0.7}
           on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
         >
@@ -298,20 +303,27 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </button>
         {#if moveResp.isFirst && pageNumber > 1}
           <button
-            class="float-right m-1"
+            class="float-right m-1 top-0 sticky"
             on:click|stopPropagation={() => movePageIndex(-1)}
           >
             Prev. Page
           </button>
         {/if}
       {/if}
-      <!-- <TagsInput bind:tags={timingSlot?.tags} {timingSlot} {locale} /> -->
       <button
         class="bg-red-500 float-right m-1"
         on:click|stopPropagation={removeAllTags}
       >
         [d] Supprimer tous les tags
       </button>
+      <span class="float-right">
+        {#each timingSlot?.tags ?? [] as tag}
+          <span class="m-1 text-white
+          border-blue-600 border rounded-sm p-1">
+            {tag.label}
+          </span>
+        {/each}
+      </span>
 
       {#each qualifTemplates ?? [] as qt, idx}
         <button
@@ -321,11 +333,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each}
-      {#each timingSlot?.tags ?? [] as tag}
-        <span class="float-right m-1 text-white">
-          {tag.label}
-        </span>
-      {/each}
+      <span class="float-right">
+        <TagsInput tags={timingSlot?.tags} timing={timingSlot} {locale} />
+      </span>
       {#if isLoading}
         <span role="status">
           <svg

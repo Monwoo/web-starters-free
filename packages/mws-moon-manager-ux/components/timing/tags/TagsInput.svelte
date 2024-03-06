@@ -135,8 +135,8 @@
   <!-- // TODO : use css var and css class INSTEAD of hard style injections ? -->
   <!-- https://flowbite.com/docs/components/badge/ -->
   <span
-  style:color={(offerTagsByCatSlugAndSlug($state, tag.categorySlug, tag.slug)?.textColor)||"black"}
-  style:background-color={(offerTagsByCatSlugAndSlug($state, tag.categorySlug, tag.slug)?.bgColor)||"lightgrey"}
+  style:color={"black"}
+  style:background-color={"lightgrey"}
   class="inline-flex items-center
   px-2 py-1 mr-2 text-sm font-medium 
   opacity-75 hover:opacity-100">
@@ -148,7 +148,7 @@
     -->
     {tag.label}
     <button
-    on:click={() => removeTag(tag) }
+    on:click|stopPropagation={() => removeTag(tag) }
     type="button" class="inline-flex items-center p-1 ml-2 text-sm
     text-pink-400 bg-transparent rounded-sm hover:bg-pink-200
      hover:text-pink-900 dark:hover:bg-pink-800 dark:hover:text-pink-300"
@@ -176,7 +176,12 @@ bind:value={addedTagKey} on:change={() => {
   const [tagCategorySlug, tagSlug] = addedTagKey.split('|');
   addTag(tagSlug, tagCategorySlug);
 }}
-class="opacity-30 hover:opacity-100 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+class="opacity-30 hover:opacity-100 
+bg-gray-50 border border-gray-300 text-gray-900 
+text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+inline-flex w-[10rem] p-2.5 dark:bg-gray-700 dark:border-gray-600 
+dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+dark:focus:border-blue-500">
   <option value="null" selected>Ajouter un tag</option>
   {#each allTagsList as tag}
     <option value={`${tag.categorySlug}|${tag.slug}`}>{tag.label}</option>
