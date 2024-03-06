@@ -627,7 +627,7 @@ class MwsTimingController extends AbstractController
             $tags
         );
 
-        return $this->json([
+        return $this->render('@MoonManager/mws_timing/tags.html.twig', [
             'tags' => $tags,
             'viewTemplate' => $viewTemplate,
         ]);
