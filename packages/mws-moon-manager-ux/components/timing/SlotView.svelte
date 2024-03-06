@@ -13,6 +13,7 @@
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
   import TagsInput from "./tags/TagsInput.svelte";
+import AddModal from "../message/AddModal.svelte";
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
   var utc = require("dayjs/plugin/utc");
@@ -358,8 +359,12 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </span>
       {/if}
     </div>
-    <!-- // TODO : remove max-h-[85%]={isFullScreen} + work with flex grow ? -->
+    <!-- // TODO : remove max-h-[85%]={isFullScreen} + work with flex grow ?
+    + https://stackoverflow.com/questions/15999760/load-image-asynchronous
+    (but load this one first...)
+    -->
     <img
+      loading="eager"
       class="object-contain border-solid border-4"
       class:w-full={isFullScreen}
       class:max-h-[85%]={isFullScreen}

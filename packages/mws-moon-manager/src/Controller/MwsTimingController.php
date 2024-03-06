@@ -168,6 +168,22 @@ class MwsTimingController extends AbstractController
 
         $timeQualifs = $mwsTimeQualifRepository->findAll();
         $allTagsList = $mwsTimeTagRepository->findAll();
+        // $allTagsList = $mwsTimeTagRepository->findBy([], [
+        //     // TODO : translated label imports/edits (multilingues)
+        //     'label' => 'ASC'
+        // ]);
+        // TODO : no DQL nat sort ?
+        // https://www.mysqltutorial.org/mysql-basics/mysql-natural-sorting/
+        // https://sqlite.org/forum/info/d5cf6c6317dd7e7f
+        // https://stackoverflow.com/questions/20431345/naturally-sort-a-multi-dimensional-array-by-key
+        array_multisort(
+            // array_keys($allTagsList),
+            array_map(function($t) {
+                return $t->getLabel();
+            }, $allTagsList),
+            SORT_NATURAL | SORT_FLAG_CASE,
+            $allTagsList
+        );
 
         return $this->render('@MoonManager/mws_timing/qualif.html.twig', [
             'timings' => $timings,
@@ -324,7 +340,7 @@ class MwsTimingController extends AbstractController
                             "lvl2Tags" => $reportTagsLvl2,
                             "lvl3Tags" => $reportTagsLvl3,
                             "lvl4Tags" => $reportTagsLvl4,
-                            "lvl5Tags" => $reportTagsLvl5,        
+                            "lvl5Tags" => $reportTagsLvl5,
                         ]),
                         Response::HTTP_SEE_OTHER
                     );
@@ -476,7 +492,7 @@ class MwsTimingController extends AbstractController
         if (false) {
             throw $this->createAccessDeniedException('Media path not allowed');
         }
-        
+
         // Or use : https://symfony.com/doc/current/http_client.html
         // $respData = file_get_contents($url);
 
@@ -499,12 +515,14 @@ class MwsTimingController extends AbstractController
             $targetW = 300; // px, // TODO : from session or db config params
             $factor = $targetW / $imagick->getImageWidth();
             $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
-                $imagick->getImageWidth()*$factor,
-                $imagick->getImageHeight()*$factor,
+                $imagick->getImageWidth() * $factor,
+                $imagick->getImageHeight() * $factor,
                 // https://urmaul.com/blog/imagick-filters-comparison/
-                \Imagick::FILTER_CATROM, 0);
-                // https://www.php.net/manual/fr/imagick.resizeimage.php#94493
-                // FILTER_POINT is 4 times faster
+                \Imagick::FILTER_CATROM,
+                0
+            );
+            // https://www.php.net/manual/fr/imagick.resizeimage.php#94493
+            // FILTER_POINT is 4 times faster
             // $imagick->scaleimage(
             //     $imagick->getImageWidth() * 4,
             //     $imagick->getImageHeight() * 4
@@ -722,7 +740,8 @@ class MwsTimingController extends AbstractController
             throw $this->createNotFoundException("Unknow time slot id [$timeSlotId]");
         }
         $wasQualified = count(array_intersect(
-            $qualif->getTimeTags()->toArray(), $timeSlot->getTags()->toArray()
+            $qualif->getTimeTags()->toArray(),
+            $timeSlot->getTags()->toArray()
         )) == count($qualif->getTimeTags()->toArray());
 
         foreach ($mwsTimeQualifRepository->findAll() as $allQualif) {
@@ -736,7 +755,7 @@ class MwsTimingController extends AbstractController
             // Add tag if was not present, keep clean otherwise
             foreach ($qualif->getTimeTags() as $tag) {
                 $timeSlot->addTag($tag);
-            }    
+            }
         }
 
         $this->em->persist($timeSlot);
@@ -748,5 +767,4 @@ class MwsTimingController extends AbstractController
             'viewTemplate' => $viewTemplate,
         ]);
     }
-
 }

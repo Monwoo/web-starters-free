@@ -33,6 +33,7 @@ overflow-hidden border-solid border-4"
   style:width={size}
 >
   <img
+    loading="lazy"
     class="object-contain"
     src={"screenshot" == timingSlot.source?.type ? slotPath : ""}
   />
