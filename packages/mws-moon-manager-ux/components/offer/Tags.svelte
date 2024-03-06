@@ -66,7 +66,7 @@
   {@html tagsPaginator}
 
   <!-- { JSON.stringify(tags) } -->
-  <div class="overflow-y-auto">
+  <div class="">
     <table>
       <thead>
         <tr class="users-table-info">

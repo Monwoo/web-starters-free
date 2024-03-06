@@ -47,17 +47,21 @@ body {
 // }
 
 // Fixing double size main scroll bug :
-html, body, footer {
-    overflow:hidden;
+html,
+body,
+footer {
+    overflow: hidden;
     overflow-clip-margin: unset;
+
     @media print {
-        overflow:auto;
+        overflow: auto;
     }
 }
 
 // Customize survey JS :
 
-:root, .sd-root-modern {
+:root,
+.sd-root-modern {
     --sjs-base-unit: 7px;
     --sjs-default-font-family: ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family: ui-sans-serif, system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -81,7 +85,8 @@ html, body, footer {
     padding-right: 1rem;
 }
 
-.sd-row--multiple > div {
+.sd-row--multiple>div {
+
     // TIPS, CSS var can't be used in @media query,
     // so using SCSS one...
     @media (max-width: $mws-media-phone-w) {
@@ -95,6 +100,7 @@ html, body, footer {
         //       missing some class
         opacity: 0;
     }
+
     .sd-dropdown__filter-string-input:not([placeholder=""]) {
         opacity: 1;
     }
@@ -104,11 +110,13 @@ html, body, footer {
     min-height: 9em;
     padding: 0px;
     margin: 0px;
+
     .sd-file__decorator {
         padding: 0px;
         // TODO : not enough, did raise up min-height for now
         height: fit-content;
     }
+
     .sd-file__drag-area {
         position: initial;
     }
@@ -117,8 +125,10 @@ html, body, footer {
 .sd-file__list {
     // width: 100%;
     padding: 0;
+
     .sd-file__preview {
         width: 100%;
+
         .sd-file__sign a {
             width: 100%;
         }
@@ -130,18 +140,20 @@ html, body, footer {
     padding-right: 2px;
 }
 
-.sd-root-modern--mobile .sd-body.sd-body--responsive, .sd-root-modern--mobile .sd-body.sd-body--static {
+.sd-root-modern--mobile .sd-body.sd-body--responsive,
+.sd-root-modern--mobile .sd-body.sd-body--static {
     padding: 2px;
 }
 
 sd-body.sd-body--responsive {
-    padding: 2px;  
+    padding: 2px;
 }
 
 .read-status {
     svg {
         max-width: 42px;
     }
+
     &.read {
         svg {
             color: green;
@@ -150,5 +162,12 @@ sd-body.sd-body--responsive {
 }
 
 .sf-minitoolbar {
-  opacity: 0.2;  
+    opacity: 0.2;
+}
+
+thead[class*="sticky"] {
+    background: linear-gradient(to right,
+            RGB(var(--mws-background-rgb)),
+            RGB(var(--mws-background-light-rgb)),
+            RGB(var(--mws-background-rgb)));
 }

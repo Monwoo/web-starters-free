@@ -37,10 +37,10 @@
       isThirdColVisible = fromStart > 0;
     };
 
-    $(".mws-offer-lookup").on("scroll", scrollListener);
+    $(".mws-offer-lookup .overflow-y-auto").on("scroll", scrollListener);
 
     return () => {
-      $(".mws-offer-lookup").off("scroll", scrollListener);
+      $(".mws-offer-lookup .overflow-y-auto").off("scroll", scrollListener);
     };
   });
 
@@ -130,7 +130,7 @@
 
 <table>
   <!-- TODO : sticky top for title to stay on page ? -->
-  <thead>
+  <thead class="top-[-21px] sticky z-40">
     <tr class="users-table-info">
       <th scope="col"
       class="sticky max-w-[20vw] left-0 w-[3em] z-10 
@@ -164,7 +164,7 @@
       <th scope="col">Description</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="overflow-y-auto">
     {#each offers as offer}
       <!-- { JSON.stringify(offer) } -->
       <!-- {@debug offer} -->

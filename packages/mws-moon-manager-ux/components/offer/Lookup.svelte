@@ -105,7 +105,7 @@
   {@html offersPaginator}
 
   <!-- { JSON.stringify(offers) } -->
-  <div class="mws-offer-lookup overflow-y-auto">
+  <div class="mws-offer-lookup">
     <List {locale} {offers} {offersHeaders} {viewTemplate}
     {addMessageForm} {messagesByProjectId}></List>
   </div>

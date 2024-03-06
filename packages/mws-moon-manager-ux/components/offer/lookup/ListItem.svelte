@@ -59,10 +59,10 @@
       isThirdColVisible = fromStart > 0;
     };
 
-    $(".mws-offer-lookup").on("scroll", scrollListener);
+    $(".mws-offer-lookup .overflow-y-auto").on("scroll", scrollListener);
 
     return () => {
-      $(".mws-offer-lookup").off("scroll", scrollListener);
+      $(".mws-offer-lookup .overflow-y-auto").off("scroll", scrollListener);
     };
   });
 
