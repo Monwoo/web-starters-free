@@ -88,7 +88,7 @@
     // const htmlLookup = $(lookupForm);
     // // console.log(htmlLookup);
     // const lookupSurveyJsFormData = Object.fromEntries((new FormData(htmlLookup[0])).entries());
-    // const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonLookup]'])); // TODO : from param or config
+    // const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonLookup]'] ?? '{}')); // TODO : from param or config
     // // TIPS : same as jsonLookup, updated by survey js or other if using ref element instead of raw string... :
     // console.log('lookupSurveyJsData : ', lookupSurveyJsData);
   });

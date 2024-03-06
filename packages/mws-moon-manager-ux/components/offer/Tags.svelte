@@ -68,7 +68,7 @@
   <!-- { JSON.stringify(tags) } -->
   <div class="">
     <table>
-      <thead>
+      <thead class="top-[-21px] sticky z-40">
         <tr class="users-table-info">
           <th scope="col">Actions</th>
           <th scope="col">
