@@ -597,6 +597,43 @@ class MwsTimingController extends AbstractController
     }
 
     #[Route(
+        '/tag/list/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_list',
+        methods: ['GET'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagList(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $tags = $mwsTimeTagRepository->findAll();
+        array_multisort(
+            // array_keys($allTagsList),
+            array_map(function($t) {
+                return $t->getLabel();
+            }, $tags),
+            SORT_NATURAL | SORT_FLAG_CASE,
+            $tags
+        );
+
+        return $this->json([
+            'tags' => $tags,
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
         '/tag/add/{viewTemplate<[^/]*>?}',
         name: 'mws_timing_tag_add',
         methods: ['POST'],

@@ -13,7 +13,10 @@
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
   import TagsInput from "./tags/TagsInput.svelte";
-import AddModal from "../message/AddModal.svelte";
+  import AddModal from "../message/AddModal.svelte";
+
+  import PhotoSwipeGallery from "svelte-photoswipe";
+
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
   var utc = require("dayjs/plugin/utc");
@@ -339,7 +342,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each}
-      <span class="float-right">
+      <span class="float-right flex flex-wrap justify-end p-2">
         <TagsInput tags={timingSlot?.tags} timing={timingSlot} {locale} />
       </span>
       {#if isLoading}
@@ -372,10 +375,30 @@ style:opacity={isLoading ? 0.8 : 1} -->
       loading="eager"
       class="object-contain border-solid border-4"
       class:w-full={isFullScreen}
-      class:max-h-[85%]={isFullScreen}
+      class:max-h-[85%]={isFullScreen && !isHeaderExpanded}
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
     />
+
+    <!-- <div
+    class="object-contain border-solid border-4"
+    class:w-full={isFullScreen}
+    class:max-h-[85%]={isFullScreen && !isHeaderExpanded}
+    class:border-gray-600={!timingSlot?.tags?.length}
+    class:border-green-400={timingSlot?.tags?.length}
+    >
+      <!-- https://mvolfik.github.io/svelte-photoswipe/ -- >
+      <PhotoSwipeGallery images={[
+        {
+          src: "screenshot" == timingSlot?.source?.type ? slotPath : "",
+          // width: 3000,
+          // height: 4000,
+          alt: "Screenshot", // optional
+          cropped: false, // optional, default=false; see https://photoswipe.com/v5/docs/ 
+          // thumbnail: { src: slotPath, width: 300, height: 400 },
+        }
+      ]} styling="flex" />    
+    </div> -->
   </div>
 </div>

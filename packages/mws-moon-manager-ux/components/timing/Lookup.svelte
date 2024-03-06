@@ -62,8 +62,8 @@
     }
   }
   
-  const jsonResult = JSON.parse(decodeURIComponent(lookup.jsonResult));
-  console.debug("jsonResult :", jsonResult);
+  const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
+  console.debug("jsonLookup :", jsonLookup);
   
   let csrfTimingDelete = stateGet(get(state), 'csrfTimingDeleteAll');
 
@@ -88,8 +88,8 @@
     // const htmlLookup = $(lookupForm);
     // // console.log(htmlLookup);
     // const lookupSurveyJsFormData = Object.fromEntries((new FormData(htmlLookup[0])).entries());
-    // const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonResult]'])); // TODO : from param or config
-    // // TIPS : same as jsonResult, updated by survey js or other if using ref element instead of raw string... :
+    // const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonLookup]'])); // TODO : from param or config
+    // // TIPS : same as jsonLookup, updated by survey js or other if using ref element instead of raw string... :
     // console.log('lookupSurveyJsData : ', lookupSurveyJsData);
   });
 
@@ -110,9 +110,9 @@
           Menu
         </button>
         <div class="summary">
-          {@html jsonResult.searchTags && jsonResult.searchTags.length
+          {@html jsonLookup.searchTags && jsonLookup.searchTags.length
             ? "<strong>Tags : </strong>" +
-              jsonResult.searchTags.reduce(
+              jsonLookup.searchTags.reduce(
                 (acc, f) => `
                 ${acc} [${f}]
               `,
@@ -120,10 +120,10 @@
               ) +
               "<br/>"
             : ""}
-          {@html jsonResult.searchTagsToAvoid &&
-          jsonResult.searchTagsToAvoid.length
+          {@html jsonLookup.searchTagsToAvoid &&
+          jsonLookup.searchTagsToAvoid.length
             ? "<strong>Tags à éviter : </strong>" +
-              jsonResult.searchTagsToAvoid.reduce(
+              jsonLookup.searchTagsToAvoid.reduce(
                 (acc, f) => `
                 ${acc} [${f}]
               `,
@@ -131,8 +131,8 @@
               ) +
               "<br/>"
             : ""}
-          {@html jsonResult.searchKeyword
-            ? `<strong>Mots clefs : </strong>${jsonResult.searchKeyword}`
+          {@html jsonLookup.searchKeyword
+            ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
             : ``}
           {@html timingsPaginator}
         </div>
@@ -153,30 +153,45 @@
               viewTemplate: viewTemplate ?? "",
             })}
           >
-            <button class="btn btn-outline-primary p-1"
-              >Exporter des timings.</button
+            <button class="btn btn-outline-primary p-1 m-2"
+              >Exporter les timings.</button
             >
           </a>
+          <!-- TODO : filter import on selected filter ? to reduce part of files loads/overwrites ? -->
           <a
             href={Routing.generate("mws_offer_import", {
               _locale: locale ?? "",
               viewTemplate: viewTemplate ?? "",
+              ...jsonLookup,
             })}
           >
-            <button class="btn btn-outline-primary p-1"
+            <button class="btn btn-outline-primary p-1 m-2"
               >Importer des timings.</button
             >
           </a>
+          <a
+            href={Routing.generate("mws_timing_tag_list", {
+              _locale: locale ?? "",
+              viewTemplate: viewTemplate ?? "",
+              ...jsonLookup,
+            })}
+          >
+            <button class="btn btn-outline-primary p-1 m-2"
+              >Liste des tags.</button
+            >
+          </a>
+          <!-- TODO : only remove current filtered query items instead of all ? -->
           <form action="{ Routing.generate('mws_timing_delete_all', {
             '_locale': locale ?? '',
             'viewTemplate': viewTemplate ?? '',
+            ...jsonLookup,
           }) }"
           method="post"
           onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les suivi des temps ?');"
           >
             <input type="hidden" name="_csrf_token" value="{ csrfTimingDelete }" />
             <button 
-            class="btn btn-outline-primary p-1 m-2"
+            class="btn btn-outline-primary p-1 m-2" style="--mws-primary-rgb: 255, 0, 0"
             type="submit">Supprimer les timings</button>
           </form>
         </div>
