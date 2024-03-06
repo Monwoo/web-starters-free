@@ -19,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -626,9 +627,24 @@ class MwsTimingController extends AbstractController
             SORT_NATURAL | SORT_FLAG_CASE,
             $tags
         );
+        // dd($this->serializer->serialize($tags, 'yaml'));
+        //  TODO : More efficient to 'groupBy' Query with total amount.
 
+        // Fetching all ids is too much time consuming....
+        $tagsSerialized = $this->serializer->serialize($tags, 'yaml', [
+            'groups' => 'withDeepIds', // TODO : group annotation do not go over ignore annotation
+            // only below work :
+            // AbstractNormalizer::ATTRIBUTES => [
+            //     'id', 'mwsTimeTags',  'mwsTimeQualifs'],
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, string $format, array $context): string {
+                        // return "**" . (string)$object . "**";
+                        return $object ? ($object->getId() ?? "****") : '-****-';
+                    },
+        ]);
+        // dd($tagsSerialized);
         return $this->render('@MoonManager/mws_timing/tags.html.twig', [
-            'tags' => $tags,
+            // 'tags' => $tags,
+            'tagsSerialized' => $tagsSerialized,
             'viewTemplate' => $viewTemplate,
         ]);
     }

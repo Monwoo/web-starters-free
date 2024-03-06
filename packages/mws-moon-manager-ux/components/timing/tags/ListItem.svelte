@@ -40,6 +40,7 @@
     }
   };
 
+  console.debug('Having Tag : ', tag);
 </script>
 
 <!-- // TIPS : is not categorySlug, this status is a category... -->
@@ -94,11 +95,14 @@
     dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
     dark:focus:border-blue-500"
     >
-      <option value="null" selected>Ajouter un tag</option>
+      <option value="null" selected>Migrer vers</option>
       {#each allTagsList as tag}
         <option value={`${tag.slug}`}>{tag.label}</option>
       {/each}
     </select>
   </td>
+  <td>{tag.mwsTimeTags?.length}</td>
+  <td>{tag.mwsTimeTags?.length}</td>
+  <td>{tag.mwsTimeTags?.length}</td>
   <td>{dayjs(tag.createdAt).format("YYYY/MM/DD h:mm")}</td>
 </tr>

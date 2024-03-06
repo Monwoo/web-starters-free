@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
 use Symfony\Component\Serializer\Annotation as Serializer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[ORM\Entity(repositoryClass: MwsTimeTagRepository::class)]
 #[ORM\Index(columns: ['slug'])]
@@ -17,24 +18,33 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 // ])] // Not for entity class....
 class MwsTimeTag
 {
+    // https://github.com/symfony/symfony/issues/32622
+    // https://github.com/symfony/symfony/pull/33533
+    // https://jmsyst.com/libs/serializer/master/cookbook/exclusion_strategies
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Serializer\Groups(['withDeepIds', '*', 'default'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?string $slug = null;
 
     #[ORM\Column(length: 255)]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?string $label = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'mwsTimeTags')]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?self $category = null;
 
     #[ORM\Column(nullable: true)]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?float $pricePerHr = null;
 
     // if pricePerHr is not set, check pricePerHrRules...
@@ -47,18 +57,63 @@ class MwsTimeTag
     //   price => 60
     //   withTags => [ mise-en-oeuvre-simple ]
     #[ORM\Column(nullable: true)]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?array $pricePerHrRules = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: self::class)]
-    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
+    #[Serializer\Groups(['withDeepIds'])]
+    #[Serializer\Context(
+        context: [
+            // AbstractNormalizer::CALLBACKS => [ // TIPS : no effect here...
+            //     'providerAddedPrice' => $toFloatNorm,
+            // ],        
+            // AbstractNormalizer::IGNORED_ATTRIBUTES => ['id'],
+            AbstractNormalizer::ATTRIBUTES => ['id']
+            // ['projectId', 'owner' => ['id']]
+        ],
+        groups: ['withDeepIds', '*', 'default'],
+    )]
+    #[Serializer\Context(
+        context: [
+            AbstractNormalizer::ATTRIBUTES => ['id']
+        ],
+    )]
+    #[Serializer\MaxDepth(1)]
+    // #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeTags;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeSlot::class, mappedBy: 'tags')]
-    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
+    #[Serializer\Groups(['withDeepIds'])]
+    #[Serializer\Context(
+        context: [
+            AbstractNormalizer::ATTRIBUTES => ['id']
+        ],
+        groups: ['withDeepIds', '*', 'default'],
+    )]
+    #[Serializer\Context(
+        context: [
+            AbstractNormalizer::ATTRIBUTES => ['id']
+        ],
+    )]
+    // #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
+    #[Serializer\MaxDepth(1)]
     private Collection $mwsTimeSlots;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeQualif::class, mappedBy: 'timeTags')]
-    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
+    #[Serializer\Groups(['withDeepIds'])]
+    #[Serializer\Context(
+        context: [
+            AbstractNormalizer::ATTRIBUTES => ['id']
+        ],
+        groups: ['withDeepIds', '*', 'default'],
+    )]
+    #[Serializer\Context(
+        context: [
+            AbstractNormalizer::ATTRIBUTES => ['id']
+        ],
+    )]
+    // #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
+    #[Serializer\MaxDepth(1)]
     private Collection $mwsTimeQualifs;
 
     public function __construct()

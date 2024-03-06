@@ -23,6 +23,7 @@
   export let offer;
   export let messages;
   export let addModal;
+  export let yScrollable;
 
   // TODO : format leadAt date with dayJs ?
   console.debug("LIST ITEM OFFER : ", offer);
@@ -43,9 +44,9 @@
   let isThirdColVisible = false;
   // Svelte + JQuery way :
   onMount(async () => {
-    const $ = window.$;
+    const jQuery = window.jQuery;
     const scrollListener = (e) => {
-      const target = $(e.target);
+      const target = jQuery(e.target);
       const fromStart = target.scrollLeft();
       // https://stackoverflow.com/questions/10463518/converting-em-to-px-in-javascript-and-getting-default-font-size/10466205#10466205
       const emToPx = Number(
@@ -59,10 +60,14 @@
       isThirdColVisible = fromStart > 0;
     };
 
-    $(".mws-offer-lookup .overflow-y-auto").on("scroll", scrollListener);
+    jQuery(yScrollable).on("scroll", scrollListener);
+    // $: {
+    //   jQuery(".mws-data-list", yScrollable).off("scroll", scrollListener);
+    //   jQuery(".mws-data-list", yScrollable).on("scroll", scrollListener);
+    // }
 
     return () => {
-      $(".mws-offer-lookup .overflow-y-auto").off("scroll", scrollListener);
+      jQuery(yScrollable).off("scroll", scrollListener);
     };
   });
 

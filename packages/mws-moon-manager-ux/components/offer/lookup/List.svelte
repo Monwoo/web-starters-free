@@ -4,6 +4,7 @@
   import ListItem from "./ListItem.svelte";
   import AddModal from "../../message/AddModal.svelte";
   import { onMount } from "svelte";
+  import { tick } from "svelte";
 
   export let locale;
   export let offers = [];
@@ -11,6 +12,7 @@
   export let addMessageForm;
   export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
+  export let yScrollable;
 
   let addModal;
 
@@ -21,9 +23,11 @@
   let isThirdColVisible = false;
   // Svelte + JQuery way :
   onMount(async () => {
-    const $ = window.$;
+    const jQuery = window.jQuery;
+    // jQuery(() => {
     const scrollListener = (e) => {
-      const target = $(e.target);
+      console.debug("listScroll");
+      const target = jQuery(e.target);
       const fromStart = target.scrollLeft();
       // https://stackoverflow.com/questions/10463518/converting-em-to-px-in-javascript-and-getting-default-font-size/10466205#10466205
       const emToPx = Number(
@@ -37,10 +41,19 @@
       isThirdColVisible = fromStart > 0;
     };
 
-    $(".mws-offer-lookup .overflow-y-auto").on("scroll", scrollListener);
+    yScrollable = jQuery('main'); // TODO : name main content scroll window ? instead of <main>
+
+    // jQuery(".mws-data-list", htmlTable).on("scroll", scrollListener);
+    // await tick();
+    // $: {
+    //   jQuery(".mws-data-list", htmlTable).off("scroll", scrollListener);
+    //   jQuery(".mws-data-list", htmlTable).on("scroll", scrollListener);
+    // }
+    // jQuery(".mws-data-list", htmlTable).on("scroll", scrollListener);
+    jQuery(yScrollable).on("scroll", scrollListener);
 
     return () => {
-      $(".mws-offer-lookup .overflow-y-auto").off("scroll", scrollListener);
+      jQuery(yScrollable).off("scroll", scrollListener);
     };
   });
 
@@ -128,55 +141,65 @@
 </div> -->
 <!-- https://preline.co/docs/scrollspy.html -->
 
-<table>
-  <!-- TODO : sticky top for title to stay on page ? -->
-  <thead class="top-[-21px] sticky z-40">
-    <tr class="users-table-info">
-      <th scope="col"
-      class="sticky max-w-[20vw] left-0 w-[3em] z-10 
-      hover:bg-white/90 hover:opacity-100"
-      class:opacity-0={isFirstColVisible}
-      >Voir</th>
-      <th scope="col"
-      class="sticky max-w-[20vw] left-[3em] w-[4em] z-10 
-      hover:bg-white/90 hover:opacity-100"
-      class:opacity-0={isSecondColVisible}
-      >[Slug] Status</th>
-      <th scope="col" class="sticky max-w-[20vw] left-[7em] w-[6em] z-10 
-      hover:bg-white/90 hover:opacity-100"
-      class:opacity-0={isThirdColVisible}
-      >Tags</th>
-      <th scope="col">
-        {@html offersHeaders.clientUsername ?? "Nom du client"}
-      </th>
-      <th scope="col">
-        {@html offersHeaders.contact1 ?? "Contact"}<br />
-        {@html offersHeaders.contact2 ?? "Contact bis"}
-      </th>
-      <th scope="col"> Messages </th>
-      <th scope="col">
-        {@html offersHeaders.leadStart ?? "Depuis le"}
-      </th>
-      <th scope="col">
-        {@html offersHeaders.budget ?? "Budget"}
-      </th>
-      <th scope="col">Titre</th>
-      <th scope="col">Description</th>
-    </tr>
-  </thead>
-  <tbody class="overflow-y-auto">
-    {#each offers as offer}
-      <!-- { JSON.stringify(offer) } -->
-      <!-- {@debug offer} -->
-      <ListItem
-        {offer}
-        {locale}
-        {viewTemplate}
-        {addModal}
-        messages={messagesByProjectId[
-          offer.slug.split("-").slice(-1).join("")
-        ] ?? null}
-      />
-    {/each}
-  </tbody>
-</table>
+<!-- <div bind:this={htmlTable}> -->
+<div>
+  <table>
+    <!-- TODO : sticky top for title to stay on page ? -->
+    <thead class="top-[-24px] sticky z-40">
+      <tr class="users-table-info">
+        <th
+          scope="col"
+          class="sticky max-w-[20vw] left-0 w-[3em] z-10 
+        hover:bg-white/90 hover:opacity-100"
+          class:opacity-0={isFirstColVisible}>Voir</th
+        >
+        <th
+          scope="col"
+          class="sticky max-w-[20vw] left-[3em] w-[4em] z-10 
+        hover:bg-white/90 hover:opacity-100"
+          class:opacity-0={isSecondColVisible}>[Slug] Status</th
+        >
+        <th
+          scope="col"
+          class="sticky max-w-[20vw] left-[7em] w-[6em] z-10 
+        hover:bg-white/90 hover:opacity-100"
+          class:opacity-0={isThirdColVisible}>Tags</th
+        >
+        <th scope="col">
+          {@html offersHeaders.clientUsername ?? "Nom du client"}
+        </th>
+        <th scope="col">
+          {@html offersHeaders.contact1 ?? "Contact"}<br />
+          {@html offersHeaders.contact2 ?? "Contact bis"}
+        </th>
+        <th scope="col" class="min-w-[24rem]"> Messages </th>
+        <th scope="col">
+          {@html offersHeaders.leadStart ?? "Depuis le"}
+        </th>
+        <th scope="col">
+          {@html offersHeaders.budget ?? "Budget"}
+        </th>
+        <th scope="col">Titre</th>
+        <th scope="col" class="min-w-[24rem]">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#if yScrollable}
+      {#each offers as offer}
+        <!-- { JSON.stringify(offer) } -->
+        <!-- {@debug offer} -->
+        <ListItem
+          {offer}
+          {locale}
+          {viewTemplate}
+          {addModal}
+          yScrollable={yScrollable}
+          messages={messagesByProjectId[
+            offer.slug.split("-").slice(-1).join("")
+          ] ?? null}
+        />
+        {/each}
+        {/if}
+      </tbody>
+  </table>
+</div>

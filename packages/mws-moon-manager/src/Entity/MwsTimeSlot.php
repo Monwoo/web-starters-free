@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsTimeSlotRepository::class)]
 #[ORM\Index(columns: ['source_time_gmt'])]
@@ -20,6 +21,7 @@ class MwsTimeSlot
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?int $id = null;
 
     // TIPS : will miss the timezone, for simplicity, will be GMT time...

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use MWS\MoonManagerBundle\Repository\MwsTimeQualifRepository;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsTimeQualifRepository::class)]
 class MwsTimeQualif
@@ -13,6 +14,7 @@ class MwsTimeQualif
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Serializer\Groups(['withDeepIds'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
