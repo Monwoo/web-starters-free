@@ -36,7 +36,7 @@
         </th>
         <th scope="col">
           <!-- TODO : translate... from app local provided by SF or local file from .env config ? -->
-          {"Merge with"}
+          {"Migrer vers"}
         </th>
         <th scope="col">
           <!-- TODO : translate... from app local provided by SF or local file from .env config ? -->

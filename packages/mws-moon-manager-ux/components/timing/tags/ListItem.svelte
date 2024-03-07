@@ -13,16 +13,18 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
-  import { state, offerTagsByKey } from "../../../stores/reduxStorage.mjs";
-  import { tick } from 'svelte';
+  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import { tick } from "svelte";
+  import { get } from "svelte/store";
 
   export let locale;
   export let viewTemplate;
   export let tag;
-  export let mergeToTagKey;
+  export let migrateToTagKey;
   export let allTagsList;
   export let addModal;
   let isLoading = false;
+  let isHidden = false;
 
   const deleteTag = async () => {
     if (isLoading) return;
@@ -32,7 +34,7 @@
     // await tick();
     // await new Promise(r => setTimeout(r, 500));
     // Or use HTML modal instead of native blocking UI alert
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100));
 
     if (
       confirm(
@@ -44,15 +46,15 @@
       )
     ) {
       const data = {
-        _csrf_token: stateGet(get(state), "csrfTimingTagRemoveAll"),
-        timeSlotId: timingSlot?.id,
+        _csrf_token: stateGet(get(state), "csrfTimingMigrateTo"),
+        tagId: tag.self.id,
       };
       const formData = new FormData();
       for (const name in data) {
         formData.append(name, data[name]);
       }
       const resp = await fetch(
-        Routing.generate("mws_timing_tag_remove_all", {
+        Routing.generate("mws_timing_tag_delete_and_clean", {
           _locale: locale,
         }),
         {
@@ -68,11 +70,11 @@
             throw new Error("Not 2xx response", { cause: resp });
           } else {
             const data = await resp.json();
-            timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-            lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
-            console.debug("Did add tag", timingSlot?.tags);
+            console.debug("Did remove tag, resp :", data);
+            // TODO : remove self from DOM instead of isHidden ?
+            isHidden = true;
             stateUpdate(state, {
-              csrfTimingTagRemoveAll: data.newCsrf,
+              csrfTimingTagDeleteAndClean: data.newCsrf,
             });
           }
         })
@@ -85,31 +87,72 @@
     isLoading = false;
   };
 
-  const mergeToTag = async () => {
+  const migrateToTag = async () => {
     if (isLoading) return;
-    if ("null" === mergeToTagKey) return;
+    if (migrateToTagKey || "null" === migrateToTagKey) return;
     // TODO : await confirm and update tags dependencies if so...
-    console.debug("Shoud mergeToTagKey with", mergeToTagKey);
+    console.debug("Shoud migrateToTag with", migrateToTagKey);
     isLoading = true;
     const toTag = {
-      slug: mergeToTagKey,
+      slug: migrateToTagKey,
     };
     // TODO : Wait for loading animation to show
     // Or use HTML modal instead of native blocking UI alert
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100));
 
     if (
       confirm(
-        "Are you sure you want to merge [" +
+        "Are you sure you want to migrate [" +
           tag.self.slug +
           "] to [" +
           toTag.slug +
           "] ?"
       )
     ) {
-      alert("The tag is successfully updated, with XXX timeSlots updated");
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfTimingMigrateTo"),
+        tagFromId: tag.self.id,
+        tagToId: tagTo.id,
+      };
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        Routing.generate("mws_timing_tag_migrate_to", {
+          _locale: locale,
+        }),
+        {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          redirect: "error",
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp);
+          if (!resp.ok) {
+            throw new Error("Not 2xx response", { cause: resp });
+          } else {
+            const data = await resp.json();
+            console.debug("Did remove tag, resp :", data);
+            // TODO : remove self from DOM instead of isHidden ?
+            isHidden = true;
+            // Need self refresh for merged data values :
+            window.location.reload();
+
+            stateUpdate(state, {
+              csrfTimingMigrateTo: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
     } else {
-      mergeToTagKey = "null";
+      migrateToTagKey = "null";
     }
     isLoading = false;
   };
@@ -119,9 +162,11 @@
 </script>
 
 <!-- // TIPS : is not categorySlug, this status is a category... -->
-<tr class:bg-blue-100={!tag.self.categorySlug}
-class:opacity-40={isLoading}
-class:pointer-events-none={isLoading}
+<tr
+  class:bg-blue-100={!tag.self.categorySlug}
+  class:opacity-40={isLoading}
+  class:pointer-events-none={isLoading}
+  class:hidden={isHidden}
 >
   <td>
     <!-- <button class="btn btn-outline-primary p-1 m-1">Editer</button> -->
@@ -167,8 +212,8 @@ class:pointer-events-none={isLoading}
   </td>
   <td>
     <select
-      bind:value={mergeToTagKey}
-      on:change={mergeToTag}
+      bind:value={migrateToTagKey}
+      on:change={migrateToTag}
       class="opacity-30 hover:opacity-100 
     bg-gray-50 border border-gray-300 text-gray-900 
     text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 

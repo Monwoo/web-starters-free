@@ -10,7 +10,8 @@
 	{{ parent() }}
 	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
 		'allTagsList': tags,
-		'csrfTimingTagDelete': csrf_token('mws-csrf-timing-tag-delete'),
+		'csrfTimingMigrateTo': csrf_token('mws-csrf-timing-tag-migrate-to'),
+		'csrfTimingTagDeleteAndClean': csrf_token('mws-csrf-timing-tag-delete-and-clean'),
 		'csrfTimingTagAdd': csrf_token('mws-csrf-timing-tag-add'),
 		'csrfTimingTagRemoveAll': csrf_token('mws-csrf-timing-tag-remove-all'),
 	} |serialize('json')|e('html_attr'), }) }}></div>

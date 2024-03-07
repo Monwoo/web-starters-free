@@ -809,6 +809,68 @@ class MwsTimingController extends AbstractController
     }
 
     #[Route(
+        '/tag/delete-and-clean/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_delete_and_clean',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagDeleteAndClean(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-delete-and-clean', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $tagId = $request->request->get('tagId');
+        $tag = $mwsTimeTagRepository->findOneBy([
+            "id" => $tagId,
+        ]);
+        if (!$tag) {
+            throw $this->createNotFoundException("Unknow time tag at id [$tagId]");
+        }
+
+        $qb = $this->em->createQueryBuilder()
+        // ->delete('MoonManagerBundle:MwsUser', 'u'); // Depreciated syntax in 6.3 ? sound to work...         
+        ->delete(MwsTimeTag::class, 't')
+        ->where('t.id = :tId')
+        ->setParameter('tId', $tag->getId());
+
+        // TIPS : no need to cleanup invert relation ship
+        // DQL did take care of if...
+
+        // ->select('u')                
+        // ->from('App:MwsUser', 'u')                
+        // ->where('u.xx = :xx')
+        // ->setParameter('xx', $xx);
+
+        $query = $qb->getQuery();
+        dump($query->getSql());
+        $resp = $query->execute();
+        dump($resp);
+
+        $this->em->flush();
+
+        return $this->json([
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-delete-and-clean')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
         '/tag/remove-all/{viewTemplate<[^/]*>?}',
         name: 'mws_timing_tag_remove_all',
         methods: ['POST'],
@@ -851,6 +913,79 @@ class MwsTimingController extends AbstractController
         return $this->json([
             'newTags' => $timeSlot->getTags(),
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-remove-all')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
+        '/tag/migrate-to/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_migrate_to',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagMigrateTo(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-migrate-to', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $tagFromId = $request->request->get('tagFromId');
+        $tagToId = $request->request->get('tagToId');
+        $tagFrom = $mwsTimeTagRepository->findOneBy([
+            "id" => $tagFromId,
+        ]);
+        $tagTo = $mwsTimeTagRepository->findOneBy([
+            "id" => $tagToId,
+        ]);
+        if (!$tagFrom) {
+            throw $this->createNotFoundException("Unknow time tag from id [$tagFromId]");
+        }
+        if (!$tagTo) {
+            throw $this->createNotFoundException("Unknow time tag from id [$tagToId]");
+        }
+
+        foreach ($tagFrom->getMwsTimeTags() as $categoryFrom) {
+            $categoryFrom->setCategory($tagTo);
+        }
+        $this->em->flush();
+        foreach ($tagFrom->getMwsTimeSlots() as $tSlot) {
+            $tSlot->addTag($tagTo);
+        }
+        $this->em->flush();
+        foreach ($tagFrom->getMwsTimeQualifs() as $tQualif) {
+            $tQualif->addTimeTag($tagTo);
+        }
+        $this->em->flush();
+
+        // Then delete self, will cascade remove with dql :
+        $qb = $this->em->createQueryBuilder()
+        ->delete(MwsTimeTag::class, 't')
+        ->where('t.id = :tId')
+        ->setParameter('tId', $tagFrom->getId());
+        // TIPS : no need to cleanup invert relation ship
+        // DQL did take care of if...
+        $query = $qb->getQuery();
+        $resp = $query->execute();
+
+        $this->em->flush();
+
+        return $this->json([
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-migrate-to')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
     }
