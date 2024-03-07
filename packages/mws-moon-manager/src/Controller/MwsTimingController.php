@@ -609,6 +609,7 @@ class MwsTimingController extends AbstractController
     public function tagList(
         string|null $viewTemplate,
         Request $request,
+        PaginatorInterface $paginator,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
         MwsTimeTagRepository $mwsTimeTagRepository,
     ): Response {
@@ -650,8 +651,8 @@ class MwsTimingController extends AbstractController
         // $qb->orderBy("t.sourceTimeGMT", "ASC");
         // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
         $qb = $qb->leftJoin('t.mwsTimeSlots', 's');
-        // $qb = $qb->leftJoin('t.mwsTimeTags', 'c');
-        // $qb = $qb->leftJoin('t.mwsTimeQualifs', 'q');
+        $qb = $qb->leftJoin('t.mwsTimeTags', 'c');
+        $qb = $qb->leftJoin('t.mwsTimeQualifs', 'q');
 
         // https://www.php.net/manual/fr/function.strftime.php
         // count(a.mwsTimeTags) as categoriesCount,
@@ -660,13 +661,29 @@ class MwsTimingController extends AbstractController
         // count(s.id) as tSlotCount,
         // count(c.id) as categoriesCount,
         // count(q.id) as tQualifCount
-
+        // $qb->expr()->countDistinct('c.id')
         $qb = $qb->select("
         t,
-        count(s.id) as tSlotCount
+        COUNT(DISTINCT c.id) as categoriesCount,
+        COUNT(DISTINCT s.id) as tSlotCount,
+        COUNT(DISTINCT q.id) as tQualifCount
         ");
 
         $qb->addGroupBy("t.id");
+
+        // paginator ? to allow re orders ? may be too much, get param ? :
+        // + multi sort ?
+        // $timings = $paginator->paginate(
+        //     $query, /* query NOT result */
+        //     $request->query->getInt('page', 1), /*page number*/
+        //     // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
+        //     $request->query->getInt('pageLimit', 124), /*page limit */
+        // );
+
+        $qb->orderBy('t.slug');
+        // $qb->orderBy('tQualifCount', 'DESC');
+        // $qb->addOrderBy('tSlotCount');
+        // $qb->addOrderBy('categoriesCount');
 
         $tagsGrouped = $qb->getQuery()->getResult();
         // dd($tagsGrouped );

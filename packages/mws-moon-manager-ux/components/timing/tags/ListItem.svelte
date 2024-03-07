@@ -101,8 +101,8 @@
       {/each}
     </select>
   </td>
-  <td>{tag.categoriesCount}</td>
-  <td>{tag.tSlotCount}</td>
-  <td>{tag.tQualifCount}</td>
+  <td class="text-center">{tag.categoriesCount}</td>
+  <td class="text-center">{tag.tSlotCount}</td>
+  <td class="text-center">{tag.tQualifCount}</td>
   <td>{dayjs(tag[0].createdAt).format("YYYY/MM/DD h:mm")}</td>
 </tr>
