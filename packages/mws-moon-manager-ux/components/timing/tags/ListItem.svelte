@@ -180,7 +180,7 @@
       class="btn btn-outline-primary p-1 m-1"
       on:click={() => {
         console.debug("Will show :", tag);
-        addModal.surveyModel.data = tag;
+        addModal.surveyModel.data = tag.self;
         addModal.eltModal.show();
       }}
     >

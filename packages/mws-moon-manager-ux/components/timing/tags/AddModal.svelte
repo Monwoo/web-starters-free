@@ -76,12 +76,15 @@
                 showQuestionNumbers: false,
                 elements: [
                     {
-                        name: "templatePreload",
-                        title: "Pré charger avec le template",
+                        name: "slug",
+                        title: "Slug du tag",
+                        type: "text",
+                    }, {
+                        name: "category",
+                        title: "Category du tag",
                         type: "dropdown",
                         showNoneItem: false,
                         showOtherItem: false,
-                        itemComponent: "mws-msg-template-choice-item",
                         choices: [
                             "Ford",
                             "Vauxhall",
