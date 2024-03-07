@@ -30,6 +30,7 @@
     export let showSourceDetail = true;
     export let surveyJsHtmlWrapper;
     export let surveyData = null;
+    export let allTags = null;
 
     let htmlModalRoot;
 
@@ -38,6 +39,12 @@
             eltModal.show();
         }
     }
+
+    $: allTagsAsSurveyJsChoices = allTags.map((t) => ({
+        text: t.self.label,
+        value: { slug: t.self.slug, id: t.self.id },
+        // value: t.self,
+    }));
 
     onMount(async () => {
         const modalOptions = {
@@ -79,35 +86,78 @@
                         name: "slug",
                         title: "Slug du tag",
                         type: "text",
-                    }, {
+                    },
+                    {
+                        name: "label",
+                        title: "Libellé du tag",
+                        type: "text",
+                    },
+                    {
+                        name: "description",
+                        title: "Description du tag",
+                        type: "comment",
+                    },
+                    {
                         name: "category",
                         title: "Category du tag",
                         type: "dropdown",
                         showNoneItem: false,
                         showOtherItem: false,
-                        choices: [
-                            "Ford",
-                            "Vauxhall",
-                            "Volkswagen",
-                            "Nissan",
-                            "Audi",
-                            "Mercedes-Benz",
-                            "BMW",
-                            "Peugeot",
-                            "Toyota",
-                            "Citroen",
-                        ],
-                        valueName: "getTemplateNameSlug",
+                        choices: allTagsAsSurveyJsChoices,
+                        // valueName: "{panel.self}",
+                        // titleName: "{panel.label}",
+                        // valueName: "panel.self.label",
+                        // valueName: "panel.self.label",
+                        path: "self",
+                        titleName: "title",
                         searchEnabled: false,
                         validators: [],
                         minWidth: "20%",
                         isRequired: false,
                     },
+                    {
+                        name: "pricePerHr",
+                        title: "Prix par heure",
+                        type: "text",
+                    },
+                    {
+                        type: "paneldynamic",
+                        minPanelCount: 0,
+                        name: "pricePerHrRules",
+                        valueName: "messages",
+                        title: "Régles de prix par heure",
+                        panelAddText: "Ajouter une règle",
+                        panelCount: 0,
+                        templateElements: [
+                            {
+                                name: "price",
+                                title: "Prix par heure",
+                                type: "text",
+                            },
+                            {
+                                name: "maxLimitPriority",
+                                title: "Priorité de la limite max",
+                                type: "text",
+                            },
+                            {
+                                name: "withTags",
+                                title: "Tags",
+                                description: "Ajouter des tags à filtrer.",
+                                type: "tagbox",
+                                // valueName: "self",
+                                // labelName: "self.label",
+                                choices: allTagsAsSurveyJsChoices,
+                                validators: [],
+                                minWidth: "20%",
+                                isRequired: false,
+                            },
+                        ],
+                    },
                 ],
             };
 
             surveyModel = new Survey.Model(surveyDataModel);
-            surveyModel.locale = 'fr';
+            surveyModel.locale = "fr";
             surveyModel.showCompletedPage = false;
             surveyModel.onComplete.add((sender, options) => {
                 const responseData = JSON.stringify(sender.data, null, 3);
@@ -123,7 +173,7 @@
             // let surveyWrapper = $(".survey-js-wrapper", surveyForm);
             let surveyWrapper = jQuery(surveyJsHtmlWrapper);
             surveyWrapper.Survey({
-                model: surveyModel
+                model: surveyModel,
             });
         }, 500);
 
@@ -196,9 +246,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                     sourceDetailView.length &&
                     showSourceDetail}
             >
-                <div
-                bind:this={surveyJsHtmlWrapper}>
-                </div>
+                <div bind:this={surveyJsHtmlWrapper} />
             </div>
             <!-- Modal footer -->
             <div

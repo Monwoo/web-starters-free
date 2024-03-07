@@ -12,7 +12,7 @@
 </script>
 
 <div class="timing-tag-list">
-  <AddModal bind:this={addModal} />
+  <AddModal bind:this={addModal} allTags={tags} />
 
   <button
     on:click={() => {
