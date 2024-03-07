@@ -42,7 +42,8 @@
 
     $: allTagsAsSurveyJsChoices = allTags.map((t) => ({
         text: t.self.label,
-        value: { slug: t.self.slug, id: t.self.id },
+        // value: { slug: t.self.slug, id: t.self.id },
+        value: t.self.slug,
         // value: t.self,
     }));
 
@@ -124,7 +125,6 @@
                         type: "paneldynamic",
                         minPanelCount: 0,
                         name: "pricePerHrRules",
-                        valueName: "messages",
                         title: "Régles de prix par heure",
                         panelAddText: "Ajouter une règle",
                         panelCount: 0,
