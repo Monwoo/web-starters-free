@@ -14,6 +14,7 @@
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
   import { state, offerTagsByKey } from "../../../stores/reduxStorage.mjs";
+  import { tick } from 'svelte';
 
   export let locale;
   export let viewTemplate;
@@ -21,67 +22,147 @@
   export let mergeToTagKey;
   export let allTagsList;
   export let addModal;
+  let isLoading = false;
 
-  const mergeToTag = () => {
-    if ("null" === mergeToTagKey) return;
-    // TODO : await confirm and update tags dependencies if so...
-    console.debug("Shoud mergeToTagKey with", mergeToTagKey);
-
-    const toTag = {
-      slug: mergeToTagKey,
-    };
+  const deleteTag = async () => {
+    if (isLoading) return;
+    console.debug("Shoud delete with", tag);
+    isLoading = true;
+    // TODO : Wait for loading animation to show
+    // await tick();
+    // await new Promise(r => setTimeout(r, 500));
+    // Or use HTML modal instead of native blocking UI alert
+    await new Promise(r => setTimeout(r, 100));
 
     if (
       confirm(
-        "Are you sure you want to merge [" + tag[0].slug + "] to [" + toTag.slug + "]"
+        "Are you sure you want to delete [" +
+          tag.self.slug +
+          "] and remove all " +
+          (tag.categoriesCount + tag.tSlotCount + tag.tQualifCount) +
+          " usages ?"
+      )
+    ) {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfTimingTagRemoveAll"),
+        timeSlotId: timingSlot?.id,
+      };
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        Routing.generate("mws_timing_tag_remove_all", {
+          _locale: locale,
+        }),
+        {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          redirect: "error",
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp);
+          if (!resp.ok) {
+            throw new Error("Not 2xx response", { cause: resp });
+          } else {
+            const data = await resp.json();
+            timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+            lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
+            console.debug("Did add tag", timingSlot?.tags);
+            stateUpdate(state, {
+              csrfTimingTagRemoveAll: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    }
+    isLoading = false;
+  };
+
+  const mergeToTag = async () => {
+    if (isLoading) return;
+    if ("null" === mergeToTagKey) return;
+    // TODO : await confirm and update tags dependencies if so...
+    console.debug("Shoud mergeToTagKey with", mergeToTagKey);
+    isLoading = true;
+    const toTag = {
+      slug: mergeToTagKey,
+    };
+    // TODO : Wait for loading animation to show
+    // Or use HTML modal instead of native blocking UI alert
+    await new Promise(r => setTimeout(r, 100));
+
+    if (
+      confirm(
+        "Are you sure you want to merge [" +
+          tag.self.slug +
+          "] to [" +
+          toTag.slug +
+          "] ?"
       )
     ) {
       alert("The tag is successfully updated, with XXX timeSlots updated");
+    } else {
+      mergeToTagKey = "null";
     }
+    isLoading = false;
   };
 
-  console.debug('Having Tag : ', tag);
+  console.debug("Having Tag : ", tag);
+
 </script>
 
 <!-- // TIPS : is not categorySlug, this status is a category... -->
-<tr class:bg-blue-100={!tag[0].categorySlug}>
+<tr class:bg-blue-100={!tag.self.categorySlug}
+class:opacity-40={isLoading}
+class:pointer-events-none={isLoading}
+>
   <td>
     <!-- <button class="btn btn-outline-primary p-1 m-1">Editer</button> -->
     <!-- <a href={ Routing.generate('mws_offer_tag_edit', {
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? '',
-      'slug': tag[0].slug,
-      'categorySlug': tag[0].categorySlug,
+      'slug': tag.self.slug,
+      'categorySlug': tag.self.categorySlug,
     }) }>
       <button class="btn btn-outline-primary p-1 m-1">Supprimer</button>
     </a> -->
-    <button class="btn btn-outline-primary p-1 m-1"
-    on:click={
-      () => {
+    <button
+      class="btn btn-outline-primary p-1 m-1"
+      on:click={() => {
         console.debug("Will show :", tag);
         addModal.surveyModel.data = tag;
         addModal.eltModal.show();
-      }
-    }> Editer </button>
+      }}
+    >
+      Editer
+    </button>
     <button
       class="btn btn-outline-primary p-1 m-1"
       style="--mws-primary-rgb: 255, 0, 0"
+      on:click={deleteTag}
     >
       Supprimer
     </button>
   </td>
   <th scope="row">
-    <span>{tag[0].slug}</span>
-    <!-- { JSON.stringify(tag[0].categoryOkWithMultiplesTags) } -->
-    <span class:hidden={!tag[0].categoryOkWithMultiplesTags}> [MultiOk]</span>
+    <span>{tag.self.slug}</span>
+    <!-- { JSON.stringify(tag.self.categoryOkWithMultiplesTags) } -->
+    <span class:hidden={!tag.self.categoryOkWithMultiplesTags}> [MultiOk]</span>
   </th>
   <td class="text-left">
     <span
       class="p-2 rounded"
-      style:color={tag[0].textColor || "black"}
-      style:background-color={tag[0].bgColor || "lightgrey"}
+      style:color={tag.self.textColor || "black"}
+      style:background-color={tag.self.bgColor || "lightgrey"}
     >
-      {tag[0].label ?? ""}
+      {tag.self.label ?? ""}
     </span>
   </td>
   <td>
@@ -97,12 +178,12 @@
     >
       <option value="null" selected>Migrer vers</option>
       {#each allTagsList as tag}
-        <option value={`${tag[0].slug}`}>{tag[0].label}</option>
+        <option value={`${tag.self.slug}`}>{tag.self.label}</option>
       {/each}
     </select>
   </td>
   <td class="text-center">{tag.categoriesCount}</td>
   <td class="text-center">{tag.tSlotCount}</td>
   <td class="text-center">{tag.tQualifCount}</td>
-  <td>{dayjs(tag[0].createdAt).format("YYYY/MM/DD h:mm")}</td>
+  <td>{dayjs(tag.self.createdAt).format("YYYY/MM/DD h:mm")}</td>
 </tr>

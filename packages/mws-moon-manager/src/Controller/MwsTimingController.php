@@ -663,7 +663,7 @@ class MwsTimingController extends AbstractController
         // count(q.id) as tQualifCount
         // $qb->expr()->countDistinct('c.id')
         $qb = $qb->select("
-        t,
+        t as self,
         COUNT(DISTINCT c.id) as categoriesCount,
         COUNT(DISTINCT s.id) as tSlotCount,
         COUNT(DISTINCT q.id) as tQualifCount
@@ -688,7 +688,8 @@ class MwsTimingController extends AbstractController
         $tagsGrouped = $qb->getQuery()->getResult();
         // dd($tagsGrouped );
         $tags = array_map(function($g) {
-            return $g[0];
+            return $g['self'];
+            // return $g[0];
         }, $tagsGrouped);
         
         return $this->render('@MoonManager/mws_timing/tags.html.twig', [
