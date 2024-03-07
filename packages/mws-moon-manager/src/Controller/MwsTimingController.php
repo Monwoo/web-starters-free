@@ -513,7 +513,7 @@ class MwsTimingController extends AbstractController
             $respData = file_get_contents($url);
         } else {
             $imagick = new \Imagick($url);
-            $targetW = 300; // px, // TODO : from session or db config params
+            $targetW = 150; // px, // TODO : from session or db config params
             $factor = $targetW / $imagick->getImageWidth();
             $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
                 $imagick->getImageWidth() * $factor,
@@ -522,6 +522,7 @@ class MwsTimingController extends AbstractController
                 \Imagick::FILTER_CATROM,
                 0
             );
+            $imagick->setImageCompressionQuality(0);
             // https://www.php.net/manual/fr/imagick.resizeimage.php#94493
             // FILTER_POINT is 4 times faster
             // $imagick->scaleimage(
@@ -618,33 +619,65 @@ class MwsTimingController extends AbstractController
             $this->logger->debug("Fail auth with", [$request]);
             throw $this->createAccessDeniedException('Only for logged users');
         }
-        $tags = $mwsTimeTagRepository->findAll();
-        array_multisort(
-            // array_keys($allTagsList),
-            array_map(function($t) {
-                return $t->getLabel();
-            }, $tags),
-            SORT_NATURAL | SORT_FLAG_CASE,
-            $tags
-        );
+        // $tags = $mwsTimeTagRepository->findAll();
+        // array_multisort(
+        //     // array_keys($allTagsList),
+        //     array_map(function($t) {
+        //         return $t->getLabel();
+        //     }, $tags),
+        //     SORT_NATURAL | SORT_FLAG_CASE,
+        //     $tags
+        // );
+
         // dd($this->serializer->serialize($tags, 'yaml'));
         //  TODO : More efficient to 'groupBy' Query with total amount.
 
         // Fetching all ids is too much time consuming....
-        $tagsSerialized = $this->serializer->serialize($tags, 'yaml', [
-            'groups' => 'withDeepIds', // TODO : group annotation do not go over ignore annotation
-            // only below work :
-            // AbstractNormalizer::ATTRIBUTES => [
-            //     'id', 'mwsTimeTags',  'mwsTimeQualifs'],
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, string $format, array $context): string {
-                        // return "**" . (string)$object . "**";
-                        return $object ? ($object->getId() ?? "****") : '-****-';
-                    },
-        ]);
+        // $tagsSerialized = $this->serializer->serialize($tags, 'yaml', [
+        //     'groups' => 'withDeepIds', // TODO : group annotation do not go over ignore annotation
+        //     // only below work :
+        //     // AbstractNormalizer::ATTRIBUTES => [
+        //     //     'id', 'mwsTimeTags',  'mwsTimeQualifs'],
+        //     AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, string $format, array $context): string {
+        //                 // return "**" . (string)$object . "**";
+        //                 return $object ? ($object->getId() ?? "****") : '-****-';
+        //             },
+        // ]);
         // dd($tagsSerialized);
+
+        $qb = $mwsTimeTagRepository->createQueryBuilder('t');
+
+        // $qb->orderBy("t.sourceTimeGMT", "ASC");
+        // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
+        $qb = $qb->leftJoin('t.mwsTimeSlots', 's');
+        // $qb = $qb->leftJoin('t.mwsTimeTags', 'c');
+        // $qb = $qb->leftJoin('t.mwsTimeQualifs', 'q');
+
+        // https://www.php.net/manual/fr/function.strftime.php
+        // count(a.mwsTimeTags) as categoriesCount,
+        // count(t.mwsTimeSlots) as tSlotCount,
+        // https://stackoverflow.com/questions/3679777/how-to-count-one-to-many-relationships
+        // count(s.id) as tSlotCount,
+        // count(c.id) as categoriesCount,
+        // count(q.id) as tQualifCount
+
+        $qb = $qb->select("
+        t,
+        count(s.id) as tSlotCount
+        ");
+
+        $qb->addGroupBy("t.id");
+
+        $tagsGrouped = $qb->getQuery()->getResult();
+        // dd($tagsGrouped );
+        $tags = array_map(function($g) {
+            return $g[0];
+        }, $tagsGrouped);
+        
         return $this->render('@MoonManager/mws_timing/tags.html.twig', [
-            // 'tags' => $tags,
-            'tagsSerialized' => $tagsSerialized,
+            'tags' => $tags,
+            // 'tagsSerialized' => $tagsSerialized,
+            'tagsGrouped' => $tagsGrouped,
             'viewTemplate' => $viewTemplate,
         ]);
     }

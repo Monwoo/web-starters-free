@@ -10,7 +10,9 @@
     ? Routing.generate("mws_timing_fetchMediatUrl", {
         // encodeURI('file://' + timingSlot.source.path)
         url: "file://" + timingSlot.source.path,
-        keepOriginalSize: true,
+        // keepOriginalSize: null,
+        // TODO : TOO Slow in dev, cache in dev only for thumbs ?
+        keepOriginalSize: 1,
       })
     : null;
 

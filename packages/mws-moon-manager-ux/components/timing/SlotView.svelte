@@ -343,7 +343,10 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </button>
       {/each}
       <span class="float-right flex flex-wrap justify-end p-2">
-        <TagsInput tags={timingSlot?.tags} timing={timingSlot} {locale} />
+        <TagsInput
+        bind:tags={timingSlot.tags}
+        timing={timingSlot}
+        {locale} />
       </span>
       {#if isLoading}
         <span role="status">

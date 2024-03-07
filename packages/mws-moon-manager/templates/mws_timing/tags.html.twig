@@ -26,7 +26,7 @@
 		name as the moon-manager-ux package one, all debug link go to wrong file... #}
 	<div class="mws-timings-qualif" {{ svelte_component('MwsTimingTags', {
 		'locale': app.locale,
-		'tags': tagsSerialized|e('html_attr'),
+		'tags': tagsGrouped|serialize('json')|e('html_attr'),
 		'viewTemplate' : viewTemplate,
 	} ) }}></div>
 {% endblock %}

@@ -33,7 +33,7 @@
 
     if (
       confirm(
-        "Are you sure you want to merge [" + tag.slug + "] to [" + toTag.slug + "]"
+        "Are you sure you want to merge [" + tag[0].slug + "] to [" + toTag.slug + "]"
       )
     ) {
       alert("The tag is successfully updated, with XXX timeSlots updated");
@@ -44,14 +44,14 @@
 </script>
 
 <!-- // TIPS : is not categorySlug, this status is a category... -->
-<tr class:bg-blue-100={!tag.categorySlug}>
+<tr class:bg-blue-100={!tag[0].categorySlug}>
   <td>
     <!-- <button class="btn btn-outline-primary p-1 m-1">Editer</button> -->
     <!-- <a href={ Routing.generate('mws_offer_tag_edit', {
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? '',
-      'slug': tag.slug,
-      'categorySlug': tag.categorySlug,
+      'slug': tag[0].slug,
+      'categorySlug': tag[0].categorySlug,
     }) }>
       <button class="btn btn-outline-primary p-1 m-1">Supprimer</button>
     </a> -->
@@ -71,17 +71,17 @@
     </button>
   </td>
   <th scope="row">
-    <span>{tag.slug}</span>
-    <!-- { JSON.stringify(tag.categoryOkWithMultiplesTags) } -->
-    <span class:hidden={!tag.categoryOkWithMultiplesTags}> [MultiOk]</span>
+    <span>{tag[0].slug}</span>
+    <!-- { JSON.stringify(tag[0].categoryOkWithMultiplesTags) } -->
+    <span class:hidden={!tag[0].categoryOkWithMultiplesTags}> [MultiOk]</span>
   </th>
   <td class="text-left">
     <span
       class="p-2 rounded"
-      style:color={tag.textColor || "black"}
-      style:background-color={tag.bgColor || "lightgrey"}
+      style:color={tag[0].textColor || "black"}
+      style:background-color={tag[0].bgColor || "lightgrey"}
     >
-      {tag.label ?? ""}
+      {tag[0].label ?? ""}
     </span>
   </td>
   <td>
@@ -97,12 +97,12 @@
     >
       <option value="null" selected>Migrer vers</option>
       {#each allTagsList as tag}
-        <option value={`${tag.slug}`}>{tag.label}</option>
+        <option value={`${tag[0].slug}`}>{tag[0].label}</option>
       {/each}
     </select>
   </td>
-  <td>{tag.mwsTimeTags?.length}</td>
-  <td>{tag.mwsTimeTags?.length}</td>
-  <td>{tag.mwsTimeTags?.length}</td>
-  <td>{dayjs(tag.createdAt).format("YYYY/MM/DD h:mm")}</td>
+  <td>{tag.categoriesCount}</td>
+  <td>{tag.tSlotCount}</td>
+  <td>{tag.tQualifCount}</td>
+  <td>{dayjs(tag[0].createdAt).format("YYYY/MM/DD h:mm")}</td>
 </tr>

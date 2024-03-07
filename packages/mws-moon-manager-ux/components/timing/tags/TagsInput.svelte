@@ -19,6 +19,11 @@
 
   allTagsList = allTagsList ?? stateGet(get(state), 'allTagsList');
 
+  // Tips : sync inner data on component changes :
+  // BUT might leave old instance obj asyn,
+  //   better use bind: to avoid async behavior
+  $: timing?.tags = tags;
+
   let addedTagKey;
   export let removeTag = async (tag, comment = null) => {
     const data = {

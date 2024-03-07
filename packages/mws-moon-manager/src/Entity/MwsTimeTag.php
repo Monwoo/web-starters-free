@@ -79,7 +79,7 @@ class MwsTimeTag
         ],
     )]
     #[Serializer\MaxDepth(1)]
-    // #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
+    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeTags;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeSlot::class, mappedBy: 'tags')]
@@ -95,8 +95,8 @@ class MwsTimeTag
             AbstractNormalizer::ATTRIBUTES => ['id']
         ],
     )]
-    // #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     #[Serializer\MaxDepth(1)]
+    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeSlots;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeQualif::class, mappedBy: 'timeTags')]
@@ -112,8 +112,8 @@ class MwsTimeTag
             AbstractNormalizer::ATTRIBUTES => ['id']
         ],
     )]
-    // #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     #[Serializer\MaxDepth(1)]
+    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeQualifs;
 
     public function __construct()

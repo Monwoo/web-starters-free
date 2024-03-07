@@ -41,7 +41,7 @@
 					'clientUsername' : knp_pagination_sortable(timingsReport, 'Nom du client', 'o.clientUsername'),
 
 		 #}
-	<div class="mws-offer-lookup" {{ svelte_component('MwsTimingReport', {
+	<div class="mws-offer-timing" {{ svelte_component('MwsTimingReport', {
 		'locale': app.locale,
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'timingsReport': timingsReport|serialize('json')|e('html_attr'),
