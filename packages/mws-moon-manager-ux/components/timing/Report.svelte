@@ -446,7 +446,7 @@
         let maxSlot = null;
         Object.keys(slotIds).forEach((slotId) => {
           const timeSlot = timingsByIds[slotId] ?? null;
-          if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
+          if (!maxSlot || (timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
             maxSlot = timeSlot;
           }
         });
@@ -459,7 +459,7 @@
             }, {}) ?? {};
         }
         // if (maxSlot?.usedForTotal || !subTag.ids.includes(maxSlot.id)) {
-        if (maxSlot?.usedForTotal || !(subTag.haveIds[maxSlot.id] ?? false)) {
+        if (maxSlot?.usedForTotal || !(subTag.haveIds[maxSlot?.id] ?? false)) {
           return; // Do not re-compute if already added for TOTAL
         }
         // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'

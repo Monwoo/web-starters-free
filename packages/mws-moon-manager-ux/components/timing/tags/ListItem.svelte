@@ -89,13 +89,11 @@
 
   const migrateToTag = async () => {
     if (isLoading) return;
-    if (migrateToTagKey || "null" === migrateToTagKey) return;
+    if (!migrateToTagKey || "null" === migrateToTagKey) return;
     // TODO : await confirm and update tags dependencies if so...
     console.debug("Shoud migrateToTag with", migrateToTagKey);
     isLoading = true;
-    const toTag = {
-      slug: migrateToTagKey,
-    };
+    const tagTo = allTagsList[migrateToTagKey];
     // TODO : Wait for loading animation to show
     // Or use HTML modal instead of native blocking UI alert
     await new Promise((r) => setTimeout(r, 100));
@@ -105,14 +103,14 @@
         "Are you sure you want to migrate [" +
           tag.self.slug +
           "] to [" +
-          toTag.slug +
+          tagTo.self.slug +
           "] ?"
       )
     ) {
       const data = {
         _csrf_token: stateGet(get(state), "csrfTimingMigrateTo"),
         tagFromId: tag.self.id,
-        tagToId: tagTo.id,
+        tagToId: tagTo.self.id,
       };
       const formData = new FormData();
       for (const name in data) {
@@ -222,8 +220,8 @@
     dark:focus:border-blue-500"
     >
       <option value="null" selected>Migrer vers</option>
-      {#each allTagsList as tag}
-        <option value={`${tag.self.slug}`}>{tag.self.label}</option>
+      {#each allTagsList as tag, idx}
+        <option value={`${idx}`}>{tag.self.label}</option>
       {/each}
     </select>
   </td>
