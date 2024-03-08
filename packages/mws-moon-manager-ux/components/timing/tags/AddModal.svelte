@@ -16,6 +16,13 @@
     import { tick } from "svelte";
     import { Modal } from "flowbite";
     import Routing from "fos-router";
+    import {
+        state,
+        stateGet,
+        stateUpdate,
+    } from "../../../stores/reduxStorage.mjs";
+    import { get } from "svelte/store";
+
     //   import { Modal } from 'flowbite-svelte'; // TODO : still having issue with typescript...
     const UID = newUniqueId();
     export let addMessageForm;
@@ -31,6 +38,7 @@
     export let surveyJsHtmlWrapper;
     export let surveyData = null;
     export let allTags = null;
+    export let locale;
 
     let htmlModalRoot;
 
@@ -46,6 +54,53 @@
         value: t.self.slug,
         // value: t.self,
     }));
+
+    export let updateTimingTag = async (timeTag) => {
+        const $ = window.$;
+        const modalBtn = $(`[data-modal-target="${modalId}"]`);
+        console.log(modalBtn);
+        modalBtn.click();
+
+        const data = {
+            _csrf_token: stateGet(get(state), "csrfTimingTagUpdate"),
+            timeTag: JSON.stringify(timeTag),
+        };
+        const formData = new FormData();
+        for (const name in data) {
+            formData.append(name, data[name]);
+        }
+        const resp = await fetch(
+            Routing.generate("mws_timing_tag_update", {
+                _locale: locale,
+            }),
+            {
+                method: "POST",
+                body: formData,
+                credentials: "same-origin",
+                redirect: "error",
+            }
+        )
+            .then(async (resp) => {
+                console.log(resp);
+                if (!resp.ok) {
+                    throw new Error("Not 2xx response", { cause: resp });
+                } else {
+                    const data = await resp.json();
+                    console.debug("Did update tag", data);
+                    // window.location.reload();
+
+                    stateUpdate(state, {
+                        csrfTimingTagUpdate: data.newCsrf,
+                    });
+                }
+            })
+            .catch((e) => {
+                console.error(e);
+                // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+                const shouldWait = confirm("Echec de l'enregistrement.");
+                addedTagKey = "null";
+            });
+    };
 
     onMount(async () => {
         const modalOptions = {
@@ -159,8 +214,10 @@
             surveyModel = new Survey.Model(surveyDataModel);
             surveyModel.locale = "fr";
             surveyModel.showCompletedPage = false;
-            surveyModel.onComplete.add((sender, options) => {
-                const responseData = JSON.stringify(sender.data, null, 3);
+            surveyModel.onComplete.add(async (sender, options) => {
+                // const responseData = JSON.stringify(sender.data, null, 3);
+                const responseData = sender.data;
+                await updateTimingTag(responseData);
                 console.log("Will sync response :", responseData);
                 // surveyDataInput.val(encodeURIComponent(responseData));
                 // surveyForm.submit();

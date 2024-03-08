@@ -179,7 +179,7 @@ class MwsTimingController extends AbstractController
         // https://stackoverflow.com/questions/20431345/naturally-sort-a-multi-dimensional-array-by-key
         array_multisort(
             // array_keys($allTagsList),
-            array_map(function($t) {
+            array_map(function ($t) {
                 return $t->getLabel();
             }, $allTagsList),
             SORT_NATURAL | SORT_FLAG_CASE,
@@ -687,11 +687,11 @@ class MwsTimingController extends AbstractController
 
         $tagsGrouped = $qb->getQuery()->getResult();
         // dd($tagsGrouped );
-        $tags = array_map(function($g) {
+        $tags = array_map(function ($g) {
             return $g['self'];
             // return $g[0];
         }, $tagsGrouped);
-        
+
         return $this->render('@MoonManager/mws_timing/tags.html.twig', [
             'tags' => $tags,
             // 'tagsSerialized' => $tagsSerialized,
@@ -750,6 +750,83 @@ class MwsTimingController extends AbstractController
         return $this->json([
             'newTags' => $timeSlot->getTags(),
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-add')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
+        '/tag/update/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_update',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagUpdate(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-update', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $tagData = $request->request->get('timeTag');
+        // $tagData = get_object_vars($tagData);
+        // TODO : use serializer deserialize ?
+        $tagData = json_decode($tagData, true);
+        // dd($tagData);
+        $tag = $mwsTimeTagRepository->findOneBy([
+            "slug" => $tagData['slug'],
+        ]);
+        if (!$tag) {
+            $tag = new MwsTimeTag();
+        }
+
+        $sync = function ($path) use (&$tag, &$tagData) {
+            $set = 'set' . ucfirst($path);
+            // $get = 'get' . ucfirst($path);
+            // if(!method_exists($tag, $get)) {
+            //     $get = 'is' . ucfirst($path);
+            // }
+            // $v =  $tag->$get();
+            $v =  $tagData[$path] ?? null;
+            if (null !== $v) {
+                $tag->$set($v);
+            }
+        };
+
+        $sync('slug');
+        $sync('label');
+        $sync('description');
+        if ($tagData['category'] ?? false) {
+            $categorySlug = $tagData['category'];
+            $category = $mwsTimeTagRepository->findOneBy([
+                "slug" => $categorySlug,
+            ]);
+            $tagData['category'] = $category;
+        }
+        $sync('category');
+        $sync('pricePerHr');
+        $sync('pricePerHrRules');
+        // $tag->addTag($tag);
+
+        $this->em->persist($tag);
+        $this->em->flush();
+
+        return $this->json([
+            'updatedTag' => $tag,
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-update')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
     }
@@ -844,10 +921,10 @@ class MwsTimingController extends AbstractController
         }
 
         $qb = $this->em->createQueryBuilder()
-        // ->delete('MoonManagerBundle:MwsUser', 'u'); // Depreciated syntax in 6.3 ? sound to work...         
-        ->delete(MwsTimeTag::class, 't')
-        ->where('t.id = :tId')
-        ->setParameter('tId', $tag->getId());
+            // ->delete('MoonManagerBundle:MwsUser', 'u'); // Depreciated syntax in 6.3 ? sound to work...         
+            ->delete(MwsTimeTag::class, 't')
+            ->where('t.id = :tId')
+            ->setParameter('tId', $tag->getId());
 
         // TIPS : no need to cleanup invert relation ship
         // DQL did take care of if...
@@ -974,9 +1051,9 @@ class MwsTimingController extends AbstractController
 
         // Then delete self, will cascade remove with dql :
         $qb = $this->em->createQueryBuilder()
-        ->delete(MwsTimeTag::class, 't')
-        ->where('t.id = :tId')
-        ->setParameter('tId', $tagFrom->getId());
+            ->delete(MwsTimeTag::class, 't')
+            ->where('t.id = :tId')
+            ->setParameter('tId', $tagFrom->getId());
         // TIPS : no need to cleanup invert relation ship
         // DQL did take care of if...
         $query = $qb->getQuery();
