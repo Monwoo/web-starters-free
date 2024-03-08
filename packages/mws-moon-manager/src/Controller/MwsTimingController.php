@@ -786,9 +786,18 @@ class MwsTimingController extends AbstractController
         // TODO : use serializer deserialize ?
         $tagData = json_decode($tagData, true);
         // dd($tagData);
-        $tag = $mwsTimeTagRepository->findOneBy([
-            "slug" => $tagData['slug'],
-        ]);
+        $criteria = [
+            "slug" => $tagData['slug'] ?? null,
+        ];
+        // TIPS : For tag update, try ID if exist
+        if ($tagData['id'] ?? false) {
+            $criteria = [
+                "id" => $tagData['id'],
+            ];    
+        }
+        $tag = count($criteria)
+        ? $mwsTimeTagRepository->findOneBy($criteria)
+        : null;
         if (!$tag) {
             $tag = new MwsTimeTag();
         }

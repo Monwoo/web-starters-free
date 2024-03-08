@@ -87,7 +87,7 @@
                 } else {
                     const data = await resp.json();
                     console.debug("Did update tag", data);
-                    // window.location.reload();
+                    window.location.reload();
 
                     stateUpdate(state, {
                         csrfTimingTagUpdate: data.newCsrf,

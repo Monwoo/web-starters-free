@@ -46,7 +46,7 @@
       )
     ) {
       const data = {
-        _csrf_token: stateGet(get(state), "csrfTimingMigrateTo"),
+        _csrf_token: stateGet(get(state), "csrfTimingTagDeleteAndClean"),
         tagId: tag.self.id,
       };
       const formData = new FormData();
