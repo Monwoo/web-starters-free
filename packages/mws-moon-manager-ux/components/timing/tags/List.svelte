@@ -2,6 +2,8 @@
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import ListItem from "./ListItem.svelte";
   import AddModal from "./AddModal.svelte";
+import ExportTags from "./ExportTags.svelte";
+import ImportTags from "./ImportTags.svelte";
 
   export let locale;
   export let viewTemplate;
@@ -13,6 +15,19 @@
 
 <div class="timing-tag-list">
   <AddModal bind:this={addModal} allTags={tags} {locale} />
+
+  <ImportTags></ImportTags>
+  <ExportTags></ExportTags>
+
+  <button
+    on:click={() => {
+      addModal.surveyModel.data = null; // Ensure data is empty before show...
+      addModal.eltModal.show();
+    }}
+    class="btn btn-outline-primary p-1 m-1"
+  >
+    Importer des tags
+  </button>
 
   <button
     on:click={() => {
