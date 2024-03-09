@@ -797,14 +797,14 @@ class MwsTimingController extends AbstractController
     }
 
     #[Route(
-        '/tag/delete/{viewTemplate<[^/]*>?}',
-        name: 'mws_timing_tag_delete',
+        '/tag/remove/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_remove',
         methods: ['POST'],
         defaults: [
             'viewTemplate' => null,
         ],
     )]
-    public function tagDelete(
+    public function tagRemove(
         string|null $viewTemplate,
         Request $request,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
@@ -819,7 +819,7 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
-        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-delete', $csrf)) {
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-remove', $csrf)) {
             $this->logger->debug("Fail csrf with", [$csrf, $request]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
@@ -845,7 +845,54 @@ class MwsTimingController extends AbstractController
 
         return $this->json([
             'newTags' => $timeSlot->getTags(),
-            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-delete')->getValue(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-remove')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
+        '/tag/remove-all/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_remove_all',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagRemoveAll(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-remove-all', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $timeSlotId = $request->request->get('timeSlotId');
+        $timeSlot = $mwsTimeSlotRepository->findOneBy([
+            'id' => $timeSlotId,
+        ]);
+        if (!$timeSlot) {
+            throw $this->createNotFoundException("Unknow time slot id [$timeSlotId]");
+        }
+        // dd($tag);
+        $timeSlot->getTags()->clear();
+
+        $this->em->persist($timeSlot);
+        $this->em->flush();
+
+        return $this->json([
+            'newTags' => $timeSlot->getTags(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-remove-all')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
     }
@@ -913,14 +960,14 @@ class MwsTimingController extends AbstractController
     }
 
     #[Route(
-        '/tag/remove-all/{viewTemplate<[^/]*>?}',
-        name: 'mws_timing_tag_remove_all',
+        '/tag/delete-all/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_delete_all',
         methods: ['POST'],
         defaults: [
             'viewTemplate' => null,
         ],
     )]
-    public function tagRemoveAll(
+    public function tagDeleteAll(
         string|null $viewTemplate,
         Request $request,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
@@ -935,26 +982,25 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
-        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-remove-all', $csrf)) {
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-delete-all', $csrf)) {
             $this->logger->debug("Fail csrf with", [$csrf, $request]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
-        $timeSlotId = $request->request->get('timeSlotId');
-        $timeSlot = $mwsTimeSlotRepository->findOneBy([
-            'id' => $timeSlotId,
-        ]);
-        if (!$timeSlot) {
-            throw $this->createNotFoundException("Unknow time slot id [$timeSlotId]");
-        }
-        // dd($tag);
-        $timeSlot->getTags()->clear();
 
-        $this->em->persist($timeSlot);
+        $qb = $this->em->createQueryBuilder()
+            // ->delete('MoonManagerBundle:MwsUser', 'u'); // Depreciated syntax in 6.3 ? sound to work...         
+            ->delete(MwsTimeTag::class, 't')
+        ;
+
+        $query = $qb->getQuery();
+        // dump($query->getSql());
+        $resp = $query->execute();
+        // dump($resp);
+
         $this->em->flush();
 
         return $this->json([
-            'newTags' => $timeSlot->getTags(),
-            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-remove-all')->getValue(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-delete-all')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
     }
@@ -1108,7 +1154,7 @@ class MwsTimingController extends AbstractController
     #[Route(
         '/tag/import/{viewTemplate<[^/]*>?}',
         name: 'mws_timing_tag_import',
-        methods: ['POST', 'GET'],
+        methods: ['POST'],
         defaults: [
             'viewTemplate' => null,
         ],
@@ -1132,10 +1178,44 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
+        // format
+        $format = $request->get('format');
+        $shouldOverwrite = $request->get('shouldOverwrite');
+        // $importFile = $request->request->get('importFile'); // Not txt, will be null
+        // dd($importFile);
+        // dd ($request->getPayload());
+        // dd ($request->getPayload()->get('importFile'));
+        // dd( $request->request);
+
+        // https://symfonycasts.com/screencast/symfony-uploads/api-uploads
+        // dd($request->files->get('importFile'));
+        $importFile = $request->files->get('importFile');
+        // dd($request->getContent());
+        $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
+        // dd($importContent);
+
+        $importTags = $this->serializer->deserialize(
+            $importContent,
+            MwsTimeTag::class . "[]",
+            $format,
+            // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            // [
+            //     AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']
+            // ],
+        );
+
+        // dd($importTags);
+        foreach ($importTags as $idx => $importTag) {
+            // TODO if $shouldOverwrite
+
+            $this->em->persist($importTag);
+            $this->em->flush();
+        }
+
         [$tags, $tagsGrouped] = $mwsTimeTagRepository->findAllTagsWithCounts();
         return $this->json([
             'tags' => $tags,
-            'tagsGrouped' => [], // $tagsGrouped,
+            'tagsGrouped' => $tagsGrouped,
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-import')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);

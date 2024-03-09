@@ -27,7 +27,7 @@
   let addedTagKey;
   export let removeTag = async (tag, comment = null) => {
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfTimingTagDelete'),
+      _csrf_token: stateGet(get(state), 'csrfTimingTagRemove'),
       timeSlotId: timing.id,
       tagSlug: tag.slug,
       comment, // TODO : allow optional comment on status switch ?
@@ -45,7 +45,7 @@
     const resp = await fetch(
       // TODO : build back Api, will return new csrf to use on success, will error othewise,
       // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
-      Routing.generate('mws_timing_tag_delete', {
+      Routing.generate('mws_timing_tag_remove', {
         _locale: locale,
       }), {
         method: "POST",
@@ -68,7 +68,7 @@
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
           stateUpdate(state, {
-            csrfTimingTagDelete: data.newCsrf,
+            csrfTimingTagRemove: data.newCsrf,
           });
       }
     }).catch(e => {

@@ -26,10 +26,13 @@
     'csv': 'application/csv,text/csv',
   }
 
-  export let importTags = async ({format = 'yaml', importFile = null}) => {
+  export let importTags = async ({
+    format = 'yaml', importFile = null, shouldOverwrite = null
+  }) => {
+    // shouldOverwrite is null or 'on'
     const data = {
       _csrf_token: stateGet(get(state), 'csrfTimingTagImport'),
-      format,
+      format, shouldOverwrite,
       importFile: importFile, // JSON.stringify(timeTag),
     };
 		// let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
@@ -107,6 +110,9 @@
       <option value={`${fmt.format}`}>{fmt.label}</option>
     {/each}
   </select>  
+  <!-- <input type="checkbox" name="shouldOverwrite" checked /> -->
+  <input type="checkbox" name="shouldOverwrite" />
+  <label for="shouldOverwrite">Forcer la surcharge</label>
 
   <button type="submit" class="btn btn-outline-primary p-1 m-1">
     Importer les tags
