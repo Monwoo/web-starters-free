@@ -1181,6 +1181,7 @@ class MwsTimingController extends AbstractController
         // format
         $format = $request->get('format');
         $shouldOverwrite = $request->get('shouldOverwrite');
+        // dd($shouldOverwrite);
         // $importFile = $request->request->get('importFile'); // Not txt, will be null
         // dd($importFile);
         // dd ($request->getPayload());
@@ -1194,6 +1195,7 @@ class MwsTimingController extends AbstractController
         $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
         // dd($importContent);
 
+        /** @var MwsTimeTag[] $importTags */
         $importTags = $this->serializer->deserialize(
             $importContent,
             MwsTimeTag::class . "[]",
@@ -1206,7 +1208,39 @@ class MwsTimingController extends AbstractController
 
         // dd($importTags);
         foreach ($importTags as $idx => $importTag) {
-            // TODO if $shouldOverwrite
+            $tag = $mwsTimeTagRepository->findOneBy([
+                'slug' => $importTag->getSlug()
+            ]);
+            if ($tag) {
+                if ($shouldOverwrite && $shouldOverwrite != 'null') {
+                    // dd($tag->getId());
+                    // NOP : setting ID still duplicate on persiste...
+                    // $reflectionProperty = new \ReflectionProperty(MwsTimeTag::class, 'id');
+                    // $reflectionProperty->setAccessible(true);
+                    // $reflectionProperty->setValue($importTag, $tag->getId());
+                    // $importTag->setId($tag->getId());
+                    $sync = function ($path) use (&$tag, &$importTag) {
+                        $set = 'set' . ucfirst($path);
+                        $get = 'get' . ucfirst($path);
+                        if(!method_exists($tag, $get)) {
+                            $get = 'is' . ucfirst($path);
+                        }
+                        $v =  $importTag->$get();
+                        if (null !== $v) {
+                            $tag->$set($v);
+                        }
+                    };
+                    $sync('slug');
+                    $sync('label');
+                    $sync('description');
+                    $sync('category');
+                    $sync('pricePerHr');
+                    $sync('pricePerHrRules');
+                    $importTag = $tag;
+                } else {
+                    continue;
+                }    
+            }
 
             $this->em->persist($importTag);
             $this->em->flush();
