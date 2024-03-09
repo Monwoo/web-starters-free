@@ -24,10 +24,65 @@
     'csv': 'application/csv,text/csv',
   }
 
+  export let importTags = async ({format = 'yaml', importFile = null}) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfTimingTagImport'),
+      format,
+      importFile: importFile, // JSON.stringify(timeTag),
+    };
+		// let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
+		let headers = {};
+    // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
+    // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+    // Per this article make sure to NOT set the Content-Type header. 
+		// headers['Content-Type'] = 'application/json';
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      // TODO : build back Api, will return new csrf to use on success, will error othewise,
+      // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
+      Routing.generate('mws_timing_tag_import', {
+        _locale: locale,
+      }), {
+        method: "POST",
+        headers,
+        // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
+        body: formData,
+        // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
+        credentials: "same-origin",
+        // https://javascript.info/fetch-api
+        redirect: 'error',
+      }
+    ).then(async resp => {
+      console.log(resp);
+      if (!resp.ok) {
+        // make the promise be rejected if we didn't get a 2xx response
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+          // got the desired response
+          const data = await resp.json();
+          console.debug("Did import", data);
+          // tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
+          stateUpdate(state, {
+            csrfTimingTagImport: data.newCsrf,
+          });
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+    });
+  };
+
+
   const submit = async (e) => {
     const formData = new FormData(e.target);
     const formJson = Object.fromEntries(formData.entries());
     console.log('Should import tags : ', formJson);
+    importTags(formJson);
   }
 </script>
 

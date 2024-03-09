@@ -12,6 +12,7 @@
 		'allTagsList': tags,
 		'csrfTimingMigrateTo': csrf_token('mws-csrf-timing-tag-migrate-to'),
 		'csrfTimingTagDeleteAndClean': csrf_token('mws-csrf-timing-tag-delete-and-clean'),
+		'csrfTimingTagImport': csrf_token('mws-csrf-timing-tag-import'),
 		'csrfTimingTagUpdate': csrf_token('mws-csrf-timing-tag-update'),
 		'csrfTimingTagRemoveAll': csrf_token('mws-csrf-timing-tag-remove-all'),
 	} |serialize('json')|e('html_attr'), }) }}></div>

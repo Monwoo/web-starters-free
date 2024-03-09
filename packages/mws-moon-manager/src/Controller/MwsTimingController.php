@@ -1105,8 +1105,11 @@ class MwsTimingController extends AbstractController
         //     $this->logger->debug("Fail csrf with", [$csrf, $request]);
         //     throw $this->createAccessDeniedException('CSRF Expired');
         // }
-        $format = $request->request->get('format')
-        ?? $request->query->get('format') ?? 'yaml';
+
+        // $format = $request->request->get('format')
+        // ?? $request->query->get('format') ?? 'yaml';
+        $format = $request->get('format') ?? 'yaml';
+
         // $timeSlotId = $request->request->get('timeSlotId');
 
         $tags = $mwsTimeTagRepository->findAll() ?? [];
@@ -1146,6 +1149,40 @@ class MwsTimingController extends AbstractController
         return $response;
     }
 
+    #[Route(
+        '/tag/import/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_import',
+        methods: ['POST', 'GET'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagImport(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-import', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        // $timeSlotId = $request->request->get('timeSlotId');
+        return $this->json([
+            // 'newTags' => $timeSlot->getTags(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-import')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
 
     #[Route(
         '/qualif/toggle/{viewTemplate<[^/]*>?}',
