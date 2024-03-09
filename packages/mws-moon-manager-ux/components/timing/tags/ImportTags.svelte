@@ -6,6 +6,8 @@
   import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
 
+  export let importedTags;
+  export let importedTagsGrouped;
   export let locale;
   export let availableFormat = [
     { format:'json', label:'JSON' },
@@ -66,6 +68,8 @@
           console.debug("Did import", data);
           // tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
+          importedTags = data.tags;
+          importedTagsGrouped = data.tagsGrouped;
           stateUpdate(state, {
             csrfTimingTagImport: data.newCsrf,
           });
