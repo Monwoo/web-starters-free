@@ -200,6 +200,10 @@
     }
   );
 
+  // TODO : refactor meanings : will add shortcut to 'GROUPS of Qualifs'
+  // => allow end user to select shortcut himself
+  // TODO : config backend for backup upload /download + save connected user shortcuts...
+
   const isKey = {
     space: (k) => k.keyCode == 32,
     return: (k) => k.keyCode == 13,
