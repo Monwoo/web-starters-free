@@ -1077,6 +1077,77 @@ class MwsTimingController extends AbstractController
     }
 
     #[Route(
+        '/tag/export/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_tag_export',
+        methods: ['POST', 'GET'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function tagExport(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        // CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        // TIPS : no csrf renew ? only check user logged is ok ?
+        // TODO : or add async CSRF token manager notif route
+        //         to sync new redux token to frontend ?
+        // $csrf = $request->request->get('_csrf_token');
+        // if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-export', $csrf)) {
+        //     $this->logger->debug("Fail csrf with", [$csrf, $request]);
+        //     throw $this->createAccessDeniedException('CSRF Expired');
+        // }
+        $format = $request->request->get('format')
+        ?? $request->query->get('format') ?? 'yaml';
+        // $timeSlotId = $request->request->get('timeSlotId');
+
+        $tags = $mwsTimeTagRepository->findAll() ?? [];
+        $tagsSerialized = $this->serializer->serialize(
+            $tags,
+            $format,
+            // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']
+            ],
+        );
+
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+
+        $filename = "MoonManager-v" . $packageVersion
+            . "-TimeTagsExport-" . time() . ".{$format}"; // . '.pdf';
+        if ("monwoo-extractor-export" == $format) {
+            $filename = "bulk-answers.json";
+        }
+
+        $response = new Response();
+
+        //set headers
+        $mime = [
+            'json' => 'application/json',
+            'csv' => 'text/comma-separated-values',
+            'xml' => 'application/x-xml', // TODO : x-xml or xml ?
+            'yaml' => 'application/x-yaml', // TODO : x-yaml or yaml ?
+        ][$format] ?? 'text/plain';
+        if ($mime) {
+            $response->headers->set('Content-Type', $mime);
+        }
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
+
+        $response->setContent($tagsSerialized);
+        return $response;
+    }
+
+
+    #[Route(
         '/qualif/toggle/{viewTemplate<[^/]*>?}',
         name: 'mws_timing_qualif_toggle',
         methods: ['POST'],

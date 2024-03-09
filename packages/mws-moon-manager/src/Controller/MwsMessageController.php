@@ -668,8 +668,8 @@ class MwsMessageController extends AbstractController
         $rootPackage = \Composer\InstalledVersions::getRootPackage();
         $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
 
-        $filename = "MoonManager-ExportMessages-v" . $packageVersion
-            . "-" . time() . ".{$format}"; // . '.pdf';
+        $filename = "MoonManager-v" . $packageVersion
+            . "-ExportMessages-" . time() . ".{$format}"; // . '.pdf';
         if ("monwoo-extractor-export" == $format) {
             $filename = "bulk-answers.json";
         }

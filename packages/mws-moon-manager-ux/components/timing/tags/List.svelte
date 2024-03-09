@@ -16,8 +16,8 @@
 <div class="timing-tag-list">
   <AddModal bind:this={addModal} allTags={tags} {locale} />
 
-  <ImportTags />
-  <ExportTags />
+  <ImportTags {locale} />
+  <ExportTags {locale} />
 
   <button
     on:click={() => {
