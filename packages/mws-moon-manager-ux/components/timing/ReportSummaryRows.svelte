@@ -44,7 +44,7 @@
     // TIPS : inefficient to search in un-sorted array ? remove and directly search in timingsByIds ?
     // ?? (showDetails && (summary.ids ?? []).includes(subKey))
     // ?? (showDetails && (summary.ids ?? false) && (timingsByIds[subKey] ?? false))
-    ?? (showDetails && (summary.ids ?? false))
+    ?? (showDetails && (summary.ids ?? false) && (!Object.keys(summary.subTags ?? {}).length))
     ?? false;
     // console.debug('subKey', subKey, ' have path ', !!exist);
     return !!exist;
