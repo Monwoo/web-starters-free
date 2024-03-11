@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
+use MWS\MoonManagerBundle\Services\MaxPriceTagManager;
 use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsTimeSlotRepository::class)]
@@ -34,8 +35,10 @@ class MwsTimeSlot
     #[ORM\Column(nullable: true)] // TODO : computed field, but hard computed for opti OK ?
     private ?int $rangeDayIdxBy10Min = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $maxPricePerHr = null;
+    // #[ORM\Column(nullable: true)]
+    // private ?float $maxPricePerHr = null;
+    #[ORM\ManyToOne(inversedBy: 'mwsTimeSlotsForMax')]
+    private ?MwsTimeTag $maxPriceTag = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $rangeDayIdxByCustomNorm = null;
@@ -141,11 +144,8 @@ class MwsTimeSlot
         }
 
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
-        $this->setMaxPricePerHr(
-            array_reduce($this->tags->toArray(), function ($acc, $t) {
-                $acc = max($t->getPricePerHr(), $acc);
-                return $acc;
-            }, 0)
+        $this->setMaxPriceTag(
+            MaxPriceTagManager::pickMaxOf($this->tags->toArray())
         );
 
         return $this;
@@ -156,11 +156,8 @@ class MwsTimeSlot
         $this->tags->removeElement($tag);
 
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
-        $this->setMaxPricePerHr(
-            array_reduce($this->tags->toArray(), function ($acc, $t) {
-                $acc = max($t->getPricePerHr(), $acc);
-                return $acc;
-            }, 0)
+        $this->setMaxPriceTag(
+            MaxPriceTagManager::pickMaxOf($this->tags->toArray())
         );
 
         return $this;
@@ -190,14 +187,14 @@ class MwsTimeSlot
         return $this;
     }
 
-    public function getMaxPricePerHr(): ?float
+    public function getMaxPriceTag(): ?MwsTimeTag
     {
-        return $this->maxPricePerHr;
+        return $this->maxPriceTag;
     }
 
-    public function setMaxPricePerHr(?float $maxPricePerHr): static
+    public function setMaxPriceTag(?MwsTimeTag $maxPriceTag): static
     {
-        $this->maxPricePerHr = $maxPricePerHr;
+        $this->maxPriceTag = $maxPriceTag;
 
         return $this;
     }

@@ -116,11 +116,15 @@ class MwsTimeTag
     #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeQualifs;
 
+    #[ORM\OneToMany(mappedBy: 'maxPriceTag', targetEntity: MwsTimeSlot::class)]
+    private Collection $mwsTimeSlotsForMax;
+
     public function __construct()
     {
         $this->mwsTimeTags = new ArrayCollection();
         $this->mwsTimeSlots = new ArrayCollection();
         $this->mwsTimeQualifs = new ArrayCollection();
+        $this->mwsTimeSlotsForMax = new ArrayCollection();
     }
 
     public function __toString()
@@ -285,6 +289,36 @@ class MwsTimeTag
     public function setPricePerHrRules(?array $pricePerHrRules): static
     {
         $this->pricePerHrRules = $pricePerHrRules;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsTimeSlot>
+     */
+    public function getMwsTimeSlotsForMax(): Collection
+    {
+        return $this->mwsTimeSlotsForMax;
+    }
+
+    public function addMwsTimeSlotsForMax(MwsTimeSlot $mwsTimeSlotsForMax): static
+    {
+        if (!$this->mwsTimeSlotsForMax->contains($mwsTimeSlotsForMax)) {
+            $this->mwsTimeSlotsForMax->add($mwsTimeSlotsForMax);
+            $mwsTimeSlotsForMax->setMaxPriceTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsTimeSlotsForMax(MwsTimeSlot $mwsTimeSlotsForMax): static
+    {
+        if ($this->mwsTimeSlotsForMax->removeElement($mwsTimeSlotsForMax)) {
+            // set the owning side to null (unless already changed)
+            if ($mwsTimeSlotsForMax->getMaxPriceTag() === $this) {
+                $mwsTimeSlotsForMax->setMaxPriceTag(null);
+            }
+        }
 
         return $this;
     }
