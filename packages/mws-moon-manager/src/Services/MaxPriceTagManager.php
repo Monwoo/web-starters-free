@@ -29,40 +29,91 @@ class MaxPriceTagManager
     $maxTag = array_reduce($tags, function ($acc, $t)
     use (&$tags, &$rootMaxPath) {
       $tMaxValue = self::getMaxValueOf($t, $tags);
-      if ( $tMaxValue
-      > self::getMaxValueOf($acc, $tags)) {
+      $accMaxValue = self::getMaxValueOf($acc, $tags);
+      if (
+        $tMaxValue[0] > $accMaxValue[0]
+        || (
+          $tMaxValue[0] === $accMaxValue[0]
+          && $tMaxValue[1] > $accMaxValue[1]
+        )
+      ) {
         $acc = $t;
-        $maxPath = [
-          // 'ruleIndex' => 
-          'tagSlug' => $t->getSlug(),
-          'deepLvl' => 1,
-        ];
-        $rootMaxPath[$t->getSlug()] = $maxPath;
-        $rootMaxPath['_:MaxValue:_'] = $tMaxValue;
+        $rootMaxPath['_:MaxTagSlug:_'] = $t->getSlug();
+        $rootMaxPath['_:MaxRuleIndex:_'] = $tMaxValue[3] ?? -1;
+        $rootMaxPath['_:MaxSubTags:_'] = $tMaxValue[2] ?? null;
+        // $rootMaxPath[$t->getSlug()] = $maxPath;
+        $rootMaxPath['_:MaxLimitPriority:_'] = $tMaxValue[0];
+        $rootMaxPath['_:MaxValue:_'] = $tMaxValue[1];
       }
       return $acc;
     }, null);
 
     // dump($tags);
-    dump($maxTag);
+    // dump($maxTag);
     dd($rootMaxPath);
     // TODO : save getMaxValueOf inside $maxTag for opti ? or php cache used/is enough ? 
     return [$maxTag, $rootMaxPath];
   }
 
-  static public function getMaxValueOf(?MwsTimeTag $tag, array &$tags): float
+  static public function isRuleValid($rule, &$tags, &$checkedTagSlugs): bool
   {
-    if (!$tag) {
-      return 0;
+    $fit = false;
+    if (!$rule) {
+      $fit = true;
     }
-    if ( $tag->getPricePerHrRules()) {
-      foreach ( $tag->getPricePerHrRules() as $idx => $rule) {
-        // TODO : rules system....
-        // $rule['withTags']
-        return $rule['price'];
+    if ($rule['withTags'] ?? false) {
+      foreach ($rule['withTags'] as $tagSlug) {
+        // dd($rule);
+        $fit = array_reduce($tags, function ($acc, $t)
+        use ($tagSlug) {
+          return $acc || ($tagSlug == $t->getSlug());
+        }, false);
+        $checkedTagSlugs[] = $tagSlug;
+        if (!$fit) {
+          break;
+        }
+        # code...
       }
     }
+
+    return $fit;
+  }
+
+  /**
+   * @param array{0: float, 1: array, 2?: array}
+   *      0: priority
+   *      1: max Value For priority level
+   *      2: subTagSlugs checked ok for rules test
+   *      3: rule index
+   */
+  static public function getMaxValueOf(?MwsTimeTag $tag, array &$tags): array
+  {
+    if (!$tag) {
+      return [0, 0];
+    }
+    if ($tag->getPricePerHrRules()) {
+      $lastMaxRule = [];
+      $lastMaxIdx = -1;
+      $lastCheckedTagSlugs = [];
+      foreach ($tag->getPricePerHrRules() as $idx => $rule) {
+        $checkedTagSlugs = [];
+        if (self::isRuleValid($rule, $tags, $checkedTagSlugs)
+        && floatval($rule['price']) > ($lastMaxRule['price'] ?? 0)) {
+          $lastMaxRule = $rule;
+          $lastCheckedTagSlugs = $checkedTagSlugs;
+          $lastMaxIdx = $idx;
+        }
+      }
+      return [
+        $lastMaxRule['maxLimitPriority'] ?? 0,
+        $lastMaxRule['price'] ?? 0,
+        $lastCheckedTagSlugs, $lastMaxIdx
+      ];
+    }
     // TODO : check max limit rules
-    return $tag->getPricePerHr() ?? 0;
+    if ($tag->getPricePerHr()) {
+      return [0, $tag->getPricePerHr()];
+    }
+    return [0, 0];
   }
 }

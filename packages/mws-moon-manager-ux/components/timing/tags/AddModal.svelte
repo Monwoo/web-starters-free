@@ -190,6 +190,8 @@
                                 type: "text",
                             },
                             {
+                                // # 0 maxLimitPriority is same level as pricePerHr number type
+                                // # 1 maxLimitPriority is higher priority than 0 
                                 name: "maxLimitPriority",
                                 title: "Priorité de la limite max",
                                 type: "text",
@@ -199,8 +201,6 @@
                                 title: "Tags",
                                 description: "Ajouter des tags à filtrer.",
                                 type: "tagbox",
-                                // valueName: "self",
-                                // labelName: "self.label",
                                 choices: allTagsAsSurveyJsChoices,
                                 validators: [],
                                 minWidth: "20%",
