@@ -406,6 +406,7 @@ class MwsTimingController extends AbstractController
 
 
         // https://www.php.net/manual/fr/function.strftime.php
+        // GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
         $qb = $qb->select("
             count(t) as count,
             strftime('%Y-%m-%d', t.sourceTimeGMT) as sourceDate,
@@ -414,7 +415,7 @@ class MwsTimingController extends AbstractController
             strftime('%m', t.sourceTimeGMT) as sourceMonth,
             strftime('%d', t.sourceTimeGMT) as sourceWeekOfYear,
             GROUP_CONCAT(tag.slug) as tags,
-            GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
+            GROUP_CONCAT(t.maxPath) as maxPath,
             GROUP_CONCAT(t.sourceStamp) as sourceStamps,
             GROUP_CONCAT(tag.label) as labels,
             GROUP_CONCAT(t.rangeDayIdxBy10Min) as allRangeDayIdxBy10Min,

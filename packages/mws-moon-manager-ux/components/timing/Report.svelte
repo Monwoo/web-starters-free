@@ -66,8 +66,12 @@
     const tagSlugs = tSum.tags?.split(",");
     const labels = tSum.labels?.split(",");
     const allRangeDayIdxBy10Min = tSum.allRangeDayIdxBy10Min.split(",");
-    const pricesPerHr = tSum.pricesPerHr?.split(",");
+    const maxPath = JSON.parse(tSum.maxPath);
+    // const maxPaths = tSum.maxPaths?.split(",");
+    const pricePerHr = maxPath ?? 0; // TODO: handle priority
     const sourceStamps = tSum.sourceStamps?.split(",");
+
+    console.debug(maxPath);
 
     console.assert(
       !tagSlugs || tagSlugs.length == ids.length,

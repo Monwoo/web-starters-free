@@ -50,7 +50,7 @@ class MaxPriceTagManager
 
     // dump($tags);
     // dump($maxTag);
-    dd($rootMaxPath);
+    // dd($rootMaxPath);
     // TODO : save getMaxValueOf inside $maxTag for opti ? or php cache used/is enough ? 
     return [$maxTag, $rootMaxPath];
   }
