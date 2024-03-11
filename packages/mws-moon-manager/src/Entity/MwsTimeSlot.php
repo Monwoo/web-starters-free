@@ -41,6 +41,9 @@ class MwsTimeSlot
     private ?MwsTimeTag $maxPriceTag = null;
 
     #[ORM\Column(nullable: true)]
+    private ?array $maxPath = null;
+
+    #[ORM\Column(nullable: true)]
     private ?int $rangeDayIdxByCustomNorm = null;
 
     #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsTimeSlots')]
@@ -144,9 +147,11 @@ class MwsTimeSlot
         }
 
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
-        $this->setMaxPriceTag(
-            MaxPriceTagManager::pickMaxOf($this->tags->toArray())
+        [$maxTag, $maxPath] = MaxPriceTagManager::pickMaxOf(
+            $this->tags->toArray()
         );
+        $this->setMaxPriceTag($maxTag);
+        $this->setMaxPath($maxPath);
 
         return $this;
     }
@@ -156,9 +161,11 @@ class MwsTimeSlot
         $this->tags->removeElement($tag);
 
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
-        $this->setMaxPriceTag(
-            MaxPriceTagManager::pickMaxOf($this->tags->toArray())
+        [$maxTag, $maxPath] = MaxPriceTagManager::pickMaxOf(
+            $this->tags->toArray()
         );
+        $this->setMaxPriceTag($maxTag);
+        $this->setMaxPath($maxPath);
 
         return $this;
     }
@@ -195,6 +202,18 @@ class MwsTimeSlot
     public function setMaxPriceTag(?MwsTimeTag $maxPriceTag): static
     {
         $this->maxPriceTag = $maxPriceTag;
+
+        return $this;
+    }
+
+    public function getMaxPath(): ?array
+    {
+        return $this->maxPath;
+    }
+
+    public function setMaxPath(?array $maxPath): static
+    {
+        $this->maxPath = $maxPath;
 
         return $this;
     }
