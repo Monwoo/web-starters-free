@@ -801,6 +801,17 @@
       {showPictures ? "Cacher" : "Voir"} les screenshots
     </button>
   {/if}
+  <div class="p-3">
+    <button>
+      Exporter les temps
+    </button>
+    <button>
+      Importer les temps
+    </button>
+    <button>
+      Exporter les tags
+    </button>
+  </div>
 
   <div class="p-3 flex flex-wrap">
     <div class="label">
@@ -847,7 +858,7 @@
         : ""}
     {/each}
   </div>
-  <div>
+  <div class="pt-3">
     {@html jsonLookup.customFilters && jsonLookup.customFilters.length
       ? "<strong>Filtres actifs : </strong>" +
         jsonLookup.customFilters.reduce(
@@ -907,7 +918,7 @@
   </div>
   <div class="text-lg font-extrabold">
     <!-- {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes. -->
-    {(summaryTotals.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € en tout.
+    {(summaryTotals.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € annexes.
   </div>
   <br />
   <br />
