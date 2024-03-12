@@ -21,6 +21,8 @@
   import Routing from "fos-router";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
   import ReportSummaryRows from "./ReportSummaryRows.svelte";
+  import _ from 'lodash';
+
   export let locale;
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
   export let lookup;
@@ -52,15 +54,15 @@
 
   // max between 2 object having maxPath object
   // TODO : maybe refactor and do max between path instead of parent object ?
-  const pickMaxBetween = (a, b) => {
-    if (!a || !a.maxPath) return b;
-    if (!b || !b.maxPath) return a;
-    const aPriority = (a.maxPath.maxLimitPriority ?? 0);
-    const bPriority = (b.maxPath.maxLimitPriority ?? 0);
+  const pickMaxBetween = (a, b, maxAttribute = 'maxPath') => {
+    if (!a || !a[maxAttribute]) return b;
+    if (!b || !b[maxAttribute]) return a;
+    const aPriority = (a[maxAttribute].maxLimitPriority ?? 0);
+    const bPriority = (b[maxAttribute].maxLimitPriority ?? 0);
     if (
        aPriority > bPriority ||
       (aPriority == bPriority &&
-        a.maxPath.maxValue > b.maxPath.maxValue)
+        a[maxAttribute].maxValue > b[maxAttribute].maxValue)
     ) {
       return a;
     } else {
@@ -68,13 +70,13 @@
     }
   };
 
-  const sumOfMaxPath = (p1, p2) => {
+  const sumOfMaxPathPerHr = (p1, p2, p2hrDelta) => {
     return {
       sumPath: [ // TODO : might be too heavy to track all sum path ? debug only ?
         ...(p1?.sumPath ?? p1 ? [p1] : []),
         ...(p2?.sumPath ?? p2 ? [p2] : []),
       ],
-      maxValue: (p1?.maxValue ?? 0) + (p2?.maxValue ?? 0)
+      maxValue: (p1?.maxValue ?? 0) + (p2?.maxValue ?? 0) * p2hrDelta
     }
   }
 
@@ -173,13 +175,13 @@
 
   let summaryByLevels = {
     sumOfBookedHrs: 0,
-    sumOfMaxPPH: 0,
+    // sumOfMaxPPH: 0,
     subTags: [],
   };
   let summaryByDays = {};
   let summaryTotals = {
     sumOfBookedHrs: 0,
-    sumOfMaxPPH: 0,
+    // sumOfMaxPPH: 0,
   };
   const bookedTimeSlotWithDate = {};
   timingsReport.forEach((tReport) => {
@@ -196,9 +198,9 @@
         ensurePath(subTag, ["bookedTimeSlot"], {});
         ensurePath(subTag, ["bookedTimeSlotWithDate"], {});
         // TODO : below init ok, but used at postprocess, so lazy init in postprocess only ?
-        ensurePath(subTag, ["maxPPH"], 0);
+        // ensurePath(subTag, ["maxPPH"], 0);
         ensurePath(subTag, ["sumOfBookedHrs"], 0);
-        ensurePath(subTag, ["sumOfMaxPPH"], 0);
+        // ensurePath(subTag, ["sumOfMaxPPH"], 0);
         ensurePath(subTag, ["deepSumOfBookedHrs"], 0);
         ensurePath(subTag, ["deepSumOfMaxPPH"], 0);
         ensurePath(subTag, ["tags"], {});
@@ -423,8 +425,8 @@
         summaryByDays[tReport.sourceDate] = {
           bookedTimeSlot: {},
           sumOfBookedHrs: 0,
-          sumOfMaxPPH: 0, // Sum of max price per slot
-          maxPPH: 0,
+          // sumOfMaxPPH: 0, // Sum of max price per slot
+          // maxPPH: 0,
           tags: {},
         };
       }
@@ -515,11 +517,11 @@
         // subTag.sumOfMaxPPH += deltaPrice;
         // subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, maxPPH);
 
-        // sumOfMaxPPH => sumOfMaxPath.maxValue
+        // sumOfMaxPPH => sumOfMaxPathPerHr.maxValue
         // + add 'sumHistory' : array of counted sums path ?
         //  => might be too heavy, ids of slots insteads ?
         // but no slot id for report tags levels...
-        subTag.sumOfMaxPath = sumOfMaxPath(subTag.sumOfMaxPath, maxSlot?.maxPath);
+        subTag.sumOfMaxPathPerHr = sumOfMaxPathPerHr(subTag.sumOfMaxPathPerHr, maxSlot?.maxPath, delta);
         subTag.maxPath = pickMaxBetween(subTag, maxSlot)?.maxPath ?? null;
         maxSlot?.usedForTotal = true;
       });
@@ -529,8 +531,18 @@
           let maxSlot = null;
           Object.keys(slotIds).forEach((slotId) => {
             const timeSlot = timingsByIds[slotId] ?? null;
-            maxSlot = pickMaxBetween(maxSlot, timeSlot);
+            // TIPS : need loadash merge to keep reference to initial slot :
+            // maxSlot = pickMaxBetween(maxSlot, {
+            //   ...timeSlot, deepMaxPath: timeSlot.maxPath
+            // }, 'deepMaxPath');
+            maxSlot = pickMaxBetween(maxSlot, _.merge(timeSlot, {
+              deepMaxPath: timeSlot.maxPath
+            }), 'deepMaxPath');
           });
+
+          if (maxSlot?.usedForDeepTotal) {
+            return; // Do not re-compute if already added for TOTAL
+          }
 
           const delta = 10 / 60; // TODO : const for segment config instead of '10'
           // const maxPPH = maxSlot?.maxPricePerHr ?? 0;
@@ -539,10 +551,8 @@
           // subTag.deepSumOfMaxPPH += deltaPrice;
           // // TODO : deepMaxPPH <> of maxPPH or not usefull ?
           // subTag.deepMaxPPH = Math.max(subTag.deepMaxPPH ?? 0, maxPPH);
-          subTag.deepSumOfMaxPath = sumOfMaxPath(subTag.deepSumOfMaxPath, maxSlot?.maxPath);
-          subTag.deepMaxPath = pickMaxBetween({
-            ...subTag, maxPath: subTag.deepMaxPath
-          }, maxSlot)?.maxPath ?? null;
+          subTag.deepSumOfMaxPathPerHr = sumOfMaxPathPerHr(subTag.deepSumOfMaxPathPerHr, maxSlot?.deepMaxPath, delta);
+          subTag.deepMaxPath = pickMaxBetween(subTag, maxSlot, 'deepMaxPath')?.deepMaxPath ?? null;
 
           maxSlot?.usedForDeepTotal = true;
         }
@@ -553,15 +563,17 @@
 
         // subTag.sumOfMaxPPH += childSubTag.sumOfMaxPPH;
         // subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, childSubTag.maxPPH ?? 0);
-        subTag.sumOfMaxPath = sumOfMaxPath(subTag.sumOfMaxPath, childSubTag?.sumOfMaxPath);
+        subTag.sumOfMaxPathPerHr = sumOfMaxPathPerHr(subTag.sumOfMaxPathPerHr, childSubTag?.sumOfMaxPathPerHr, 1);
         subTag.maxPath = pickMaxBetween(subTag, childSubTag)?.maxPath ?? null;
 
-        // subTag.deepSumOfBookedHrs += childSubTag.deepSumOfBookedHrs;
+        subTag.deepSumOfBookedHrs += childSubTag.deepSumOfBookedHrs;
         // subTag.deepSumOfMaxPPH += childSubTag.deepSumOfMaxPPH;
         // subTag.deepMaxPPH = Math.max(
         //   subTag.deepMaxPPH ?? 0,
         //   childSubTag.deepMaxPPH ?? 0,
         // );
+        subTag.deepSumOfMaxPathPerHr = sumOfMaxPathPerHr(subTag.deepSumOfMaxPathPerHr, childSubTag?.deepSumOfMaxPathPerHr, 1);
+        subTag.deepMaxPath = pickMaxBetween(subTag, childSubTag, 'deepMaxPath')?.deepMaxPath ?? null;
       });
     });
   };
@@ -571,8 +583,10 @@
   summaryByLevels.subTags.forEach((subTag) => {
     summaryByLevels.sumOfBookedHrs += subTag.sumOfBookedHrs;
     // summaryByLevels.sumOfMaxPPH += subTag.sumOfMaxPPH;
-    summaryByLevels.sumOfMaxPath = sumOfMaxPath(summaryByLevels.sumOfMaxPath, subTag.sumOfMaxPath);
+    summaryByLevels.sumOfMaxPathPerHr = sumOfMaxPathPerHr(summaryByLevels.sumOfMaxPathPerHr, subTag.sumOfMaxPathPerHr, 1);
     summaryByLevels.maxPath = pickMaxBetween(summaryByLevels, subTag)?.maxPath ?? null;
+    summaryByLevels.deepSumOfMaxPathPerHr = sumOfMaxPathPerHr(summaryByLevels.deepSumOfMaxPathPerHr, subTag.deepSumOfMaxPathPerHr, 1);
+    summaryByLevels.deepMaxPath = pickMaxBetween(summaryByLevels, subTag, 'deepMaxPath')?.deepMaxPath ?? null;
 
   });
 
@@ -849,7 +863,8 @@
     {summaryByLevels.sumOfBookedHrs.toPrettyNum(2)} hours au total.
   </div>
   <div class="text-lg font-extrabold">
-    {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout.
+    <!-- {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout. -->
+    {summaryByLevels.sumOfMaxPathPerHr.maxValue.toPrettyNum(2)} € en tout.
   </div>
   <br />
   <br />
@@ -857,7 +872,8 @@
     {summaryTotals.sumOfBookedHrs.toPrettyNum(2)} hours annexes.
   </div>
   <div class="text-lg font-extrabold">
-    {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes.
+    <!-- {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes. -->
+    <!-- {summaryByLevels.sumOfMaxPathPerHr.maxValue.toPrettyNum(2)} € en tout. -->
   </div>
   <br />
   <br />

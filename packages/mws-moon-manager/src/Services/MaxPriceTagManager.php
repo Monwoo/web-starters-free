@@ -46,7 +46,7 @@ class MaxPriceTagManager
         // $rootMaxPath['_:MaxValue:_'] = $tMaxValue[1];
         $rootMaxPath['maxTagSlug'] = $t->getSlug();
         $rootMaxPath['maxRuleIndex'] = $tMaxValue[3] ?? -1;
-        $rootMaxPath['maxSubTags'] = $tMaxValue[2] ?? null;
+        $rootMaxPath['maxSubTags'] = array_flip($tMaxValue[2] ?? []);
         $rootMaxPath['maxLimitPriority'] = $tMaxValue[0];
         $rootMaxPath['maxValue'] = $tMaxValue[1];
       }

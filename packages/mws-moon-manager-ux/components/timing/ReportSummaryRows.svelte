@@ -176,11 +176,16 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
        <span class="">[{label}]</span>
     </div>
   {#each tagSlugs as tagSlug}
-      {@const tag = summary.tags[tagSlug]}
-      <span
+    {@const tag = summary.tags[tagSlug]}
+    {@const isMaxTag = tagSlug == (summary.maxPath?.maxTagSlug ?? null)}
+    {@const isMaxSubTag = tagSlug in (summary.maxPath?.maxSubTags ?? {})}
+    <span
         class="inline-flex
         text-xs font-medium p-1 text-center
-       border border-blue-800"
+        border border-blue-800 "
+        class:border-2={isMaxTag || isMaxSubTag}
+        class:border-green-400={isMaxTag}
+        class:border-green-700={isMaxSubTag}
       >
         {tag.label} {
           tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
@@ -207,18 +212,25 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
 
     <!-- <br /> -->
     <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
-      {(summary.deepSumOfBookedHrs ?? null) === null && summary.usedForDeepTotal
+      <!-- {(summary.deepSumOfBookedHrs ?? null) === null && summary.usedForDeepTotal
         ? (10/60).toPrettyNum(2)
-        : summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-'} hr
+        : summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-'} hr -->
+      {(summary.deepSumOfBookedHrs ?? null) === null
+        ?  (summary.usedForDeepTotal
+          ? (10/60).toPrettyNum(2)
+          : '--'
+        )
+        : (summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr  
     </span>
   </td>
   <td
     class="border-t-0 px-6 text-right
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    {(summary.maxPPH ?? null) === null
+    <!-- {(summary.maxPPH ?? null) === null
     ? summary.maxPricePerHr?.toPrettyNum(2) ?? '-'
-    : (summary.maxPPH?.toPrettyNum(2) ?? '-')} €
+    : (summary.maxPPH?.toPrettyNum(2) ?? '-')} € -->
+    {(summary.maxPath?.maxValue?.toPrettyNum(2) ?? '--')} €
   </td>
   <td
     class="border-t-0 px-6 text-right flex flex-col
@@ -228,20 +240,27 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     class:border-2={summary.usedForTotal}
     class:border-green-400={summary.usedForTotal}
     >
-      {(summary.sumOfMaxPPH ?? null) === null
+      <!-- {(summary.sumOfMaxPPH ?? null) === null
       ? (
         summary.usedForTotal
         ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
         : '-'
       )
-      : (summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-')} €
+      : (summary.sumOfMaxPPH?.toPrettyNum(2) ?? '-')} € -->
+      {(summary.sumOfMaxPathPerHr?.maxValue ??
+      (summary.maxPath?.maxValue ? summary.maxPath.maxValue * 10/60 : null)
+      )?.toPrettyNum(2) ?? '--'} €
     </span>
       <!-- <br /> -->
     <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
-      {(summary.deepSumOfMaxPPH ?? null) === null && summary.usedForDeepTotal
+      <!-- {(summary.deepSumOfMaxPPH ?? null) === null && summary.usedForDeepTotal
       ? ((summary.maxPricePerHr ?? 0) * (10/60)).toPrettyNum(2)
-      : summary.deepSumOfMaxPPH?.toPrettyNum(2) ?? '-'} €
-    </span>
+      : summary.deepSumOfMaxPPH?.toPrettyNum(2) ?? '-'} € -->
+      <!-- {summary.deepSumOfMaxPathPerHr.maxValue.toPrettyNum(2)} € -->
+      {(summary.deepSumOfMaxPathPerHr?.maxValue ??
+        (summary.maxPath?.maxValue ? summary.maxPath.maxValue * 10/60 : null)
+        )?.toPrettyNum(2) ?? '--'} €
+      </span>
   </td>
 </tr>
 
