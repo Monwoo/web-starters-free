@@ -13,6 +13,7 @@
   dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
   dayjs.tz.setDefault("Europe/Paris");
   // dayjs.tz.setDefault("Europe/London");
+
 </script>
 
 <script lang="ts">
@@ -49,6 +50,34 @@
     });
   };
 
+  // max between 2 object having maxPath object
+  // TODO : maybe refactor and do max between path instead of parent object ?
+  const pickMaxBetween = (a, b) => {
+    if (!a || !a.maxPath) return b;
+    if (!b || !b.maxPath) return a;
+    const aPriority = (a.maxPath.maxLimitPriority ?? 0);
+    const bPriority = (b.maxPath.maxLimitPriority ?? 0);
+    if (
+       aPriority > bPriority ||
+      (aPriority == bPriority &&
+        a.maxPath.maxValue > b.maxPath.maxValue)
+    ) {
+      return a;
+    } else {
+      return b;
+    }
+  };
+
+  const sumOfMaxPath = (p1, p2) => {
+    return {
+      sumPath: [ // TODO : might be too heavy to track all sum path ? debug only ?
+        ...(p1?.sumPath ?? p1 ? [p1] : []),
+        ...(p2?.sumPath ?? p2 ? [p2] : []),
+      ],
+      maxValue: (p1?.maxValue ?? 0) + (p2?.maxValue ?? 0)
+    }
+  }
+
   dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 
   const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
@@ -66,12 +95,13 @@
     const tagSlugs = tSum.tags?.split(",");
     const labels = tSum.labels?.split(",");
     const allRangeDayIdxBy10Min = tSum.allRangeDayIdxBy10Min.split(",");
-    const maxPath = JSON.parse(tSum.maxPath);
+    // const maxPath = JSON.parse(tSum.maxPath);
+    const maxPaths = tSum.maxPath?.split("#_;_#");
     // const maxPaths = tSum.maxPaths?.split(",");
-    const pricePerHr = maxPath ?? 0; // TODO: handle priority
+    // const pricePerHr = maxPath ?? 0; // TODO: handle priority
     const sourceStamps = tSum.sourceStamps?.split(",");
 
-    console.debug(maxPath);
+    // console.debug(maxPath);
 
     console.assert(
       !tagSlugs || tagSlugs.length == ids.length,
@@ -81,11 +111,16 @@
       allRangeDayIdxBy10Min.length == ids.length,
       "Wrong DATASET, <> allRangeDayIdxBy10Min found"
     );
-    console.assert(
-      !pricesPerHr || pricesPerHr.length == ids.length,
-      "Wrong DATASET, <> pricesPerHr found"
-    );
 
+    // console.assert( // replaced by maxPath system
+    //   !pricesPerHr || pricesPerHr.length == ids.length,
+    //   "Wrong DATASET, <> pricesPerHr found"
+    // );
+    console.assert( // replaced by maxPath system
+      !maxPaths || maxPaths.length == ids.length,
+      "Wrong DATASET, <> maxPaths found"
+    );
+    
     console.assert(
       !sourceStamps || sourceStamps.length == ids.length,
       "Wrong DATASET, <> sourceStamps found"
@@ -95,20 +130,21 @@
       const tagSlug = tagSlugs ? tagSlugs[idx] ?? null : null;
       const rangeDayIdxBy10Min = allRangeDayIdxBy10Min[idx];
       const sourceStamp = sourceStamps ? sourceStamps[idx] ?? null : null;
-      const pricePerHr = pricesPerHr
-        ? parseFloat(pricesPerHr[idx]) ?? null
-        : null;
-      const maxPPH = Math.max(
-        pricePerHr ?? 0,
-        timingsByIds[tId]?.maxPricePerHr ?? 0
-      );
+      // const pricePerHr = maxPath
+      //   ? parseFloat(pricesPerHr[idx]) ?? null
+      //   : null;
+      // const maxPPH = Math.max(
+      //   pricePerHr ?? 0,
+      //   timingsByIds[tId]?.maxPricePerHr ?? 0
+      // );
+      const maxPath = JSON.parse(maxPaths[idx]);
       const label = labels ? labels[idx] ?? null : null;
       const tags = {
         ...(tagSlug
           ? {
               [tagSlug]: {
                 label: label,
-                pricePerHr: pricePerHr,
+                // pricePerHr: pricePerHr,
                 // slug: tagSlug,
               },
             }
@@ -123,7 +159,8 @@
         sourceTimeGMT: dayjs.unix(tSum.sourceTimeGMTstamp),
         sourceStamp: sourceStamp,
         rangeDayIdxBy10Min: rangeDayIdxBy10Min,
-        maxPricePerHr: maxPPH,
+        // maxPricePerHr: maxPPH,
+        maxPath: maxPath,
         tags: tags,
         // tags: timingsByIds[tId]?.tags ?? {},
       };
@@ -151,7 +188,7 @@
     ids.forEach((tId) => {
       const t = timingsByIds[tId];
       const delta = 10 / 60.0;
-      const deltaOfMaxPPH = delta * (t.maxPricePerHr ?? 0);
+      // const deltaOfMaxPPH = delta * (t.maxPricePerHr ?? 0);
 
       // summaryByLevels
       let usedByReport = false;
@@ -267,12 +304,12 @@
         // const notClassifiedIdx = 7; // jsonReport[`lvl${level}Tags`]?.length ?? 0;
         const notClassifiedIdx = jsonReport[`lvl${level}Tags`]?.length ?? 0;
         ensurePath(currentSubTags, [notClassifiedIdx], {
-          label: '--',
+          label: "--",
           deepLvl: level,
           subTags: [],
         });
         const notClassifiedTag = currentSubTags[notClassifiedIdx];
-        ensureLevelItem(notClassifiedTag, t, '--');
+        ensureLevelItem(notClassifiedTag, t, "--");
         if (notClassifiedTag.subTags.length) {
           // should not keeo ids for details of parent item, only for leafs nodes
           notClassifiedTag.ids = null;
@@ -281,7 +318,7 @@
         currentSubTags = notClassifiedTag.subTags;
         level += 1;
 
-        // TODO : why not simply reuse with extra params ? : 
+        // TODO : why not simply reuse with extra params ? :
         // loadLevel(level + 1, notClassifiedTag.subTags);
 
         jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
@@ -450,9 +487,13 @@
         let maxSlot = null;
         Object.keys(slotIds).forEach((slotId) => {
           const timeSlot = timingsByIds[slotId] ?? null;
-          if (!maxSlot || (timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
-            maxSlot = timeSlot;
-          }
+          // if (
+          //   !maxSlot ||
+          //   (timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)
+          // ) {
+          //   maxSlot = timeSlot;
+          // }
+          maxSlot = pickMaxBetween(maxSlot, timeSlot);
         });
         // TODO : Opti : use object hashmap instead of includes ?
         if (!subTag.haveIds) {
@@ -468,11 +509,18 @@
         }
         // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
         const delta = 10 / 60; // TODO : const for segment config instead of '10'
-        const maxPPH = maxSlot?.maxPricePerHr ?? 0;
-        const deltaPrice = maxPPH * delta;
+        // const maxPPH = maxSlot?.maxPricePerHr ?? 0;
+        // const deltaPrice = maxPPH * delta;
         subTag.sumOfBookedHrs += delta;
-        subTag.sumOfMaxPPH += deltaPrice;
-        subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, maxPPH);
+        // subTag.sumOfMaxPPH += deltaPrice;
+        // subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, maxPPH);
+
+        // sumOfMaxPPH => sumOfMaxPath.maxValue
+        // + add 'sumHistory' : array of counted sums path ?
+        //  => might be too heavy, ids of slots insteads ?
+        // but no slot id for report tags levels...
+        subTag.sumOfMaxPath = sumOfMaxPath(subTag.sumOfMaxPath, maxSlot?.maxPath);
+        subTag.maxPath = pickMaxBetween(subTag, maxSlot)?.maxPath ?? null;
         maxSlot?.usedForTotal = true;
       });
       Object.keys(subTag.bookedTimeSlotWithDate ?? {}).forEach(
@@ -481,33 +529,32 @@
           let maxSlot = null;
           Object.keys(slotIds).forEach((slotId) => {
             const timeSlot = timingsByIds[slotId] ?? null;
-            if (
-              (timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)
-            ) {
-              maxSlot = timeSlot;
-            }
+            maxSlot = pickMaxBetween(maxSlot, timeSlot);
           });
-          // // TODO : Opti : use object hashmap instead of includes ? No need for deep compute ?
-          // if (maxSlot?.usedForDeepTotal || !subTag.ids.includes(maxSlot.id)) {
-          //   return; // Do not re-compute if already added for deep TOTAL
-          // }
 
-          // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
           const delta = 10 / 60; // TODO : const for segment config instead of '10'
-          const maxPPH = maxSlot?.maxPricePerHr ?? 0;
-          const deltaPrice = maxPPH * delta;
+          // const maxPPH = maxSlot?.maxPricePerHr ?? 0;
+          // const deltaPrice = maxPPH * delta;
           subTag.deepSumOfBookedHrs += delta;
-          subTag.deepSumOfMaxPPH += deltaPrice;
-          // TODO : deepMaxPPH <> of maxPPH or not usefull ?
-          subTag.deepMaxPPH = Math.max(subTag.deepMaxPPH ?? 0, maxPPH);
+          // subTag.deepSumOfMaxPPH += deltaPrice;
+          // // TODO : deepMaxPPH <> of maxPPH or not usefull ?
+          // subTag.deepMaxPPH = Math.max(subTag.deepMaxPPH ?? 0, maxPPH);
+          subTag.deepSumOfMaxPath = sumOfMaxPath(subTag.deepSumOfMaxPath, maxSlot?.maxPath);
+          subTag.deepMaxPath = pickMaxBetween({
+            ...subTag, maxPath: subTag.deepMaxPath
+          }, maxSlot)?.maxPath ?? null;
+
           maxSlot?.usedForDeepTotal = true;
         }
       );
       subTag.subTags.forEach((childSubTag) => {
         // Add child TOTAL, ok since after recursion call, child are computed first
         subTag.sumOfBookedHrs += childSubTag.sumOfBookedHrs;
-        subTag.sumOfMaxPPH += childSubTag.sumOfMaxPPH;
-        subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, childSubTag.maxPPH ?? 0);
+
+        // subTag.sumOfMaxPPH += childSubTag.sumOfMaxPPH;
+        // subTag.maxPPH = Math.max(subTag.maxPPH ?? 0, childSubTag.maxPPH ?? 0);
+        subTag.sumOfMaxPath = sumOfMaxPath(subTag.sumOfMaxPath, childSubTag?.sumOfMaxPath);
+        subTag.maxPath = pickMaxBetween(subTag, childSubTag)?.maxPath ?? null;
 
         // subTag.deepSumOfBookedHrs += childSubTag.deepSumOfBookedHrs;
         // subTag.deepSumOfMaxPPH += childSubTag.deepSumOfMaxPPH;
@@ -523,7 +570,10 @@
 
   summaryByLevels.subTags.forEach((subTag) => {
     summaryByLevels.sumOfBookedHrs += subTag.sumOfBookedHrs;
-    summaryByLevels.sumOfMaxPPH += subTag.sumOfMaxPPH;
+    // summaryByLevels.sumOfMaxPPH += subTag.sumOfMaxPPH;
+    summaryByLevels.sumOfMaxPath = sumOfMaxPath(summaryByLevels.sumOfMaxPath, subTag.sumOfMaxPath);
+    summaryByLevels.maxPath = pickMaxBetween(summaryByLevels, subTag)?.maxPath ?? null;
+
   });
 
   let summaryByYears = {};
@@ -679,6 +729,7 @@
   declare interface Number {
     toPrettyNum(length: number): string;
   }
+
 </script>
 
 <div class="mws-timing-report">

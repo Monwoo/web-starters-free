@@ -137,6 +137,7 @@ class MwsTimeSlot
      */
     public function getTags(): Collection
     {
+        // TODO : must use doctrine event for collection clear notification ?
         return $this->tags;
     }
 

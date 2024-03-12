@@ -415,7 +415,7 @@ class MwsTimingController extends AbstractController
             strftime('%m', t.sourceTimeGMT) as sourceMonth,
             strftime('%d', t.sourceTimeGMT) as sourceWeekOfYear,
             GROUP_CONCAT(tag.slug) as tags,
-            GROUP_CONCAT(t.maxPath) as maxPath,
+            GROUP_CONCAT(t.maxPath, '#_;_#') as maxPath,
             GROUP_CONCAT(t.sourceStamp) as sourceStamps,
             GROUP_CONCAT(tag.label) as labels,
             GROUP_CONCAT(t.rangeDayIdxBy10Min) as allRangeDayIdxBy10Min,

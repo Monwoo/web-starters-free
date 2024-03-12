@@ -38,12 +38,17 @@ class MaxPriceTagManager
         )
       ) {
         $acc = $t;
-        $rootMaxPath['_:MaxTagSlug:_'] = $t->getSlug();
-        $rootMaxPath['_:MaxRuleIndex:_'] = $tMaxValue[3] ?? -1;
-        $rootMaxPath['_:MaxSubTags:_'] = $tMaxValue[2] ?? null;
-        // $rootMaxPath[$t->getSlug()] = $maxPath;
-        $rootMaxPath['_:MaxLimitPriority:_'] = $tMaxValue[0];
-        $rootMaxPath['_:MaxValue:_'] = $tMaxValue[1];
+        // $rootMaxPath['_:MaxTagSlug:_'] = $t->getSlug();
+        // $rootMaxPath['_:MaxRuleIndex:_'] = $tMaxValue[3] ?? -1;
+        // $rootMaxPath['_:MaxSubTags:_'] = $tMaxValue[2] ?? null;
+        // // $rootMaxPath[$t->getSlug()] = $maxPath;
+        // $rootMaxPath['_:MaxLimitPriority:_'] = $tMaxValue[0];
+        // $rootMaxPath['_:MaxValue:_'] = $tMaxValue[1];
+        $rootMaxPath['maxTagSlug'] = $t->getSlug();
+        $rootMaxPath['maxRuleIndex'] = $tMaxValue[3] ?? -1;
+        $rootMaxPath['maxSubTags'] = $tMaxValue[2] ?? null;
+        $rootMaxPath['maxLimitPriority'] = $tMaxValue[0];
+        $rootMaxPath['maxValue'] = $tMaxValue[1];
       }
       return $acc;
     }, null);
