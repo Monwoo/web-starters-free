@@ -510,7 +510,7 @@
           return; // Do not re-compute if already added for TOTAL
         }
         // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
-        const delta = 10 / 60; // TODO : const for segment config instead of '10'
+        const delta = 10 / 60.0; // TODO : const for segment config instead of '10'
         // const maxPPH = maxSlot?.maxPricePerHr ?? 0;
         // const deltaPrice = maxPPH * delta;
         subTag.sumOfBookedHrs += delta;
@@ -596,7 +596,7 @@
     const tDate = dayjs(tDay);
     const tMonth = tDate.format("MM");
     const tYear = tDate.format("YYYY");
-    const summary = summaryByDays[tDay];
+    const daySummary = summaryByDays[tDay];
     // // TIPS : scan lvl + add + should filter detail tags....
     // //        might be better to scan at previous data transform ?
     // //        => summaryByDays will keep not matched time slots in summaryByLevels
@@ -606,121 +606,155 @@
       summaryByYears[tYear] = {
         bookedTimeSlot: {},
         sumOfBookedHrs: 0,
-        sumOfMaxPPH: 0,
+        // sumOfMaxPPH: 0,
         deepSumOfBookedHrs: 0,
-        deepSumOfMaxPPH: 0,
-        maxPPH: 0,
+        // deepSumOfMaxPPH: 0,
+        // maxPPH: 0,
         tags: {},
         months: {},
       };
     }
-    if (!(summaryByYears[tYear].months[tMonth] ?? null)) {
-      summaryByYears[tYear].months[tMonth] = {
+    const yearSummary = summaryByYears[tYear];
+    if (!(yearSummary?.months[tMonth] ?? null)) {
+      yearSummary?.months[tMonth] = {
         bookedTimeSlot: {},
         sumOfBookedHrs: 0,
-        sumOfMaxPPH: 0,
+        // sumOfMaxPPH: 0,
         deepSumOfBookedHrs: 0,
-        deepSumOfMaxPPH: 0,
-        maxPPH: 0,
+        // deepSumOfMaxPPH: 0,
+        // maxPPH: 0,
         tags: {},
         days: {},
       };
     }
-
-    summaryByYears[tYear].bookedTimeSlot = {
-      ...summaryByYears[tYear].bookedTimeSlot,
-      ...summary.bookedTimeSlot,
-    };
-    summaryByYears[tYear].sumOfBookedHrs += summary.sumOfBookedHrs;
-    summaryByYears[tYear].sumOfMaxPPH += summary.sumOfMaxPPH;
-
-    summaryByYears[tYear].maxPPH = Math.max(
-      summaryByYears[tYear]?.maxPPH ?? 0,
-      summary.maxPPH ?? 0
-    );
-    summaryByYears[tYear].tags = {
-      ...(summaryByYears[tYear]?.tags ?? {}),
-      ...(summary.tags ?? {}),
-    };
-
-    summaryByYears[tYear].months[tMonth].bookedTimeSlot = {
-      ...summaryByYears[tYear].months[tMonth].bookedTimeSlot,
-      ...summary.bookedTimeSlot,
-    };
-    summaryByYears[tYear].months[tMonth].sumOfBookedHrs +=
-      summary.sumOfBookedHrs;
-    summaryByYears[tYear].months[tMonth].sumOfMaxPPH += summary.sumOfMaxPPH;
-
-    summaryByYears[tYear].months[tMonth].maxPPH = Math.max(
-      summaryByYears[tYear]?.months[tMonth]?.maxPPH ?? 0,
-      summary.maxPPH ?? 0
-    );
-    summaryByYears[tYear].months[tMonth].tags = {
-      ...(summaryByYears[tYear]?.months[tMonth]?.tags ?? {}),
-      ...(summary.tags ?? {}),
-    };
-
-    summaryByYears[tYear].months[tMonth].days[tDay] = true; //summary;
-
-    Object.keys(summary.bookedTimeSlot).forEach((slotSegment) => {
-      const slotIds = summary.bookedTimeSlot[slotSegment];
+    const monthSummary = yearSummary?.months[tMonth];
+    Object.keys(daySummary.bookedTimeSlot).forEach((slotSegment) => {
+      const slotIds = daySummary.bookedTimeSlot[slotSegment];
       let maxSlot = null;
       Object.keys(slotIds).forEach((slotId) => {
         const timeSlot = timingsByIds[slotId] ?? null;
-        if ((timeSlot?.maxPricePerHr ?? 0) > (maxSlot?.maxPricePerHr ?? 0)) {
-          maxSlot = timeSlot;
-        }
+        maxSlot = pickMaxBetween(maxSlot, timeSlot);
       });
       // TODO : only count for not used time slot for regular price...
       // const delta = maxSlot ? 10 / 60 : 0; // TODO : const for segment config instead of '10'
       const delta = 10 / 60; // TODO : const for segment config instead of '10'
-      const maxPPH = maxSlot?.maxPricePerHr ?? 0;
-      const deltaPrice = maxPPH * delta;
+      // const maxPPH = maxSlot?.maxPricePerHr ?? 0;
+      // const deltaPrice = maxPPH * delta;
 
-      summaryByYears[tYear].sumOfBookedHrs += delta;
-      summaryByYears[tYear].sumOfMaxPPH += deltaPrice;
-      summaryByYears[tYear].maxPPH = Math.max(
-        summaryByYears[tYear].maxPPH ?? 0,
-        maxPPH
-      );
-      summaryByYears[tYear].months[tMonth].sumOfBookedHrs += delta;
-      summaryByYears[tYear].months[tMonth].sumOfMaxPPH += deltaPrice;
-      summaryByYears[tYear].months[tMonth].maxPPH = Math.max(
-        summaryByYears[tYear].months[tMonth].maxPPH ?? 0,
-        maxPPH
-      );
+      yearSummary.sumOfBookedHrs += delta;
+      // yearSummary.sumOfMaxPPH += deltaPrice;
+      // yearSummary.maxPPH = Math.max(
+      //   yearSummary.maxPPH ?? 0,
+      //   maxPPH
+      // );
+      yearSummary.sumOfMaxPathPerHr = sumOfMaxPathPerHr(yearSummary.sumOfMaxPathPerHr, maxSlot?.maxPath, delta);
+      yearSummary.maxPath = pickMaxBetween(yearSummary, maxSlot)?.maxPath ?? null;
+      // Deep is same as normal since linear time view...
+      yearSummary.deepSumOfMaxPathPerHr = yearSummary.sumOfMaxPathPerHr;
+      yearSummary.deepMaxPath = yearSummary.maxPath;
 
-      summaryByYears[tYear].deepSumOfBookedHrs += delta;
-      summaryByYears[tYear].deepSumOfMaxPPH += deltaPrice;
-      summaryByYears[tYear].months[tMonth].deepSumOfBookedHrs += delta;
-      summaryByYears[tYear].months[tMonth].deepSumOfMaxPPH += deltaPrice;
-      // summaryByYears[tYear].months[tMonth].deepPaxPPH = Math.max(
-      //   summaryByYears[tYear].months[tMonth].deepPaxPPH, maxPPH
+      monthSummary.sumOfBookedHrs += delta;
+      // monthSummary.sumOfMaxPPH += deltaPrice;
+      // monthSummary.maxPPH = Math.max(
+      //   monthSummary.maxPPH ?? 0,
+      //   maxPPH
+      // );
+      monthSummary.sumOfMaxPathPerHr = sumOfMaxPathPerHr(monthSummary.sumOfMaxPathPerHr, maxSlot?.maxPath, delta);
+      monthSummary.maxPath = pickMaxBetween(monthSummary, maxSlot)?.maxPath ?? null;
+      // Deep is same as normal since linear time view...
+      monthSummary.deepSumOfMaxPathPerHr = monthSummary.sumOfMaxPathPerHr;
+      monthSummary.deepMaxPath = monthSummary.maxPath;
+
+      // yearSummary.deepSumOfBookedHrs += delta;
+      // yearSummary.deepSumOfMaxPPH += deltaPrice;
+      // monthSummary.deepSumOfBookedHrs += delta;
+      // monthSummary.deepSumOfMaxPPH += deltaPrice;
+
+      // monthSummary.deepPaxPPH = Math.max(
+      //   monthSummary.deepPaxPPH, maxPPH
       // );
 
-      const daySummary = summaryByDays[tDay];
-      ensurePath(daySummary, ["deepSumOfBookedHrs"], 0);
-      ensurePath(daySummary, ["deepSumOfMaxPPH"], 0);
-      daySummary.deepSumOfBookedHrs += delta;
-      daySummary.deepSumOfMaxPPH += deltaPrice;
-      daySummary.maxPPH = Math.max(daySummary.maxPPH, maxPPH);
-
-      daySummary.sumOfBookedHrs += delta;
-      daySummary.sumOfMaxPPH += deltaPrice;
       summaryTotals.sumOfBookedHrs += delta;
-      summaryTotals.sumOfMaxPPH += deltaPrice;
+      // summaryTotals.sumOfMaxPPH += deltaPrice;
+      summaryTotals.sumOfMaxPathPerHr = sumOfMaxPathPerHr(summaryTotals.sumOfMaxPathPerHr, maxSlot?.maxPath, delta);
+      summaryTotals.maxPath = pickMaxBetween(summaryTotals, maxSlot)?.maxPath ?? null;
 
       if (maxSlot) {
         maxSlot.usedForDeepTotal = true;
         maxSlot.usedForTotal = true;
       }
+
+      // yearSummary.sumOfMaxPathPerHr = sumOfMaxPathPerHr(yearSummary.sumOfMaxPathPerHr, maxSlot?.maxPath, delta);
+
+      // monthSummary.sumOfMaxPathPerHr = sumOfMaxPathPerHr(monthSummary.sumOfMaxPathPerHr, maxSlot?.maxPath, 1);
+
+      ensurePath(daySummary, ["deepSumOfBookedHrs"], 0);
+      // ensurePath(daySummary, ["deepSumOfMaxPPH"], 0);
+      daySummary.deepSumOfBookedHrs += delta;
+      // daySummary.deepSumOfMaxPPH += deltaPrice;
+      // daySummary.maxPPH = Math.max(daySummary.maxPPH, maxPPH);
+      daySummary.sumOfBookedHrs += delta;
+      // daySummary.sumOfMaxPPH += deltaPrice;
+
+      daySummary.sumOfMaxPathPerHr = sumOfMaxPathPerHr(daySummary.sumOfMaxPathPerHr, maxSlot?.maxPath, delta);
+      daySummary.maxPath = pickMaxBetween(daySummary, maxSlot)?.maxPath ?? null;
+      // Deep is same as normal since linear time view...
+      daySummary.deepSumOfMaxPathPerHr = daySummary.sumOfMaxPathPerHr;
+      daySummary.deepMaxPath = daySummary.maxPath;
+
     });
+
+    yearSummary.bookedTimeSlot = {
+      ...yearSummary.bookedTimeSlot,
+      ...daySummary.bookedTimeSlot,
+    };
+    // yearSummary.sumOfBookedHrs += daySummary.sumOfBookedHrs;
+    // yearSummary.sumOfMaxPPH += daySummary.sumOfMaxPPH;
+    // yearSummary.maxPPH = Math.max(
+    //   yearSummary?.maxPPH ?? 0,
+    //   daySummary.maxPPH ?? 0
+    // );
+
+    // WRONG : will count multiple times :
+    // yearSummary.sumOfMaxPathPerHr = sumOfMaxPathPerHr(yearSummary.sumOfMaxPathPerHr, daySummary.sumOfMaxPathPerHr, 1);
+    // yearSummary.maxPath = pickMaxBetween(yearSummary, daySummary)?.maxPath ?? null;
+    // yearSummary.deepSumOfMaxPathPerHr = yearSummary.sumOfMaxPathPerHr
+    // yearSummary.deepMaxPath = yearSummary.maxPath;
+
+    yearSummary.tags = {
+      ...(yearSummary?.tags ?? {}),
+      ...(daySummary.tags ?? {}),
+    };
+
+    monthSummary.bookedTimeSlot = {
+      ...monthSummary.bookedTimeSlot,
+      ...daySummary.bookedTimeSlot,
+    };
+    // monthSummary.sumOfBookedHrs +=
+    //   daySummary.sumOfBookedHrs;
+    // monthSummary.sumOfMaxPPH += daySummary.sumOfMaxPPH;
+    // monthSummary.maxPPH = Math.max(
+    //   monthSummary?.maxPPH ?? 0,
+    //   daySummary.maxPPH ?? 0
+    // );
+    // monthSummary.sumOfMaxPathPerHr = sumOfMaxPathPerHr(monthSummary.sumOfMaxPathPerHr, daySummary.sumOfMaxPathPerHr, 1);
+    // monthSummary.maxPath = pickMaxBetween(monthSummary, daySummary)?.maxPath ?? null;
+    // monthSummary.deepSumOfMaxPathPerHr = monthSummary.sumOfMaxPathPerHr;
+    // monthSummary.deepMaxPath = monthSummary.maxPath;
+
+    monthSummary.tags = {
+      ...(monthSummary?.tags ?? {}),
+      ...(daySummary.tags ?? {}),
+    };
+
+    monthSummary.days[tDay] = true; //daySummary;
   });
 
   console.debug(
     "timingsByIds[0] :",
     timingsByIds[Object.keys(timingsByIds)[0]] ?? null
   );
+  console.debug("summaryByDays :", summaryByDays);
   console.debug("summaryByDays :", summaryByDays);
   console.debug("summaryByYears :", summaryByYears);
   console.debug("summaryByLevels :", summaryByLevels);
@@ -864,7 +898,7 @@
   </div>
   <div class="text-lg font-extrabold">
     <!-- {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout. -->
-    {summaryByLevels.sumOfMaxPathPerHr.maxValue.toPrettyNum(2)} € en tout.
+    {(summaryByLevels.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € en tout.
   </div>
   <br />
   <br />
@@ -873,7 +907,7 @@
   </div>
   <div class="text-lg font-extrabold">
     <!-- {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes. -->
-    <!-- {summaryByLevels.sumOfMaxPathPerHr.maxValue.toPrettyNum(2)} € en tout. -->
+    {(summaryTotals.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € en tout.
   </div>
   <br />
   <br />
