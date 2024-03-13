@@ -697,6 +697,8 @@ class MwsTimingController extends AbstractController
             MwsTimeSlot::class . "[]",
             $format,
             [
+                // TODO : transform class load instead of type ignore ?
+                ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
                 AbstractNormalizer::CALLBACKS => [
                     'tags' => function (
                         $innerObject,
@@ -752,10 +754,12 @@ class MwsTimingController extends AbstractController
                         array $context = []
                     ) {
                         // TODO : should 
-                        // dd($innerObject);
-                        dd($outerObject);
+                        // dump($innerObject);
+                        // dump($attributeName);
+                        // dump($context);
+                        // dd($outerObject);
                         if ($context['deserialization_path'] ?? null) {
-                            throw new Exception("TODO : ");
+                            return json_decode($innerObject, true);
                         } else {
                             // Normalise (cf timing export, not used by import)
                             throw new Exception("Should not happen");
@@ -786,12 +790,12 @@ class MwsTimingController extends AbstractController
             }
 
             if ($shouldIdentifyByFilename) {
-                $qb->where('sourceStamp LIKE :sourceStamp')
+                $qb = $qb->where('s.sourceStamp LIKE :sourceStamp')
                     ->setParameter('sourceStamp', '%' + basename(
                         $importSlot->getSourceStamp()
                     ));
             } else {
-                $qb->where('sourceStamp = :sourceStamp')
+                $qb = $qb->where('s.sourceStamp = :sourceStamp')
                     ->setParameter(
                         'sourceStamp',
                         $importSlot->getSourceStamp()
@@ -825,10 +829,9 @@ class MwsTimingController extends AbstractController
             $this->em->flush();
         }
 
-        [$tags, $tagsGrouped] = $mwsTimeSlotRepository->findAllTagsWithCounts();
         return $this->json([
-            'tags' => $tags,
-            'tagsGrouped' => $tagsGrouped,
+            // 'tags' => $tags, // TODO : will force refresh ? should ensure frontend view updates
+            // 'tagsGrouped' => $tagsGrouped,
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-import')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
