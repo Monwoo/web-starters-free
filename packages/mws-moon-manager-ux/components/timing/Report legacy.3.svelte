@@ -428,9 +428,24 @@
           sumByDays[tReport.sourceDate] = {
             bookedTimeSlot: {},
             sumOfBookedHrs: 0,
+            // sumOfMaxPPH: 0, // Sum of max price per slot
+            // maxPPH: 0,
             tags: {},
           };
         }
+        // if (
+        //   !(
+        //     sumByDays[tReport.sourceDate].bookedTimeSlot[
+        //       t.rangeDayIdxBy10Min
+        //     ] ?? null
+        //   )
+        // ) {
+        //   sumByDays[tReport.sourceDate].sumOfBookedHrs += delta;
+        //   // TODO : wrong max, only max of fist booked slot :
+        //   sumByDays[tReport.sourceDate].sumOfMaxPPH += deltaOfMaxPPH;
+        //   summaryTotals.sumOfBookedHrs += delta;
+        //   summaryTotals.sumOfMaxPPH += deltaOfMaxPPH;
+        // }
 
         if (!sumByDays[tReport.sourceDate].haveIds) {
           sumByDays[tReport.sourceDate].haveIds =
@@ -440,6 +455,7 @@
             }, {}) ?? {};
         }
 
+        // if (!sumByDays[tReport.sourceDate].ids?.includes(t.id)) {
         if (!(sumByDays[tReport.sourceDate].haveIds[t.id] ?? false)) {
           sumByDays[tReport.sourceDate].ids = [
             ...(sumByDays[tReport.sourceDate].ids ?? []),
@@ -451,12 +467,17 @@
           ...(sumByDays[tReport.sourceDate].tags ?? {}),
           ...(t.tags ?? {}),
         };
-        sumByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] = {
-          ...(sumByDays[tReport.sourceDate].bookedTimeSlot[
-            t.rangeDayIdxBy10Min
-          ] ?? {}),
-          ...{ [t.id]: true },
-        };
+        // sumByDays[tReport.sourceDate].maxPPH = Math.max(
+        //   sumByDays[tReport.sourceDate]?.maxPPH ?? 0,
+        //   t.maxPricePerHr ?? 0
+        // );
+        sumByDays[tReport.sourceDate].bookedTimeSlot[t.rangeDayIdxBy10Min] =
+          {
+            ...(sumByDays[tReport.sourceDate].bookedTimeSlot[
+              t.rangeDayIdxBy10Min
+            ] ?? {}),
+            ...{ [t.id]: true },
+          };
       };
 
       if (usedByReport) {
@@ -936,10 +957,7 @@
     <strong>{Object.keys(timingsByIds).length.toPrettyNum(0)} points</strong> de
     contrôles sur
     <strong>
-      {(
-        Object.keys(summaryByDays).length +
-        Object.keys(summaryReportByDays).length
-      ).toPrettyNum(0)} jours</strong
+      {(Object.keys(summaryByDays).length + 0).toPrettyNum(0)} jours</strong
     >
   </div>
   <br />

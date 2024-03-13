@@ -11,15 +11,21 @@
     { format:'csv', label:'CSV' },
   ];
   export let format = 'yaml';
+  export let timingLookup = null;
 
   const submit = async (e) => {
     const formData = new FormData(e.target);
+    if (timingLookup) {
+      console.debug('Will export timings with timing filters :', timingLookup);
+      formData.append(`timingLookup`, JSON.stringify(timingLookup));
+    }
+
     const formJson = Object.fromEntries(formData.entries());
     console.log('Should export timings : ', formJson);
 
     var file_path = Routing.generate("mws_timing_export", {
         _locale: locale,
-        format: formJson.format,
+        ...formJson,
     }),
 
     var a = document.createElement('A');

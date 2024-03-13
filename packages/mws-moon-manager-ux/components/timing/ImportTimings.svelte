@@ -111,8 +111,16 @@
     {/each}
   </select>  
   <!-- <input type="checkbox" name="shouldOverwrite" checked /> -->
-  <input type="checkbox" name="shouldOverwrite" />
-  <label for="shouldOverwrite">Forcer la surcharge</label>
+  <span class="inline-flex flex-col">
+    <span>
+      <input type="checkbox" name="shouldOverwrite" />
+      <label for="shouldOverwrite">Forcer la surcharge</label>  
+    </span>
+    <span>
+      <input type="checkbox" name="shouldOverwrite" />
+      <label for="shouldIdentifyByFilename">Identifier par nom de fichier</label>  
+    </span>
+</span>
 
   <button type="submit" class="btn btn-outline-primary p-1 m-1">
     Importer les temps

@@ -3,6 +3,7 @@
 namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
 use MWS\MoonManagerBundle\Entity\MwsTimeTag;
@@ -21,6 +22,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -118,44 +120,14 @@ class MwsTimingController extends AbstractController
             }
         }
 
-        $qb = $mwsTimeSlotRepository->createQueryBuilder('t');
-        if ($keyword) {
-            // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
-            // ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
-        }
+        $qb = $mwsTimeSlotRepository->createQueryBuilder('s');
+        $mwsTimeSlotRepository->applyTimingLokup($qb, [
+            'searchKeyword' => $keyword,
+            'searchTags' => $searchTags,
+            'searchTagsToAvoid' => $searchTagsToAvoid,
+        ]);
 
-        if (count($searchTags) || count($searchTagsToAvoid)) {
-            $qb = $qb->innerJoin('t.tags', 'tag');
-        }
-        if (count($searchTags)) {
-            $orClause = '';
-            foreach ($searchTags as $idx => $slug) {
-                if ($idx) {
-                    $orClause .= ' OR ';
-                }
-                $orClause .= "( :tagSlug$idx = tag.slug )";
-                // $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
-                $qb->setParameter("tagSlug$idx", $slug);
-                // $qb->setParameter("tagCategory$idx", $category);
-            }
-            $qb = $qb->andWhere($orClause);
-        }
-
-        if (count($searchTagsToAvoid)) {
-            // dd($searchTagsToAvoid);
-            foreach ($searchTagsToAvoid as $idx => $slug) {
-                $dql = '';
-                $tag = $mwsTimeTagRepository->findOneBy([
-                    'slug' => $slug,
-                ]);
-                $dql .= ":tagToAvoid$idx NOT MEMBER OF t.tags";
-                $qb->setParameter("tagToAvoid$idx", $tag);
-                // dd($dql);
-                $qb = $qb->andWhere($dql);
-            }
-        }
-
-        $qb->orderBy("t.sourceTimeGMT", "ASC");
+        $qb->orderBy("s.sourceTimeGMT", "ASC");
 
         $query = $qb->getQuery();
         // dd($query->getResult());    
@@ -221,7 +193,7 @@ class MwsTimingController extends AbstractController
         //     function (MwsTimeTag $tag) {
         //         return $tag->getSlug();
         //     },
-        //     $tagQb // ->where($tagQb->expr()->isNotNull("t.category"))
+        //     $tagQb // ->where($tagQb->expr()->isNotNull("s.category"))
         //         ->getQuery()->getResult()
         // );
         $timingTags = $tagQb->getQuery()->getResult();
@@ -600,14 +572,61 @@ class MwsTimingController extends AbstractController
         // }
 
         $format = $request->get('format') ?? 'yaml';
+        $timingLookup = $request->get('timingLookup');
 
-        $tSlots = $mwsTimeSlotRepository->findAll() ?? [];
+        // $tSlots = $mwsTimeSlotRepository->findAll() ?? [];
+
+        $qb = $mwsTimeSlotRepository->createQueryBuilder('s');
+
+        if($timingLookup) {
+            $timingLookup = json_decode($timingLookup, true);
+            $mwsTimeSlotRepository->applyTimingLokup($qb, $timingLookup);    
+        }
+
+        $tSlots = $qb->getQuery()->getResult();
+
         $tagsSerialized = $this->serializer->serialize(
             $tSlots,
             $format,
             // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
             [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['id'],
+                // ObjectNormalizer::IGNORED_ATTRIBUTES => ['tags']
+                AbstractNormalizer::CALLBACKS => [
+                    'tags' => function ($objects) {
+                        if (is_string($objects)) {
+                            // Denormalize (cf timing import, not used by export)
+                            throw new Exception("Should not happen for : " . $objects);
+                        } else {
+                            // Normalise
+                            $norm = array_map(
+                                function(MwsTimeTag $o) {
+                                    return $o->getSlug();
+                                }, $objects->toArray() ?? []
+                            );
+                            sort($norm);
+                            return $norm;
+                        }
+                    },
+                    'maxPriceTag' => function ($objects) {
+                        if (is_string($objects)) {
+                            // Denormalize (cf timing import, not used by export)
+                            throw new Exception("Should not happen for : " . $objects);
+                        } else {
+                            // Normalise
+                            return  $objects?->getSlug() ?? null;
+                        }
+                    },
+                    'maxPath' => function ($objects) {
+                        if (is_string($objects)) {
+                            // Denormalize (cf timing import, not used by export)
+                            throw new Exception("Should not happen for : " . $objects);
+                        } else {
+                            // Normalise
+                            return json_encode($objects);
+                        }
+                    },
+                ]
             ],
         );
 
@@ -1248,7 +1267,7 @@ class MwsTimingController extends AbstractController
         if($timingLookup) {
             $timingLookup = json_decode($timingLookup, true);
             // dump($timingLookup);
-            $this->logger->debug('Timing lookup', $timingLookup);
+            // $this->logger->debug('Timing lookup', $timingLookup);
             $qb->join('t.mwsTimeSlots', 's');
             $mwsTimeSlotRepository->applyTimingLokup($qb, $timingLookup, 's');    
         }

@@ -24,8 +24,7 @@
 
     var file_path = Routing.generate("mws_timing_tag_export", {
         _locale: locale,
-        format: formJson.format,
-        timingLookup: formJson.timingLookup,
+        ...formJson,
     }),
 
     var a = document.createElement('A');
