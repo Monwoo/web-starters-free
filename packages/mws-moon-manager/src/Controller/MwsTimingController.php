@@ -350,84 +350,52 @@ class MwsTimingController extends AbstractController
             }
         }
 
-        $qb = $mwsTimeSlotRepository->createQueryBuilder('t');
+        $qb = $mwsTimeSlotRepository->createQueryBuilder('s');
         // https://stackoverflow.com/questions/17878237/doctrine-cannot-select-entity-through-identification-variables-without-choosing
         // ->from(MwsTimeTag::class, 'tag');
         // CONCAT_WS('-', tag.slug, tag.slug) as tags,
-        // strftime('%W', t.sourceTimeGMT) as sourceWeekOfYear,
+        // strftime('%W', s.sourceTimeGMT) as sourceWeekOfYear,
 
-        if ($keyword) {
-            // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
-            // ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
-        }
+        $mwsTimeSlotRepository->applyTimingLokup($qb, [
+            'searchKeyword' => $keyword,
+            'searchTags' => $searchTags,
+            'searchTagsToAvoid' => $searchTagsToAvoid,
+        ]);
 
-        if (count($searchTags)) {
-            $orClause = '';
-            foreach ($searchTags as $idx => $slug) {
-                if ($idx) {
-                    $orClause .= ' OR ';
-                }
-                // $orClause .= "( :tagSlug$idx = tag.slug )";
-                // // $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
-                // $qb->setParameter("tagSlug$idx", $slug);
-                // $qb->setParameter("tagCategory$idx", $category);
-                $tag = $mwsTimeTagRepository->findOneBy([
-                    'slug' => $slug,
-                ]);
-                $orClause .= "( :tag$idx MEMBER OF t.tags )";
-                $qb->setParameter("tag$idx", $tag);
-            }
-            $qb = $qb->andWhere($orClause);
-        }
-
-        if (count($searchTagsToAvoid)) {
-            // dd($searchTagsToAvoid);
-            foreach ($searchTagsToAvoid as $idx => $slug) {
-                $dql = '';
-                $tag = $mwsTimeTagRepository->findOneBy([
-                    'slug' => $slug,
-                ]);
-                $dql .= ":tagToAvoid$idx NOT MEMBER OF t.tags";
-                $qb->setParameter("tagToAvoid$idx", $tag);
-                // dd($dql);
-                $qb = $qb->andWhere($dql);
-            }
-        }
-
-        $qb->orderBy("t.sourceTimeGMT", "ASC");
+        $qb->orderBy("s.sourceTimeGMT", "ASC");
 
         // $query = $qb->getQuery();
-        // $qb = $qb->innerJoin('t.tags', 'tag');
+        // $qb = $qb->innerJoin('s.tags', 'tag');
         // https://stackoverflow.com/questions/45756622/doctrine-query-with-nullable-optional-join
-        $qb = $qb->leftJoin('t.tags', 'tag');
+        $qb = $qb->leftJoin('s.tags', 'tag');
 
         // Fetching 'source' is too slow, and splitting with , might have issue with ','...
-        // GROUP_CONCAT(t.source) as source,            
-        // strftime('%Y-%m-%d %H:%M:%S', t.sourceTimeGMT) as sourceTimeGMT,
+        // GROUP_CONCAT(s.source) as source,            
+        // strftime('%Y-%m-%d %H:%M:%S', s.sourceTimeGMT) as sourceTimeGMT,
 
 
         // https://www.php.net/manual/fr/function.strftime.php
         // GROUP_CONCAT(tag.pricePerHr) as pricesPerHr,
         $qb = $qb->select("
-            count(t) as count,
-            strftime('%Y-%m-%d', t.sourceTimeGMT) as sourceDate,
-            strftime('%s', t.sourceTimeGMT) as sourceTimeGMTstamp,
-            strftime('%Y', t.sourceTimeGMT) as sourceYear,
-            strftime('%m', t.sourceTimeGMT) as sourceMonth,
-            strftime('%d', t.sourceTimeGMT) as sourceWeekOfYear,
+            count(s) as count,
+            strftime('%Y-%m-%d', s.sourceTimeGMT) as sourceDate,
+            strftime('%s', s.sourceTimeGMT) as sourceTimeGMTstamp,
+            strftime('%Y', s.sourceTimeGMT) as sourceYear,
+            strftime('%m', s.sourceTimeGMT) as sourceMonth,
+            strftime('%d', s.sourceTimeGMT) as sourceWeekOfYear,
             GROUP_CONCAT(tag.slug) as tags,
-            GROUP_CONCAT(t.maxPath, '#_;_#') as maxPath,
-            GROUP_CONCAT(t.sourceStamp) as sourceStamps,
+            GROUP_CONCAT(s.maxPath, '#_;_#') as maxPath,
+            GROUP_CONCAT(s.sourceStamp) as sourceStamps,
             GROUP_CONCAT(tag.label) as labels,
-            GROUP_CONCAT(t.rangeDayIdxBy10Min) as allRangeDayIdxBy10Min,
-            GROUP_CONCAT(t.id) as ids
+            GROUP_CONCAT(s.rangeDayIdxBy10Min) as allRangeDayIdxBy10Min,
+            GROUP_CONCAT(s.id) as ids
         ");
 
         $qb->groupBy("sourceYear");
         $qb->addGroupBy("sourceMonth");
         $qb->addGroupBy("sourceDate");
         $qb->addGroupBy("tag.slug");
-        // $qb->addGroupBy("t.rangeDayIdxBy10Min");
+        // $qb->addGroupBy("s.rangeDayIdxBy10Min");
 
         $groupedQuery = $qb->getQuery();
         // dd($query->getDQL());    
@@ -1247,6 +1215,7 @@ class MwsTimingController extends AbstractController
         string|null $viewTemplate,
         Request $request,
         MwsTimeTagRepository $mwsTimeTagRepository,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
         // CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
@@ -1280,6 +1249,8 @@ class MwsTimingController extends AbstractController
             $timingLookup = json_decode($timingLookup, true);
             // dump($timingLookup);
             $this->logger->debug('Timing lookup', $timingLookup);
+            $qb->join('t.mwsTimeSlots', 's');
+            $mwsTimeSlotRepository->applyTimingLokup($qb, $timingLookup, 's');    
         }
 
         $tags = $qb->getQuery()->getResult();
