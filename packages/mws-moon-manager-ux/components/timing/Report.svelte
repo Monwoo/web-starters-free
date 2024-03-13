@@ -21,6 +21,9 @@
   import Routing from "fos-router";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
   import ReportSummaryRows from "./ReportSummaryRows.svelte";
+  import ExportTags from "./tags/ExportTags.svelte";
+  import ImportTimings from "./ImportTimings.svelte";
+  import ExportTimings from "./ExportTimings.svelte";
   import _ from 'lodash';
 
   export let locale;
@@ -802,15 +805,9 @@
     </button>
   {/if}
   <div class="p-3">
-    <button>
-      Exporter les temps
-    </button>
-    <button>
-      Importer les temps
-    </button>
-    <button>
-      Exporter les tags
-    </button>
+    <ImportTimings {locale} timingLookup={jsonLookup} format='csv'/>
+    <ExportTimings {locale} timingLookup={jsonLookup} format='csv'/>
+    <ExportTags {locale} timingLookup={jsonLookup} format='csv' />
   </div>
 
   <div class="p-3 flex flex-wrap">

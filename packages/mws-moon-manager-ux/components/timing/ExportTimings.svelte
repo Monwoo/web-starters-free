@@ -1,7 +1,7 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-  import ListItem from "./ListItem.svelte";
-  import AddModal from "./AddModal.svelte";
+  import ListItem from "./tags/ListItem.svelte";
+  import AddModal from "./tags/AddModal.svelte";
   import Routing from "fos-router";
 
   export let locale;
@@ -11,21 +11,15 @@
     { format:'csv', label:'CSV' },
   ];
   export let format = 'yaml';
-  export let timingLookup = null;
 
   const submit = async (e) => {
     const formData = new FormData(e.target);
-    if (timingLookup) {
-      console.debug('Will export tags with timing filters :', timingLookup);
-      formData.append(`timingLookup`, JSON.stringify(timingLookup));
-    }
     const formJson = Object.fromEntries(formData.entries());
-    console.log('Should export tags : ', formJson);
+    console.log('Should export timings : ', formJson);
 
-    var file_path = Routing.generate("mws_timing_tag_export", {
+    var file_path = Routing.generate("mws_timing_export", {
         _locale: locale,
         format: formJson.format,
-        timingLookup: formJson.timingLookup,
     }),
 
     var a = document.createElement('A');
@@ -37,7 +31,7 @@
   }
 </script>
 
-<form on:submit|preventDefault={submit} class="mws-export-tags-form">
+<form on:submit|preventDefault={submit} class="mws-export-timings-form">
   <select
   bind:value={format}
   name="format"
@@ -54,7 +48,7 @@
   </select>  
 
   <button type="submit" class="btn btn-outline-primary p-1 m-1">
-    Exporter les tags
+    Exporter les temps
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->
 </form>

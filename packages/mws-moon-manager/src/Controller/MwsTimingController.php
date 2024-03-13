@@ -11,6 +11,7 @@ use MWS\MoonManagerBundle\Repository\MwsTimeQualifRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
+use PHPUnit\Util\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -599,6 +600,161 @@ class MwsTimingController extends AbstractController
         );
     }
 
+
+    #[Route(
+        '/export/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_export',
+        methods: ['POST', 'GET'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function export(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        // CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        // TIPS : no csrf renew ? only check user logged is ok ?
+        // TODO : or add async CSRF token manager notif route
+        //         to sync new redux token to frontend ?
+        // $csrf = $request->request->get('_csrf_token');
+        // if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-export', $csrf)) {
+        //     $this->logger->debug("Fail csrf with", [$csrf, $request]);
+        //     throw $this->createAccessDeniedException('CSRF Expired');
+        // }
+
+        $format = $request->get('format') ?? 'yaml';
+
+        $tSlots = $mwsTimeSlotRepository->findAll() ?? [];
+        $tagsSerialized = $this->serializer->serialize(
+            $tSlots,
+            $format,
+            // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']
+            ],
+        );
+
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+
+        $filename = "MoonManager-v" . $packageVersion
+            . "-TimeSlotsExport-" . time() . ".{$format}"; // . '.pdf';
+
+        $response = new Response();
+
+        //set headers
+        $mime = [
+            'json' => 'application/json',
+            'csv' => 'text/comma-separated-values',
+            'xml' => 'application/x-xml', // TODO : x-xml or xml ?
+            'yaml' => 'application/x-yaml', // TODO : x-yaml or yaml ?
+        ][$format] ?? 'text/plain';
+        if ($mime) {
+            $response->headers->set('Content-Type', $mime);
+        }
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
+
+        $response->setContent($tagsSerialized);
+        return $response;
+    }
+
+    #[Route(
+        '/import/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_import',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function import(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-import', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        // format
+        $format = $request->get('format');
+        $shouldOverwrite = $request->get('shouldOverwrite');
+        $importFile = $request->files->get('importFile');
+        $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
+
+        /** @var MwsTimeSlot[] $importSlots */
+        $importSlots = $this->serializer->deserialize(
+            $importContent,
+            MwsTimeSlotRepository::class . "[]",
+            $format,
+            // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            // [
+            //     AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']
+            // ],
+        );
+
+        // dd($importSlots);
+        /** @var MwsTimeSlot $importSlot */
+        foreach ($importSlots as $idx => $importSlot) {
+            $slot = $mwsTimeSlotRepository->findOneBy([
+                // TODO : only put basename for unicity check in sourceStamp ?
+                // => allow change of folders for file name...
+                // => + check md5 or filesize for 2nd unicity check ?
+              'sourceStamp' => $importSlot->getSourceStamp()
+            ]);
+            if ($slot) {
+                if ($shouldOverwrite && $shouldOverwrite != 'null') {
+                    $sync = function ($path) use (&$slot, &$importSlot) {
+                        $set = 'set' . ucfirst($path);
+                        $get = 'get' . ucfirst($path);
+                        if(!method_exists($slot, $get)) {
+                            $get = 'is' . ucfirst($path);
+                        }
+                        $v =  $importSlot->$get();
+                        if (null !== $v) {
+                            $slot->$set($v);
+                        }
+                    };
+                    // TODO : slot sync
+                    // $sync('slug');
+                    dd('TODO sync');
+                    $importSlot = $slot;
+                } else {
+                    continue;
+                }    
+            }
+
+            $this->em->persist($importSlot);
+            $this->em->flush();
+        }
+
+        [$tags, $tagsGrouped] = $mwsTimeSlotRepository->findAllTagsWithCounts();
+        return $this->json([
+            'tags' => $tags,
+            'tagsGrouped' => $tagsGrouped,
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-import')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
     #[Route(
         '/tag/list/{viewTemplate<[^/]*>?}',
         name: 'mws_timing_tag_list',
@@ -1114,8 +1270,20 @@ class MwsTimingController extends AbstractController
         $format = $request->get('format') ?? 'yaml';
 
         // $timeSlotId = $request->request->get('timeSlotId');
+        $timingLookup = $request->get('timingLookup');
+        // dd($timingLookup);
 
-        $tags = $mwsTimeTagRepository->findAll() ?? [];
+        // $tags = $mwsTimeTagRepository->findAll() ?? [];
+        $qb = $mwsTimeTagRepository->createQueryBuilder('t');
+
+        if($timingLookup) {
+            $timingLookup = json_decode($timingLookup, true);
+            // dump($timingLookup);
+            $this->logger->debug('Timing lookup', $timingLookup);
+        }
+
+        $tags = $qb->getQuery()->getResult();
+
         $tagsSerialized = $this->serializer->serialize(
             $tags,
             $format,

@@ -117,6 +117,7 @@ class MwsTimeTag
     private Collection $mwsTimeQualifs;
 
     #[ORM\OneToMany(mappedBy: 'maxPriceTag', targetEntity: MwsTimeSlot::class)]
+    #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeSlotsForMax;
 
     public function __construct()
