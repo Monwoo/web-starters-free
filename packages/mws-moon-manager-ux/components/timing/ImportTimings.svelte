@@ -6,6 +6,7 @@
   import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
 
+  let importReport;
   export let importedTags;
   export let importedTagsGrouped;
   export let locale;
@@ -73,6 +74,7 @@
           // TODO : force reload, but should recompute ?
           // importedTags = data.timings;
           // importedTagsGrouped = data.timingsGrouped;
+          importReport = data.importReport;
           stateUpdate(state, {
             csrfTimingImport: data.newCsrf,
           });
@@ -127,3 +129,8 @@
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->
 </form>
+{#if importReport?.length}
+<div>
+  {@html importReport}
+</div>
+{/if}
