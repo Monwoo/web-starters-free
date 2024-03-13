@@ -31,7 +31,7 @@
   }) => {
     // shouldOverwrite is null or 'on'
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfTimingTagImport'),
+      _csrf_token: stateGet(get(state), 'csrfTimingImport'),
       format, shouldOverwrite,
       importFile: importFile, // JSON.stringify(timeTag),
     };
@@ -74,7 +74,7 @@
           // importedTags = data.timings;
           // importedTagsGrouped = data.timingsGrouped;
           stateUpdate(state, {
-            csrfTimingTagImport: data.newCsrf,
+            csrfTimingImport: data.newCsrf,
           });
       }
     }).catch(e => {
@@ -117,7 +117,7 @@
       <label for="shouldOverwrite">Forcer la surcharge</label>  
     </span>
     <span>
-      <input type="checkbox" name="shouldOverwrite" />
+      <input type="checkbox" name="shouldIdentifyByFilename" />
       <label for="shouldIdentifyByFilename">Identifier par nom de fichier</label>  
     </span>
 </span>

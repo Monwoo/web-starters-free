@@ -13,6 +13,7 @@
 	{{ svelte_component('MwsReduxSync', {
 		'stateUpdate': {
 			'timingAvailableTags': timingTags,
+			'csrfTimingImport': csrf_token('mws-csrf-timing-import'),
 		}|serialize('json')|e('html_attr'),
 	}) }}></div>
 {% endblock %}

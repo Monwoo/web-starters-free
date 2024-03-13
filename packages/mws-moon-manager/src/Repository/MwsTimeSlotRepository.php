@@ -5,6 +5,7 @@ namespace MWS\MoonManagerBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
+use MWS\MoonManagerBundle\Entity\MwsTimeTag;
 
 /**
  * @extends ServiceEntityRepository<MwsTimeSlot>
@@ -16,8 +17,11 @@ use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
  */
 class MwsTimeSlotRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, protected MwsTimeTagRepository $mwsTimeTagRepository)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        // TODO : service injection not working for serializer import ?
+        // protected MwsTimeTagRepository $mwsTimeTagRepository
+    ) {
         parent::__construct($registry, MwsTimeSlot::class);
     }
 
@@ -68,22 +72,39 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
                 // // $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
                 // $qb->setParameter("tagSlug$idx", $slug);
                 // $qb->setParameter("tagCategory$idx", $category);
-                $tag = $this->mwsTimeTagRepository->findOneBy([
-                    'slug' => $slug,
-                ]);
+
+                $tagQb = $this->_em->createQueryBuilder()
+                ->select("t")
+                ->from(MwsTimeTag::class, "t")
+                ->setMaxResults(1)
+                ->where('t.slug = :slug')
+                ->setParameter('slug', $slug);
+                $tag = $tagQb->getQuery()->getResult()[0] ?? null;
+                // dd($tag);
+                // $tag = $this->mwsTimeTagRepository->findOneBy([
+                //     'slug' => $slug,
+                // ]);
                 $orClause .= "( :tag$idx MEMBER OF $slotName.tags )";
                 $qb->setParameter("tag$idx", $tag);
             }
             $qb = $qb->andWhere($orClause);
+            // dd($qb->getQuery()->getDql());
         }
 
         if (count($searchTagsToAvoid)) {
             // dd($searchTagsToAvoid);
             foreach ($searchTagsToAvoid as $idx => $slug) {
                 $dql = '';
-                $tag = $this->mwsTimeTagRepository->findOneBy([
-                    'slug' => $slug,
-                ]);
+                $tagQb = $this->_em->createQueryBuilder()
+                ->select("t")
+                ->from(MwsTimeTag::class, "t")
+                ->setMaxResults(1)
+                ->where('t.slug = :slug')
+                ->setParameter('slug', $slug);
+                $tag = $tagQb->getQuery()->getResult()[0] ?? null;
+                // $tag = $this->mwsTimeTagRepository->findOneBy([
+                //     'slug' => $slug,
+                // ]);
                 $dql .= ":tagToAvoid$idx NOT MEMBER OF $slotName.tags";
                 $qb->setParameter("tagToAvoid$idx", $tag);
                 // dd($dql);
