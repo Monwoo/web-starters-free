@@ -726,6 +726,9 @@ class MwsTimingController extends AbstractController
                                     $importReport .= "Missing tag for slug {$tagSlug->getSlug()} for {$context['deserialization_path']} <br/>";
                                     if ($tagSlug->getSlug() && strlen($tagSlug->getSlug())) {
                                         $pendingNewTags[$tagSlug->getSlug()] = true;
+                                        $tag = new MwsTimeTag();
+                                        $tag->setSlug($tagSlug->getSlug());
+                                        $tag->setLabel("#{$tagSlug->getSlug()}#");
                                     } else {
                                         $importReport .= "WARNING : null tag for {$context['deserialization_path']} <br/>";
                                         $this->logger->warning("WARNING : null tag for {$context['deserialization_path']}");
@@ -755,7 +758,10 @@ class MwsTimingController extends AbstractController
                                 // dd($importReport);
                                 $importReport .= "Missing max tag for slug $slug <br/>";
                                 $pendingNewTags[$slug] = true;
-                            }
+                                $tag = new MwsTimeTag();
+                                $tag->setSlug($slug);
+                                $tag->setLabel("#$slug#");
+                    }
                             return $tag;
                         } else {
                             // Normalise (cf timing export, not used by import)
@@ -858,7 +864,9 @@ class MwsTimingController extends AbstractController
             } else {
                 $importNewCount++;
             }
-
+            if(!$importSlot->getSourceStamp()){
+                dd('TODO: generate sourceStamp or fail on wrong import format ?');
+            }
             $this->em->persist($importSlot);
             $this->em->flush();
         }
