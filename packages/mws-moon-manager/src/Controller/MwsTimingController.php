@@ -692,6 +692,7 @@ class MwsTimingController extends AbstractController
         $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
         $importReport = '';
 
+        $pendingNewTags = [];
 
         /** @var MwsTimeSlot[] $importSlots */
         $importSlots = $this->serializer->deserialize(
@@ -708,21 +709,27 @@ class MwsTimingController extends AbstractController
                         string $attributeName,
                         string $format = null,
                         array $context = []
-                    ) use ($mwsTimeTagRepository, &$importReport) {
+                    ) use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags) {
                         // dump($context['deserialization_path']);
                         // if (is_array($innerObject)) {
                         if ($context['deserialization_path'] ?? null) {
                             // dd($innerObject); // TODO ; can't have raw input string ?
                             // throw new Exception("TODO : ");
                             return array_map(function ($tagSlug)
-                            use ($mwsTimeTagRepository, &$importReport) {
+                            use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags, &$context) {
                                 $tag = $mwsTimeTagRepository->findOneBy([
                                     'slug' => $tagSlug->getSlug(),
                                 ]);
                                 // dd($tag);
                                 // TODO ; if null tag ?
                                 if (!$tag) {
-                                    $importReport .= "Missing tag for slug {$tagSlug->getSlug()} <br/>";
+                                    $importReport .= "Missing tag for slug {$tagSlug->getSlug()} for {$context['deserialization_path']} <br/>";
+                                    if ($tagSlug->getSlug() && strlen($tagSlug->getSlug())) {
+                                        $pendingNewTags[$tagSlug->getSlug()] = true;
+                                    } else {
+                                        $importReport .= "WARNING : null tag for {$context['deserialization_path']} <br/>";
+                                        $this->logger->warning("WARNING : null tag for {$context['deserialization_path']}");
+                                    }
                                 }
                                 return $tag;
                             }, $innerObject);
@@ -737,7 +744,7 @@ class MwsTimingController extends AbstractController
                         string $attributeName,
                         string $format = null,
                         array $context = []
-                    ) use ($mwsTimeTagRepository, &$importReport) {
+                    ) use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags) {
                         if ($context['deserialization_path'] ?? null && $innerObject->getSlug()) {
                             // dd($innerObject);
                             $slug = $innerObject?->getSlug() ?? '';
@@ -747,7 +754,7 @@ class MwsTimingController extends AbstractController
                             if (!$tag && strlen($slug)) {
                                 // dd($importReport);
                                 $importReport .= "Missing max tag for slug $slug <br/>";
-                                // TODO ; if null tag ?
+                                $pendingNewTags[$slug] = true;
                             }
                             return $tag;
                         } else {
@@ -768,7 +775,20 @@ class MwsTimingController extends AbstractController
                         // dump($context);
                         // dd($outerObject);
                         if ($context['deserialization_path'] ?? null) {
-                            return json_decode($innerObject, true);
+                            $maxPath = json_decode($innerObject, true);
+                            // $slug = $maxPathı[''];
+                            // if ($maxPath && strlen($maxPath)) {
+                            //     // dd($importReport);
+                            //     $importReport .= "Generate from max tag for slug $slug <br/>";
+                            //     $newTag = new MwsTimeTag();
+                            //     $newTag->setSlug($slug);
+                            //     $newTag->setLabel("#$slug#");
+                                
+                            //     if ($pendingNewTags[$slug]) {
+                            //         unset($pendingNewTags[$slug]);
+                            //     }
+                            // }
+                            return $maxPath;
                         } else {
                             // Normalise (cf timing export, not used by import)
                             throw new Exception("Should not happen");
