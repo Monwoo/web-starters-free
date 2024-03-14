@@ -27,14 +27,15 @@
     'csv': 'application/csv,text/csv',
   }
 
-  export let importTags = async ({
-    format = 'yaml', importFile = null, shouldOverwrite = null
+  export let importTags = async (inputData = {
+    format: 'yaml', importFile: null, shouldOverwrite: null
   }) => {
     // shouldOverwrite is null or 'on'
     const data = {
       _csrf_token: stateGet(get(state), 'csrfTimingImport'),
-      format, shouldOverwrite,
-      importFile: importFile, // JSON.stringify(timeTag),
+      // format, shouldOverwrite,
+      // importFile: importFile, // JSON.stringify(timeTag),
+      ...inputData
     };
 		// let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
 		let headers = {};
@@ -116,7 +117,17 @@
   <span class="inline-flex flex-col">
     <span>
       <input type="checkbox" name="shouldOverwrite" />
-      <label for="shouldOverwrite">Forcer la surcharge</label>  
+      <label for="shouldOverwrite">Forcer la surcharge des temps</label>  
+    </span>
+    <span>
+      <input type="checkbox" name="shouldOverwritePriceRules" />
+      <label for="shouldOverwrite">Forcer la surcharge des règles de prix</label>  
+    </span>
+  </span>
+  <span class="inline-flex flex-col">
+    <span>
+      <input type="checkbox" name="shouldRecomputeAllOtherTags" />
+      <label for="shouldOverwrite">Mettre à jour les tags des autres temps</label>  
     </span>
     <span>
       <input type="checkbox" name="shouldIdentifyByFilename" />

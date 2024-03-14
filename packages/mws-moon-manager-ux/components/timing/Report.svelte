@@ -19,6 +19,8 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
+  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
   import ReportSummaryRows from "./ReportSummaryRows.svelte";
   import ExportTags from "./tags/ExportTags.svelte";
@@ -60,8 +62,8 @@
   const pickMaxBetween = (a, b, maxAttribute = "maxPath") => {
     if (!a || !a[maxAttribute]) return b;
     if (!b || !b[maxAttribute]) return a;
-    const aPriority = a[maxAttribute].maxLimitPriority ?? 0;
-    const bPriority = b[maxAttribute].maxLimitPriority ?? 0;
+    const aPriority = Number(a[maxAttribute].maxLimitPriority ?? 0);
+    const bPriority = Number(b[maxAttribute].maxLimitPriority ?? 0);
     if (
       aPriority > bPriority ||
       (aPriority == bPriority &&
@@ -820,6 +822,65 @@
     toPrettyNum(length: number): string;
   }
 
+  const deleteAllTimings = async () => {
+    if (isLoading) return;
+    isLoading = true;
+    // TODO : Wait for loading animation to show
+    // await tick();
+    // await new Promise(r => setTimeout(r, 500));
+    // Or use HTML modal instead of native blocking UI alert
+    await new Promise((r) => setTimeout(r, 100));
+
+    if (
+      confirm(
+        "Are you sure you want to delete all timings ?"
+      )
+    ) {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfTimingDeleteAll"),
+      };
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        Routing.generate("mws_timing_delete_all", {
+          _locale: locale,
+        }),
+        {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          redirect: "error",
+          headers: {
+            'Accept': 'application/json'
+          },
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp);
+          if (!resp.ok) {
+            throw new Error("Not 2xx response", { cause: resp });
+          } else {
+            const data = await resp.json();
+            console.debug("Did remove all tags, resp :", data);
+            // TODO : remove self from DOM instead of isHidden ?
+            // tags = [];
+            window.location.reload();
+            stateUpdate(state, {
+              csrfTimingDeleteAll: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    }
+    isLoading = false;
+  };
+
 </script>
 
 <div class="mws-timing-report">
@@ -847,6 +908,14 @@
     <ImportTimings {locale} timingLookup={jsonLookup} format="csv" />
     <ExportTimings {locale} timingLookup={jsonLookup} format="csv" />
     <ExportTags {locale} timingLookup={jsonLookup} format="csv" />
+      <button
+      on:click={deleteAllTimings}
+      class="btn btn-outline-primary p-1 m-1"
+      style="--mws-primary-rgb: 255, 0, 0"
+    >
+      Supprimer tous les temps
+    </button>
+
   </div>
 
   <div class="p-3 flex flex-wrap">

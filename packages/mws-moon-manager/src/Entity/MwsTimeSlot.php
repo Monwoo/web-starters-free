@@ -37,7 +37,7 @@ class MwsTimeSlot
 
     // #[ORM\Column(nullable: true)]
     // private ?float $maxPricePerHr = null;
-    #[ORM\ManyToOne(inversedBy: 'mwsTimeSlotsForMax')]
+    #[ORM\ManyToOne(inversedBy: 'mwsTimeSlotsForMax', cascade: ["persist"])]
     private ?MwsTimeTag $maxPriceTag = null;
 
     #[ORM\Column(nullable: true)]
@@ -46,7 +46,7 @@ class MwsTimeSlot
     #[ORM\Column(nullable: true)]
     private ?int $rangeDayIdxByCustomNorm = null;
 
-    #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsTimeSlots')]
+    #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsTimeSlots', cascade: ["persist"])]
     private Collection $tags;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -84,7 +84,7 @@ class MwsTimeSlot
         // $dt = DateTime::createFromFormat("Y-m-d H:i:s", "2011-07-26 20:05:00");
         // $hours = $dt->format('H'); // '20'
         $localTz = new DateTimeZone('Europe/Paris');
-        
+
         $localTime = new DateTime($sourceTimeGMT->format(DateTime::ATOM));
         $localTime->setTimezone($localTz);
         $minutes = intval($localTime->format('H')) * 60

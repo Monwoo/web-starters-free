@@ -18,8 +18,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -44,6 +48,7 @@ class MwsTimingController extends AbstractController
         protected SerializerInterface $serializer,
         protected TranslatorInterface  $translator,
         protected EntityManagerInterface $em,
+        protected KernelInterface $kernel,
         protected SluggerInterface $slugger,
     ) {
     }
@@ -510,6 +515,7 @@ class MwsTimingController extends AbstractController
     public function deleteAll(
         string|null $viewTemplate,
         Request $request,
+        CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
         // TIPS : firewall, middleware or security guard can also
@@ -530,6 +536,13 @@ class MwsTimingController extends AbstractController
         $query->execute();
         $this->em->flush();
 
+        // if($request->isXmlHttpRequest()) {
+        if(in_array('application/json', $request->getAcceptableContentTypes())) {
+            return $this->json([
+                'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-delete-all')->getValue(),
+                'viewTemplate' => $viewTemplate,
+            ]);    
+        }
         return $this->redirectToRoute(
             'mws_timings_qualif',
             [ // array_merge($request->query->all(), [
@@ -687,13 +700,18 @@ class MwsTimingController extends AbstractController
         // format
         $format = $request->get('format');
         $shouldOverwrite = $request->get('shouldOverwrite');
+        $shouldOverwritePriceRules = $request->get('shouldOverwritePriceRules');
         $shouldIdentifyByFilename = $request->get('shouldIdentifyByFilename');
+        $shouldRecomputeAllOtherTags = $request->get('shouldRecomputeAllOtherTags');
         $importFile = $request->files->get('importFile');
         $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
         $importReport = '';
 
         $pendingNewTags = [];
-
+        $tagsUpdatedByFirstMaxPrice = [];
+        $em = $this->em;
+        $self = $this;
+        // dd($shouldOverwritePriceRules);
         /** @var MwsTimeSlot[] $importSlots */
         $importSlots = $this->serializer->deserialize(
             $importContent,
@@ -709,14 +727,14 @@ class MwsTimingController extends AbstractController
                         string $attributeName,
                         string $format = null,
                         array $context = []
-                    ) use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags) {
+                    ) use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags, $em) {
                         // dump($context['deserialization_path']);
                         // if (is_array($innerObject)) {
                         if ($context['deserialization_path'] ?? null) {
                             // dd($innerObject); // TODO ; can't have raw input string ?
                             // throw new Exception("TODO : ");
                             return array_map(function ($tagSlug)
-                            use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags, &$context) {
+                            use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags, &$context, $em) {
                                 $tag = $mwsTimeTagRepository->findOneBy([
                                     'slug' => $tagSlug->getSlug(),
                                 ]);
@@ -729,6 +747,11 @@ class MwsTimingController extends AbstractController
                                         $tag = new MwsTimeTag();
                                         $tag->setSlug($tagSlug->getSlug());
                                         $tag->setLabel("#{$tagSlug->getSlug()}#");
+                                        // TIPS : even if will be saved with 'cascade persiste' attribute
+                                        // save it now to see it on others imports lookups instead of at
+                                        // end of full import query builds...
+                                        $em->persist($tag);
+                                        $em->flush();
                                     } else {
                                         $importReport .= "WARNING : null tag for {$context['deserialization_path']} <br/>";
                                         $this->logger->warning("WARNING : null tag for {$context['deserialization_path']}");
@@ -747,7 +770,7 @@ class MwsTimingController extends AbstractController
                         string $attributeName,
                         string $format = null,
                         array $context = []
-                    ) use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags) {
+                    ) use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags, $em) {
                         if ($context['deserialization_path'] ?? null && $innerObject->getSlug()) {
                             // dd($innerObject);
                             $slug = $innerObject?->getSlug() ?? '';
@@ -761,7 +784,12 @@ class MwsTimingController extends AbstractController
                                 $tag = new MwsTimeTag();
                                 $tag->setSlug($slug);
                                 $tag->setLabel("#$slug#");
-                    }
+                                // TIPS : even if will be saved with 'cascade persiste' attribute
+                                // save it now to see it on others imports lookups instead of at
+                                // end of full import query builds...
+                                $em->persist($tag);
+                                $em->flush();
+                            }
                             return $tag;
                         } else {
                             // Normalise (cf timing export, not used by import)
@@ -774,6 +802,13 @@ class MwsTimingController extends AbstractController
                         string $attributeName,
                         string $format = null,
                         array $context = []
+                    ) use (
+                        &$importReport,
+                        &$tagsUpdatedByFirstMaxPrice,
+                        &$pendingNewTags,
+                        $mwsTimeTagRepository,
+                        $shouldOverwritePriceRules,
+                        $self,
                     ) {
                         // TODO : should 
                         // dump($innerObject);
@@ -783,17 +818,42 @@ class MwsTimingController extends AbstractController
                         if ($context['deserialization_path'] ?? null) {
                             $maxPath = json_decode($innerObject, true);
                             // $slug = $maxPathı[''];
-                            // if ($maxPath && strlen($maxPath)) {
-                            //     // dd($importReport);
-                            //     $importReport .= "Generate from max tag for slug $slug <br/>";
-                            //     $newTag = new MwsTimeTag();
-                            //     $newTag->setSlug($slug);
-                            //     $newTag->setLabel("#$slug#");
-                                
-                            //     if ($pendingNewTags[$slug]) {
-                            //         unset($pendingNewTags[$slug]);
-                            //     }
-                            // }
+                            if ($maxPath && count($maxPath)) {
+                                // dd($importReport);
+                                $slug = $maxPath['maxTagSlug'];
+
+                                if (!($tagsUpdatedByFirstMaxPrice[$slug] ?? null)) {
+                                    $tag = $mwsTimeTagRepository->findOneBy([
+                                        'slug' => $slug,
+                                    ]);
+                                    if (!$tag || ($pendingNewTags[$slug] ?? null) || $shouldOverwritePriceRules) {
+                                        $ruleIdx = $maxPath['maxRuleIndex'] ?? 0;
+                                        $importReport .= "Price rule '$ruleIdx' generated from max tag for slug $slug from {$context['deserialization_path']} <br/>";
+                                        if (!$tag) {
+                                            $tag = new MwsTimeTag();
+                                        }
+                                        $tag->setSlug($slug);
+                                        $tag->setLabel("#$slug#");
+                                        // $self->logger->debug("Will update with price rule $ruleIdx", $maxPath);
+                                        // Merge with existent...
+                                        $tag->setPricePerHrRules([
+                                            ...($tag->getPricePerHrRules() ?? []),
+                                            $ruleIdx => [
+                                                'price' => floatval($maxPath['maxValue']),
+                                                'withTags' => array_flip($maxPath['maxSubTags'] ?? []),
+                                                'maxLimitPriority' => intval($maxPath['maxLimitPriority']),
+                                            ]
+                                        ]);
+                                        // unset($pendingNewTags[$slug]);        
+                                        $self->em->persist($tag);
+                                        $self->em->flush();
+                                    }
+                                    // TIPS : below will only match and update with
+                                    // FIRST max value, more efficient, but if new
+                                    // rules for same tag come out below, will not be seen with :
+                                    // $tagsUpdatedByFirstMaxPrice[$slug] = true;
+                                }
+                            }
                             return $maxPath;
                         } else {
                             // Normalise (cf timing export, not used by import)
@@ -827,7 +887,7 @@ class MwsTimingController extends AbstractController
 
             if ($shouldIdentifyByFilename) {
                 $qb = $qb->where('s.sourceStamp LIKE :sourceStamp')
-                    ->setParameter('sourceStamp', '%' + basename(
+                    ->setParameter('sourceStamp', '%' . basename(
                         $importSlot->getSourceStamp()
                     ));
             } else {
@@ -842,35 +902,64 @@ class MwsTimingController extends AbstractController
             if ($slot) {
                 if ($shouldOverwrite && $shouldOverwrite != 'null') {
                     $sync = function ($path) use (&$slot, &$importSlot) {
-                        $set = 'set' . ucfirst($path);
                         $get = 'get' . ucfirst($path);
-                        if (!method_exists($slot, $get)) {
+                        if (!method_exists($importSlot, $get)) {
                             $get = 'is' . ucfirst($path);
                         }
                         $v =  $importSlot->$get();
                         if (null !== $v) {
-                            $slot->$set($v);
+                            $set = 'set' . ucfirst($path);
+                            if (!method_exists($slot, $set)) {
+                                // Is collection :
+                                $add = 'add' . ucfirst($path);
+                                if (!method_exists($slot, $add)) {
+                                    $add = preg_replace('/s$/', '', $add);
+                                }
+                                $collection = $slot->$get();
+                                $collection->clear();
+                                foreach ($v as $subV) {
+                                    $slot->$add($subV);
+                                }
+                            } else {
+                                $slot->$set($v);
+                            }
                         }
                     };
-                    // TODO : slot sync
-                    // $sync('slug');
-                    dd('TODO sync');
-                    $importReport .= "Did overwrite {$importSlot->getSourceStamp()} <br/>";
+                    $timeSlotProps = array_keys(
+                        $this->em->getMetadataFactory()
+                            ->getMetadataFor(
+                                MwsTimeSlot::class
+                            )->reflFields
+                    );
+                    // dd($timeSlotProps);
+                    foreach ($timeSlotProps as $property) {
+                        $sync($property);
+                        // $this->logger->debug("Did load props $property at index $idx");
+                    }
+                    // $sync('sourceTimeGMT');
+                    // $sync('source');
+                    // $sync('rangeDayIdxBy10Min');
+                    // $sync('maxPriceTag');
+                    $importReport .= "Did overwrite [$idx] {$importSlot->getSourceStamp()} <br/>";
                     $importSlot = $slot;
                 } else {
-                    $importReport .= "Ignore duplicata {$importSlot->getSourceStamp()} <br/>";
+                    $importReport .= "Ignore duplicata [$idx] {$importSlot->getSourceStamp()} <br/>";
                     continue;
                 }
             } else {
                 $importNewCount++;
             }
-            if(!$importSlot->getSourceStamp()){
+            if (!$importSlot->getSourceStamp()) {
                 dd('TODO: generate sourceStamp or fail on wrong import format ?');
             }
             $this->em->persist($importSlot);
             $this->em->flush();
         }
         $importReport .= "Did import <strong>$importNewCount new timings </strong> <br/>";
+
+        if($shouldRecomputeAllOtherTags) {
+            $this->forceTimingsPriceRecompute();
+        }
 
         return $this->json([
             // 'tags' => $tags, // TODO : will force refresh ? should ensure frontend view updates
@@ -879,6 +968,16 @@ class MwsTimingController extends AbstractController
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-import')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
+    }
+
+    protected function forceTimingsPriceRecompute() {
+        $application = new Application($this->kernel);
+        $application->setAutoExit(false);
+        $input = new ArrayInput([
+            'command' => 'mws:recompute-timing-tags',
+        ]);
+        $output = new NullOutput();
+        $application->run($input, $output);
     }
 
     #[Route(
