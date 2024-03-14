@@ -378,15 +378,20 @@ style:opacity={isLoading ? 0.8 : 1} -->
     + https://stackoverflow.com/questions/15999760/load-image-asynchronous
     (but load this one first...)
     -->
-    <img
-      loading="eager"
-      class="object-contain border-solid border-4"
-      class:w-full={isFullScreen}
-      class:max-h-[85%]={isFullScreen && !isHeaderExpanded}
-      class:border-gray-600={!timingSlot?.tags?.length}
-      class:border-green-400={timingSlot?.tags?.length}
-      src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
-    />
+    <object
+    class="object-contain border-solid border-4 w-full"
+    class:max-h-[85%]={isFullScreen && !isHeaderExpanded}
+    class:border-gray-600={!timingSlot?.tags?.length}
+    class:border-green-400={timingSlot?.tags?.length}
+    data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+    type="image/png"
+    >
+      <img
+        class="w-full"
+        loading="eager"
+        src={timingSlot.thumbnailJpeg}
+      />
+    </object>
 
     <!-- <div
     class="object-contain border-solid border-4"

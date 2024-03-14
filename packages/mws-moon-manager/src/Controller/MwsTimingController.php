@@ -22,7 +22,9 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -435,6 +437,12 @@ class MwsTimingController extends AbstractController
 
         $url = $request->query->get('url', null);
         $keepOriginalSize = $request->query->get('keepOriginalSize', null);
+        $thumbnailSize = intval($request->query->get('thumbnailSize', 0));
+        if (!$thumbnailSize) {
+            // TODO : default 150 from session or db config params ?
+            $thumbnailSize = 150;
+        }
+        // dd($thumbnailSize);
         $this->logger->debug("Will fetch url : $url");
 
         // TODO : secu : filter real path to allowed screenshot folders from .env only ?
@@ -456,28 +464,36 @@ class MwsTimingController extends AbstractController
         // https://imagekit.io/blog/how-to-resize-image-in-javascript/
         // https://stackoverflow.com/questions/39762102/resizing-image-while-printing-html
         // $imagick = new \Imagick(realpath($url));
-        if ($keepOriginalSize) {
-            // TODO : filter url outside of allowed server folders ?
-            $respData = file_get_contents($url);
-        } else {
-            $imagick = new \Imagick($url);
-            $targetW = 150; // px, // TODO : from session or db config params
-            $factor = $targetW / $imagick->getImageWidth();
-            $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
-                $imagick->getImageWidth() * $factor,
-                $imagick->getImageHeight() * $factor,
-                // https://urmaul.com/blog/imagick-filters-comparison/
-                \Imagick::FILTER_CATROM,
-                0
-            );
-            $imagick->setImageCompressionQuality(0);
-            // https://www.php.net/manual/fr/imagick.resizeimage.php#94493
-            // FILTER_POINT is 4 times faster
-            // $imagick->scaleimage(
-            //     $imagick->getImageWidth() * 4,
-            //     $imagick->getImageHeight() * 4
-            // );
-            $respData = $imagick->getImageBlob();
+        try {
+            if ($keepOriginalSize) {
+                // TODO : filter url outside of allowed server folders ?
+                $respData = file_get_contents($url);
+            } else {
+                $imagick = new \Imagick($url);
+                $targetW = $thumbnailSize; // px,
+                $factor = $targetW / $imagick->getImageWidth();
+                $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
+                    $imagick->getImageWidth() * $factor,
+                    $imagick->getImageHeight() * $factor,
+                    // https://urmaul.com/blog/imagick-filters-comparison/
+                    \Imagick::FILTER_CATROM,
+                    0
+                );
+                $imagick->setImageCompressionQuality(0);
+                // https://www.php.net/manual/fr/imagick.resizeimage.php#94493
+                // FILTER_POINT is 4 times faster
+                // $imagick->scaleimage(
+                //     $imagick->getImageWidth() * 4,
+                //     $imagick->getImageHeight() * 4
+                // );
+                $respData = $imagick->getImageBlob();
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning($e);
+            // dd($e);
+            throw $this->createNotFoundException('Fail for url ' . $url);
+            // return new Response('', 415);
+            // return new Response('');
         }
 
         $response = new Response($respData);
@@ -538,11 +554,11 @@ class MwsTimingController extends AbstractController
         $this->em->flush();
 
         // if($request->isXmlHttpRequest()) {
-        if(in_array('application/json', $request->getAcceptableContentTypes())) {
+        if (in_array('application/json', $request->getAcceptableContentTypes())) {
             return $this->json([
                 'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-delete-all')->getValue(),
                 'viewTemplate' => $viewTemplate,
-            ]);    
+            ]);
         }
         return $this->redirectToRoute(
             'mws_timings_qualif',
@@ -588,7 +604,7 @@ class MwsTimingController extends AbstractController
         $format = $request->get('format') ?? 'yaml';
         $timingLookup = $request->get('timingLookup');
         $attachThumbnails = $request->get('attachThumbnails');
-        $thumbnailsSize = $request->get('thumbnailsSize');
+        $thumbnailsSize = intval($request->get('thumbnailsSize', 0));
 
         // $tSlots = $mwsTimeSlotRepository->findAll() ?? [];
 
@@ -614,16 +630,16 @@ class MwsTimingController extends AbstractController
                 ],
                 // ObjectNormalizer::IGNORED_ATTRIBUTES => ['tags']
                 AbstractNormalizer::CALLBACKS => [
-                    'thumbnailJpeg' => function(
+                    'thumbnailJpeg' => function (
                         $innerObject,
                         $outerObject,
                         string $attributeName,
                         string $format = null,
                         array $context = []
-                    ) use ($attachThumbnails, $em, $self, $request) {
+                    ) use ($attachThumbnails, $thumbnailsSize, $em, $self, $request) {
                         // dump($innerObject);
                         // dd($outerObject);
-                        if ($attachThumbnails) {// already ignored, juste in case
+                        if ($attachThumbnails) { // already ignored, juste in case
                             // dump($innerObject);
                             // dd($outerObject);
                             if ($innerObject) {
@@ -633,9 +649,10 @@ class MwsTimingController extends AbstractController
                                 //   });
                                 //   $path = 'myfolder/myimage.png';
                                 //   $type = pathinfo($path, PATHINFO_EXTENSION);
-                                $thumbUrl = $self->generateUrl("mws_timing_fetchMediatUrl", [
-                                    'url' => "file://" . $outerObject->getSource()['path'],
-                                ], UrlGeneratorInterface::ABSOLUTE_URL);
+                                // $thumbUrl = $self->generateUrl("mws_timing_fetchMediatUrl", [
+                                //     'url' => "file://" . $outerObject->getSource()['path'],
+                                // ], UrlGeneratorInterface::ABSOLUTE_URL);
+
                                 $type  = 'jpeg';
                                 // dd($request->headers->all());
                                 $headersText = "";
@@ -645,15 +662,73 @@ class MwsTimingController extends AbstractController
                                 // dd($headersText);
 
                                 // https://www.hashbangcode.com/article/using-authentication-and-filegetcontents
-                                $context = stream_context_create(array(
-                                    'http' => array(
-                                        'header'  => $headersText, // "Authorization: Basic " . base64_encode("$username:$password")
-                                    )
-                                ));
-                                
-                                $data = file_get_contents($thumbUrl, false, $context);
-                                dd($data);
-                                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                                // $context = stream_context_create(array(
+                                //     'http' => array(
+                                //         'header'  => $headersText, // "Authorization: Basic " . base64_encode("$username:$password")
+                                //     )
+                                // ));
+                                // // will fail to open on single dev server...
+                                // $data = file_get_contents($thumbUrl, false, $context);
+                                // dd($data);
+
+                                // https://stackoverflow.com/questions/61011582/override-content-of-a-subrequest-in-symfony4
+                                // $request = $this->container->get('request_stack')->getCurrentRequest();
+                                // dd($request->attributes);
+                                $attr = [
+                                    // '_controller' => 'MwsMoonManager:MwsTimingController:fetchRootUrl',
+                                    '_controller' => MwsTimingController::class . '::fetchRootUrl',
+                                    // "_route" => "mws_timing_export"
+                                    // "_route_params" => array:2 [
+                                    //   "viewTemplate" => null
+                                    //   "_locale" => "fr"
+                                    // ]
+                                ];
+                                $params = [
+                                    'url' => "file://" . $outerObject->getSource()['path'],
+                                    'thumbnailSize' => $thumbnailsSize ? $thumbnailsSize : null,
+                                ];
+                                $subRequest = $request->duplicate($params, null, $attr);
+                                // if ($isPost) {
+                                //     $subRequest = $this->duplicateRequestForPost($request, $params, $attr);
+                                // } else {
+                                // }
+
+                                /** @var Response $resp */
+                                $resp = $this->container->get('http_kernel')
+                                    ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+                                $data = $resp->getContent();
+                                // dd($resp);
+                                if (404 === $resp->getStatusCode()) {
+                                    $data = null;
+                                    if ($innerObject) {
+                                        $b64 = explode(
+                                            'data:image/' . $type . ';base64,',
+                                            $innerObject,
+                                            2
+                                        )[1];
+                                        // dd($b64);
+                                        $innerData = base64_decode($b64);
+                                        $imagick = new \Imagick();
+                                        $imagick->readImageBlob($innerData);
+                                        // TODO : default thumbsize from app param or user db config ?
+                                        $factor = ($thumbnailsSize ? $thumbnailsSize : 150) / $imagick->getImageWidth();
+                                        // dd($factor);
+                                        $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
+                                            $imagick->getImageWidth() * $factor,
+                                            $imagick->getImageHeight() * $factor,
+                                            // https://urmaul.com/blog/imagick-filters-comparison/
+                                            \Imagick::FILTER_CATROM,
+                                            0
+                                        );
+                                        $imagick->setImageCompressionQuality(0);
+                                        $data = $imagick->getImageBlob();
+                                    }
+                                } else {
+                                    $data = $resp->getContent();
+                                }
+                                $base64 = $data
+                                    ? 'data:image/' . $type . ';base64,' . base64_encode($data)
+                                    : null;
                                 // dd($base64);
                                 $outerObject->setThumbnailJpeg($base64);
                                 $em->persist($outerObject);
@@ -724,6 +799,33 @@ class MwsTimingController extends AbstractController
 
         $response->setContent($tagsSerialized);
         return $response;
+    }
+
+    /**
+     * https://stackoverflow.com/questions/61011582/override-content-of-a-subrequest-in-symfony4
+     * Just to replace $request->content ...
+     */
+    private function duplicateRequestForPost(Request $request, array $postParams, array $attributes): Request
+    {
+        $postRequest = new Request(
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            json_encode($postParams)
+        );
+
+        $postRequest->query = $request->query;
+        $postRequest->request = $request->request;
+        $postRequest->cookies = $request->cookies;
+        $postRequest->files = $request->files;
+        $postRequest->server = $request->server;
+
+        $postRequest->attributes = new ParameterBag($attributes);
+
+        return $postRequest;
     }
 
     #[Route(
@@ -1014,7 +1116,7 @@ class MwsTimingController extends AbstractController
         }
         $importReport .= "Did import <strong>$importNewCount new timings </strong> <br/>";
 
-        if($shouldRecomputeAllOtherTags) {
+        if ($shouldRecomputeAllOtherTags) {
             $this->forceTimingsPriceRecompute();
         }
 
@@ -1027,7 +1129,8 @@ class MwsTimingController extends AbstractController
         ]);
     }
 
-    protected function forceTimingsPriceRecompute() {
+    protected function forceTimingsPriceRecompute()
+    {
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
         $input = new ArrayInput([

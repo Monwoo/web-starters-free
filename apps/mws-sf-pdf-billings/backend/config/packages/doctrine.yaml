@@ -9,8 +9,11 @@ doctrine:
         # https://stackoverflow.com/questions/43356717/symfony-doctrine2-manytomany-relationship-not-removed-specific-to-sqlite
         options:
             'PRAGMA foreign_keys': 'ON'
-        logging: '%kernel.debug%'
-        profiling: '%kernel.debug%'
+        logging: false
+        profiling: false
+        # logging: '%kernel.debug%'
+        # profiling: '%kernel.debug%'
+
         # # https://symfony.com/bundles/DoctrineBundle/current/configuration.html
         # default_connection: default
         # connections:
