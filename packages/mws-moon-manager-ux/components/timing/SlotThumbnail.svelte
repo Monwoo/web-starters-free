@@ -36,14 +36,16 @@ overflow-hidden border-solid border-4"
 >
   <!-- https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
   <object
-    data="http://localhost:8000/bundles/moonmanager/medias/MoonManagerLogo.png"
+    data="{timingSlot.thumbnailJpeg}"
     type="image/png"
   >
     <img
       loading="lazy"
       class="object-contain"
-      src={"screenshot" == timingSlot.source?.type ? slotPath : ""}
+      src="{timingSlot.thumbnailJpeg}"
     />
+    <!-- src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
+
   </object>
 
   <!-- <img

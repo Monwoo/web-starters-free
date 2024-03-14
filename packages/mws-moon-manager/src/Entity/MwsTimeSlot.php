@@ -55,6 +55,9 @@ class MwsTimeSlot
     #[ORM\Column(length: 512)]
     private ?string $sourceStamp = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $thumbnailJpeg = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -215,6 +218,18 @@ class MwsTimeSlot
     public function setMaxPath(?array $maxPath): static
     {
         $this->maxPath = $maxPath;
+
+        return $this;
+    }
+
+    public function getThumbnailJpeg(): ?string
+    {
+        return $this->thumbnailJpeg;
+    }
+
+    public function setThumbnailJpeg(?string $thumbnailJpeg): static
+    {
+        $this->thumbnailJpeg = $thumbnailJpeg;
 
         return $this;
     }

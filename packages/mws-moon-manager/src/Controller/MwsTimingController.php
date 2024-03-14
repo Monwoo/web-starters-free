@@ -24,6 +24,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -586,6 +587,8 @@ class MwsTimingController extends AbstractController
 
         $format = $request->get('format') ?? 'yaml';
         $timingLookup = $request->get('timingLookup');
+        $attachThumbnails = $request->get('attachThumbnails');
+        $thumbnailsSize = $request->get('thumbnailsSize');
 
         // $tSlots = $mwsTimeSlotRepository->findAll() ?? [];
 
@@ -597,15 +600,67 @@ class MwsTimingController extends AbstractController
         }
 
         $tSlots = $qb->getQuery()->getResult();
+        $em = $this->em;
+        $self = $this;
 
         $tagsSerialized = $this->serializer->serialize(
             $tSlots,
             $format,
             // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
             [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['id'],
+                AbstractNormalizer::IGNORED_ATTRIBUTES => [
+                    ...($attachThumbnails ? [] : ['thumbnailJpeg']),
+                    'id'
+                ],
                 // ObjectNormalizer::IGNORED_ATTRIBUTES => ['tags']
                 AbstractNormalizer::CALLBACKS => [
+                    'thumbnailJpeg' => function(
+                        $innerObject,
+                        $outerObject,
+                        string $attributeName,
+                        string $format = null,
+                        array $context = []
+                    ) use ($attachThumbnails, $em, $self, $request) {
+                        // dump($innerObject);
+                        // dd($outerObject);
+                        if ($attachThumbnails) {// already ignored, juste in case
+                            // dump($innerObject);
+                            // dd($outerObject);
+                            if ($innerObject) {
+                                // Routing.generate("mws_timing_fetchMediatUrl", {
+                                //     url: "file://" + timingSlot.source.path,
+                                //     keepOriginalSize: 1,
+                                //   });
+                                //   $path = 'myfolder/myimage.png';
+                                //   $type = pathinfo($path, PATHINFO_EXTENSION);
+                                $thumbUrl = $self->generateUrl("mws_timing_fetchMediatUrl", [
+                                    'url' => "file://" . $outerObject->getSource()['path'],
+                                ], UrlGeneratorInterface::ABSOLUTE_URL);
+                                $type  = 'jpeg';
+                                // dd($request->headers->all());
+                                $headersText = "";
+                                foreach ($request->headers->all() as $key => $header) {
+                                    $headersText .= "$key: {$header[0]}\r\n";
+                                }
+                                // dd($headersText);
+
+                                // https://www.hashbangcode.com/article/using-authentication-and-filegetcontents
+                                $context = stream_context_create(array(
+                                    'http' => array(
+                                        'header'  => $headersText, // "Authorization: Basic " . base64_encode("$username:$password")
+                                    )
+                                ));
+                                
+                                $data = file_get_contents($thumbUrl, false, $context);
+                                dd($data);
+                                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                                // dd($base64);
+                                $outerObject->setThumbnailJpeg($base64);
+                                $em->persist($outerObject);
+                            }
+                            return $outerObject->getThumbnailJpeg();
+                        }
+                    },
                     'tags' => function ($objects) {
                         if (is_string($objects)) {
                             // Denormalize (cf timing import, not used by export)
@@ -644,6 +699,8 @@ class MwsTimingController extends AbstractController
                 ]
             ],
         );
+
+        $em->flush();
 
         $rootPackage = \Composer\InstalledVersions::getRootPackage();
         $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
