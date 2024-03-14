@@ -52,6 +52,14 @@
       <option value={`${fmt.format}`}>{fmt.label}</option>
     {/each}
   </select>  
+  <span>
+    <input type="checkbox" name="attachThumbnails" />
+    <label for="attachThumbnails">Joindre les miniatures</label>  
+  </span>
+  <span>
+    <input type="number" name="thumbnailsSize" />
+    <label for="thumbnailsSize">Taille des miniatures</label>  
+  </span>
 
   <button type="submit" class="btn btn-outline-primary p-1 m-1">
     Exporter les temps

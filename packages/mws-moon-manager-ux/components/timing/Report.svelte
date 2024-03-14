@@ -831,11 +831,7 @@
     // Or use HTML modal instead of native blocking UI alert
     await new Promise((r) => setTimeout(r, 100));
 
-    if (
-      confirm(
-        "Are you sure you want to delete all timings ?"
-      )
-    ) {
+    if (confirm("Are you sure you want to delete all timings ?")) {
       const data = {
         _csrf_token: stateGet(get(state), "csrfTimingDeleteAll"),
       };
@@ -853,7 +849,7 @@
           credentials: "same-origin",
           redirect: "error",
           headers: {
-            'Accept': 'application/json'
+            Accept: "application/json",
           },
         }
       )
@@ -896,6 +892,27 @@
   >
     <button> Qualification des temps </button>
   </a>
+  <a
+    href={Routing.generate("mws_timing_tag_list", {
+      _locale: locale ?? "",
+      viewTemplate: viewTemplate ?? "",
+      ...jsonLookup,
+    })}
+  >
+    <button>Liste des tags</button>
+  </a>
+  <div class="p-3">
+    <ImportTimings {locale} timingLookup={jsonLookup} format="csv" />
+    <ExportTimings {locale} timingLookup={jsonLookup} format="csv" />
+    <ExportTags {locale} timingLookup={jsonLookup} format="csv" />
+    <button
+      on:click={deleteAllTimings}
+      class="btn btn-outline-primary p-1 m-1"
+      style="--mws-primary-rgb: 255, 0, 0"
+    >
+      Supprimer tous les temps
+    </button>
+  </div>
   <button on:click={() => (showDetails = !showDetails)}>
     {showDetails ? "Cacher" : "Voir"} les details
   </button>
@@ -904,20 +921,6 @@
       {showPictures ? "Cacher" : "Voir"} les screenshots
     </button>
   {/if}
-  <div class="p-3">
-    <ImportTimings {locale} timingLookup={jsonLookup} format="csv" />
-    <ExportTimings {locale} timingLookup={jsonLookup} format="csv" />
-    <ExportTags {locale} timingLookup={jsonLookup} format="csv" />
-      <button
-      on:click={deleteAllTimings}
-      class="btn btn-outline-primary p-1 m-1"
-      style="--mws-primary-rgb: 255, 0, 0"
-    >
-      Supprimer tous les temps
-    </button>
-
-  </div>
-
   <div class="p-3 flex flex-wrap">
     <div class="label">
       <button

@@ -34,10 +34,34 @@ overflow-hidden border-solid border-4"
   style:height={size}
   style:width={size}
 >
-  <img
-    loading="lazy"
-    class="object-contain"
-    src={"screenshot" == timingSlot.source?.type ? slotPath : ""}
+  <!-- https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
+  <object
+    data="http://localhost:8000/bundles/moonmanager/medias/MoonManagerLogo.png"
+    type="image/png"
+  >
+    <img
+      loading="lazy"
+      class="object-contain"
+      src={"screenshot" == timingSlot.source?.type ? slotPath : ""}
+    />
+  </object>
+
+  <!-- <img
+    src="https://somedomain.com/image.png"
+    alt="This image should exist, but alas it does not"
+    width="150"
+    height="150"
+    onerror="this.src='/path/to/fallback.png'"
   />
+
+  or :
+  const images = document.querySelectorAll("img");
+
+  images.forEach((image) => {
+    image.addEventListener("error", (event) => {
+      image.src = "/path/to/fallback.png";
+    });
+  }); -->
+
   <!-- <span>{slotName}</span> -->
 </div>

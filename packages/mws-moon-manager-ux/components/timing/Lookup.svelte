@@ -176,8 +176,7 @@
               ...jsonLookup,
             })}
           >
-            <button class="btn btn-outline-primary p-1 m-2"
-              >Liste des tags.</button
+            <button>Liste des tags</button
             >
           </a>
           <!-- TODO : only remove current filtered query items instead of all ? -->
