@@ -231,4 +231,6 @@ config.resolve.alias.svelte = path
     .resolve('node_modules', 'svelte/src/runtime');
 // Svelte 3: path.resolve('node_modules', 'svelte')
 
+config.resolve.extensions.push('d.ts');
+
 module.exports = config;

@@ -75,8 +75,16 @@ Encore
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
 ;
-
 let config = Encore.getWebpackConfig();
 config.resolve.conditionNames = ['svelte', 'browser', 'import'];
+
+/**
+ TODO : solve :
+ Module build failed: Module not found:
+"../../../node_modules/.pnpm/flowbite-svelte@0.44.18_svelte@4.2.2/node_modules/flowbite-svelte/dist/index.js"
+contains a reference to the file "./types".
+=> .js file do not auto detect ./types.d.ts, how to force load without editing module file ?
+ */
+config.resolve.extensions.push('d.ts');
 
 module.exports = config;

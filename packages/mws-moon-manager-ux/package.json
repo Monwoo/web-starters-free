@@ -21,6 +21,7 @@
     "eslint-config-svelte": "workspace:*",
     "flowbite": "^1.8.1",
     "flowbite-svelte": "^0.44.18",
+    "flowbite-svelte-icons": "^1.4.3",
     "fos-router": "link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources",
     "locally-unique-id-generator": "^0.1.5",
     "sass": "^1.62.0",
