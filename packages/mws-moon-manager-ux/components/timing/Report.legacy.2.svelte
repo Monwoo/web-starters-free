@@ -15,7 +15,7 @@
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
 import ReportSummaryRows from "./ReportSummaryRows.svelte";
   export let locale;
-  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let lookup;
   export let timingsReport = [];
   // export let timings = [];

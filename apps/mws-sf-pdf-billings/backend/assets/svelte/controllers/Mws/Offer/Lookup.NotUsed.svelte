@@ -14,7 +14,7 @@
 
   import Lookup from "mws-moon-manager-ux/components/offer/Lookup.svelte";
 
-  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let locale;
   export let lookup = '{}';
   export let offers;

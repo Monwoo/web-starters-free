@@ -2,4 +2,4 @@ MwsLoginFormAuthenticator:
     accessDenied: 'Accès refusé.'
     failToGrantAccess: 'Accès refusé, autorisations insuffisantes.'
 mws:
-    copyright: '© Monwoo 2023 (service@monwoo.com)'
+    copyright: '© Monwoo 2017-2024 (service@monwoo.com)'

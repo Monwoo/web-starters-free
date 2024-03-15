@@ -8,7 +8,7 @@
   import Header from "./Header.svelte";
   // import TemplateChoiceItem from '../message/TemplateChoiceItem.svelte';
 
-  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let headerClass = "md:py-5";
   export let mainClass = "p-5";
   export let footerClass = "py-4";

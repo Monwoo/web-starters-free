@@ -9,7 +9,7 @@
   export let filterForm = ""; // injected raw html
   export let paginator = ""; // injected raw html
   export let headers = {}; // injected raw html
-  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let filterTags = null;
 
   // TODO : remove code duplication and put this in some 'mws-utils' package ?

@@ -8,7 +8,7 @@
 
   import Tags from "mws-moon-manager-ux/components/offer/Tags.svelte";
 
-  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let locale;
   export let filters = '{}';
   export let tags;

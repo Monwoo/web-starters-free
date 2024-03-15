@@ -2,7 +2,7 @@
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import { state } from "../../stores/reduxStorage.mjs";
 
-  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
 </script>
 
 <!-- Tailwind is Awesome 😎 -->

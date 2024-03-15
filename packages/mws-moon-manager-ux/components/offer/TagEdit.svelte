@@ -5,7 +5,7 @@
   import Base from "../layout/Base.svelte";
   import { state, offerTagsByCatSlugAndSlug } from "../../stores/reduxStorage.mjs";
 
-  export let copyright = "© Monwoo 2023 (service@monwoo.com)";
+  export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let locale;
   export let tag;
   export let viewTemplate;
