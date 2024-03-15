@@ -492,7 +492,8 @@
           // }
           maxSlot = pickMaxBetween(maxSlot, timeSlot);
         });
-        // TODO : failing to pick max priority rules at 3 ?
+        // TIPS : failing to pick max priority rules at 3 ?
+        // Was OK, hidden under another report tag qualif
         // console.log(slotSegment, 'did pick max : ', maxSlot);
 
         // TODO : Opti : use object hashmap instead of includes ?
