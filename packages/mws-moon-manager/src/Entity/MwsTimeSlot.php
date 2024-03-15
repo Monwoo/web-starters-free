@@ -150,6 +150,8 @@ class MwsTimeSlot
             $this->tags->add($tag);
         }
 
+        // TODO : really NEED event system, need to recompute
+        // on tags prices rules updates too...
         // TODO : ok here or better using event system ? (strong design will use other design patterns..)
         [$maxTag, $maxPath] = MaxPriceTagManager::pickMaxOf(
             $this->tags->toArray()
