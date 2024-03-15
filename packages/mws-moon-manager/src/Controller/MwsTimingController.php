@@ -1000,7 +1000,7 @@ class MwsTimingController extends AbstractController
                                             $ruleIdx => [
                                                 'price' => floatval($maxPath['maxValue']),
                                                 'withTags' => array_flip($maxPath['maxSubTags'] ?? []),
-                                                'maxLimitPriority' => intval($maxPath['maxLimitPriority']),
+                                                'maxLimitPriority' => floatval($maxPath['maxLimitPriority']),
                                             ]
                                         ]);
                                         // unset($pendingNewTags[$slug]);        
@@ -1325,8 +1325,16 @@ class MwsTimingController extends AbstractController
         }
         $sync('category');
         $sync('pricePerHr');
+        $pPerRules = &$tagData['pricePerHrRules'];
+        foreach ($pPerRules ?? [] as $ruleIdx => &$rule) {
+            // dd($rule);
+            $pPerRules[$ruleIdx]['price'] = floatval($rule['price']);
+            // $rule['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
+            $pPerRules[$ruleIdx]['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
+        }
         $sync('pricePerHrRules');
         // $tag->addTag($tag);
+        // dd($tagData);
 
         $this->em->persist($tag);
         $this->em->flush();
@@ -1671,12 +1679,65 @@ class MwsTimingController extends AbstractController
 
         $tags = $qb->getQuery()->getResult();
 
+        // $allMaxPathsBySlug[$tagSlug]['rules'][$ruleIndex]
+        // $allMaxPathsBySlug[$tagSlug]['haveRawPice']
+        $allMaxPathsBySlug = $mwsTimeTagRepository->findAllMaxPathsIdxBySlug($timingLookup);
+
+        // dd($allMaxPathsBySlug);
+
         $tagsSerialized = $this->serializer->serialize(
             $tags,
             $format,
             // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
             [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']
+                // ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['id'],
+                // TODO : filter pricePerHrRules to keep used rules only :
+                // TODO : transform class load instead of type ignore ?
+                AbstractNormalizer::CALLBACKS => [
+                    'pricePerHrRules' => function (
+                        $innerObject,
+                        $outerObject,
+                        string $attributeName,
+                        string $format = null,
+                        array $context = []
+                    ) use ($allMaxPathsBySlug) {
+                        // dd($outerObject);
+                        $tagSlug = $outerObject?->getSlug() ?? null;
+                        // dd($tagSlug);
+                        // dd($context);
+                        // dump($context['deserialization_path']);
+                        // if (is_array($innerObject)) {
+                        if ($tagSlug && !($context['deserialization_path'] ?? null)) {
+                            $usedRules = [];
+                            foreach ($innerObject ?? [] as $ruleIndex => $rule) {
+                                if ($allMaxPathsBySlug[$tagSlug]['rules'][$ruleIndex] ?? null) {
+                                    $usedRules[] = $rule;
+                                }
+                            }
+                            // dd($usedRules);
+                            $innerObject = $usedRules;
+                        }
+                        return $innerObject;
+                    },
+                    'pricePerHr' => function (
+                        $innerObject,
+                        $outerObject,
+                        string $attributeName,
+                        string $format = null,
+                        array $context = []
+                    ) use ($allMaxPathsBySlug) {
+                        // dump($context['deserialization_path']);
+                        // if (is_array($innerObject)) {
+                        $tagSlug = $outerObject?->getSlug() ?? null;
+                        if (!($context['deserialization_path'] ?? null)) {
+                            if (!($allMaxPathsBySlug[$tagSlug]['haveRawPice'] ?? null)) {
+                                $innerObject = null;
+                            }
+                        }
+                        return $innerObject;
+                    }
+                ],
             ],
         );
 

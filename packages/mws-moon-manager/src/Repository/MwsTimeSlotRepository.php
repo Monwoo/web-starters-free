@@ -19,7 +19,7 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
 {
     public function __construct(
         ManagerRegistry $registry,
-        // TODO : service injection not working for serializer import ?
+        // TODO : service injection not working for serializer import ? was buggy data, no pb.... ?
         // protected MwsTimeTagRepository $mwsTimeTagRepository
     ) {
         parent::__construct($registry, MwsTimeSlot::class);
@@ -52,6 +52,9 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
 
     public function applyTimingLokup($qb, $timingLookup, $slotName = 's')
     {
+        if (!$timingLookup) {
+            return;
+        }
         [
             'searchKeyword' => $keyword,
             'searchTags' => $searchTags,

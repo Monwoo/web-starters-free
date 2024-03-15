@@ -140,6 +140,8 @@
 
   // post css will see this string and add associated level indent classes :
   const tailwindForceCss = "pl-4 pl-8 pl-12 pl-16 pl-20 pl-24 pl-28 pl-32 pl-36 pl-40";
+
+  console.log('max path :', summary.maxPath);
 </script>
 
 <tr class="{rowClass}"

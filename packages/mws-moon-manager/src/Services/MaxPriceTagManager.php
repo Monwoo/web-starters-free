@@ -30,6 +30,8 @@ class MaxPriceTagManager
     use (&$tags, &$rootMaxPath) {
       $tMaxValue = self::getMaxValueOf($t, $tags);
       $accMaxValue = self::getMaxValueOf($acc, $tags);
+      // dump($accMaxValue);
+      // dump($tMaxValue);
       if (
         $tMaxValue[0] > $accMaxValue[0]
         || (
@@ -53,6 +55,7 @@ class MaxPriceTagManager
       return $acc;
     }, null);
 
+    // dd($maxTag);
     // dump($tags);
     // dump($maxTag);
     // dd($rootMaxPath);
@@ -62,10 +65,8 @@ class MaxPriceTagManager
 
   static public function isRuleValid($rule, &$tags, &$checkedTagSlugs): bool
   {
-    $fit = false;
-    if (!$rule) {
-      $fit = true;
-    }
+    if (!$rule) return true;
+    $fit = count($rule['withTags'] ?? []) == 0;
     if ($rule['withTags'] ?? false) {
       foreach ($rule['withTags'] as $tagSlug) {
         // dd($rule);
@@ -105,8 +106,10 @@ class MaxPriceTagManager
         if (self::isRuleValid($rule, $tags, $checkedTagSlugs)
         && floatval($rule['price']) > ($lastMaxRule['price'] ?? 0)) {
           $lastMaxRule = $rule;
+          $lastMaxRule['price'] = floatval($lastMaxRule['price']);
+          $lastMaxRule['maxLimitPriority'] = floatval($lastMaxRule['maxLimitPriority']);
           $lastCheckedTagSlugs = $checkedTagSlugs;
-          $lastMaxIdx = $idx;
+          $lastMaxIdx = intval($idx);
         }
       }
       return [

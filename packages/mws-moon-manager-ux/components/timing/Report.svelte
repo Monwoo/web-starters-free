@@ -64,6 +64,8 @@
     if (!b || !b[maxAttribute]) return a;
     const aPriority = Number(a[maxAttribute].maxLimitPriority ?? 0);
     const bPriority = Number(b[maxAttribute].maxLimitPriority ?? 0);
+    // console.debug('pickMaxBetween  : ', aPriority, bPriority)
+
     if (
       aPriority > bPriority ||
       (aPriority == bPriority &&
@@ -490,6 +492,9 @@
           // }
           maxSlot = pickMaxBetween(maxSlot, timeSlot);
         });
+        // TODO : failing to pick max priority rules at 3 ?
+        // console.log(slotSegment, 'did pick max : ', maxSlot);
+
         // TODO : Opti : use object hashmap instead of includes ?
         if (!subTag.haveIds) {
           subTag.haveIds =

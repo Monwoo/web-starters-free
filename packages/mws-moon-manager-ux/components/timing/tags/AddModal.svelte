@@ -175,6 +175,8 @@
                         name: "pricePerHr",
                         title: "Prix par heure",
                         type: "text",
+                        inputType: "number",
+                        presicion: 2,
                     },
                     {
                         type: "paneldynamic",
@@ -188,13 +190,17 @@
                                 name: "price",
                                 title: "Prix par heure",
                                 type: "text",
+                                inputType: "number",
+                                presicion: 2,
                             },
                             {
                                 // # 0 maxLimitPriority is same level as pricePerHr number type
-                                // # 1 maxLimitPriority is higher priority than 0 
+                                // # 1 maxLimitPriority is higher priority than 0
                                 name: "maxLimitPriority",
                                 title: "Priorité de la limite max",
                                 type: "text",
+                                inputType: "number",
+                                presicion: 2,
                             },
                             {
                                 name: "withTags",

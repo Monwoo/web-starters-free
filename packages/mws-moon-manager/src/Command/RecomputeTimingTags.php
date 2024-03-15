@@ -30,6 +30,7 @@ class RecomputeTimingTags extends Command
     public function __construct(
         protected ManagerRegistry $registry,
         protected EntityManagerInterface $em,
+        protected bool $deleteAll = false,
     ) {
         // TIPS : best practices recommend to call the parent constructor first and
         // then set your own properties. That wouldn't work in this case
@@ -41,18 +42,27 @@ class RecomputeTimingTags extends Command
 
     protected function configure(): void
     {
-        // $this->addOption(
-        //     'userLogin', '-l', InputArgument::OPTIONAL,
-        //     "Login de l'utilisateur", $this->userLogin
-        // );
+        $this->addOption(
+            'deleteAll', '-d', InputArgument::OPTIONAL,
+            "Should delete ALL", $this->deleteAll
+        );
     }
 
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // $this->userLogin = $input->getOption("userLogin");
+        $this->deleteAll = $input->getOption("deleteAll");
 
         $cmdStatus = Command::SUCCESS;
+
+        if ($this->deleteAll) {
+            $qb = $this->em->createQueryBuilder()
+            ->delete(MwsTimeSlot::class, 's');
+            $resp = $qb->getQuery()->execute();
+            $output->writeln([
+                "<info>Did delete all tags OK</info>",
+            ]);
+        }
 
         $qb = $this->em->createQueryBuilder()
         ->select('s')                
