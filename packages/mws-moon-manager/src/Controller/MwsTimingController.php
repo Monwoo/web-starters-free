@@ -425,6 +425,7 @@ class MwsTimingController extends AbstractController
         ]);
     }
 
+    public const defaultThumbSize = 100;
     #[Route('/fetch-media-url', name: 'mws_timing_fetchMediatUrl')]
     public function fetchRootUrl(
         Request $request,
@@ -439,8 +440,8 @@ class MwsTimingController extends AbstractController
         $keepOriginalSize = $request->query->get('keepOriginalSize', null);
         $thumbnailSize = intval($request->query->get('thumbnailSize', 0));
         if (!$thumbnailSize) {
-            // TODO : default 150 from session or db config params ?
-            $thumbnailSize = 150;
+            // TODO : default from session or db config params ?
+            $thumbnailSize = self::defaultThumbSize;
         }
         // dd($thumbnailSize);
         $this->logger->debug("Will fetch url : $url");
@@ -711,7 +712,7 @@ class MwsTimingController extends AbstractController
                                         $imagick = new \Imagick();
                                         $imagick->readImageBlob($innerData);
                                         // TODO : default thumbsize from app param or user db config ?
-                                        $factor = ($thumbnailsSize ? $thumbnailsSize : 150) / $imagick->getImageWidth();
+                                        $factor = ($thumbnailsSize ? $thumbnailsSize : self::defaultThumbSize) / $imagick->getImageWidth();
                                         // dd($factor);
                                         $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
                                             $imagick->getImageWidth() * $factor,
@@ -795,7 +796,7 @@ class MwsTimingController extends AbstractController
         if ($mime) {
             $response->headers->set('Content-Type', $mime);
         }
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
 
         $response->setContent($tagsSerialized);
         return $response;

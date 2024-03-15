@@ -12,7 +12,7 @@
 <div
   class="sticky {bottom} {right} w-full
 inline-flex pointer-events-none justify-end content-end
-print:fixed print:bottom-0 print:right-0
+print:fixed print:bottom-0 print:right-0 z-50
 {cssClass}
 ">
   <span

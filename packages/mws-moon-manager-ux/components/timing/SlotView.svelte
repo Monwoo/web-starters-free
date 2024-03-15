@@ -16,6 +16,7 @@
   import AddModal from "../message/AddModal.svelte";
 
   import PhotoSwipeGallery from "svelte-photoswipe";
+  import Loader from "../layout/widgets/Loader.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -35,7 +36,7 @@
   export let timeQualifs = [];
   export let locale;
   export let isHeaderExpanded = false;
-  export let fullscreenClass = '';
+  export let fullscreenClass = "";
   // Timer start time. Use it to ensure delay,
   // example : 507 page of 124 items
   //          => 10 minutes per page = 5070 minutes for all items
@@ -268,14 +269,15 @@ style:opacity={isLoading ? 0.8 : 1} -->
     <!-- <div class="max-h-[7rem] overflow-hidden
   hover:max-h-fit hover:overflow-scroll"> -->
     <div
-    on:click|stopPropagation
-    class="overflow-scroll"
-    class:max-h-[7rem]={!isHeaderExpanded}
+      on:click|stopPropagation
+      class="overflow-scroll"
+      class:max-h-[7rem]={!isHeaderExpanded}
     >
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
-      <span class="float-right m-1 cursor-context-menu"
-      on:click|stopPropagation={() => isHeaderExpanded = !isHeaderExpanded}
+      <span
+        class="float-right m-1 cursor-context-menu"
+        on:click|stopPropagation={() => (isHeaderExpanded = !isHeaderExpanded)}
       >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
         <!-- {$timer} -->
@@ -332,13 +334,24 @@ style:opacity={isLoading ? 0.8 : 1} -->
       >
         [d] Supprimer tous les tags
       </button>
-      <span class="float-right">
+      <span
+        class="float-right"
+        class:max-w-50={isFullScreen}
+        class:fixed={isFullScreen}
+        class:bottom-0={isFullScreen}
+        class:left-0={isFullScreen}
+      >
         {#each timingSlot?.tags ?? [] as tag}
-          <span class="m-1 text-white
-          border-blue-600 border rounded-sm p-1">
+          <span
+            class="m-1 text-white
+          border-blue-600 border rounded-sm p-1"
+          >
             {tag.label}
           </span>
         {/each}
+      </span>
+      <span class="float-right flex flex-wrap justify-end p-2">
+        <TagsInput bind:tags={timingSlot.tags} timing={timingSlot} {locale} />
       </span>
 
       {#each qualifTemplates ?? [] as qt, idx}
@@ -349,51 +362,23 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each}
-      <span class="float-right flex flex-wrap justify-end p-2">
-        <TagsInput
-        bind:tags={timingSlot.tags}
-        timing={timingSlot}
-        {locale} />
-      </span>
-      {#if isLoading}
-        <span role="status">
-          <svg
-            aria-hidden="true"
-            class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-            viewBox="0 0 100 101"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-              fill="currentColor"
-            />
-            <path
-              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-              fill="currentFill"
-            />
-          </svg>
-          <span class="sr-only">Loading...</span>
-        </span>
-      {/if}
+
+      <Loader {isLoading} />
     </div>
     <!-- // TODO : remove max-h-[85%]={isFullScreen} + work with flex grow ?
     + https://stackoverflow.com/questions/15999760/load-image-asynchronous
     (but load this one first...)
     -->
     <object
-    class="object-contain border-solid border-4 w-full max-h-[95  vh]"
-    class:h-[85vh]={isFullScreen && !isHeaderExpanded}
-    class:border-gray-600={!timingSlot?.tags?.length}
-    class:border-green-400={timingSlot?.tags?.length}
-    data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
-    type="image/png"
+      class="object-contain border-solid border-4 w-full max-h-[95vh]"
+      class:h-[85vh]={isFullScreen && !isHeaderExpanded}
+      class:h-[95vh]={isFullScreen && isHeaderExpanded}
+      class:border-gray-600={!timingSlot?.tags?.length}
+      class:border-green-400={timingSlot?.tags?.length}
+      data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+      type="image/png"
     >
-      <img
-        class="w-full"
-        loading="eager"
-        src={timingSlot.thumbnailJpeg}
-      />
+      <img class="w-full" loading="eager" src={timingSlot.thumbnailJpeg} />
     </object>
 
     <!-- <div
