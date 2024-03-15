@@ -1,20 +1,4 @@
-<!-- <script context="module">
-  // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
-  // import "dayjs/esm/locale/fr";
-  // import dayjs from "dayjs/esm";
-  import "dayjs/locale/fr";
-  // import "dayjs/locale/en";
-  dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
-  var utc = require('dayjs/plugin/utc')
-  var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
-  dayjs.extend(utc);
-  dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
-  // dayjs.tz.setDefault("Europe/Paris");
-  // https://www.timeanddate.com/time/map/#!cities=136
-  // https://www.timeanddate.com/worldclock/uk/london
-  // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#LONDON
-  dayjs.tz.setDefault("Europe/London");
-</script> -->
+<!-- <script context="module" ✂prettier:content✂="CiAgLy8gaHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2Uvc3ZlbHRlLXRpbWU/YWN0aXZlVGFiPXJlYWRtZSNjdXN0b20tbG9jYWxlCiAgLy8gaW1wb3J0ICJkYXlqcy9lc20vbG9jYWxlL2ZyIjsKICAvLyBpbXBvcnQgZGF5anMgZnJvbSAiZGF5anMvZXNtIjsKICBpbXBvcnQgImRheWpzL2xvY2FsZS9mciI7CiAgLy8gaW1wb3J0ICJkYXlqcy9sb2NhbGUvZW4iOwogIGRheWpzLmxvY2FsZSgiZnIiKTsgLy8gRnIgbG9jYWxlIC8vIFRPRE8gOiBnbG9iYWwgY29uZmlnIGluc3RlYWQgb2YgcGVyIG1vZHVsZSA/CiAgdmFyIHV0YyA9IHJlcXVpcmUoJ2RheWpzL3BsdWdpbi91dGMnKQogIHZhciB0aW1lem9uZSA9IHJlcXVpcmUoJ2RheWpzL3BsdWdpbi90aW1lem9uZScpIC8vIGRlcGVuZGVudCBvbiB1dGMgcGx1Z2luCiAgZGF5anMuZXh0ZW5kKHV0Yyk7CiAgZGF5anMuZXh0ZW5kKHRpbWV6b25lKTsgLy8gVE9ETyA6IHVzZXIgY29uZmlnIGZvciBzZWxmIHRpbWV6b25lLi4uIChzbG90IGlzIGNvbXB1dGVkIG9uIFVUQyBkYXRlLi4uKQogIC8vIGRheWpzLnR6LnNldERlZmF1bHQoIkV1cm9wZS9QYXJpcyIpOwogIC8vIGh0dHBzOi8vd3d3LnRpbWVhbmRkYXRlLmNvbS90aW1lL21hcC8jIWNpdGllcz0xMzYKICAvLyBodHRwczovL3d3dy50aW1lYW5kZGF0ZS5jb20vd29ybGRjbG9jay91ay9sb25kb24KICAvLyBodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9MaXN0X29mX3R6X2RhdGFiYXNlX3RpbWVfem9uZXMjTE9ORE9OCiAgZGF5anMudHouc2V0RGVmYXVsdCgiRXVyb3BlL0xvbmRvbiIpOwo=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=">{}</script> -->
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -27,6 +11,7 @@
   import SlotView from "./SlotView.svelte";
   import { state, stateGet } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
+  import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2023 (service@monwoo.com)";
@@ -37,14 +22,17 @@
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
+  export let isFullScreen = false;
   const urlParams = new URLSearchParams(window.location.search);
-  export let lastSelectedIndex = parseInt(urlParams.get("lastSelectedIndex") ?? "0");
+  export let lastSelectedIndex = parseInt(
+    urlParams.get("lastSelectedIndex") ?? "0"
+  );
   const pageNumber = urlParams.get("page") ?? "1";
 
   const movePageIndex = (delta) => {
-    const newPageNum  = parseInt(pageNumber) + delta;
+    const newPageNum = parseInt(pageNumber) + delta;
     // TODO : how to know max page num ? data.length / pageLimit, need to know details...
-    urlParams.set("page",  newPageNum < 1 ? 1 : newPageNum);
+    urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
     window.location.search = urlParams;
   };
   // dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
@@ -52,20 +40,23 @@
   console.debug(lookupForm);
   $: {
     // https://stackoverflow.com/questions/1090948/change-url-parameters-and-specify-defaults-using-javascript
-    // window.location.search = jQuery.query.set("lastSelectedIndex", lastSelectedIndex);    
-    if (lastSelectedIndex != parseInt(urlParams.get("lastSelectedIndex") ?? "0")) {
+    // window.location.search = jQuery.query.set("lastSelectedIndex", lastSelectedIndex);
+    if (
+      lastSelectedIndex != parseInt(urlParams.get("lastSelectedIndex") ?? "0")
+    ) {
       urlParams.set("lastSelectedIndex", lastSelectedIndex);
       // window.location.search = urlParams; // Force page reload
       // https://stackoverflow.com/questions/824349/how-do-i-modify-the-url-without-reloading-the-page
-      const newUrl = window.location.origin + window.location.pathname + "?" + urlParams;
+      const newUrl =
+        window.location.origin + window.location.pathname + "?" + urlParams;
       history.pushState({}, null, newUrl);
     }
   }
-  
+
   const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
   console.debug("jsonLookup :", jsonLookup);
-  
-  let csrfTimingDelete = stateGet(get(state), 'csrfTimingDeleteAll');
+
+  let csrfTimingDelete = stateGet(get(state), "csrfTimingDeleteAll");
 
   const moveSelectedIndex = (delta = 1) => {
     const lastValue = lastSelectedIndex;
@@ -80,7 +71,7 @@
       isFirst: lastSelectedIndex == 0,
       isLast: lastSelectedIndex == timings.length - 1,
     };
-  }
+  };
 
   onMount(async () => {
     const $ = window.$;
@@ -96,7 +87,7 @@
 </script>
 
 <Base {copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
-  <div slot="mws-header-container"></div>
+  <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
     <div class="mws-menu-wrapper">
       <div class="flex">
@@ -176,22 +167,24 @@
               ...jsonLookup,
             })}
           >
-            <button>Liste des tags</button
-            >
+            <button>Liste des tags</button>
           </a>
           <!-- TODO : only remove current filtered query items instead of all ? -->
-          <form action="{ Routing.generate('mws_timing_delete_all', {
-            '_locale': locale ?? '',
-            'viewTemplate': viewTemplate ?? '',
-            ...jsonLookup,
-          }) }"
-          method="post"
-          onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les suivi des temps ?');"
+          <form
+            action={Routing.generate("mws_timing_delete_all", {
+              _locale: locale ?? "",
+              viewTemplate: viewTemplate ?? "",
+              ...jsonLookup,
+            })}
+            method="post"
+            onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les suivi des temps ?');"
           >
-            <input type="hidden" name="_csrf_token" value="{ csrfTimingDelete }" />
-            <button 
-            class="btn btn-outline-primary p-1 m-2" style="--mws-primary-rgb: 255, 0, 0"
-            type="submit">Supprimer les timings</button>
+            <input type="hidden" name="_csrf_token" value={csrfTimingDelete} />
+            <button
+              class="btn btn-outline-primary p-1 m-2"
+              style="--mws-primary-rgb: 255, 0, 0"
+              type="submit">Supprimer les timings</button
+            >
           </form>
         </div>
         <div class="p-3 flex flex-wrap">
@@ -240,7 +233,7 @@
         class="float-right m-1"
         on:click|stopPropagation={() => movePageIndex(-1)}
       >
-      Prev. Page
+        Prev. Page
       </button>
     {/if}
     <span class="float-right m-1 text-black">
@@ -250,10 +243,14 @@
     <div class="flex flex-col h-[90vh] w-[100vw] md:flex-row">
       <!-- { JSON.stringify(timings) } -->
       <SlotView
+        bind:isFullScreen
         bind:lastSelectedIndex
-        {moveSelectedIndex} {timeQualifs} {locale}
+        {moveSelectedIndex}
+        {timeQualifs}
+        {locale}
         timingSlot={timings[lastSelectedIndex] ?? null}
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
+        fullscreenClass={isFullScreen ? "pb-8" : ""}
       />
       <SquareList
         bind:lastSelectedIndex
@@ -262,9 +259,15 @@
       />
     </div>
     <div>{@html timingsPaginator}</div>
+
+    <ConfidentialityStamp
+      class={isFullScreen ? "opacity-90 !fixed" : ""}
+      right="right-0"
+      bottom="bottom-0"
+    />
   </div>
 </Base>
-<!-- <style lang="scss">
+<style lang="scss">
   // TODO : post CSS syntax allowed in svelte scss ?
   // Done in packages/mws-moon-manager/assets/styles/app.scss
   // .label {
@@ -273,4 +276,8 @@
   // .detail {
   //   @apply md:1/4 lg:1/4 text-right;
   // }
-</style> -->
+  // https://stackoverflow.com/questions/68527235/add-both-important-selector-strategy-for-tailwind-configuration
+  // .fixed-important {
+  //   @apply fixed #{!important};
+  // }
+</style>

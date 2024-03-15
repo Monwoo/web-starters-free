@@ -5,8 +5,13 @@
   import ExportTags from "./ExportTags.svelte";
   import ImportTags from "./ImportTags.svelte";
   import Routing from "fos-router";
-  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import {
+    state,
+    stateGet,
+    stateUpdate,
+  } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
+  import ConfidentialityStamp from "../ConfidentialityStamp.svelte";
 
   export let locale;
   export let viewTemplate;
@@ -14,7 +19,7 @@
   export let tagsHeaders = {};
   export let addModal;
   let isLoading = false;
-  
+
   const deleteAllTags = async () => {
     if (isLoading) return;
     isLoading = true;
@@ -24,11 +29,7 @@
     // Or use HTML modal instead of native blocking UI alert
     await new Promise((r) => setTimeout(r, 100));
 
-    if (
-      confirm(
-        "Are you sure you want to delete all timing tags ?"
-      )
-    ) {
+    if (confirm("Are you sure you want to delete all timing tags ?")) {
       const data = {
         _csrf_token: stateGet(get(state), "csrfTimingTagDeleteAll"),
       };
@@ -70,15 +71,12 @@
     isLoading = false;
   };
 
-
 </script>
 
 <div class="timing-tag-list">
   <AddModal bind:this={addModal} allTags={tags} {locale} />
 
-  <ImportTags
-  {locale}
-  bind:importedTagsGrouped={tags} />
+  <ImportTags {locale} bind:importedTagsGrouped={tags} />
   <ExportTags {locale} />
 
   <button
@@ -140,4 +138,5 @@
       {/each}
     </tbody>
   </table>
+  <ConfidentialityStamp />
 </div>

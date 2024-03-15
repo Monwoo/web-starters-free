@@ -20,3 +20,9 @@ https://stackoverflow.com/questions/42819579/mobile-web-page-part-of-page-hidden
 } */
 
 @tailwind utilities;
+
+// https://stackoverflow.com/questions/68527235/add-both-important-selector-strategy-for-tailwind-configuration
+.fixed-important {
+    @apply fixed #{!important};
+}
+// or use tailwind '!fixed'

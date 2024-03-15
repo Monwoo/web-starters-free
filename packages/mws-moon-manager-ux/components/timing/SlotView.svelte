@@ -35,6 +35,7 @@
   export let timeQualifs = [];
   export let locale;
   export let isHeaderExpanded = false;
+  export let fullscreenClass = '';
   // Timer start time. Use it to ensure delay,
   // example : 507 page of 124 items
   //          => 10 minutes per page = 5070 minutes for all items
@@ -255,7 +256,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
   <!-- {timingSlot?.sourceStamp} -->
   <div
     on:click={() => (isFullScreen = !isFullScreen)}
-    class="full-screen-container bg-black text-white overflow-scroll"
+    class="full-screen-container bg-black text-white overflow-scroll {fullscreenClass}"
     class:fixed={isFullScreen}
     class:top-0={isFullScreen}
     class:bottom-0={isFullScreen}
@@ -379,8 +380,8 @@ style:opacity={isLoading ? 0.8 : 1} -->
     (but load this one first...)
     -->
     <object
-    class="object-contain border-solid border-4 w-full"
-    class:max-h-[85%]={isFullScreen && !isHeaderExpanded}
+    class="object-contain border-solid border-4 w-full max-h-[95vh]"
+    class:h-[85vh]={isFullScreen && !isHeaderExpanded}
     class:border-gray-600={!timingSlot?.tags?.length}
     class:border-green-400={timingSlot?.tags?.length}
     data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
