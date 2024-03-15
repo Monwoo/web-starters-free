@@ -157,6 +157,18 @@
 
   console.debug("Having Tag : ", tag);
 
+  // TODO : inject from root base layout instead ?
+  Number.prototype.toPrettyNum = function (this: Number, length: number) {
+    var s = this;
+    return s
+      .toFixed(length)
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  declare interface Number {
+    toPrettyNum(length: number): string;
+  }
 </script>
 
 <!-- // TIPS : is not categorySlug, this status is a category... -->
@@ -225,8 +237,28 @@
       {/each}
     </select>
   </td>
+  <td class="text-center flex flex-col max-h-[5rem] overflow-scroll">
+    {#if tag.self.pricePerHr ?? null}
+      <span>
+        <strong>0 :</strong> {tag.self.pricePerHr.toPrettyNum(2)} €
+      </span>
+    {/if}
+    {#each tag.self.pricePerHrRules ?? [] as rule, ruleIdx}
+      <span>
+        <strong>{rule.maxLimitPriority} :</strong> {rule.price.toPrettyNum(2)} €
+        <br/>With :<br/>
+        {#each rule.withTags as tagSlug}
+          <span
+          class='p-1 m-1 border rounded-md border-gray-700'
+          >
+            {tagSlug}
+          </span>
+        {/each}
+      </span>
+    {/each}
+  </td>
   <td class="text-center">{tag.categoriesCount}</td>
   <td class="text-center">{tag.tSlotCount}</td>
   <td class="text-center">{tag.tQualifCount}</td>
-  <td>{dayjs(tag.self.createdAt).format("YYYY/MM/DD h:mm")}</td>
+  <!-- <td>{dayjs(tag.self.createdAt).format("YYYY/MM/DD h:mm")}</td> -->
 </tr>

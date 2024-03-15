@@ -115,6 +115,10 @@
         </th>
         <th scope="col">
           <!-- TODO : translate... from app local provided by SF or local file from .env config ? -->
+          {"Prix(s)"}
+        </th>
+        <th scope="col">
+          <!-- TODO : translate... from app local provided by SF or local file from .env config ? -->
           {"Nb Category"}
         </th>
         <th scope="col">
@@ -125,9 +129,9 @@
           <!-- TODO : translate... from app local provided by SF or local file from .env config ? -->
           {"Nb TimeQualif"}
         </th>
-        <th scope="col">
+        <!-- <th scope="col">
           {@html tagsHeaders.createdAt ?? "Created at"}
-        </th>
+        </th> -->
       </tr>
     </thead>
     <tbody>
