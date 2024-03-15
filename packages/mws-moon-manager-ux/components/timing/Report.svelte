@@ -184,7 +184,7 @@
 
   let summaryByLevels = {
     sumOfBookedHrs: 0,
-    // sumOfMaxPPH: 0,
+    deepSumOfBookedHrs: 0,
     subTags: [],
   };
   let summaryReportByDays = {};
@@ -611,7 +611,8 @@
       1
     );
     summaryByLevels.maxPath =
-      pickMaxBetween(summaryByLevels, subTag)?.maxPath ?? null;
+    pickMaxBetween(summaryByLevels, subTag)?.maxPath ?? null;
+    summaryByLevels.deepSumOfBookedHrs += subTag.deepSumOfBookedHrs;
     summaryByLevels.deepSumOfMaxPathPerHr = sumOfMaxPathPerHr(
       summaryByLevels.deepSumOfMaxPathPerHr,
       subTag.deepSumOfMaxPathPerHr,
@@ -1024,11 +1025,24 @@
   <div class="text-lg">Rapport des temps via segmentations de 10 minutes.</div>
   <br />
   <div class="text-lg font-extrabold">
-    {summaryByLevels.sumOfBookedHrs.toPrettyNum(2)} hours au total.
+    {summaryByLevels.sumOfBookedHrs.toPrettyNum(2)} hours au total si effectué par une personne.
   </div>
   <div class="text-lg font-extrabold">
     <!-- {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout. -->
     {(summaryByLevels.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € en tout.
+  </div>
+  <br />
+  <br />
+  <div class="text-lg font-extrabold">
+    <!-- summaryByLevels.deepSumOfMaxPathPerHr     deepSumOfMaxPathPerHr -->
+    {summaryByLevels.deepSumOfBookedHrs.toPrettyNum(2)} hours si charges non cumulables
+    <span class='font-normal'>
+      (ex : rapport d'équipe avec changement de prix par expert associé).
+    </span>
+  </div>
+  <div class="text-lg">
+    <!-- {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout. -->
+    {(summaryByLevels.deepSumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € si charges non cumulables.
   </div>
   <br />
   <br />
@@ -1130,5 +1144,20 @@
         {/each}
       </tbody>
     </table>
+  </div>
+
+  <!-- TIPS p-5 is 1.25rem, so subtract to fit bottom 
+  
+  -->
+  <div
+  class='sticky bottom-[-1.25rem] right-[-1.25rem] w-full
+  inline-flex pointer-events-none justify-end content-end
+  print:fixed print:bottom-0 print:right-0
+  '>
+    <span class='p-1 max-w-[50%]
+    rounded-ss-md font-medium 
+    bg-gray-100 text-gray-700'>
+      Données confidentielles. Merci de conserver le secret professionnel et privé.
+    </span>
   </div>
 </div>
