@@ -3,6 +3,7 @@
   import ListItem from "./ListItem.svelte";
   import AddModal from "./AddModal.svelte";
   import Routing from "fos-router";
+  import Loader from "../../layout/widgets/Loader.svelte";
 
   export let locale;
   export let availableFormat = [
@@ -12,8 +13,14 @@
   ];
   export let format = 'yaml';
   export let timingLookup = null;
+  export let isLoading = false;
 
   const submit = async (e) => {
+    if (isLoading) return;
+    isLoading = true;
+    // Wait to show is loading feedback if fast answer :
+    await new Promise((r) => setTimeout(r, 100));
+
     const formData = new FormData(e.target);
     if (timingLookup) {
       console.debug('Will export tags with timing filters :', timingLookup);
@@ -27,12 +34,14 @@
         ...formJson,
     }),
 
+    // TODO : like for timings to wait for full download before moving to next action ?
     var a = document.createElement('A');
     a.href = file_path;
     a.download = file_path.substr(file_path.lastIndexOf('/') + 1);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    isLoading = false;
   }
 </script>
 
@@ -56,4 +65,5 @@
     Exporter les tags
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->
+  <Loader {isLoading} />
 </form>

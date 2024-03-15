@@ -5,6 +5,7 @@
   import Routing from "fos-router";
   import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
+  import Loader from "../../layout/widgets/Loader.svelte";
 
   export let importedTags;
   export let importedTagsGrouped;
@@ -25,6 +26,7 @@
     'yaml': 'application/yaml,text/plain,application/x-yaml',
     'csv': 'application/csv,text/csv',
   }
+  export let isLoading = false;
 
   export let importTags = async ({
     format = 'yaml', importFile = null, shouldOverwrite = null
@@ -86,10 +88,16 @@
 
 
   const submit = async (e) => {
+    if (isLoading) return;
+    isLoading = true;
+    // Wait to show is loading feedback if fast answer :
+    await new Promise((r) => setTimeout(r, 100));
+
     const formData = new FormData(e.target);
     const formJson = Object.fromEntries(formData.entries());
     console.log('Should import tags : ', formJson);
-    importTags(formJson);
+    await importTags(formJson);
+    isLoading = false;
   }
 </script>
 
@@ -118,4 +126,5 @@
     Importer les tags
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->
+  <Loader {isLoading} />
 </form>

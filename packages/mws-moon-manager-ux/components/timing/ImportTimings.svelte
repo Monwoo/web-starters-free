@@ -2,6 +2,7 @@
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import ListItem from "./tags/ListItem.svelte";
   import ImportReportModal from "./ImportReportModal.svelte";
+  import Loader from "../layout/widgets/Loader.svelte";
   import Routing from "fos-router";
   import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
@@ -31,6 +32,7 @@
   };
 
   export let reportModal;
+  export let isLoading = false;
 
   export let importTags = async (
     inputData = {
@@ -101,10 +103,16 @@
   };
 
   const submit = async (e) => {
+    if (isLoading) return;
+    isLoading = true;
+    // Wait to show is loading feedback if fast answer :
+    await new Promise((r) => setTimeout(r, 100));
+
     const formData = new FormData(e.target);
     const formJson = Object.fromEntries(formData.entries());
     console.log("Should import timings : ", formJson);
-    importTags(formJson);
+    await importTags(formJson);
+    isLoading = false;
   };
 
   // https://stackoverflow.com/questions/69913703/processing-files-from-an-input-element
@@ -177,6 +185,7 @@
     Importer les temps
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->
+  <Loader {isLoading} />
 </form>
 
 <ImportReportModal bind:this={reportModal} htmlReport={importReport}/>

@@ -18,6 +18,9 @@
   const submit = async (e) => {
     if (isLoading) return;
     isLoading = true;
+    // Wait to show is loading feedback if fast answer :
+    await new Promise((r) => setTimeout(r, 100));
+
     const formData = new FormData(e.target);
     if (timingLookup) {
       console.debug('Will export timings with timing filters :', timingLookup);
