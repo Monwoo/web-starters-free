@@ -256,7 +256,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
   <!-- {timingSlot?.sourceStamp} -->
   <div
     on:click={() => (isFullScreen = !isFullScreen)}
-    class="full-screen-container bg-black text-white overflow-scroll {fullscreenClass}"
+    class="full-screen-container bg-black text-white
+    rounded-se-lg
+    overflow-scroll {fullscreenClass}"
     class:fixed={isFullScreen}
     class:top-0={isFullScreen}
     class:bottom-0={isFullScreen}
@@ -380,7 +382,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     (but load this one first...)
     -->
     <object
-    class="object-contain border-solid border-4 w-full max-h-[95vh]"
+    class="object-contain border-solid border-4 w-full max-h-[95  vh]"
     class:h-[85vh]={isFullScreen && !isHeaderExpanded}
     class:border-gray-600={!timingSlot?.tags?.length}
     class:border-green-400={timingSlot?.tags?.length}

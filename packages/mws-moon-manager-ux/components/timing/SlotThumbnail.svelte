@@ -26,7 +26,7 @@
   on:click
   class="mws-timing-slot
 flex justify-center items-center
-m-1
+m-1 rounded-md
 overflow-hidden border-solid border-4"
   class:border-gray-600={!isSelected}
   class:border-blue-600={isSelected}
