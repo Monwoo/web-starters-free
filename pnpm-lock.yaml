@@ -54,7 +54,7 @@ importers:
         version: file:apps/mws-sf-pdf-billings/backend/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@4.2.2)
       '@symfony/webpack-encore':
         specifier: ^4.4.0
-        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(ts-loader@9.5.0)(typescript@4.9.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
+        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(ts-loader@9.5.0)(typescript@5.4.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
       '@tailwindcss/forms':
         specifier: ^0.5.6
         version: 0.5.6(tailwindcss@3.3.3)
@@ -87,7 +87,7 @@ importers:
         version: 1.4.3(svelte@4.2.2)(tailwind-merge@1.14.0)(tailwindcss@3.3.3)
       fork-ts-checker-webpack-plugin:
         specifier: ^7.0.0
-        version: 7.3.0(typescript@4.9.5)(webpack@5.74.0)
+        version: 7.3.0(typescript@5.4.2)(webpack@5.74.0)
       fos-router:
         specifier: file:vendor/friendsofsymfony/jsrouting-bundle/Resources
         version: file:apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources(webpack@5.74.0)
@@ -108,7 +108,7 @@ importers:
         version: 8.4.31
       postcss-loader:
         specifier: ^7.3.3
-        version: 7.3.3(postcss@8.4.31)(typescript@4.9.5)(webpack@5.74.0)
+        version: 7.3.3(postcss@8.4.31)(typescript@5.4.2)(webpack@5.74.0)
       regenerator-runtime:
         specifier: ^0.13.9
         version: 0.13.11
@@ -127,6 +127,9 @@ importers:
       svelte:
         specifier: ^4.2.2
         version: 4.2.2
+      svelte-drag-drop-touch:
+        specifier: ^0.1.9
+        version: 0.1.9
       svelte-loader:
         specifier: ^3.1.9
         version: 3.1.9(svelte@4.2.2)
@@ -135,7 +138,10 @@ importers:
         version: 0.0.2
       svelte-preprocess:
         specifier: ^5.0.4
-        version: 5.0.4(@babel/core@7.21.4)(postcss@8.4.31)(svelte@4.2.2)(typescript@4.9.5)
+        version: 5.0.4(@babel/core@7.21.4)(postcss@8.4.31)(svelte@4.2.2)(typescript@5.4.2)
+      svelte-sortable-items:
+        specifier: ^0.0.5
+        version: 0.0.5(svelte@4.2.2)
       svelte-time:
         specifier: ^0.8.0
         version: 0.8.0
@@ -144,7 +150,10 @@ importers:
         version: 3.3.3
       ts-loader:
         specifier: ^9.5.0
-        version: 9.5.0(typescript@4.9.5)(webpack@5.74.0)
+        version: 9.5.0(typescript@5.4.2)(webpack@5.74.0)
+      typescript:
+        specifier: ^5.4.2
+        version: 5.4.2
       webpack:
         specifier: ^5.74.0
         version: 5.74.0(webpack-cli@4.10.0)
@@ -331,7 +340,7 @@ importers:
         version: 3.2.0(@hotwired/stimulus@3.0.0)
       '@symfony/ux-svelte':
         specifier: file:vendor/symfony/ux-svelte/assets
-        version: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@3.58.0)
+        version: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@4.2.2)
       '@symfony/webpack-encore':
         specifier: ^4.0.0
         version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss@8.4.31)(ts-loader@9.5.1)(typescript@5.4.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
@@ -349,10 +358,10 @@ importers:
         version: 1.8.1
       flowbite-svelte:
         specifier: ^0.44.18
-        version: 0.44.18(svelte@3.58.0)
+        version: 0.44.18(svelte@4.2.2)
       flowbite-svelte-icons:
         specifier: ^1.4.3
-        version: 1.4.3(svelte@3.58.0)(tailwind-merge@2.2.1)(tailwindcss@3.3.3)
+        version: 1.4.3(svelte@4.2.2)(tailwind-merge@2.2.1)(tailwindcss@3.3.3)
       fos-router:
         specifier: link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources
         version: link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources
@@ -384,11 +393,17 @@ importers:
         specifier: ^1.9.112
         version: 1.9.112
       svelte:
-        specifier: ^3.0
-        version: 3.58.0
+        specifier: ^4.2.2
+        version: 4.2.2
+      svelte-drag-drop-touch:
+        specifier: ^0.1.9
+        version: 0.1.9
       svelte-loader:
         specifier: ^3.1.9
-        version: 3.1.9(svelte@3.58.0)
+        version: 3.1.9(svelte@4.2.2)
+      svelte-sortable-items:
+        specifier: ^0.0.5
+        version: 0.0.5(svelte@4.2.2)
       svelte-time:
         specifier: ^0.8.0
         version: 0.8.0
@@ -450,12 +465,18 @@ importers:
       svelte:
         specifier: ^4.2.2
         version: 4.2.2
+      svelte-drag-drop-touch:
+        specifier: ^0.1.9
+        version: 0.1.9
       svelte-i18n:
         specifier: ^4.0.0
         version: 4.0.0(svelte@4.2.2)
       svelte-photoswipe:
         specifier: ^0.0.2
         version: 0.0.2
+      svelte-sortable-items:
+        specifier: ^0.0.5
+        version: 0.0.5(svelte@4.2.2)
       svelte-time:
         specifier: ^0.8.0
         version: 0.8.0
@@ -2774,7 +2795,7 @@ packages:
       schema-utils: 3.3.0
     dev: true
 
-  /@symfony/webpack-encore@4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(ts-loader@9.5.0)(typescript@4.9.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0):
+  /@symfony/webpack-encore@4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.3)(postcss@8.4.31)(sass-loader@13.3.2)(ts-loader@9.5.0)(typescript@5.4.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0):
     resolution: {integrity: sha512-p3n2Z16sGV6odZ3ihIU+gupYc55KfrfCt62+Gppe8MUo6QuT5Bk2cXXjR4Hb89KvCRDHnjYEWVfnewRsfE8TRQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
@@ -2877,11 +2898,11 @@ packages:
       css-loader: 6.8.1(webpack@5.74.0)
       css-minimizer-webpack-plugin: 5.0.1(webpack@5.74.0)
       fast-levenshtein: 3.0.0
-      fork-ts-checker-webpack-plugin: 7.3.0(typescript@4.9.5)(webpack@5.74.0)
+      fork-ts-checker-webpack-plugin: 7.3.0(typescript@5.4.2)(webpack@5.74.0)
       mini-css-extract-plugin: 2.7.6(webpack@5.74.0)
       pkg-up: 3.1.0
       postcss: 8.4.31
-      postcss-loader: 7.3.3(postcss@8.4.31)(typescript@4.9.5)(webpack@5.74.0)
+      postcss-loader: 7.3.3(postcss@8.4.31)(typescript@5.4.2)(webpack@5.74.0)
       pretty-error: 4.0.0
       resolve-url-loader: 5.0.0
       sass-loader: 13.3.2(node-sass@9.0.0)(webpack@5.74.0)
@@ -2891,8 +2912,8 @@ packages:
       tapable: 2.2.1
       terser-webpack-plugin: 5.3.9(webpack@5.74.0)
       tmp: 0.2.1
-      ts-loader: 9.5.0(typescript@4.9.5)(webpack@5.74.0)
-      typescript: 4.9.5
+      ts-loader: 9.5.0(typescript@5.4.2)(webpack@5.74.0)
+      typescript: 5.4.2
       webpack: 5.74.0(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack@5.74.0)
       webpack-dev-server: 4.15.1(webpack-cli@4.10.0)(webpack@5.74.0)
@@ -4468,7 +4489,7 @@ packages:
       yaml: 1.10.2
     dev: true
 
-  /cosmiconfig@8.3.6(typescript@4.9.5):
+  /cosmiconfig@8.3.6(typescript@5.4.2):
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -4481,7 +4502,7 @@ packages:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
-      typescript: 4.9.5
+      typescript: 5.4.2
     dev: true
 
   /cross-spawn@7.0.3:
@@ -4935,6 +4956,10 @@ packages:
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
+    dev: true
+
+  /dragdroptouch-bug-fixed@1.0.8:
+    resolution: {integrity: sha512-moNgBeWMeUk4zhV3B+a4TZUPmHVJz+cvjWEXENLEU3toVnm3lpS+ZkSwVbBxArDUQ8HSm1qA0UmKWWy1y7nvng==}
     dev: true
 
   /easy-autocomplete@1.3.5:
@@ -5845,18 +5870,6 @@ packages:
   /flatted@3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
 
-  /flowbite-svelte-icons@1.4.3(svelte@3.58.0)(tailwind-merge@2.2.1)(tailwindcss@3.3.3):
-    resolution: {integrity: sha512-SNxTHPsWnynsy6SLr5nC0YRLmP3FRfl/LS1ozyx7vNraGwa2AP+23DX4pPrhVauBhoSWUAyzaM2ZbpscS2aGVQ==}
-    peerDependencies:
-      svelte: ^3.54.0 || ^4.0.0 || ^5.0.0
-      tailwind-merge: ^2.0.0
-      tailwindcss: ^3.3.2
-    dependencies:
-      svelte: 3.58.0
-      tailwind-merge: 2.2.1
-      tailwindcss: 3.3.3
-    dev: true
-
   /flowbite-svelte-icons@1.4.3(svelte@4.2.2)(tailwind-merge@1.14.0)(tailwindcss@3.3.3):
     resolution: {integrity: sha512-SNxTHPsWnynsy6SLr5nC0YRLmP3FRfl/LS1ozyx7vNraGwa2AP+23DX4pPrhVauBhoSWUAyzaM2ZbpscS2aGVQ==}
     peerDependencies:
@@ -5879,19 +5892,6 @@ packages:
       svelte: 4.2.2
       tailwind-merge: 2.2.1
       tailwindcss: 3.3.3
-    dev: true
-
-  /flowbite-svelte@0.44.18(svelte@3.58.0):
-    resolution: {integrity: sha512-vCRuzO4Ltz+8qyYP1b8yZPre4fWeRnVwg7C8uQ3a6UgLPruPAACCbqO+i/RkzD7CFU7ygziee9OfPgVoMr8aWA==}
-    engines: {node: '>=16.0.0', npm: '>=7.0.0'}
-    peerDependencies:
-      svelte: ^4.0.0
-    dependencies:
-      '@floating-ui/dom': 1.5.3
-      apexcharts: 3.44.0
-      flowbite: 1.8.1
-      svelte: 3.58.0
-      tailwind-merge: 1.14.0
     dev: true
 
   /flowbite-svelte@0.44.18(svelte@4.2.2):
@@ -5930,7 +5930,7 @@ packages:
       is-callable: 1.2.7
     dev: false
 
-  /fork-ts-checker-webpack-plugin@7.3.0(typescript@4.9.5)(webpack@5.74.0):
+  /fork-ts-checker-webpack-plugin@7.3.0(typescript@5.4.2)(webpack@5.74.0):
     resolution: {integrity: sha512-IN+XTzusCjR5VgntYFgxbxVx3WraPRnKehBFrf00cMSrtUuW9MsG9dhL6MWpY6MkjC3wVwoujfCDgZZCQwbswA==}
     engines: {node: '>=12.13.0', yarn: '>=1.0.0'}
     peerDependencies:
@@ -5953,7 +5953,7 @@ packages:
       schema-utils: 3.3.0
       semver: 7.5.0
       tapable: 2.2.1
-      typescript: 4.9.5
+      typescript: 5.4.2
       webpack: 5.74.0(webpack-cli@4.10.0)
     dev: true
 
@@ -8007,14 +8007,14 @@ packages:
       yaml: 2.3.2
     dev: true
 
-  /postcss-loader@7.3.3(postcss@8.4.31)(typescript@4.9.5)(webpack@5.74.0):
+  /postcss-loader@7.3.3(postcss@8.4.31)(typescript@5.4.2)(webpack@5.74.0):
     resolution: {integrity: sha512-YgO/yhtevGO/vJePCQmTxiaEwER94LABZN0ZMT4A0vsak9TpO+RvKRs7EmJ8peIlB9xfXCsS7M8LjqncsUZ5HA==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       postcss: ^7.0.0 || ^8.0.1
       webpack: ^5.0.0
     dependencies:
-      cosmiconfig: 8.3.6(typescript@4.9.5)
+      cosmiconfig: 8.3.6(typescript@5.4.2)
       jiti: 1.20.0
       postcss: 8.4.31
       semver: 7.5.0
@@ -9419,8 +9419,8 @@ packages:
       picocolors: 1.0.0
       sade: 1.8.1
       svelte: 3.58.0
-      svelte-preprocess: 5.0.3(sass@1.62.0)(svelte@3.58.0)(typescript@5.2.2)
-      typescript: 5.2.2
+      svelte-preprocess: 5.0.3(sass@1.62.0)(svelte@3.58.0)(typescript@5.4.2)
+      typescript: 5.4.2
     transitivePeerDependencies:
       - '@babel/core'
       - coffeescript
@@ -9437,13 +9437,10 @@ packages:
     resolution: {integrity: sha512-oU+Xv7Dl4kRU2kdFjsoPLfJfnt5hUhsFUZtuzI3Ku/f2iAFZqBoEuXOqK3N9ngD4dxQOmN4OKWPHVi3NeAeAfQ==}
     dev: true
 
-  /svelte-hmr@0.14.12(svelte@3.58.0):
-    resolution: {integrity: sha512-4QSW/VvXuqVcFZ+RhxiR8/newmwOCTlbYIezvkeN6302YFRE8cXy0naamHcjz8Y9Ce3ITTZtrHrIL0AGfyo61w==}
-    engines: {node: ^12.20 || ^14.13.1 || >= 16}
-    peerDependencies:
-      svelte: '>=3.19.0'
+  /svelte-drag-drop-touch@0.1.9:
+    resolution: {integrity: sha512-DWAMC+6xBRkl5OuVR7ze+znSKERlX9t9cx4/kzoWOnPwLFvv4g8YTtQxmO8wfWfETi9qgg/cnw58gmhZKY9vyw==}
     dependencies:
-      svelte: 3.58.0
+      dragdroptouch-bug-fixed: 1.0.8
     dev: true
 
   /svelte-hmr@0.14.12(svelte@4.2.2):
@@ -9525,17 +9522,6 @@ packages:
       - sugarss
     dev: false
 
-  /svelte-loader@3.1.9(svelte@3.58.0):
-    resolution: {integrity: sha512-RITPqze3TppOhaZF8SEFTDTwFHov17k3UkOjpxyL/No/YVrvckKmXWOEj7QEpsZZZSNQPb28tMZbHEI2xLhJMQ==}
-    peerDependencies:
-      svelte: ^3.0.0 || ^4.0.0-next.0
-    dependencies:
-      loader-utils: 2.0.4
-      svelte: 3.58.0
-      svelte-dev-helper: 1.1.9
-      svelte-hmr: 0.14.12(svelte@3.58.0)
-    dev: true
-
   /svelte-loader@3.1.9(svelte@4.2.2):
     resolution: {integrity: sha512-RITPqze3TppOhaZF8SEFTDTwFHov17k3UkOjpxyL/No/YVrvckKmXWOEj7QEpsZZZSNQPb28tMZbHEI2xLhJMQ==}
     peerDependencies:
@@ -9606,7 +9592,7 @@ packages:
       typescript: 4.9.5
     dev: true
 
-  /svelte-preprocess@5.0.3(sass@1.62.0)(svelte@3.58.0)(typescript@5.2.2):
+  /svelte-preprocess@5.0.3(sass@1.62.0)(svelte@3.58.0)(typescript@5.4.2):
     resolution: {integrity: sha512-GrHF1rusdJVbOZOwgPWtpqmaexkydznKzy5qIC2FabgpFyKN57bjMUUUqPRfbBXK5igiEWn1uO/DXsa2vJ5VHA==}
     engines: {node: '>= 14.10.0'}
     requiresBuild: true
@@ -9651,10 +9637,10 @@ packages:
       sorcery: 0.11.0
       strip-indent: 3.0.0
       svelte: 3.58.0
-      typescript: 5.2.2
+      typescript: 5.4.2
     dev: true
 
-  /svelte-preprocess@5.0.4(@babel/core@7.21.4)(postcss@8.4.31)(svelte@4.2.2)(typescript@4.9.5):
+  /svelte-preprocess@5.0.4(@babel/core@7.21.4)(postcss@8.4.31)(svelte@4.2.2)(typescript@5.4.2):
     resolution: {integrity: sha512-ABia2QegosxOGsVlsSBJvoWeXy1wUKSfF7SWJdTjLAbx/Y3SrVevvvbFNQqrSJw89+lNSsM58SipmZJ5SRi5iw==}
     engines: {node: '>= 14.10.0'}
     requiresBuild: true
@@ -9700,7 +9686,7 @@ packages:
       sorcery: 0.11.0
       strip-indent: 3.0.0
       svelte: 4.2.2
-      typescript: 4.9.5
+      typescript: 5.4.2
     dev: true
 
   /svelte-preprocess@5.0.4(svelte@3.58.0)(typescript@5.2.2):
@@ -9749,6 +9735,14 @@ packages:
       svelte: 3.58.0
       typescript: 5.2.2
     dev: false
+
+  /svelte-sortable-items@0.0.5(svelte@4.2.2):
+    resolution: {integrity: sha512-gtLVeKUYVu447oN/2ukSQIecCe4NQrSZ0D5RU6IqGdIRwS9xsEWIyYwpZk5WFBcsbyxD+ulIhgunhbEDzkvjIQ==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0
+    dependencies:
+      svelte: 4.2.2
+    dev: true
 
   /svelte-time@0.8.0:
     resolution: {integrity: sha512-V0LBpJhYV2Q+jqiJ94ITAo51P6RIhrHQpDt3LCSk8PXfL2UMvSMlDzkqHq8mdKqmBCRZURnXhpynN03GQa/G/A==}
@@ -10040,7 +10034,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: true
 
-  /ts-loader@9.5.0(typescript@4.9.5)(webpack@5.74.0):
+  /ts-loader@9.5.0(typescript@5.4.2)(webpack@5.74.0):
     resolution: {integrity: sha512-LLlB/pkB4q9mW2yLdFMnK3dEHbrBjeZTYguaaIfusyojBgAGf5kF+O6KcWqiGzWqHk0LBsoolrp4VftEURhybg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -10052,7 +10046,7 @@ packages:
       micromatch: 4.0.5
       semver: 7.5.0
       source-map: 0.7.4
-      typescript: 4.9.5
+      typescript: 5.4.2
       webpack: 5.74.0(webpack-cli@4.10.0)
     dev: true
 
@@ -10220,6 +10214,7 @@ packages:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: false
 
   /typescript@5.4.2:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
@@ -10810,7 +10805,7 @@ packages:
       svelte: 4.2.2
     dev: true
 
-  file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@3.58.0):
+  file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@4.2.2):
     resolution: {directory: packages/mws-moon-manager/vendor/symfony/ux-svelte/assets, type: directory}
     id: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets
     name: '@symfony/ux-svelte'
@@ -10819,7 +10814,7 @@ packages:
       svelte: ^3.0
     dependencies:
       '@hotwired/stimulus': 3.0.0
-      svelte: 3.58.0
+      svelte: 4.2.2
     dev: true
 
   github.com/dimsemenov/PhotoSwipe/008338268efddc55d36cfc3a8fbbb3940a6ddd23:

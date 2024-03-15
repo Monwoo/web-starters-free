@@ -17,6 +17,7 @@
 
   import PhotoSwipeGallery from "svelte-photoswipe";
   import Loader from "../layout/widgets/Loader.svelte";
+import QuickList from "./qualifs/QuickList.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -354,14 +355,15 @@ style:opacity={isLoading ? 0.8 : 1} -->
         <TagsInput bind:tags={timingSlot.tags} timing={timingSlot} {locale} />
       </span>
 
-      {#each qualifTemplates ?? [] as qt, idx}
+      <!-- {#each qualifTemplates ?? [] as qt, idx}
         <button
           class="float-right m-1"
           on:click|stopPropagation={qt.toggleQualif}
         >
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
-      {/each}
+      {/each} -->
+      <QuickList  />
 
       <Loader {isLoading} />
     </div>
