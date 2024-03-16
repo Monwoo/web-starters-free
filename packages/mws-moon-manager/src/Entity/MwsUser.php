@@ -98,6 +98,9 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[Serializer\Annotation\Ignore]
     private Collection $mwsMessages;
 
+    #[ORM\ManyToMany(targetEntity: MwsTimeQualif::class, mappedBy: 'quickUserHistory')]
+    private Collection $quickQualifHistory;
+
     use TimestampableEntity;
     // https://symfonycasts.com/screencast/symfony5-doctrine/bad-migrations
 
@@ -123,6 +126,7 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         $this->mwsContactTrackings = new ArrayCollection();
         $this->comingFrom = new ArrayCollection();
         $this->mwsMessages = new ArrayCollection();
+        $this->quickQualifHistory = new ArrayCollection();
     }
 
     public function __toString()
@@ -538,6 +542,33 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
             if ($mwsMessage->getOwner() === $this) {
                 $mwsMessage->setOwner(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsTimeQualif>
+     */
+    public function getQuickQualifHistory(): Collection
+    {
+        return $this->quickQualifHistory;
+    }
+
+    public function addQuickQualifHistory(MwsTimeQualif $quickQualifHistory): static
+    {
+        if (!$this->quickQualifHistory->contains($quickQualifHistory)) {
+            $this->quickQualifHistory->add($quickQualifHistory);
+            $quickQualifHistory->addQuickUserHistory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuickQualifHistory(MwsTimeQualif $quickQualifHistory): static
+    {
+        if ($this->quickQualifHistory->removeElement($quickQualifHistory)) {
+            $quickQualifHistory->removeQuickUserHistory($this);
         }
 
         return $this;

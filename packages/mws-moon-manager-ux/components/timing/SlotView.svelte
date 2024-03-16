@@ -334,8 +334,8 @@ style:opacity={isLoading ? 0.8 : 1} -->
         {/if}
       {/if}
       <span
-        class="float-right max-w-[75%] bg-black/50 rounded-md"
-        class:max-w-50={isFullScreen}
+        class="float-right max-w-[75%] bg-black/80 rounded-md"
+        class:!max-w-[50%]={isFullScreen}
         class:fixed={isFullScreen}
         class:bottom-0={isFullScreen}
         class:left-0={isFullScreen}
@@ -380,6 +380,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       class="object-contain border-solid border-4 w-full max-h-[95vh]"
       class:h-[85vh]={isFullScreen && !isHeaderExpanded}
       class:h-[95vh]={isFullScreen && isHeaderExpanded}
+      class:mb-[1rem]={isFullScreen}
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}

@@ -157,6 +157,8 @@
           >
             <ItemView
             bind:qualif
+            bind:quickQualifTemplates
+            bind:maxItemsLimit={maxLimit}
             {confirmUpdateOrNew} {allTagsList}
             qualifLookups={qualifTemplates} />
           </div>

@@ -26,9 +26,19 @@ class MwsTimeQualif
     #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsTimeQualifs')]
     private Collection $timeTags;
 
+    #[ORM\ManyToMany(targetEntity: MwsUser::class, inversedBy: 'quickQualifHistory')]
+    private Collection $quickUserHistory;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $primaryColorRgb = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $primaryColorHex = null;
+
     public function __construct()
     {
         $this->timeTags = new ArrayCollection();
+        $this->quickUserHistory = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,6 +90,54 @@ class MwsTimeQualif
     public function removeTimeTag(MwsTimeTag $timeTag): static
     {
         $this->timeTags->removeElement($timeTag);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsUser>
+     */
+    public function getQuickUserHistory(): Collection
+    {
+        return $this->quickUserHistory;
+    }
+
+    public function addQuickUserHistory(MwsUser $quickUserHistory): static
+    {
+        if (!$this->quickUserHistory->contains($quickUserHistory)) {
+            $this->quickUserHistory->add($quickUserHistory);
+        }
+
+        return $this;
+    }
+
+    public function removeQuickUserHistory(MwsUser $quickUserHistory): static
+    {
+        $this->quickUserHistory->removeElement($quickUserHistory);
+
+        return $this;
+    }
+
+    public function getPrimaryColorRgb(): ?string
+    {
+        return $this->primaryColorRgb;
+    }
+
+    public function setPrimaryColorRgb(?string $primaryColorRgb): static
+    {
+        $this->primaryColorRgb = $primaryColorRgb;
+
+        return $this;
+    }
+
+    public function getPrimaryColorHex(): ?string
+    {
+        return $this->primaryColorHex;
+    }
+
+    public function setPrimaryColorHex(?string $primaryColorHex): static
+    {
+        $this->primaryColorHex = $primaryColorHex;
 
         return $this;
     }

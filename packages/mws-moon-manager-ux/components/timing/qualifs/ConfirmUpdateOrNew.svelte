@@ -9,6 +9,7 @@
   export { cssClass as class };
   export let modalId = `confirmUpdateOrNew-${UID}`;
   export let srcQualif;
+  export let newName;
   export let isOpen = false;
   export let eltModal;
   export let locale;
@@ -118,7 +119,8 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         > -->
         <p class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300">
           <!-- Do you want to update or add new item? -->
-          Voulez-vous renommer ou ajouter une qualification ?
+          Voulez-vous renommer ou ajouter une qualification de
+          [ { srcQualif?.label ?? '' } ] vers [ {newName} ] ?
         </p>
       </slot>
       <slot name="mws-confirm-actions">

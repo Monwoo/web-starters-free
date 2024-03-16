@@ -8,13 +8,15 @@
   import AddModal from "../tags/AddModal.svelte";
   import TagsInput from "./TagsInput.svelte";
   import Base from "../../layout/Base.svelte";
-  import ColorPicker from 'svelte-awesome-color-picker';
+  import ColorPicker, { ChromeVariant, A11yVariant,  } from 'svelte-awesome-color-picker';
   import newUniqueId from "locally-unique-id-generator";
+import { onMount } from "svelte";
   // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
   const UID = newUniqueId();
 
   export let qualif;
   export let qualifLookups;
+  export let selectedTarget;
   export let allTagsList;
   export let expandEdit = false;
   let cssClass;
@@ -27,11 +29,16 @@
   export let rgb;
   export let hex = "#AAAAAA";
   export let itemSuggestionTagsId = `ItemViewTags-${UID}`;
+  export let quickQualifTemplates;
+  export let maxItemsLimit;
 	let copyBuffer;
+  let typeahead;
 
   // TIPS : not on data change, only for init
   // $: typeAheadValue = qualif.label;
-  typeAheadValue = qualif.label;
+  // typeAheadValue = qualif.label;
+  // typeahead.close(), // only in onMount... bind:this=t...
+
   console.debug("qualif Item view ", qualif);
   console.debug("Type ahead", qualifLookups);
 
@@ -48,7 +55,10 @@
   export const extract = (item) => item.label;
 
   export const openConfirmUpdateOrNew = async (label) => {
-    if (label && label.length) {
+    if (label && label.length
+    && qualif.label != label) {
+      confirmUpdateOrNew.srcQualif = qualif;
+      confirmUpdateOrNew.newName = label;
       confirmUpdateOrNew.eltModal.show();
     }
     // TODO : wait for response ?
@@ -61,6 +71,23 @@
   $: hexTxt = hex;
 
   let copyStatus = 'Copiez';
+
+  typeAheadValue = qualif.label;
+
+  // let needClose = true;
+  // $: {
+  //   if (expandEdit && needClose && typeahead) {
+  //     // typeahead.close(); // only in onMount... bind:this=t...
+  //     needClose = true;
+  //   }
+  // }
+
+  onMount(() => {
+  });
+
+  const syncQualifWithBackend = () => {
+    console.log("TODO sync", qualif);
+  }
 </script>
 
 <div class="w-full flex flex-wrap justify-center">
@@ -90,10 +117,10 @@
   </did>
   {#if expandEdit}
     <div
-      class="mws-timing-qualif-view flex flex-wrap p-1 m-1
-        rounded-lg bg-white text-slate-700 fill-slate-700
+      class="mws-timing-qualif-view flex flex-wrap border border-slate-700
+      rounded-es-lg rounded-se-lg bg-white text-slate-700 fill-slate-700
         cursor-pointer justify-center
-        {cssClass}"
+        {cssClass ?? ''}"
       in:slide={{
         delay: 0,
         duration: 200,
@@ -116,11 +143,32 @@
       bind:rgb
       bind:hsv
       bind:color
+      isDialog={false}
+      sliderDirection="horizontal"
+      --picker-height="100px"
+      --picker-width="100%"
+      --slider-width="25px"
+      --picker-indicator-size="25px"
+      --picker-z-index="10"
+      --input-size="100px"
     /> -->
-    <ColorPicker
-      bind:rgb
-      bind:hex
-    />
+    <span class="p-2">
+      <ColorPicker
+        bind:rgb
+        bind:hex
+        --focus-color="green"
+        label="Couleur"
+        sliderDirection="horizontal"
+        on:input={async (event) => {
+          // https://svelte-awesome-color-picker.vercel.app/#bind-event-oninput
+          // historyHex = [...historyHex, event.detail.hex];
+          console.debug('TODO : sync new color', hex, rgb, ' for id : ', qualif.id);
+          qualif.primaryColorHex = hex;
+          qualif.primaryColorRgb = rgb;
+          await syncQualifWithBackend();
+        }}
+      />
+    </span>
     <!-- <button use:copy={'Hello World'}
     style="--mws-primary-rgb: {rgb}"
     >
@@ -148,7 +196,7 @@
         copyStatus = 'Copier';
       });
     }}
-    class="hover:bg-slate-400 font-light"
+    class="hover:bg-slate-400 font-light p-1 m-2"
     style="--mws-primary-rgb: {rgbTxt}"
     >
       <span class="text-sm mws-drop-shadow">
@@ -166,38 +214,46 @@
     >
       Raccourci [{String.fromCharCode(qualif.shortcut)}]
     </button>
-    <!-- on:keydown|stopPropagation|preventDefault -->
+    <!--
+      on:keydown|stopPropagation|preventDefault
+        showDropdownOnFocus={null}
+        showAllResultsOnFocus={null}
+        focusAfterSelect={null}
+        autoselect={false}
+        focusAfterSelect={false}
+    -->
       <Typeahead
-        label="Qualification"
-        showDropdownOnFocus
-        showAllResultsOnFocus
-        focusAfterSelect
+      bind:this={typeahead}
+      label="Qualification"
+        autoselect={true}
+        focusAfterSelect={true}
+        showDropdownOnFocus={true}
+        showAllResultsOnFocus={true}
         bind:value={typeAheadValue}
         {data}
         {extract}
         let:result
         let:index
-        on:select={async (e)=>{
+        on:blur={async (e)=>{
+          if ((e.target.value === selectedTarget?.label)
+          || selectedTarget) {
+            // update from JS side, no a new entry
+            // selectedTarget = null ?
+            return;
+          }
+          // TRICKY wait since select trigged come before or after this one
+          // With timeout, nextline is done AFTER select updates
+          await new Promise(resolve => setTimeout(resolve, 1400));
+          console.log('Blur Should have close dropdown', e);
           if (isLoading) return;
+          if(selectedTarget) {
+            // was pre-processed by on:select, clean up :
+            selectedTarget = null;
+            isLoading = false
+            return; // keep select box flow
+          }
           isLoading = true;
-          console.log('Did select', e);
-          typeAheadDetails = e.detail;
-          console.log('TODO just switch this qualif with selected one');
-          qualif = typeAheadDetails.original;
-          typeAheadValue = ''; // Clean used selection
-          isLoading = false;
-        }}
-        on:clear={async (e)=>{
-          if (isLoading) return;
-          isLoading = true;
-          console.log('Did clear', e);
-          typeAheadDetails = null;
-          isLoading = false;
-        }}
-        on:change={async (e)=>{
-          if (isLoading) return;
-          isLoading = true;
-          console.log('Did change', e);
+          console.log('Did blur from ', e);
           const qualifLbl = e.target.value;
           const lastQualif = typeAheadDetails?.original;
           console.log(qualifLbl);
@@ -211,10 +267,90 @@
             }
           }
           console.log('Form resp', e.target.form.dataset);
-          await new Promise(resolve => setTimeout(resolve, 200)).then(()=>{
-            // asyn unload to see animation.AddModal..
-            isLoading = false;
-          });
+          // await new Promise(resolve => setTimeout(resolve, 200)).then(()=>{
+          //   // asyn unload to see animation.AddModal..
+          //   isLoading = false;
+          // });
+          isLoading = false;
+          // typeahead.results = []; // TIPS : ensure typeahead get closed
+        }}
+        on:select={async (e)=>{
+          if (isLoading) return;
+          isLoading = true;
+          console.log('Did select', e);
+          typeAheadDetails = e.detail;
+          selectedTarget = typeAheadDetails.original;
+          const src = qualif;
+          // qualif = typeAheadDetails.original;
+          // const srcIdx = quickQualifTemplates.indexOf(src);
+          let targetIdx = -1;
+          let srcIdx = -1;
+          for (let idx = 0; idx < quickQualifTemplates.length; idx++) {
+            const qQualif = quickQualifTemplates[idx];
+            if (qQualif.label === selectedTarget.label) {
+              srcIdx = idx;
+            }
+            if (qQualif.label === qualif.label) {
+              targetIdx = idx;
+            }
+            if (srcIdx >= 0 && targetIdx >= 0) {
+              break;
+            }
+          }
+          // const targetIdx = quickQualifTemplates.indexOf(selectedTarget);
+          console.log('Switch qualif ', // targetIdx,
+          ' just before the selected one at ', targetIdx, "for", selectedTarget);
+          if(srcIdx >= 0) {
+            // delete quickQualifTemplates[srcIdx];
+          }
+          // quickQualifTemplates = quickQualifTemplates.slice(0, targetIdx > 1 ? targetIdx - 1 : 0)
+          quickQualifTemplates = quickQualifTemplates.slice(0, targetIdx > 0 ? targetIdx : 0)
+          .concat([selectedTarget], quickQualifTemplates.slice(targetIdx)).slice(0, maxItemsLimit)
+
+          // WARNING : below will trigger a did changed
+          // so check against typeAheadValue !== qualif.label only
+          typeAheadValue = qualif.label; // Clean used selection
+          // typeahead.value = qualif.label;
+          isLoading = false;
+        }}
+        on:clear={async (e)=>{
+          if (isLoading) return;
+          isLoading = true;
+          console.log('Did clear', e);
+          typeAheadDetails = null;
+          isLoading = false;
+        }}
+        on:change={async (e)=>{
+          // if (e.target.value === selectedTarget?.label) {
+          //   // update from JS side, no a new entry
+          //   return;
+          // }
+          // // TRICKY wait since select trigged come before or after this one
+          // // With timeout, nextline is done AFTER select updates
+          // await new Promise(resolve => setTimeout(resolve, 400));
+          // console.log('Blur Should have close dropdown', e);
+          // if (isLoading) return;
+          // isLoading = true;
+          // console.log('Did change', e);
+          // const qualifLbl = e.target.value;
+          // const lastQualif = typeAheadDetails?.original;
+          // console.log(qualifLbl);
+          // if (qualifLbl && qualifLbl === lastQualif?.label) {
+          //   console.warn('should not happen, catch by on:select ok ?');
+          // } else {
+          //   typeAheadDetails = null;
+          //   // console.log('TODO : Create new qualif item with this unused label');
+          //   if (await openConfirmUpdateOrNew(qualifLbl)) {
+          //     typeAheadValue = ''; // Clean used selection
+          //   }
+          // }
+          // console.log('Form resp', e.target.form.dataset);
+          // // await new Promise(resolve => setTimeout(resolve, 200)).then(()=>{
+          // //   // asyn unload to see animation.AddModal..
+          // //   isLoading = false;
+          // // });
+          // isLoading = false;
+          // typeahead.results = []; // TIPS : ensure typeahead get closed
         }}
       >
         {@const qualif = result.original}
@@ -238,7 +374,7 @@
           bind:value={newTagLabel}
           type="text"
           placeholder="Nouveau Tag"
-          name="maxLimit"
+          name="newTag"
           on:change={() => {
             // Since $: reactivity might be overloaded
             console.debug('Add tag to qualif', newTagLabel);
