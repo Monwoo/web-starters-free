@@ -9,7 +9,9 @@
   import TagsInput from "./TagsInput.svelte";
   import Base from "../../layout/Base.svelte";
   import ColorPicker from 'svelte-awesome-color-picker';
+  import newUniqueId from "locally-unique-id-generator";
   // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
+  const UID = newUniqueId();
 
   export let qualif;
   export let qualifLookups;
@@ -24,8 +26,12 @@
   export let newTagLabel;
   export let rgb;
   export let hex = "#AAAAAA";
+  export let itemSuggestionTagsId = `ItemViewTags-${UID}`;
 	let copyBuffer;
 
+  // TIPS : not on data change, only for init
+  // $: typeAheadValue = qualif.label;
+  typeAheadValue = qualif.label;
   console.debug("qualif Item view ", qualif);
   console.debug("Type ahead", qualifLookups);
 
@@ -237,7 +243,13 @@
             // Since $: reactivity might be overloaded
             console.debug('Add tag to qualif', newTagLabel);
           }}
+          list={itemSuggestionTagsId}
         />
+        <datalist id={itemSuggestionTagsId}>
+          {#each allTagsList as tag}
+            <option value={tag.label} />
+          {/each}
+        </datalist>        
         {#if newTagLabel?.length}
           <button
             class="p-2 m-3 text-sm font-medium text-center 
