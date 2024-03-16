@@ -57,7 +57,7 @@
       label: "1 par lignes",
     },
   ];
-  export let maxLimit = 7;
+  export let maxLimit = 12;
 
   $: {
     console.debug("Qualif templates update :", quickQualifTemplates);
@@ -212,7 +212,7 @@
     <span>
       <label for="LimiteMax">Limite Max</label>
       <input
-        class="text-black"
+        class="text-black opacity-30 hover:opacity-100 w-[5rem]"
         bind:value={maxLimit}
         type="number"
         name="maxLimit"
