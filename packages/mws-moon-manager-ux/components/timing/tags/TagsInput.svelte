@@ -142,7 +142,7 @@
   style:color={"black"}
   style:background-color={"lightgrey"}
   class="inline-flex items-center
-  px-2 py-1 mr-2 text-sm font-medium 
+  p-1 px-2 m-1 text-sm font-medium 
   opacity-75 hover:opacity-100">
     <!-- // TODO : add i18n translations and keep in Sync with Symfony translation,
     // OR : add translatable entity ways with FOS and always serve the right text ?
@@ -183,7 +183,7 @@ bind:value={addedTagKey} on:change={() => {
 class="opacity-30 hover:opacity-100 
 bg-gray-50 border border-gray-300 text-gray-900 
 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
-inline-flex w-[10rem] p-1 m-2 dark:bg-gray-700 dark:border-gray-600 
+inline-flex w-[10rem] p-1 px-2 m-1 dark:bg-gray-700 dark:border-gray-600 
 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
 dark:focus:border-blue-500">
   <option value="null" selected>Ajouter un tag</option>
