@@ -23,7 +23,7 @@
   export let typeAheadValue;
   export let newTagLabel;
   export let rgb;
-  export let hex;
+  export let hex = "#AAAAAA";
 	let copyBuffer;
 
   console.debug("qualif Item view ", qualif);
@@ -59,10 +59,18 @@
 
 <div class="w-full flex flex-wrap justify-center">
   <button
-    class="m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis"
+    class="m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis
+    "
+    style={rgbTxt ? `--mws-primary-rgb: ${rgbTxt}`: ``}
     on:click|stopPropagation={qualif.toggleQualif}
   >
-    {qualif.label}
+    <!--
+      TODO : tailwind multiple text shadow ?
+      https://stackoverflow.com/questions/34931463/how-to-make-multiple-drop-shadow 
+      <span class="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8) 0_-1.2px_1.2px_rgba(0,0,0,0.8)]"> -->
+    <span class="mws-drop-shadow">
+      {qualif.label}
+    </span>
   </button>
   <!-- <MoveIcon propSize={12} /> -->
   <did
@@ -134,19 +142,27 @@
         copyStatus = 'Copier';
       });
     }}
-    class="hover:bg-slate-400 font-light text-sm"
+    class="hover:bg-slate-400 font-light"
     style="--mws-primary-rgb: {rgbTxt}"
     >
-      {copyStatus} {hexTxt}
+      <span class="text-sm mws-drop-shadow">
+        {copyStatus} {hexTxt}
+      </span>
     </button>
     <textarea
-    class="absolute pointer-events-none opacity-0 hidden"
+    class="absolute pointer-events-none opacity-0"
      bind:value={hexTxt} bind:this={copyBuffer}></textarea>
 
-
+     <button on:click={async ()=>{
+    }}
+    class="hover:bg-slate-400 font-light text-sm mt-2"
+    style="--mws-primary-rgb: 0, 200, 0"
+    >
+      Raccourci [{String.fromCharCode(qualif.shortcut)}]
+    </button>
     <!-- on:keydown|stopPropagation|preventDefault -->
       <Typeahead
-        label="Libellé de qualification"
+        label="Qualification"
         showDropdownOnFocus
         showAllResultsOnFocus
         focusAfterSelect
@@ -255,5 +271,13 @@
 <style>
   :global([data-svelte-typeahead]) {
     margin: 1rem;
+  }
+  :global(.mws-drop-shadow) {
+    /* filter: drop-shadow(3px 3px 5px #000000) drop-shadow(2px 2px 2px #ffcc00); */
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5))
+    drop-shadow(1px -1px 2px rgba(0,0,0,0.5))
+    drop-shadow(-1px 1px 2px rgba(0,0,0,0.5))
+    drop-shadow(-1px -1px 2px rgba(0,0,0,0.5))
+    ;
   }
 </style>
