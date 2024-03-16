@@ -329,14 +329,8 @@ style:opacity={isLoading ? 0.8 : 1} -->
           </button>
         {/if}
       {/if}
-      <button
-        class="bg-red-500 float-right m-1"
-        on:click|stopPropagation={removeAllTags}
-      >
-        [d] Supprimer tous les tags
-      </button>
       <span
-        class="float-right"
+        class="float-right max-w-[75%]"
         class:max-w-50={isFullScreen}
         class:fixed={isFullScreen}
         class:bottom-0={isFullScreen}
@@ -351,6 +345,12 @@ style:opacity={isLoading ? 0.8 : 1} -->
           </span>
         {/each}
       </span>
+      <button
+        class="bg-red-500 float-right m-1"
+        on:click|stopPropagation={removeAllTags}
+      >
+        [d] Supprimer tous les tags
+      </button>
       <span class="float-right flex flex-wrap justify-end p-2">
         <TagsInput bind:tags={timingSlot.tags} timing={timingSlot} {locale} />
       </span>
