@@ -4,12 +4,17 @@
   import { quintOut, quintIn } from "svelte/easing";
   import { fly } from "svelte/transition";
   import Typeahead from "svelte-typeahead";
+import Loader from "../../layout/widgets/Loader.svelte";
+import AddModal from "../tags/AddModal.svelte";
 
   export let qualif;
   export let qualifLookups;
   export let expandEdit = false;
   let cssClass;
   export { cssClass as class };
+  export let typeAheadDetails;
+  export let confirmUpdateOrNew;
+  export let isLoading = false;
 
   console.debug("qualif Item view ", qualif);
   console.debug("Type ahead", qualifLookups);
@@ -25,6 +30,13 @@
   export const data = qualifLookups;
 
   export const extract = (item) => item.label;
+
+  export const sendConfirmUpdateOrNew = async (label) => {
+    if (label && label.length) {
+      confirmUpdateOrNew.eltModal.show();
+    }
+  };
+
 </script>
 
 <div class="w-full flex flex-wrap">
@@ -77,9 +89,41 @@
         {extract}
         let:result
         let:index
-
-        on:change={(e)=>{
-          console.log(e.target.value);
+        on:select={async (e)=>{
+          if (isLoading) return;
+          isLoading = true;
+          console.log('Did select', e);
+          typeAheadDetails = e.detail;
+          console.log('TODO just switch this qualif with selected one');
+          qualif = typeAheadDetails.original;
+          isLoading = false;
+        }}
+        on:clear={async (e)=>{
+          if (isLoading) return;
+          isLoading = true;
+          console.log('Did clear', e);
+          typeAheadDetails = null;
+          isLoading = false;
+        }}
+        on:change={async (e)=>{
+          if (isLoading) return;
+          isLoading = true;
+          console.log('Did change', e);
+          const qualifLbl = e.target.value;
+          const lastQualif = typeAheadDetails?.original;
+          console.log(qualifLbl);
+          if (qualifLbl && qualifLbl === lastQualif?.label) {
+            console.warn('should not happen, catch by on:select ok ?');
+          } else {
+            typeAheadDetails = null;
+            // console.log('TODO : Create new qualif item with this unused label');
+            await sendConfirmUpdateOrNew(qualifLbl);
+          }
+          console.log('Form resp', e.target.form.dataset);
+          await new Promise(resolve => setTimeout(resolve, 200)).then(()=>{
+            // asyn unload to see animation.AddModal..
+            isLoading = false;
+          });
         }}
       >
         {@const qualif = result.original}
@@ -97,6 +141,8 @@
       </div>
     </div>
   {/if}
+
+  <Loader {isLoading} />
 </div>
 <style>
   :global([data-svelte-typeahead]) {

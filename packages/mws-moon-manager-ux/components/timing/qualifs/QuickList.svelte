@@ -11,6 +11,7 @@
   import { flip } from "svelte/animate";
   import ItemView from "./ItemView.svelte";
   import _ from "lodash";
+import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
 
@@ -58,6 +59,8 @@
     },
   ];
   export let maxLimit = 12;
+
+  export let confirmUpdateOrNew;
 
   $: {
     console.debug("Qualif templates update :", quickQualifTemplates);
@@ -124,6 +127,7 @@
     }
   }
 
+
 </script>
 
 <!-- <svelte:head>
@@ -150,7 +154,10 @@
             justify-center content-start align-middle hover:cursor-move"
             class:classHovered={numberHoveredItem === numberCounter}
           >
-            <ItemView bind:qualif qualifLookups={qualifTemplates} />
+            <ItemView
+            bind:qualif
+            {confirmUpdateOrNew}
+            qualifLookups={qualifTemplates} />
           </div>
         </SortableItem>
         <!-- <div // TODO : strange pop-over showing and following move animation... 
@@ -223,6 +230,9 @@
       />
     </span>
   </div>
+
+  <ConfirmUpdateOrNew
+  bind:this={confirmUpdateOrNew}></ConfirmUpdateOrNew>
 </div>
 
 <style>
