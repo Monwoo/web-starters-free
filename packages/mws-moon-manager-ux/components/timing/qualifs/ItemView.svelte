@@ -3,14 +3,28 @@
   import { slide } from "svelte/transition";
   import { quintOut, quintIn } from "svelte/easing";
   import { fly } from "svelte/transition";
+  import Typeahead from "svelte-typeahead";
 
   export let qualif;
+  export let qualifLookups;
   export let expandEdit = false;
   let cssClass;
   export { cssClass as class };
 
   console.debug("qualif Item view ", qualif);
+  console.debug("Type ahead", qualifLookups);
 
+  const collator = new Intl.Collator(undefined, {
+    numeric: true,
+    sensitivity: "base",
+  });
+  qualifLookups.sort(function (a, b) {
+    return collator.compare(a.label, b.label);
+  });
+
+  export const data = qualifLookups;
+
+  export const extract = (item) => item.label;
 </script>
 
 <div class="w-full flex flex-wrap">
@@ -48,7 +62,33 @@
         easing: quintOut,
         axis: "y",
       }}
-    >
+        on:keydown={(e)=>{
+          e.stopPropagation();
+          // e.preventDefault();
+        }}
+>
+    <!-- on:keydown|stopPropagation|preventDefault -->
+      <Typeahead
+        label="Libellé de qualification"
+        showDropdownOnFocus
+        showAllResultsOnFocus
+        focusAfterSelect
+        {data}
+        {extract}
+        let:result
+        let:index
+
+        on:change={(e)=>{
+          console.log(e.target.value);
+        }}
+      >
+        {@const qualif = result.original}
+        <!-- {@const qualif = JSON.parse(result)} -->
+        <!-- <strong>{@html JSON.stringify(result)}</strong>
+        <strong>{@html qualif.label}</strong> -->
+        <strong>{@html result.string}</strong>
+        <!-- {qualif?.timeTags?.length} -->
+      </Typeahead>
       <div>
         {#each qualif?.timeTags ?? [] as tag, tagSlug (tag.slug)}
           <!-- {tagSlug} -->
@@ -58,3 +98,8 @@
     </div>
   {/if}
 </div>
+<style>
+  :global([data-svelte-typeahead]) {
+    margin: 1rem;
+  }
+</style>

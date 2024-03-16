@@ -127,6 +127,12 @@ importers:
       svelte:
         specifier: ^4.2.2
         version: 4.2.2
+      svelte-awesome-color-picker:
+        specifier: ^2.4.1
+        version: 2.4.1
+      svelte-copy:
+        specifier: ^1.4.1
+        version: 1.4.1(svelte@4.2.2)
       svelte-drag-drop-touch:
         specifier: ^0.1.9
         version: 0.1.9
@@ -145,6 +151,9 @@ importers:
       svelte-time:
         specifier: ^0.8.0
         version: 0.8.0
+      svelte-typeahead:
+        specifier: ^4.4.1
+        version: 4.4.1
       tailwindcss:
         specifier: ^3.3.3
         version: 3.3.3
@@ -395,6 +404,12 @@ importers:
       svelte:
         specifier: ^4.2.2
         version: 4.2.2
+      svelte-awesome-color-picker:
+        specifier: ^2.4.1
+        version: 2.4.1
+      svelte-copy:
+        specifier: ^1.4.1
+        version: 1.4.1(svelte@4.2.2)
       svelte-drag-drop-touch:
         specifier: ^0.1.9
         version: 0.1.9
@@ -407,6 +422,9 @@ importers:
       svelte-time:
         specifier: ^0.8.0
         version: 0.8.0
+      svelte-typeahead:
+        specifier: ^4.4.1
+        version: 4.4.1
       ts-loader:
         specifier: ^9.5.1
         version: 9.5.1(typescript@5.4.2)(webpack@5.74.0)
@@ -428,9 +446,6 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
-      svelte-awesome-color-picker:
-        specifier: ^2.4.1
-        version: 2.4.1
       svelte-loading-spinners:
         specifier: ^0.3.4
         version: 0.3.4
@@ -465,6 +480,12 @@ importers:
       svelte:
         specifier: ^4.2.2
         version: 4.2.2
+      svelte-awesome-color-picker:
+        specifier: ^2.4.1
+        version: 2.4.1
+      svelte-copy:
+        specifier: ^1.4.1
+        version: 1.4.1(svelte@4.2.2)
       svelte-drag-drop-touch:
         specifier: ^0.1.9
         version: 0.1.9
@@ -480,6 +501,9 @@ importers:
       svelte-time:
         specifier: ^0.8.0
         version: 0.8.0
+      svelte-typeahead:
+        specifier: ^4.4.1
+        version: 4.4.1
 
   packages/next-js-eslint-config:
     dependencies:
@@ -4367,6 +4391,7 @@ packages:
 
   /colord@2.9.3:
     resolution: {integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==}
+    dev: true
 
   /colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
@@ -6020,6 +6045,11 @@ packages:
   /functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
     dev: false
+
+  /fuzzy@0.1.3:
+    resolution: {integrity: sha512-/gZffu4ykarLrCiP3Ygsa86UAo1E5vEVlvTrpkKywXSbP9Xhln3oSp9QSV57gEq3JFFpGJ4GZ+5zdEp3FcUh4w==}
+    engines: {node: '>= 0.6.0'}
+    dev: true
 
   /gauge@4.0.4:
     resolution: {integrity: sha512-f9m+BEN5jkg6a0fZjleidjN51VE1X+mPFQ2DJ0uv1V39oCLCbsGe6yjbBnp7eK7z/+GAon99a3nHuqbuuthyPg==}
@@ -9404,7 +9434,7 @@ packages:
     resolution: {integrity: sha512-IzICGgaMRMgyK4uukm27UdTFfN7s0QN3eoFyIGiXXY8FCPumS9T+vffVG4rNhiuUUP4ga5SoGUE+KXuNj5dsrw==}
     dependencies:
       colord: 2.9.3
-    dev: false
+    dev: true
 
   /svelte-check@3.2.0(sass@1.62.0)(svelte@3.58.0):
     resolution: {integrity: sha512-6ZnscN8dHEN5Eq5LgIzjj07W9nc9myyBH+diXsUAuiY/3rt0l65/LCIQYlIuoFEjp2F1NhXqZiJwV9omPj9tMw==}
@@ -9431,6 +9461,14 @@ packages:
       - sass
       - stylus
       - sugarss
+    dev: true
+
+  /svelte-copy@1.4.1(svelte@4.2.2):
+    resolution: {integrity: sha512-ixNNlTfIQWYnQzE0pdMYVCS/2jzMhXm41jmtSvk8EK2Dh+B5sDFEz2xYYo4fVtwtK0dLW5M5ZH/Rs5Jah0r6dw==}
+    peerDependencies:
+      svelte: ^3.55.0 || ^4.0.0
+    dependencies:
+      svelte: 4.2.2
     dev: true
 
   /svelte-dev-helper@1.1.9:
@@ -9736,6 +9774,10 @@ packages:
       typescript: 5.2.2
     dev: false
 
+  /svelte-search@1.1.0:
+    resolution: {integrity: sha512-e5hci9fZPMXb3fuRZvcYJGqh448M8vV3biY4lN4Nr9fqrG/HBnTjWYstKb399aUe9tsBxRbxRAWgtKicisL23g==}
+    dev: true
+
   /svelte-sortable-items@0.0.5(svelte@4.2.2):
     resolution: {integrity: sha512-gtLVeKUYVu447oN/2ukSQIecCe4NQrSZ0D5RU6IqGdIRwS9xsEWIyYwpZk5WFBcsbyxD+ulIhgunhbEDzkvjIQ==}
     peerDependencies:
@@ -9748,6 +9790,13 @@ packages:
     resolution: {integrity: sha512-V0LBpJhYV2Q+jqiJ94ITAo51P6RIhrHQpDt3LCSk8PXfL2UMvSMlDzkqHq8mdKqmBCRZURnXhpynN03GQa/G/A==}
     dependencies:
       dayjs: 1.11.10
+    dev: true
+
+  /svelte-typeahead@4.4.1:
+    resolution: {integrity: sha512-U8EYkCQ1HaDrQq1fnkVCEm8emZrdEfgfHhMulgOdoYnWV5PTvypiwCTNvqqxFHbz9ZGe5juAR9ok5tEcfnP9zw==}
+    dependencies:
+      fuzzy: 0.1.3
+      svelte-search: 1.1.0
     dev: true
 
   /svelte2tsx@0.6.23(svelte@3.58.0)(typescript@5.2.2):

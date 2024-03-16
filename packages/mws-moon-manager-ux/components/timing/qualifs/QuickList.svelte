@@ -150,7 +150,7 @@
             justify-center content-start align-middle hover:cursor-move"
             class:classHovered={numberHoveredItem === numberCounter}
           >
-            <ItemView bind:qualif />
+            <ItemView bind:qualif qualifLookups={qualifTemplates} />
           </div>
         </SortableItem>
         <!-- <div // TODO : strange pop-over showing and following move animation... 
