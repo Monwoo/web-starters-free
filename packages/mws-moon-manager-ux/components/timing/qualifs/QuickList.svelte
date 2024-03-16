@@ -26,6 +26,10 @@
   export let itemWidth = "w-3/12";
   export let maxLimit = 7;
 
+  $: {
+    console.debug("Qualif templates update :", qualifTemplates);
+  }
+
 </script>
 
 <!-- <svelte:head>
@@ -38,7 +42,7 @@
   <div class="flex w-full flex-wrap justify-evenly">
     <!-- {#each arrayUsers as currentUser, numberCounter (currentUser.id)} -->
     {#each qualifTemplates as qualif, numberCounter (qualif.id)}
-      <div animate:flip class="p-2 grow {itemWidth}">
+      <div animate:flip class="p-0 grow {itemWidth}">
         <SortableItem
           class="h-full w-full flex justify-center content-start"
           propItemNumber={numberCounter}
@@ -46,18 +50,12 @@
           bind:propHoveredItemNumber={numberHoveredItem}
         >
           <div
-            data-tooltip-target="tooltip-hover-{numberCounter}"
-            data-tooltip-trigger="hover"
+            _data-tooltip-target="tooltip-hover-{numberCounter}"
+            _data-tooltip-trigger="hover"
             class="flex flex-row flex-wrap h-full w-full
             justify-center content-start align-middle hover:cursor-move"
             class:classHovered={numberHoveredItem === numberCounter}
           >
-            <!-- <MoveIcon propSize={12} /> -->
-            <did class="w-full text-center border border-purple-700 m-1 ">
-              <span class="text-slate-400">
-                [{String.fromCharCode(qualif.shortcut)}]
-              </span> {qualif.label}
-            </did>
             <ItemView bind:qualif />
           </div>
         </SortableItem>
