@@ -161,7 +161,7 @@
 
      <button on:click={async ()=>{
     }}
-    class="hover:bg-slate-400 font-light text-sm mt-2"
+    class="hover:bg-slate-400 font-light text-sm m-2"
     style="--mws-primary-rgb: 0, 200, 0"
     >
       Raccourci [{String.fromCharCode(qualif.shortcut)}]
@@ -283,6 +283,7 @@
 <style>
   :global([data-svelte-typeahead]) {
     margin: 1rem;
+    @apply w-full;
   }
   :global(.mws-drop-shadow) {
     /* filter: drop-shadow(3px 3px 5px #000000) drop-shadow(2px 2px 2px #ffcc00); */
