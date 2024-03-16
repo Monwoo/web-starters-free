@@ -4,11 +4,16 @@
   import { quintOut, quintIn } from "svelte/easing";
   import { fly } from "svelte/transition";
   import Typeahead from "svelte-typeahead";
-import Loader from "../../layout/widgets/Loader.svelte";
-import AddModal from "../tags/AddModal.svelte";
+  import Loader from "../../layout/widgets/Loader.svelte";
+  import AddModal from "../tags/AddModal.svelte";
+  import TagsInput from "./TagsInput.svelte";
+  import Base from "../../layout/Base.svelte";
+  import ColorPicker from 'svelte-awesome-color-picker';
+  // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
 
   export let qualif;
   export let qualifLookups;
+  export let allTagsList;
   export let expandEdit = false;
   let cssClass;
   export { cssClass as class };
@@ -16,6 +21,10 @@ import AddModal from "../tags/AddModal.svelte";
   export let confirmUpdateOrNew;
   export let isLoading = false;
   export let typeAheadValue;
+  export let newTagLabel;
+  export let rgb;
+  export let hex;
+	let copyBuffer;
 
   console.debug("qualif Item view ", qualif);
   console.debug("Type ahead", qualifLookups);
@@ -40,9 +49,15 @@ import AddModal from "../tags/AddModal.svelte";
     return true;
   };
 
+  $: rgbTxt = rgb
+  ? `${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a}`
+  : null;
+  $: hexTxt = hex;
+
+  let copyStatus = 'Copiez';
 </script>
 
-<div class="w-full flex flex-wrap">
+<div class="w-full flex flex-wrap justify-center">
   <button
     class="m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis"
     on:click|stopPropagation={qualif.toggleQualif}
@@ -63,7 +78,7 @@ import AddModal from "../tags/AddModal.svelte";
     <div
       class="mws-timing-qualif-view flex flex-wrap p-1 m-1
         rounded-lg bg-white text-slate-700 fill-slate-700
-        cursor-pointer
+        cursor-pointer justify-center
         {cssClass}"
       in:slide={{
         delay: 0,
@@ -81,7 +96,54 @@ import AddModal from "../tags/AddModal.svelte";
           e.stopPropagation();
           // e.preventDefault();
         }}
->
+    >
+    <!-- <ColorPicker
+      bind:hex
+      bind:rgb
+      bind:hsv
+      bind:color
+    /> -->
+    <ColorPicker
+      bind:rgb
+      bind:hex
+    />
+    <!-- <button use:copy={'Hello World'}
+    style="--mws-primary-rgb: {rgb}"
+    >
+      {rgb}
+    </button> -->
+    <button on:click={async ()=>{
+      try {
+        // https://sentry.io/answers/how-do-i-copy-to-the-clipboard-in-javascript/
+        if (navigator?.clipboard?.writeText) {
+          await navigator.clipboard.writeText(hexTxt);
+          copyStatus = 'OK :';
+        }
+      } catch (err) {
+        console.error(err);
+        copyBuffer.select();
+        const successCopy = document.execCommand('copy');
+        if(successCopy) {
+          copyStatus = 'Ok :';
+        } else {
+          copyStatus = 'Fail :';
+        }
+      }
+      await new Promise(resolve => setTimeout(resolve, 800)).then(()=>{
+        // asyn unload to see animation.AddModal..
+        copyStatus = 'Copier';
+      });
+    }}
+    class="hover:bg-slate-400 font-light text-sm"
+    style="--mws-primary-rgb: {rgbTxt}"
+    >
+      {copyStatus} {hexTxt}
+    </button>
+    <textarea
+    class="absolute pointer-events-none opacity-0 hidden"
+     bind:value={hexTxt} bind:this={copyBuffer}></textarea>
+
+
     <!-- on:keydown|stopPropagation|preventDefault -->
       <Typeahead
         label="Libellé de qualification"
@@ -140,12 +202,51 @@ import AddModal from "../tags/AddModal.svelte";
         <strong>{@html result.string}</strong>
         <!-- {qualif?.timeTags?.length} -->
       </Typeahead>
-      <div>
+      <!-- <div>
         {#each qualif?.timeTags ?? [] as tag, tagSlug (tag.slug)}
-          <!-- {tagSlug} -->
+          <!-- {tagSlug} -- >
           {tag.label}
         {/each}
-      </div>
+      </div> -->
+      <TagsInput
+      {qualif} bind:tags={qualif.timeTags} {allTagsList} />
+      <span class="m-3">
+        <input
+          class="text-black opacity-30 hover:opacity-100 w-full"
+          bind:value={newTagLabel}
+          type="text"
+          placeholder="Nouveau Tag"
+          name="maxLimit"
+          on:change={() => {
+            // Since $: reactivity might be overloaded
+            console.debug('Add tag to qualif', newTagLabel);
+          }}
+        />
+        {#if newTagLabel?.length}
+          <button
+            class="p-2 m-3 text-sm font-medium text-center 
+            text-white bg-green-700 rounded-lg hover:bg-red-700 
+            focus:ring-4 focus:outline-none focus:ring-red-300
+            dark:bg-red-500 dark:hover:bg-red-600 
+            dark:focus:ring-red-900"
+            style="--mws-primary-rgb: 0, 142, 0"
+          >
+            Créer le Tag
+          </button>
+        {/if}
+      </span>  
+
+      <button
+      class="p-2 m-3 text-sm font-medium text-center 
+      text-white bg-red-600 rounded-lg hover:bg-red-700 
+      focus:ring-4 focus:outline-none focus:ring-red-300
+      dark:bg-red-500 dark:hover:bg-red-600 
+      dark:focus:ring-red-900"
+      style="--mws-primary-rgb: 255, 0, 0"
+    >
+      Supprimer '{qualif?.label ?? ""}'
+    </button>
+
     </div>
   {/if}
 

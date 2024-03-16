@@ -11,12 +11,13 @@
   import { flip } from "svelte/animate";
   import ItemView from "./ItemView.svelte";
   import _ from "lodash";
-import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
+  import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
 
   export let qualifTemplates;
   export let quickQualifTemplates;
+  export let allTagsList;
   // // STATES
   // let arrayUsers = [
   //   { id: 1, name: "John", age: 45 },
@@ -156,7 +157,7 @@ import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
           >
             <ItemView
             bind:qualif
-            {confirmUpdateOrNew}
+            {confirmUpdateOrNew} {allTagsList}
             qualifLookups={qualifTemplates} />
           </div>
         </SortableItem>
