@@ -330,7 +330,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         {/if}
       {/if}
       <span
-        class="float-right max-w-[75%]"
+        class="float-right max-w-[75%] bg-black/50 rounded-md"
         class:max-w-50={isFullScreen}
         class:fixed={isFullScreen}
         class:bottom-0={isFullScreen}
