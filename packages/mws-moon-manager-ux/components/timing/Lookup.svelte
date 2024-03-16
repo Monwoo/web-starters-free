@@ -1,4 +1,4 @@
-<!-- <script context="module" ✂prettier:content✂="CiAgLy8gaHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2Uvc3ZlbHRlLXRpbWU/YWN0aXZlVGFiPXJlYWRtZSNjdXN0b20tbG9jYWxlCiAgLy8gaW1wb3J0ICJkYXlqcy9lc20vbG9jYWxlL2ZyIjsKICAvLyBpbXBvcnQgZGF5anMgZnJvbSAiZGF5anMvZXNtIjsKICBpbXBvcnQgImRheWpzL2xvY2FsZS9mciI7CiAgLy8gaW1wb3J0ICJkYXlqcy9sb2NhbGUvZW4iOwogIGRheWpzLmxvY2FsZSgiZnIiKTsgLy8gRnIgbG9jYWxlIC8vIFRPRE8gOiBnbG9iYWwgY29uZmlnIGluc3RlYWQgb2YgcGVyIG1vZHVsZSA/CiAgdmFyIHV0YyA9IHJlcXVpcmUoJ2RheWpzL3BsdWdpbi91dGMnKQogIHZhciB0aW1lem9uZSA9IHJlcXVpcmUoJ2RheWpzL3BsdWdpbi90aW1lem9uZScpIC8vIGRlcGVuZGVudCBvbiB1dGMgcGx1Z2luCiAgZGF5anMuZXh0ZW5kKHV0Yyk7CiAgZGF5anMuZXh0ZW5kKHRpbWV6b25lKTsgLy8gVE9ETyA6IHVzZXIgY29uZmlnIGZvciBzZWxmIHRpbWV6b25lLi4uIChzbG90IGlzIGNvbXB1dGVkIG9uIFVUQyBkYXRlLi4uKQogIC8vIGRheWpzLnR6LnNldERlZmF1bHQoIkV1cm9wZS9QYXJpcyIpOwogIC8vIGh0dHBzOi8vd3d3LnRpbWVhbmRkYXRlLmNvbS90aW1lL21hcC8jIWNpdGllcz0xMzYKICAvLyBodHRwczovL3d3dy50aW1lYW5kZGF0ZS5jb20vd29ybGRjbG9jay91ay9sb25kb24KICAvLyBodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9MaXN0X29mX3R6X2RhdGFiYXNlX3RpbWVfem9uZXMjTE9ORE9OCiAgZGF5anMudHouc2V0RGVmYXVsdCgiRXVyb3BlL0xvbmRvbiIpOwo=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=">{}</script> -->
+<!-- <script context="module" ✂prettier:content✂="CiAgLy8gaHR0cHM6Ly93d3cubnBtanMuY29tL3BhY2thZ2Uvc3ZlbHRlLXRpbWU/YWN0aXZlVGFiPXJlYWRtZSNjdXN0b20tbG9jYWxlCiAgLy8gaW1wb3J0ICJkYXlqcy9lc20vbG9jYWxlL2ZyIjsKICAvLyBpbXBvcnQgZGF5anMgZnJvbSAiZGF5anMvZXNtIjsKICBpbXBvcnQgImRheWpzL2xvY2FsZS9mciI7CiAgLy8gaW1wb3J0ICJkYXlqcy9sb2NhbGUvZW4iOwogIGRheWpzLmxvY2FsZSgiZnIiKTsgLy8gRnIgbG9jYWxlIC8vIFRPRE8gOiBnbG9iYWwgY29uZmlnIGluc3RlYWQgb2YgcGVyIG1vZHVsZSA/CiAgdmFyIHV0YyA9IHJlcXVpcmUoJ2RheWpzL3BsdWdpbi91dGMnKQogIHZhciB0aW1lem9uZSA9IHJlcXVpcmUoJ2RheWpzL3BsdWdpbi90aW1lem9uZScpIC8vIGRlcGVuZGVudCBvbiB1dGMgcGx1Z2luCiAgZGF5anMuZXh0ZW5kKHV0Yyk7CiAgZGF5anMuZXh0ZW5kKHRpbWV6b25lKTsgLy8gVE9ETyA6IHVzZXIgY29uZmlnIGZvciBzZWxmIHRpbWV6b25lLi4uIChzbG90IGlzIGNvbXB1dGVkIG9uIFVUQyBkYXRlLi4uKQogIC8vIGRheWpzLnR6LnNldERlZmF1bHQoIkV1cm9wZS9QYXJpcyIpOwogIC8vIGh0dHBzOi8vd3d3LnRpbWVhbmRkYXRlLmNvbS90aW1lL21hcC8jIWNpdGllcz0xMzYKICAvLyBodHRwczovL3d3dy50aW1lYW5kZGF0ZS5jb20vd29ybGRjbG9jay91ay9sb25kb24KICAvLyBodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9MaXN0X29mX3R6X2RhdGFiYXNlX3RpbWVfem9uZXMjTE9ORE9OCiAgZGF5anMudHouc2V0RGVmYXVsdCgiRXVyb3BlL0xvbmRvbiIpOwo=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=">{}</script> -->
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -12,6 +12,12 @@
   import { state, stateGet } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
+  import { fade } from "svelte/transition";
+  import { slide } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
+  import { fly } from "svelte/transition";
+  import { create_in_transition, create_out_transition } from "svelte/internal";
+  import { Collapse } from "flowbite";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -28,6 +34,9 @@
     urlParams.get("lastSelectedIndex") ?? "0"
   );
   const pageNumber = urlParams.get("page") ?? "1";
+  // https://stackoverflow.com/questions/59062025/is-there-a-way-to-perform-svelte-transition-without-a-if-block
+  // every {} is unique, {} === {} evaluates to false
+  let uniqueKey = {};
 
   const movePageIndex = (delta) => {
     const newPageNum = parseInt(pageNumber) + delta;
@@ -72,8 +81,12 @@
       isLast: lastSelectedIndex == timings.length - 1,
     };
   };
+  let menuIsOpen = false;
 
   onMount(async () => {
+    //   uniqueKey = {};
+    // });
+    //   $: {
     const $ = window.$;
     // // TIPS opti : use svelte html node ref and pass to jquery ?
     // const htmlLookup = $(lookupForm);
@@ -82,19 +95,139 @@
     // const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonLookup]'] ?? '{}')); // TODO : from param or config
     // // TIPS : same as jsonLookup, updated by survey js or other if using ref element instead of raw string... :
     // console.log('lookupSurveyJsData : ', lookupSurveyJsData);
+
+    // TODO : avoid id and use svelte bind...
+    // https://flowbite.com/docs/components/navbar/#example
+    let intro;
+
+    const targetEl = document.getElementById("menu-timing");
+    if (targetEl) {
+      const triggerEl = document.getElementById("menu-timing-opener");
+      const options = {
+        onCollapse: () => {
+          console.log("element has been collapsed");
+          // TODO js create_out_transition buggy ? even with  !block...
+          // if (!intro) {
+          //     intro = create_out_transition(targetEl, fly, {y: 100});
+          // }
+          // intro.start();
+          // intro = null; // redo animation on each expand
+          menuIsOpen = false;
+          uniqueKey = {};
+        },
+        onExpand: () => {
+          console.log("element has been expanded");
+          // https://stackoverflow.com/questions/59062025/is-there-a-way-to-perform-svelte-transition-without-a-if-block
+          if (!intro) {
+            intro = create_in_transition(targetEl, fly, { y: -100 });
+          }
+          intro.start();
+          intro = null; // redo animation on each expand
+          menuIsOpen = true;
+          uniqueKey = {};
+        },
+        onToggle: () => {
+          // console.log("element has been toggled");
+        },
+      };
+
+      const instanceOptions = {
+        id: "menu-timing",
+        override: true,
+      };
+
+      /*
+       * $targetEl: required
+       * $triggerEl: optional
+       * options: optional
+       */
+      const collapse = new Collapse(
+        targetEl,
+        triggerEl,
+        options,
+        instanceOptions
+      );
+    }
   });
+  // }
 
 </script>
 
 <Base {copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
   <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
-    <div class="mws-menu-wrapper">
-      <div class="flex">
+    <div class="mws-menu-wrapper inline-flex flex-col">
+      <!-- https://flowbite.com/docs/components/navbar/#example -->
+      <!-- {#key uniqueKey} // TODO : needed for out to work... but 
+      better make work create_out_transition ? -->
+      <div
+        id="menu-timing"
+        class="detail w-[100vw] hidden"
+        out:slide={{
+          delay: 0,
+          duration: 3000,
+          easing: quintOut,
+          axis: "y",
+        }}
+      >
+        <!-- out:fade={{
+        delay: 0, duration: 3000        
+        }} -->
+        <header class="bg-gray-700 text-white text-center">
+          <Header />
+        </header>
+        <div class="p-3 flex flex-wrap">
+          <a
+            href={Routing.generate("mws_timing_tag_list", {
+              _locale: locale ?? "",
+              viewTemplate: viewTemplate ?? "",
+              ...jsonLookup,
+            })}
+          >
+            <button>Liste des tags</button>
+          </a>
+          <!-- TODO : only remove current filtered query items instead of all ? -->
+          <!-- <form // TODO : no need in qualif stress time, delete from report only is more ok ?
+            action={Routing.generate("mws_timing_delete_all", {
+              _locale: locale ?? "",
+              viewTemplate: viewTemplate ?? "",
+              ...jsonLookup,
+            })}
+            method="post"
+            onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les suivi des temps ?');"
+          >
+            <input type="hidden" name="_csrf_token" value={csrfTimingDelete} />
+            <button
+              class="btn btn-outline-primary"
+              style="--mws-primary-rgb: 255, 0, 0"
+              type="submit">Supprimer les timings</button
+            >
+          </form> -->
+        </div>
+        <div class="p-3 flex flex-wrap">
+          <div class="label">
+            <button
+              data-collapse-toggle="search-timing-lookup"
+              type="button"
+              class="rounded-lg "
+              aria-controls="search-timing-lookup"
+              aria-expanded="false"
+            >
+              Filtres de recherche
+            </button>
+          </div>
+          <div id="search-timing-lookup" class="detail w-full hidden">
+            {@html lookupForm}
+          </div>
+        </div>
+      </div>
+      <!-- {/key} -->
+      <div class="inline-flex">
         <button
+          id="menu-timing-opener"
           data-collapse-toggle="menu-timing"
           type="button"
-          class="rounded-lg "
+          class="rounded-lg m-2"
           aria-controls="search-timing-lookup"
           aria-expanded="false"
         >
@@ -132,77 +265,6 @@
             <option>Auto qualif type 1</option>
           </select>
         </div> -->
-      </div>
-      <div id="menu-timing" class="detail w-full hidden">
-        <header class="bg-gray-700 text-white text-center">
-          <Header />
-        </header>
-        <div class="p-3 flex flex-wrap">
-          <a
-            href={Routing.generate("mws_offer_import", {
-              _locale: locale ?? "",
-              viewTemplate: viewTemplate ?? "",
-            })}
-          >
-            <button class="btn btn-outline-primary p-1 m-2"
-              >Exporter les timings.</button
-            >
-          </a>
-          <!-- TODO : filter import on selected filter ? to reduce part of files loads/overwrites ? -->
-          <a
-            href={Routing.generate("mws_offer_import", {
-              _locale: locale ?? "",
-              viewTemplate: viewTemplate ?? "",
-              ...jsonLookup,
-            })}
-          >
-            <button class="btn btn-outline-primary p-1 m-2"
-              >Importer des timings.</button
-            >
-          </a>
-          <a
-            href={Routing.generate("mws_timing_tag_list", {
-              _locale: locale ?? "",
-              viewTemplate: viewTemplate ?? "",
-              ...jsonLookup,
-            })}
-          >
-            <button>Liste des tags</button>
-          </a>
-          <!-- TODO : only remove current filtered query items instead of all ? -->
-          <form
-            action={Routing.generate("mws_timing_delete_all", {
-              _locale: locale ?? "",
-              viewTemplate: viewTemplate ?? "",
-              ...jsonLookup,
-            })}
-            method="post"
-            onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les suivi des temps ?');"
-          >
-            <input type="hidden" name="_csrf_token" value={csrfTimingDelete} />
-            <button
-              class="btn btn-outline-primary p-1 m-2"
-              style="--mws-primary-rgb: 255, 0, 0"
-              type="submit">Supprimer les timings</button
-            >
-          </form>
-        </div>
-        <div class="p-3 flex flex-wrap">
-          <div class="label">
-            <button
-              data-collapse-toggle="search-timing-lookup"
-              type="button"
-              class="rounded-lg "
-              aria-controls="search-timing-lookup"
-              aria-expanded="false"
-            >
-              Filtres de recherche
-            </button>
-          </div>
-          <div id="search-timing-lookup" class="detail w-full hidden">
-            {@html lookupForm}
-          </div>
-        </div>
       </div>
     </div>
 
@@ -255,7 +317,7 @@
       <SquareList
         bind:lastSelectedIndex
         {timings}
-        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
+        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%] p-7"
       />
     </div>
     <div>{@html timingsPaginator}</div>
@@ -267,6 +329,7 @@
     />
   </div>
 </Base>
+
 <style lang="scss">
   // TODO : post CSS syntax allowed in svelte scss ?
   // Done in packages/mws-moon-manager/assets/styles/app.scss
@@ -280,4 +343,5 @@
   // .fixed-important {
   //   @apply fixed #{!important};
   // }
+
 </style>
