@@ -363,7 +363,8 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each} -->
-      <QuickList  />
+      <QuickList
+      bind:qualifTemplates />
 
       <Loader {isLoading} />
     </div>
