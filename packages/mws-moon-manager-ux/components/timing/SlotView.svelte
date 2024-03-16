@@ -258,7 +258,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
   <!-- {timingSlot?.sourceStamp} -->
   <div
     on:click={() => (isFullScreen = !isFullScreen)}
-    class="full-screen-container bg-black text-white
+    class="full-screen-container bg-black text-white fill-white
     rounded-se-lg
     overflow-scroll {fullscreenClass}"
     class:fixed={isFullScreen}
