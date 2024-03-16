@@ -15,6 +15,7 @@ import AddModal from "../tags/AddModal.svelte";
   export let typeAheadDetails;
   export let confirmUpdateOrNew;
   export let isLoading = false;
+  export let typeAheadValue;
 
   console.debug("qualif Item view ", qualif);
   console.debug("Type ahead", qualifLookups);
@@ -31,10 +32,12 @@ import AddModal from "../tags/AddModal.svelte";
 
   export const extract = (item) => item.label;
 
-  export const sendConfirmUpdateOrNew = async (label) => {
+  export const openConfirmUpdateOrNew = async (label) => {
     if (label && label.length) {
       confirmUpdateOrNew.eltModal.show();
     }
+    // TODO : wait for response ?
+    return true;
   };
 
 </script>
@@ -85,6 +88,7 @@ import AddModal from "../tags/AddModal.svelte";
         showDropdownOnFocus
         showAllResultsOnFocus
         focusAfterSelect
+        bind:value={typeAheadValue}
         {data}
         {extract}
         let:result
@@ -96,6 +100,7 @@ import AddModal from "../tags/AddModal.svelte";
           typeAheadDetails = e.detail;
           console.log('TODO just switch this qualif with selected one');
           qualif = typeAheadDetails.original;
+          typeAheadValue = ''; // Clean used selection
           isLoading = false;
         }}
         on:clear={async (e)=>{
@@ -117,7 +122,9 @@ import AddModal from "../tags/AddModal.svelte";
           } else {
             typeAheadDetails = null;
             // console.log('TODO : Create new qualif item with this unused label');
-            await sendConfirmUpdateOrNew(qualifLbl);
+            if (await openConfirmUpdateOrNew(qualifLbl)) {
+              typeAheadValue = ''; // Clean used selection
+            }
           }
           console.log('Form resp', e.target.form.dataset);
           await new Promise(resolve => setTimeout(resolve, 200)).then(()=>{
