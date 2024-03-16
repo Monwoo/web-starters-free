@@ -51,7 +51,8 @@
     >
       <div>
         {#each qualif?.timeTags ?? [] as tag, tagSlug (tag.slug)}
-          {tagSlug}
+          <!-- {tagSlug} -->
+          {tag.label}
         {/each}
       </div>
     </div>
