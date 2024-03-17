@@ -22,7 +22,7 @@
   import { draggable } from "svelte-agnostic-draggable";
   import mapTouchToMouseFor from "svelte-touch-to-mouse";
   import { onMount } from "svelte";
-import Base from "../layout/Base.svelte";
+  import Base from "../layout/Base.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -45,6 +45,7 @@ import Base from "../layout/Base.svelte";
   export let fullscreenClass = "";
   export let allTagsList;
   export let slotHeader;
+  export let slotView;
 
   allTagsList = allTagsList ?? stateGet(get(state), "allTagsList");
 
@@ -340,15 +341,9 @@ import Base from "../layout/Base.svelte";
       initialY = Event.detail.position.top;
       return;
     }
-    console.debug("Drag to", deltaY, 'from', initialHeight);
+    console.debug("Drag to", deltaY, "from", initialHeight);
     if (resizing) {
-      Height = Math.max(
-        minHeight,
-        Math.min(
-          maxHeight,
-          initialHeight + deltaY
-        )
-      );
+      Height = Math.max(minHeight, Math.min(maxHeight, initialHeight + deltaY));
     } else {
       console.debug("Drag start", Event);
       initialY = Event.detail.position.top;
@@ -365,16 +360,59 @@ import Base from "../layout/Base.svelte";
     // Event.preventDefault();
     // This one is CUSTOM event, catch from parent is ok with :
     // on:mousedown|stopPropagation|preventDefault
-
-
     resizing = false;
     console.debug("Stop height", slotHeader.offsetHeight);
   }
 
+  // compute from element size at onMount
+  let slotHeight, slotMinHeight, slotMaxHeight;
+  let slotInitialHeight, slotInitialY;
+  let slotResizing = false;
+
+  // {left: 0, top: -28}left: 0top: -28[[Prototype]]: Object
+  let slotAvoidFirstStrangeTop = false; // In fullscreen, before move, wrong -20 position...
+
+  const onSlotDragMove = (e) => {
+    const deltaY = e.detail.position.top - slotInitialY;
+    console.debug("Drag pos", e.detail.position);
+    if (slotAvoidFirstStrangeTop) {
+      slotAvoidFirstStrangeTop = false;
+      // Might not be a bug ? because my data go over screen height
+      // and first height set move all pos ? (in fullscreen mode only)
+      slotInitialY = e.detail.position.top;
+      return;
+    }
+    console.debug("Drag to", deltaY, "from", slotInitialHeight);
+    if (slotResizing) {
+      slotHeight = Math.max(
+        slotMinHeight,
+        Math.min(slotMaxHeight, slotInitialHeight + deltaY)
+      );
+    } else {
+      console.debug("Drag start", e);
+      slotInitialY = e.detail.position.top;
+      // slotInitialHeight = slotView.getBoundingClientRect().height; // slotView.offsetHeight;
+      slotInitialHeight = slotView.offsetHeight;
+      console.debug("Init height", slotInitialHeight);
+      slotAvoidFirstStrangeTop = true;
+      slotResizing = true;
+    }
+  };
+  const onSlotDragStop = (e) => {
+    slotResizing = false;
+    console.debug("Stop height", slotView.offsetHeight);
+  };
+
   onMount(() => {
-    Height = slotHeader.offsetHeight;
+    // Height = slotHeader.offsetHeight; // TIPS : do not setup on mount, will have fixed size otherwise
     minHeight = 12;
-    maxHeight = window.screen.height;
+    // TIPS : ok to go over screen size since we have multi-scrolls
+    maxHeight = Infinity; // window.screen.height;
+
+    // slotHeight = slotView.offsetHeight; // TIPS : do not setup on mount, will have fixed size otherwise
+    slotMinHeight = 12;
+    slotMaxHeight = Infinity; // window.screen.height;
+
     // TIPS : for computed height after css transformations :
     // Height = slotHeader.getBoundingClientRect().height;
     // DOMRect {
@@ -457,7 +495,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <span
         class="float-right m-1 cursor-context-menu hover:opacity-90"
         on:click|stopPropagation={() => {
-          Height = null;
+          Height = null; slotHeight = null;
           isHeaderExpanded = !isHeaderExpanded;
         }}
       >
@@ -572,14 +610,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
     <div
       class="overflow-visible sticky top-0 h-[0px] flex items-end
     fill-white/70 text-white/70 bg-black/50 z-50"
-    class:hidden={resizing}
-    on:click|stopPropagation|preventDefault
-    on:mousedown|stopPropagation|preventDefault
-    on:mousemove|stopPropagation|preventDefault
-    on:mouseup|stopPropagation|preventDefault
-    on:touchstart|stopPropagation|preventDefault
-    on:touchmove|stopPropagation|preventDefault
-    on:touchend|stopPropagation|preventDefault
+      class:hidden={resizing}
+      on:click|stopPropagation|preventDefault
+      on:mousedown|stopPropagation|preventDefault
+      on:mousemove|stopPropagation|preventDefault
+      on:mouseup|stopPropagation|preventDefault
+      on:touchstart|stopPropagation|preventDefault
+      on:touchmove|stopPropagation|preventDefault
+      on:touchend|stopPropagation|preventDefault
     >
       <div
         class="draggable"
@@ -616,19 +654,73 @@ style:opacity={isLoading ? 0.8 : 1} -->
 
       class:h-[95vh]={isFullScreen && isHeaderExpanded}
       class:mb-[1rem]={isFullScreen} // bp : will add double scroll
-  -->
-    <object
-      on:click={() => (resizing ? null : isFullScreen = !isFullScreen)}
-      class="object-contain border-solid border-4 w-full max-h-[95vh]"
-      class:h-[80vh]={isFullScreen && !isHeaderExpanded}
+
+      // => not needed any more, use full width for image
+      // user can resize part of screen if want to fit part of it...
       class:h-[95vh]={isFullScreen && isHeaderExpanded}
+
+    -->
+    <object
+      bind:this={slotView}
+      on:click={() => (resizing ? null : (isFullScreen = !isFullScreen))}
+      class="object-contain border-solid border-4 w-full"
+      class:h-[80vh]={isFullScreen && !isHeaderExpanded}
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
       type="image/png"
+      style={slotHeight
+        ? `
+        height: ${slotHeight}px;
+      `
+        : ""}
     >
       <img class="w-full" loading="eager" src={timingSlot.thumbnailJpeg} />
     </object>
+    <div
+      class="overflow-visible sticky top-0 flex items-end h-[0px]
+    fill-white/70 text-white/70 bg-black/50 z-50"
+      class:hidden={slotResizing}
+      on:click|stopPropagation|preventDefault
+      on:mousedown|stopPropagation|preventDefault
+      on:mousemove|stopPropagation|preventDefault
+      on:mouseup|stopPropagation|preventDefault
+      on:touchstart|stopPropagation|preventDefault
+      on:touchmove|stopPropagation|preventDefault
+      on:touchend|stopPropagation|preventDefault
+    >
+      <div
+        class="draggable"
+        use:draggable={{
+          helper: "clone", // TODO: clone is going faster than mouse on Y...?
+          revert: true,
+        }}
+        on:drag:move={onSlotDragMove}
+        on:drag:stop={onSlotDragStop}
+        on:click|stopPropagation|preventDefault
+      >
+        <svg
+          class="w-7 h-7"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"
+          />
+        </svg>
+      </div>
+    </div>
+    <!-- TIPS : add bottom margin to allow height size increase
+     (other wise, no bottom space to scroll up to...) -->
+    <div class:mb-[5rem]={isHeaderExpanded} />
 
     <!-- <div
     class="object-contain border-solid border-4"
