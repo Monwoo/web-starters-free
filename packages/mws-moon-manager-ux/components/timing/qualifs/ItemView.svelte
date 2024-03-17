@@ -125,7 +125,7 @@ import { onMount, tick } from "svelte";
       {qualif.label}
     </did>
   {/if}
-  {#if expandEdit}
+  {#if expandEdit && isHeaderExpanded}
     <div
       class="mws-timing-qualif-view flex flex-wrap border border-slate-700
       rounded-es-lg rounded-se-lg bg-white text-slate-700 fill-slate-700
