@@ -1445,6 +1445,10 @@ class MwsTimingController extends AbstractController
         }
         // dd($tag);
         $timeSlot->getTags()->clear();
+        // Need to re-compute Max for items using this max... 
+        // TODO : add event system to plug stuff on max changes ? Doctrine listeners ?
+        $timeSlot->setMaxPath(null);
+        $timeSlot->getMaxPriceTag(null);
 
         $this->em->persist($timeSlot);
         $this->em->flush();

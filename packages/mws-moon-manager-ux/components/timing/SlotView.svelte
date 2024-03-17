@@ -14,6 +14,7 @@
   import dayjs from "dayjs";
   import TagsInput from "./tags/TagsInput.svelte";
   import AddModal from "../message/AddModal.svelte";
+  import _ from "lodash";
 
   import PhotoSwipeGallery from "svelte-photoswipe";
   import Loader from "../layout/widgets/Loader.svelte";
@@ -102,6 +103,47 @@
     window.location.search = urlParams;
   };
 
+  const hackyRefresh = (data) => {
+    // TODO : better sync all in-coming props from 'needSync' attr ?
+    // TODO : + why not working simpliy with :
+    // timingSlot?.maxPath = data.sync.maxPath;
+    // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+
+    // Hacky or regular solution ? :
+    // TIPS : USING _.merge keep existing references and avoid
+    // messing up Svelte reactivity like above ? (BUT OK for TagsInput component, why ?)
+    if (timingSlot?.maxPath) {
+      // Clean initial values 'inPlace' :
+      // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+      // timingSlot?.maxPath.length = 0;
+      // https://stackoverflow.com/questions/19316857/removing-all-properties-from-a-object
+      Object.keys(timingSlot?.maxPath).forEach(
+        (key) => delete timingSlot.maxPath[key]
+      );
+
+      //   timingSlot?.maxPath = _.merge(timingSlot?.maxPath, data.sync.maxPath);
+      //   timingSlot?.maxPriceTag = _.merge(
+      //     timingSlot?.maxPriceTag,
+      //     data.sync.maxPriceTag
+      //   );
+      //   // if (data.sync.maxPath) {
+      //   //   _.merge(timingSlot?.maxPath, data.sync.maxPath);
+      //   //   _.merge(timingSlot?.maxPriceTag, data.sync.maxPriceTag);
+      //   // } else {
+      //   //   timingSlot?.maxPath = {};
+      //   //   timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+      //   // }
+      // } else {
+      //   timingSlot?.maxPath = data.sync.maxPath;
+      //   timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+    }
+    timingSlot?.maxPath = _.merge(timingSlot?.maxPath, data.sync.maxPath);
+    timingSlot?.maxPriceTag = _.merge(
+      timingSlot?.maxPriceTag,
+      data.sync.maxPriceTag
+    );
+  };
+
   export let toggleQualif = async (qualif) => {
     isLoading = true;
     const data = {
@@ -133,9 +175,11 @@
           // const data = await resp.text();
           // console.debug("resp", data);
           timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          // TODO : better sync all in-coming props from 'needSync' attr ?
-          timingSlot?.maxPath = data.sync.maxPath;
-          timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+          // // TODO : better sync all in-coming props from 'needSync' attr ?
+          // timingSlot?.maxPath = data.sync.maxPath;
+          // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+          hackyRefresh(data);
+
           // TODO : NO reactivity for timingSlot?.maxPath ?
           //        => missing live price lookup update at top of SlotView when changing tags,
           //           but : ok on full page refresh...
@@ -183,9 +227,11 @@
         } else {
           const data = await resp.json();
           timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          // TODO : better sync all in-coming props from 'needSync' attr ?
-          timingSlot?.maxPath = data.sync.maxPath;
-          timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+          // // TODO : better sync all in-coming props from 'needSync' attr ?
+          // timingSlot?.maxPath = data.sync.maxPath;
+          // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+          hackyRefresh(data);
+
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
           console.debug("Did add tag", timingSlot?.tags);
           stateUpdate(state, {
@@ -277,12 +323,21 @@ style:opacity={isLoading ? 0.8 : 1} -->
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
       .format("YYYY/MM/DD H:mm:ss")}
-    {#if timingSlot?.maxPath }
-      [{(timingSlot.maxPath?.maxValue
-        ? (timingSlot.maxPath.maxValue * 10) / 60
-        : null
-      )?.toPrettyNum(2) ?? "--"} €]
-    {/if}
+    <!-- // TODO : strange : tags are reactive, but not the maxPath etc ? -->
+    <!-- {#if timingSlot?.tags?.length} -->
+    <span
+      class="border"
+      class:border-gray-600={!timingSlot?.tags?.length}
+      class:border-green-400={timingSlot?.tags?.length}
+    >
+      {timingSlot.maxPath?.maxValue ?? 0}/hr [{(timingSlot.maxPath &&
+        (timingSlot.maxPath?.maxValue
+          ? (timingSlot.maxPath.maxValue * 10) / 60
+          : null
+        )?.toPrettyNum(2)) ??
+        "--"} €]
+    </span>
+    <!-- {/if} -->
   </div>
   <div>
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
