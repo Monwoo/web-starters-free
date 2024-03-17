@@ -108,6 +108,10 @@
     // TODO : + why not working simpliy with :
     // timingSlot?.maxPath = data.sync.maxPath;
     // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+    // => might be related to bind:timeQualifs ? bind for update
+    //    from view is wrong way ? always need to update :
+    //      - self for self view
+    //      - parent list to propagate outside (parent + children + etc...)
 
     // Hacky or regular solution ? :
     // TIPS : USING _.merge keep existing references and avoid
@@ -366,7 +370,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
       <span
-        class="float-right m-1 cursor-context-menu"
+        class="float-right m-1 cursor-context-menu hover:opacity-90"
         on:click|stopPropagation={() => (isHeaderExpanded = !isHeaderExpanded)}
       >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
@@ -456,7 +460,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each} -->
-      <QuickList {allTagsList} bind:qualifTemplates />
+      <QuickList {allTagsList} bind:isHeaderExpanded bind:qualifTemplates />
 
       <Loader {isLoading} />
     </div>

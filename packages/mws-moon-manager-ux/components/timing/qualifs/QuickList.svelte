@@ -15,6 +15,13 @@
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
 
+  export let isHeaderExpanded = false;
+  // // TIPS : MUST NOT be setup for top root binds
+  // //         to be able to feed with initial values ?
+  // //           => Did juste messup with component name, 
+  // //              reactivity ok event with initial value
+  // export let isHeaderExpanded;
+
   export let qualifTemplates;
   export let quickQualifTemplates;
   export let allTagsList;
@@ -159,6 +166,7 @@
             bind:qualif
             bind:quickQualifTemplates
             bind:maxItemsLimit={maxLimit}
+            bind:isHeaderExpanded
             {confirmUpdateOrNew} {allTagsList}
             qualifLookups={qualifTemplates} />
           </div>

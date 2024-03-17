@@ -19,6 +19,7 @@ import { onMount, tick } from "svelte";
   export let selectedTarget;
   export let allTagsList;
   export let expandEdit = false;
+  export let isHeaderExpanded = false;
   let cssClass;
   export { cssClass as class };
   export let typeAheadDetails;
@@ -103,20 +104,27 @@ import { onMount, tick } from "svelte";
       TODO : tailwind multiple text shadow ?
       https://stackoverflow.com/questions/34931463/how-to-make-multiple-drop-shadow 
       <span class="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8) 0_-1.2px_1.2px_rgba(0,0,0,0.8)]"> -->
+    {#if !isHeaderExpanded}
+      <span class="text-slate-400">
+        [{String.fromCharCode(qualif.shortcut)}]
+      </span>
+    {/if}
     <span class="mws-drop-shadow">
       {qualif.label}
     </span>
   </button>
   <!-- <MoveIcon propSize={12} /> -->
-  <did
-    on:click|stopPropagation={() => (expandEdit = !expandEdit)}
-    class="w-full text-center border border-purple-700 m-1 cursor-pointer"
-  >
-    <span class="text-slate-400">
-      [{String.fromCharCode(qualif.shortcut)}]
-    </span>
-    {qualif.label}
-  </did>
+  {#if isHeaderExpanded}
+    <did
+      on:click|stopPropagation={() => (expandEdit = !expandEdit)}
+      class="w-full text-center border border-purple-700 m-1 cursor-pointer"
+    >
+      <span class="text-slate-400">
+        [{String.fromCharCode(qualif.shortcut)}]
+      </span>
+      {qualif.label}
+    </did>
+  {/if}
   {#if expandEdit}
     <div
       class="mws-timing-qualif-view flex flex-wrap border border-slate-700
