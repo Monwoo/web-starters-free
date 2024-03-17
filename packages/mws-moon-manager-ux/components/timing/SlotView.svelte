@@ -19,6 +19,10 @@
   import PhotoSwipeGallery from "svelte-photoswipe";
   import Loader from "../layout/widgets/Loader.svelte";
   import QuickList from "./qualifs/QuickList.svelte";
+  import { draggable } from "svelte-agnostic-draggable";
+  import mapTouchToMouseFor from "svelte-touch-to-mouse";
+  import { onMount } from "svelte";
+import Base from "../layout/Base.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -40,6 +44,7 @@
   export let isHeaderExpanded = false;
   export let fullscreenClass = "";
   export let allTagsList;
+  export let slotHeader;
 
   allTagsList = allTagsList ?? stateGet(get(state), "allTagsList");
 
@@ -309,6 +314,81 @@
   // TIPS : in conjunction with tests on lastSelectedIndex, will refresh move position:
   $: lastSelectedIndex, (moveResp = moveSelectedIndex(0));
 
+  // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
+  mapTouchToMouseFor(".draggable");
+  // compute from element size at onMount
+  let Height, minHeight, maxHeight;
+  let initialHeight, initialY;
+  let resizing = false;
+
+  // {left: 0, top: -28}left: 0top: -28[[Prototype]]: Object
+  let avoidFirstStrangeTop = false; // In fullscreen, before move, wrong -20 position...
+
+  function onDragMove(Event) {
+    // https://stackoverflow.com/questions/5429827/how-can-i-prevent-text-element-selection-with-cursor-drag
+    // Event.stopPropagation(); // Try to avoid text selections
+    // Event.preventDefault();
+    // This one is CUSTOM event, catch from parent is ok with :
+    // on:mousedown|stopPropagation|preventDefault
+
+    const deltaY = Event.detail.position.top - initialY;
+    console.debug("Drag pos", Event.detail.position);
+    if (avoidFirstStrangeTop) {
+      avoidFirstStrangeTop = false;
+      // Might not be a bug ? because my data go over screen height
+      // and first height set move all pos ? (in fullscreen mode only)
+      initialY = Event.detail.position.top;
+      return;
+    }
+    console.debug("Drag to", deltaY, 'from', initialHeight);
+    if (resizing) {
+      Height = Math.max(
+        minHeight,
+        Math.min(
+          maxHeight,
+          initialHeight + deltaY
+        )
+      );
+    } else {
+      console.debug("Drag start", Event);
+      initialY = Event.detail.position.top;
+      // initialHeight = slotHeader.getBoundingClientRect().height; // slotHeader.offsetHeight;
+      initialHeight = slotHeader.offsetHeight;
+      console.debug("Init height", initialHeight);
+      avoidFirstStrangeTop = true;
+      resizing = true;
+    }
+  }
+  function onDragStop(Event) {
+    // // https://stackoverflow.com/questions/5429827/how-can-i-prevent-text-element-selection-with-cursor-drag
+    // Event.stopPropagation(); // Try to avoid text selections (on:mousemove etc...)
+    // Event.preventDefault();
+    // This one is CUSTOM event, catch from parent is ok with :
+    // on:mousedown|stopPropagation|preventDefault
+
+
+    resizing = false;
+    console.debug("Stop height", slotHeader.offsetHeight);
+  }
+
+  onMount(() => {
+    Height = slotHeader.offsetHeight;
+    minHeight = 12;
+    maxHeight = window.screen.height;
+    // TIPS : for computed height after css transformations :
+    // Height = slotHeader.getBoundingClientRect().height;
+    // DOMRect {
+    //   bottom: 177,
+    //   height: 54.7,
+    //   left: 278.5,​
+    //   right: 909.5,
+    //   top: 122.3,
+    //   width: 631,
+    //   x: 278.5,
+    //   y: 122.3,
+    // }
+  });
+
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -350,10 +430,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
 
   <!-- {timingSlot?.sourceStamp} -->
   <div
-    on:click={() => (isFullScreen = !isFullScreen)}
     class="full-screen-container bg-black text-white fill-white
-    rounded-se-lg
-    overflow-scroll {fullscreenClass}"
+    rounded-se-lg overflow-scroll
+    {fullscreenClass}"
     class:fixed={isFullScreen}
     class:top-0={isFullScreen}
     class:bottom-0={isFullScreen}
@@ -364,14 +443,23 @@ style:opacity={isLoading ? 0.8 : 1} -->
   hover:max-h-fit hover:overflow-scroll"> -->
     <div
       on:click|stopPropagation
-      class="overflow-scroll"
-      class:max-h-[7rem]={!isHeaderExpanded}
+      bind:this={slotHeader}
+      class="overflow-scroll relative"
+      class:h-[7rem]={!isHeaderExpanded}
+      style={Height
+        ? `
+        height: ${Height}px;
+      `
+        : ""}
     >
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
       <span
         class="float-right m-1 cursor-context-menu hover:opacity-90"
-        on:click|stopPropagation={() => (isHeaderExpanded = !isHeaderExpanded)}
+        on:click|stopPropagation={() => {
+          Height = null;
+          isHeaderExpanded = !isHeaderExpanded;
+        }}
       >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
         <!-- {$timer} -->
@@ -385,9 +473,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
             .format("YYYY/MM/DD H:mm:ss")}
         </span>
       </span>
-      <span
-        class="float-right right-0 top-0 z-40 sticky"
-      >
+      <span class="float-right right-0 top-0 z-40 sticky">
         <span
           class="float-right right-0 top-0 w-[6em] sticky pointer-events-none"
         >
@@ -463,6 +549,66 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <QuickList {allTagsList} bind:isHeaderExpanded bind:qualifTemplates />
 
       <Loader {isLoading} />
+
+      <!-- 
+        class:hidden={!isHeaderExpanded}
+      -->
+      <!-- 
+        TOO tricky with inner auto scroll at bottom ?
+        <div class="draggable absolute bottom-0 left-0
+       fill-white text-white bg-black/50 z-50 p-2"
+      use:draggable={{
+        helper:'clone', revert:true
+      }}
+        on:drag:move={onDragMove} on:drag:stop={onDragStop}
+      >
+        <svg class="w-7 h-7" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"/>
+        </svg>      
+      </div>   -->
+    </div>
+    <!-- TODO : solve clone or elmt get crasy, for now hide to hide bug with :
+    class:hidden={resizing} -->
+    <div
+      class="overflow-visible sticky top-0 h-[0px] flex items-end
+    fill-white/70 text-white/70 bg-black/50 z-50"
+    class:hidden={resizing}
+    on:click|stopPropagation|preventDefault
+    on:mousedown|stopPropagation|preventDefault
+    on:mousemove|stopPropagation|preventDefault
+    on:mouseup|stopPropagation|preventDefault
+    on:touchstart|stopPropagation|preventDefault
+    on:touchmove|stopPropagation|preventDefault
+    on:touchend|stopPropagation|preventDefault
+    >
+      <div
+        class="draggable"
+        use:draggable={{
+          helper: "clone", // TODO: clone is going faster than mouse on Y...?
+          revert: true,
+        }}
+        on:drag:move={onDragMove}
+        on:drag:stop={onDragStop}
+        on:click|stopPropagation|preventDefault
+      >
+        <svg
+          class="w-7 h-7"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"
+          />
+        </svg>
+      </div>
     </div>
     <!-- // TODO : remove max-h-[85%]={isFullScreen} + work with flex grow ?
     + https://stackoverflow.com/questions/15999760/load-image-asynchronous
@@ -472,6 +618,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       class:mb-[1rem]={isFullScreen} // bp : will add double scroll
   -->
     <object
+      on:click={() => (resizing ? null : isFullScreen = !isFullScreen)}
       class="object-contain border-solid border-4 w-full max-h-[95vh]"
       class:h-[80vh]={isFullScreen && !isHeaderExpanded}
       class:h-[95vh]={isFullScreen && isHeaderExpanded}

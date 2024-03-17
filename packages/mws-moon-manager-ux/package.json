@@ -25,6 +25,7 @@
     "locally-unique-id-generator": "^0.1.5",
     "sass": "^1.62.0",
     "svelte": "^4.2.2",
+    "svelte-agnostic-draggable": "^0.2.0",
     "svelte-awesome-color-picker": "^2.4.1",
     "svelte-copy": "^1.4.1",
     "svelte-drag-drop-touch": "^0.1.9",
@@ -32,6 +33,7 @@
     "svelte-photoswipe": "^0.0.2",
     "svelte-sortable-items": "^0.0.5",
     "svelte-time": "^0.8.0",
+    "svelte-touch-to-mouse": "^1.0.0",
     "svelte-typeahead": "^4.4.1"
   }
 }
