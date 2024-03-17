@@ -382,42 +382,46 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </span>
       </span>
       <span
-        class="float-right right-0 top-0 w-[6em] sticky pointer-events-none"
+        class="float-right right-0 top-0 z-40 sticky"
       >
-        [{pageNumber}-{lastSelectedIndex}]
+        <span
+          class="float-right right-0 top-0 w-[6em] sticky pointer-events-none"
+        >
+          [{pageNumber}-{lastSelectedIndex}]
+        </span>
+        {#if isFullScreen}
+          <button
+            class="float-right m-1 top-0 sticky"
+            style:opacity={!moveResp.isLast ? 1 : 0.7}
+            on:click|stopPropagation={() => (moveResp = moveSelectedIndex(1))}
+          >
+            Next.
+          </button>
+          {#if moveResp.isLast}
+            <button
+              class="float-right m-1 top-0 sticky"
+              on:click|stopPropagation={() => movePageIndex(1)}
+            >
+              Next. Page
+            </button>
+          {/if}
+          <button
+            class="float-right m-1 top-0 sticky"
+            style:opacity={!moveResp.isFirst ? 1 : 0.7}
+            on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
+          >
+            Prev.
+          </button>
+          {#if moveResp.isFirst && pageNumber > 1}
+            <button
+              class="float-right m-1 top-0 sticky"
+              on:click|stopPropagation={() => movePageIndex(-1)}
+            >
+              Prev. Page
+            </button>
+          {/if}
+        {/if}
       </span>
-      {#if isFullScreen}
-        <button
-          class="float-right m-1 top-0 sticky"
-          style:opacity={!moveResp.isLast ? 1 : 0.7}
-          on:click|stopPropagation={() => (moveResp = moveSelectedIndex(1))}
-        >
-          Next.
-        </button>
-        {#if moveResp.isLast}
-          <button
-            class="float-right m-1 top-0 sticky"
-            on:click|stopPropagation={() => movePageIndex(1)}
-          >
-            Next. Page
-          </button>
-        {/if}
-        <button
-          class="float-right m-1 top-0 sticky"
-          style:opacity={!moveResp.isFirst ? 1 : 0.7}
-          on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
-        >
-          Prev.
-        </button>
-        {#if moveResp.isFirst && pageNumber > 1}
-          <button
-            class="float-right m-1 top-0 sticky"
-            on:click|stopPropagation={() => movePageIndex(-1)}
-          >
-            Prev. Page
-          </button>
-        {/if}
-      {/if}
       <span
         class="float-right max-w-[75%] bg-black/80 rounded-md"
         class:!max-w-[50%]={isFullScreen}
@@ -459,12 +463,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
     <!-- // TODO : remove max-h-[85%]={isFullScreen} + work with flex grow ?
     + https://stackoverflow.com/questions/15999760/load-image-asynchronous
     (but load this one first...)
-    -->
+
+      class:h-[95vh]={isFullScreen && isHeaderExpanded}
+      class:mb-[1rem]={isFullScreen} // bp : will add double scroll
+  -->
     <object
       class="object-contain border-solid border-4 w-full max-h-[95vh]"
-      class:h-[85vh]={isFullScreen && !isHeaderExpanded}
+      class:h-[80vh]={isFullScreen && !isHeaderExpanded}
       class:h-[95vh]={isFullScreen && isHeaderExpanded}
-      class:mb-[1rem]={isFullScreen}
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}

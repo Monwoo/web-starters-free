@@ -302,7 +302,7 @@
       [{pageNumber}-{lastSelectedIndex}]
     </span>
 
-    <div class="flex flex-col h-[90vh] w-[100vw] md:flex-row">
+    <div class="flex flex-col h-[80vh] w-[100vw] md:flex-row">
       <!-- { JSON.stringify(timings) } -->
       {#if timings[lastSelectedIndex] ?? false}
         <SlotView
