@@ -1248,6 +1248,10 @@ class MwsTimingController extends AbstractController
 
         return $this->json([
             'newTags' => $timeSlot->getTags(),
+            'sync' => [
+                'maxPath' => $timeSlot->getMaxPath(),
+                'maxPriceTag' => $timeSlot->getMaxPriceTag(),
+            ],
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-add')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
@@ -1396,6 +1400,10 @@ class MwsTimingController extends AbstractController
 
         return $this->json([
             'newTags' => $timeSlot->getTags(),
+            'sync' => [
+                'maxPath' => $timeSlot->getMaxPath(),
+                'maxPriceTag' => $timeSlot->getMaxPriceTag(),
+            ],
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-remove')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
@@ -1443,6 +1451,10 @@ class MwsTimingController extends AbstractController
 
         return $this->json([
             'newTags' => $timeSlot->getTags(),
+            'sync' => [
+                'maxPath' => $timeSlot->getMaxPath(),
+                'maxPriceTag' => $timeSlot->getMaxPriceTag(),
+            ],
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-tag-remove-all')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
@@ -1938,7 +1950,12 @@ class MwsTimingController extends AbstractController
         $this->em->flush();
 
         return $this->json([
+            // TODO : refactor 'newTags', put in 'sync' system as 'tags' instead
             'newTags' => $timeSlot->getTags(),
+            'sync' => [
+                'maxPath' => $timeSlot->getMaxPath(),
+                'maxPriceTag' => $timeSlot->getMaxPriceTag(),
+            ],
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-toggle')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);

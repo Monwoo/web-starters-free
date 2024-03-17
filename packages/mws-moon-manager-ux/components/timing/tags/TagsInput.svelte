@@ -15,6 +15,8 @@
   export let timing;
   export let allTagsList;
   export let tags;
+  export let maxPath;
+  export let maxPriceTag;
   export let modalId;
 
   allTagsList = allTagsList ?? stateGet(get(state), 'allTagsList');
@@ -23,6 +25,15 @@
   // BUT might leave old instance obj asyn,
   //   better use bind: to avoid async behavior
   $: timing?.tags = tags;
+  // TODO : better sync all in-coming props from 'needSync' attr ?
+  $: timing?.maxPath = maxPath;
+  $: timing?.maxPriceTag = maxPriceTag;
+  if (!maxPath) {
+    maxPath = timing?.maxPath;
+  }
+  if (!maxPriceTag) {
+    maxPriceTag = timing?.maxPriceTag;
+  }
 
   let addedTagKey;
   export let removeTag = async (tag, comment = null) => {
@@ -66,6 +77,10 @@
           // got the desired response
           const data = await resp.json();
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // TODO : better sync all in-coming props from 'needSync' attr ?
+          maxPath = data.sync.maxPath;
+          maxPriceTag = data.sync.maxPriceTag;
+
           // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
           stateUpdate(state, {
             csrfTimingTagRemove: data.newCsrf,
@@ -113,6 +128,10 @@
       } else {
           const data = await resp.json();
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // TODO : better sync all in-coming props from 'needSync' attr ?
+          maxPath = data.sync.maxPath;
+          maxPriceTag = data.sync.maxPriceTag;
+
           console.debug("Did add tag", tags);
           stateUpdate(state, {
             csrfTimingTagAdd: data.newCsrf,

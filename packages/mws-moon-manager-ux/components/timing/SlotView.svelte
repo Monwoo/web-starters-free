@@ -17,7 +17,7 @@
 
   import PhotoSwipeGallery from "svelte-photoswipe";
   import Loader from "../layout/widgets/Loader.svelte";
-import QuickList from "./qualifs/QuickList.svelte";
+  import QuickList from "./qualifs/QuickList.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -40,7 +40,7 @@ import QuickList from "./qualifs/QuickList.svelte";
   export let fullscreenClass = "";
   export let allTagsList;
 
-  allTagsList = allTagsList ?? stateGet(get(state), 'allTagsList');
+  allTagsList = allTagsList ?? stateGet(get(state), "allTagsList");
 
   // Timer start time. Use it to ensure delay,
   // example : 507 page of 124 items
@@ -83,6 +83,18 @@ import QuickList from "./qualifs/QuickList.svelte";
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
 
+  Number.prototype.toPrettyNum = function (this: Number, length: number) {
+    var s = this;
+    return s
+      .toFixed(length)
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  declare interface Number {
+    toPrettyNum(length: number): string;
+  }
+
   const movePageIndex = (delta) => {
     const newPageNum = parseInt(pageNumber) + delta;
     // TODO : how to know max page num ? data.length / pageLimit, need to know details...
@@ -121,6 +133,13 @@ import QuickList from "./qualifs/QuickList.svelte";
           // const data = await resp.text();
           // console.debug("resp", data);
           timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // TODO : better sync all in-coming props from 'needSync' attr ?
+          timingSlot?.maxPath = data.sync.maxPath;
+          timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+          // TODO : NO reactivity for timingSlot?.maxPath ?
+          //        => missing live price lookup update at top of SlotView when changing tags,
+          //           but : ok on full page refresh...
+          // timingSlot = {...timingSlot}; // TIPS : FORCE Svelte reactivity rebuild, since props check is not deep checked
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
           console.debug("Did toggle qualif, updated tags : ", timingSlot?.tags);
           stateUpdate(state, {
@@ -164,6 +183,9 @@ import QuickList from "./qualifs/QuickList.svelte";
         } else {
           const data = await resp.json();
           timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // TODO : better sync all in-coming props from 'needSync' attr ?
+          timingSlot?.maxPath = data.sync.maxPath;
+          timingSlot?.maxPriceTag = data.sync.maxPriceTag;
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
           console.debug("Did add tag", timingSlot?.tags);
           stateUpdate(state, {
@@ -251,14 +273,22 @@ style:opacity={isLoading ? 0.8 : 1} -->
   style::pointer-events={isLoading ? "none" : "auto"}
 >
   <!-- {JSON.stringify(timingSlot)} -->
-  <div>
-    [{timingSlot?.rangeDayIdxBy10Min ?? "--"}] [{timingSlot?.maxPricePerHr ??
-      "--"}]
+  <div class="pr-2">
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
       .format("YYYY/MM/DD H:mm:ss")}
+    {#if timingSlot?.maxPath }
+      [{(timingSlot.maxPath?.maxValue
+        ? (timingSlot.maxPath.maxValue * 10) / 60
+        : null
+      )?.toPrettyNum(2) ?? "--"} €]
+    {/if}
+  </div>
+  <div>
+    [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
+
   <!-- {timingSlot?.sourceStamp} -->
   <div
     on:click={() => (isFullScreen = !isFullScreen)}
@@ -367,8 +397,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each} -->
-      <QuickList {allTagsList}
-      bind:qualifTemplates />
+      <QuickList {allTagsList} bind:qualifTemplates />
 
       <Loader {isLoading} />
     </div>

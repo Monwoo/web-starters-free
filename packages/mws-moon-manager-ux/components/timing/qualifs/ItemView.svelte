@@ -10,7 +10,7 @@
   import Base from "../../layout/Base.svelte";
   import ColorPicker, { ChromeVariant, A11yVariant,  } from 'svelte-awesome-color-picker';
   import newUniqueId from "locally-unique-id-generator";
-import { onMount } from "svelte";
+import { onMount, tick } from "svelte";
   // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
   const UID = newUniqueId();
 
@@ -33,6 +33,7 @@ import { onMount } from "svelte";
   export let maxItemsLimit;
 	let copyBuffer;
   let typeahead;
+  let confirmInProgress = false;
 
   // TIPS : not on data change, only for init
   // $: typeAheadValue = qualif.label;
@@ -60,9 +61,10 @@ import { onMount } from "svelte";
       confirmUpdateOrNew.srcQualif = qualif;
       confirmUpdateOrNew.newName = label;
       confirmUpdateOrNew.eltModal.show();
+      return true;
     }
     // TODO : wait for response ?
-    return true;
+    return false;
   };
 
   $: rgbTxt = rgb
@@ -225,7 +227,7 @@ import { onMount } from "svelte";
       <Typeahead
       bind:this={typeahead}
       label="Qualification"
-        autoselect={true}
+        autoselect={false}
         focusAfterSelect={true}
         showDropdownOnFocus={true}
         showAllResultsOnFocus={true}
@@ -234,17 +236,20 @@ import { onMount } from "svelte";
         {extract}
         let:result
         let:index
+        on:focus={()=>{
+          console.log('Type ahead focus for', qualif);
+        }}
         on:blur={async (e)=>{
           if ((e.target.value === selectedTarget?.label)
           || selectedTarget) {
-            // update from JS side, no a new entry
+            // update from JS side, not a new entry
             // selectedTarget = null ?
             return;
           }
           // TRICKY wait since select trigged come before or after this one
-          // With timeout, nextline is done AFTER select updates
-          await new Promise(resolve => setTimeout(resolve, 1400));
-          console.log('Blur Should have close dropdown', e);
+          // With timeout, next line (after await) is done AFTER select updates
+          await new Promise(resolve => setTimeout(resolve, 400));
+          console.log('Blur Should close dropdown after select or handle new', e);
           if (isLoading) return;
           if(selectedTarget) {
             // was pre-processed by on:select, clean up :
@@ -253,26 +258,49 @@ import { onMount } from "svelte";
             return; // keep select box flow
           }
           isLoading = true;
-          console.log('Did blur from ', e);
           const qualifLbl = e.target.value;
           const lastQualif = typeAheadDetails?.original;
           console.log(qualifLbl);
           if (qualifLbl && qualifLbl === lastQualif?.label) {
-            console.warn('should not happen, catch by on:select ok ?');
+            console.warn('should not happen, catch by on:select ok ? or user rewrite exact same name ?');
           } else {
-            typeAheadDetails = null;
             // console.log('TODO : Create new qualif item with this unused label');
-            if (await openConfirmUpdateOrNew(qualifLbl)) {
-              typeAheadValue = ''; // Clean used selection
+            confirmInProgress = openConfirmUpdateOrNew(qualifLbl);
+            if (confirmInProgress) {
+              // NOP : below not accruate, qualif update might comme with user interaction, reactive power ok for refresh ?
+              // typeAheadValue = ''; // Clean used selection
+              // typeAheadDetails = null;
             }
           }
-          console.log('Form resp', e.target.form.dataset);
+          // console.log('Form resp', e.target.form.dataset); // Nop, too late ? use typeAheadValue instead ? form is not for api usage ?
+
           // await new Promise(resolve => setTimeout(resolve, 200)).then(()=>{
           //   // asyn unload to see animation.AddModal..
           //   isLoading = false;
           // });
+          console.log('Type ahead onBlur cleanup for', qualif);
+
+          if (!confirmInProgress) {
+            // TIPS : ensure typeahead get closed
+            // typeahead.results = []; // nice try, but not enough...
+            typeAheadValue = qualif.label; // Clean used selection
+          } else {
+            // TODO : ok to reset from component ? not the full window open wait, only to check values updates ?
+            confirmInProgress = false;
+          }
+          // typeahead.close(); // not public...
+          // cf : https://github.com/metonym/svelte-typeahead/blob/master/src/Typeahead.svelte#L142
+          // typeahead.hideDropdown = true; // NOP : private props, will juste add new not usefull props :
+          // typeahead.isFocused = false;
+          // cf https://github.com/metonym/svelte-typeahead/blob/master/src/Typeahead.svelte#L170
+          // Will be closed on any click OUTSIDE of container (container is wrongly configured to tail ?)
+
+          await tick(); await tick(); await tick(); await tick(); 
+          await tick(); // Wait for value set of 'typeAheadValue = qualif.label;' to propagate
+          document.body.click(); // OK, but will close ALL menus, with timeout, strange if we switch from one input to other too fast (direct click for example)
+          // await tick(); // Wait for onClick to propagate ? no effect when modal is shown ?
+
           isLoading = false;
-          // typeahead.results = []; // TIPS : ensure typeahead get closed
         }}
         on:select={async (e)=>{
           if (isLoading) return;

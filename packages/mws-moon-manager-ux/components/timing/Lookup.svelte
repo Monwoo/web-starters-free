@@ -304,16 +304,22 @@
 
     <div class="flex flex-col h-[90vh] w-[100vw] md:flex-row">
       <!-- { JSON.stringify(timings) } -->
-      <SlotView
-        bind:isFullScreen
-        bind:lastSelectedIndex
-        {moveSelectedIndex}
-        {timeQualifs}
-        {locale}
-        timingSlot={timings[lastSelectedIndex] ?? null}
-        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
-        fullscreenClass={isFullScreen ? "pb-8" : ""}
-      />
+      {#if timings[lastSelectedIndex] ?? false}
+        <SlotView
+          bind:isFullScreen
+          bind:lastSelectedIndex
+          bind:timeQualifs
+          {moveSelectedIndex}
+          {locale}
+          bind:timingSlot={timings[lastSelectedIndex]}
+          class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
+          fullscreenClass={isFullScreen ? "pb-8" : ""}
+        />
+      {:else}
+        <div class="w-50">
+          Sélectionner un temps pour voir son détail.
+        </div>
+      {/if}
       <SquareList
         bind:lastSelectedIndex
         {timings}
