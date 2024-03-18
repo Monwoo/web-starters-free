@@ -446,8 +446,14 @@
         {/each}
       </div> -->
       <TagsInput
-      {qualif} bind:tags={qualif.timeTags} {allTagsList} />
-      <span class="m-3">
+      {qualif}
+      {locale}
+      bind:timeTags={qualif.timeTags}
+      {allTagsList} />
+
+
+      <!-- <span class="m-3">
+        // TODO : Quick new tag from label and auto add to qualif ?
         <input
           class="text-black opacity-30 hover:opacity-100 w-full"
           bind:value={newTagLabel}
@@ -477,7 +483,7 @@
             Créer le Tag
           </button>
         {/if}
-      </span>  
+      </span>   -->
 
       <button
       class="p-2 m-3 text-sm font-medium text-center 
@@ -486,6 +492,11 @@
       dark:bg-red-500 dark:hover:bg-red-600 
       dark:focus:ring-red-900"
       style="--mws-primary-rgb: 255, 0, 0"
+      on:click={async () => {
+        qualif._shouldDelete = true;
+
+        await syncQualifWithBackend(qualif, true);
+      }}
     >
       Supprimer '{qualif?.label ?? ""}'
     </button>

@@ -3,48 +3,38 @@
   import Routing from "fos-router";
   import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
+  import { tick } from "svelte";
+  import _ from "lodash";
 
   export let locale;
   export let qualif;
   export let allTagsList;
-  export let tags;
+  export let timeTags;
   export let modalId;
 
   allTagsList = allTagsList ?? stateGet(get(state), 'allTagsList');
 
-  $: qualif?.tags = tags;
+  $: qualif?.timeTags = timeTags;
 
   let addedTagKey;
-  export let removeTag = async (tag, comment = null) => {
+  export const syncQualifWithBackend = async (qualif) => {
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfQualifTagRemove'),
-      timeSlotId: qualif.id,
-      tagSlug: tag.slug,
-      comment, // TODO : allow optional comment on status switch ?
+      _csrf_token: stateGet(get(state), 'csrfTimingQualifSync'),
+      qualif: JSON.stringify(qualif),
     };
-		// let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
 		let headers = {};
-    // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
-    // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
-    // Per this article make sure to NOT set the Content-Type header. 
-		// headers['Content-Type'] = 'application/json';
     const formData  = new FormData();      
     for(const name in data) {
       formData.append(name, data[name]);
     }
     const resp = await fetch(
-      // TODO : build back Api, will return new csrf to use on success, will error othewise,
-      // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
-      Routing.generate('mws_qualif_tag_remove', {
+      Routing.generate('mws_timing_qualif_sync', {
         _locale: locale,
       }), {
         method: "POST",
         headers,
-        // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
         body: formData,
-        // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
         credentials: "same-origin",
-        // https://javascript.info/fetch-api
         redirect: 'error',
       }
     ).then(async resp => {
@@ -55,10 +45,21 @@
       } else {
           // got the desired response
           const data = await resp.json();
-          tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
+          // qualif = data.qualif; // TODO : in case of backend updates ?
+          // needRefresh = {}; // All new obj is uniq, force UI refresh on data inputs
+          // BUT not enough for reactivity refresh, so foce with :
+          // quickQualifTemplates = quickQualifTemplates; // TOO much
+          // BUT WILL CLOSE current opened stuff + loose btn colors ?
+
+          // qualif.id = data.sync.id;
+
+          // WARN : below merge will not RESET fields
+          //        BUT : will add to existing list...
+          qualif.timeTags = []; // Reset list to ensure clean merge
+          _.merge(qualif, data.sync);
+          timeTags = qualif.timeTags;
           stateUpdate(state, {
-            csrfQualifTagRemove: data.newCsrf,
+            csrfTimingQualifSync: data.newCsrf,
           });
       }
     }).catch(e => {
@@ -66,61 +67,14 @@
       // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
       const shouldWait = confirm("Echec de l'enregistrement.");
     });
-  };
-
-  export let addTag = async (tagSlug, tagCategorySlug, comment = null) => {
-    // TODO : fetch modal response
-    const $ = window.$;
-    const modalBtn = $(`[data-modal-target="${modalId}"]`);
-    console.log(modalBtn);
-    modalBtn.click();
-
-    const data = {
-      _csrf_token: stateGet(get(state), 'csrfQualifTagAdd'),
-      timeSlotId: qualif.id,
-      tagSlug: tagSlug,
-      comment, // TODO : allow optional comment on status switch ?
-      tagCategorySlug: tagCategorySlug,
-    };
-    const formData  = new FormData();      
-    for(const name in data) {
-      formData.append(name, data[name]);
-    }
-    const resp = await fetch(
-      Routing.generate('mws_qualif_tag_add', {
-        _locale: locale,
-      }), {
-        method: "POST",
-        body: formData,
-        credentials: "same-origin",
-        redirect: 'error',
-      }
-    ).then(async resp => {
-      console.log(resp);
-      addedTagKey = "null";
-      if (!resp.ok) {
-        throw new Error("Not 2xx response", {cause: resp});
-      } else {
-          const data = await resp.json();
-          tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          console.debug("Did add tag", tags);
-          stateUpdate(state, {
-            csrfQualifTagAdd: data.newCsrf,
-          });
-      }
-    }).catch(e => {
-      console.error(e);
-      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-      const shouldWait = confirm("Echec de l'enregistrement.");
-      addedTagKey = "null";
-    });
+    return qualif;
   };
 
   console.debug('allTagsList', allTagsList);
 </script>
 
 
-{#each (tags ?? []) as tag, idx}
+{#each (timeTags ?? []) as tag, idx}
   <!-- {@const UID = newUniqueId()} -->
 
   <!-- https://flowbite-svelte.com/docs/components/badge -->
@@ -142,7 +96,12 @@
     -->
     {tag.label}
     <button
-    on:click|stopPropagation={() => removeTag(tag) }
+    on:click|stopPropagation={async () => {
+      timeTags = timeTags.filter((t) => t.slug !== tag.slug);
+      // await tick(); // wait for qualif to update from svelte reactivity, cf $:
+      console.debug('TimeTagsInput delete will update with', qualif);
+      syncQualifWithBackend(qualif);
+    }}
     type="button" class="inline-flex items-center p-1 ml-2 text-sm
     text-pink-400 bg-transparent rounded-sm hover:bg-pink-200
      hover:text-pink-900 dark:hover:bg-pink-800 dark:hover:text-pink-300"
@@ -164,11 +123,20 @@
 {/each}
 
 <select
-bind:value={addedTagKey} on:change={() => {
+bind:value={addedTagKey} on:change={async () => {
   if ('null' === addedTagKey) return;
 
-  const [tagCategorySlug, tagSlug] = addedTagKey.split('|');
-  addTag(tagSlug, tagCategorySlug);
+  // timeTags.push({
+  //   slug: addedTagKey
+  // });
+  // await tick(); // wait for qualif to update from svelte reactivity, cf $:
+  console.debug('TimeTagsInput add will update with', qualif);
+  syncQualifWithBackend({
+    ...qualif,
+    timeTags: (qualif.timeTags ?? []).concat([{
+      slug: addedTagKey
+    }]),
+  });
 }}
 class="opacity-30 hover:opacity-100 
 bg-gray-50 border border-gray-300 text-gray-900 
@@ -178,6 +146,6 @@ dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
 dark:focus:border-blue-500">
   <option value="null" selected>Insérer un tag</option>
   {#each allTagsList as tag}
-    <option value={`${tag.categorySlug}|${tag.slug}`}>{tag.label}</option>
+    <option value={`${tag.slug}`}>{tag.label}</option>
   {/each}
 </select>

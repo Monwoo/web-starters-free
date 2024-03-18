@@ -173,7 +173,19 @@
           // BUT not enough for reactivity refresh, so foce with :
           // quickQualifTemplates = quickQualifTemplates; // TOO much
           // BUT WILL CLOSE current opened stuff + loose btn colors ?
-          qualif.id = data.sync.id;
+
+          // WARN : below merge will not RESET fields
+          //        BUT : will add to existing list...
+          qualif.timeTags = []; // Reset list to ensure clean merge // TODO : review is _.merge is ok or use way to reset lists ?
+          _.merge(qualif, data.sync);
+
+          if (data.didDelete) {
+            quickQualifTemplates = quickQualifTemplates
+            .filter((q) => q.id !== qualif.id);
+            qualifTemplates = qualifTemplates
+            .filter((q) => q.id !== qualif.id);
+          }
+
           stateUpdate(state, {
             csrfTimingQualifSync: data.newCsrf,
           });

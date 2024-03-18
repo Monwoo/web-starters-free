@@ -2007,7 +2007,16 @@ class MwsTimingController extends AbstractController
         if (!$qualif) {
             $qualif = new MwsTimeQualif();
         }
-
+        if ($qualifInput['_shouldDelete'] ?? false) {
+            $this->em->remove($qualif);
+            $this->em->flush();
+            return $this->json([
+                'sync' => null,
+                'didDelete' => true,
+                'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-sync')->getValue(),
+                'viewTemplate' => $viewTemplate,
+            ]);    
+        }
         $sync = function ($path) use (&$qualif, &$qualifInput) {
             $get = 'get' . ucfirst($path);
             $v =  $qualifInput[$path] ?? null;
@@ -2039,13 +2048,21 @@ class MwsTimingController extends AbstractController
         $sync('primaryColorHex');
         $sync('primaryColorRgb');
         if ($qualifInput['timeTags'] ?? false) {
-            foreach ($qualifInput['timeTags'] as $idx => $tagSlug) {
+            foreach ($qualifInput['timeTags'] as $idx => $tagInput) {
                 $tag = $mwsTimeTagRepository->findOneBy([
-                    "slug" => $tagSlug,
+                    "slug" => $tagInput['slug'] ?? null,
                 ]);
                 // TODO : what if not found ? null value ok or create tag ?
                 $qualifInput['timeTags'][$idx] = $tag;
             }
+            array_multisort(
+                // array_keys($allTagsList),
+                array_map(function ($t) {
+                    return $t->getLabel();
+                }, $qualifInput['timeTags']),
+                SORT_NATURAL | SORT_FLAG_CASE,
+                $qualifInput['timeTags']
+            );
         }
         $sync('timeTags');
         $sync('shortcut');
@@ -2059,6 +2076,7 @@ class MwsTimingController extends AbstractController
         return $this->json([
             'sync' => [
                 'id' => $qualif->getId(),
+                'timeTags' => $qualif->getTimeTags(),
                 // TODO : $qualif export serialization ? (Sync group ?)
                 // 'maxPath' => $timeSlot->getMaxPath(),
                 // 'maxPriceTag' => $timeSlot->getMaxPriceTag(),
