@@ -8,7 +8,11 @@
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
   import Routing from "fos-router";
-  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import {
+    state,
+    stateGet,
+    stateUpdate,
+  } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import { MoveIcon, SortableItem } from "svelte-sortable-items";
   import { flip } from "svelte/animate";
@@ -22,7 +26,7 @@
   export let isHeaderExpanded = false;
   // // TIPS : MUST NOT be setup for top root binds
   // //         to be able to feed with initial values ?
-  // //           => Did juste messup with component name, 
+  // //           => Did juste messup with component name,
   // //              reactivity ok event with initial value
   // export let isHeaderExpanded;
 
@@ -39,8 +43,12 @@
   let numberHoveredItem;
   /////
   const defaultItemW = "w-3/12"; // TODO : from crm config or user config....
-  export let itemWidth = defaultItemW;
-  export let sortOrder;
+  const userConfig = stateGet(get(state), "timingQualifConfig");
+  export let timingQualifConfig = userConfig?.timing?.quickQualif ?? {};
+  export let maxLimit = timingQualifConfig?.maxLimit ?? 12;
+  export let itemWidth = timingQualifConfig?.itemWidth ?? defaultItemW;
+  export let sortOrder = timingQualifConfig?.sortOrder;
+
   export let allSizes = [
     {
       value: defaultItemW,
@@ -70,12 +78,39 @@
       label: "1 par lignes",
     },
   ];
-  export let maxLimit = 12;
 
   export let confirmUpdateOrNew;
 
+  let configDidChange = false;
+  let lastDataset = {};
+  // const configDidChange = false;
   $: {
-    console.debug("Qualif templates update :", quickQualifTemplates);
+    console.debug('Will check', Object.keys(lastDataset));
+    // TODO : $$props not covering all props, need to encapsulate ?
+    // configDidChange = Object.keys(lastDataset).reduce((acc, k) => {
+    //   return lastDataset[k] !== $$props[k] || acc;
+    //   // return lastDataset[k] !== $$restProps[k] || acc;
+    // }, !Object.keys(lastDataset).length)
+    configDidChange = 
+    // TODO : deep detect changes ?
+    // lastDataset.quickQualifTemplates != quickQualifTemplates
+    // || lastDataset.timingQualifConfig != timingQualifConfig // Will detect change if ref change not the content...
+    lastDataset.quickQualifTemplates != quickQualifTemplates
+    // || lastDataset.timingQualifConfig != timingQualifConfig
+    || lastDataset.maxLimit != maxLimit
+    || lastDataset.itemWidth != itemWidth
+    || lastDataset.sortOrder != sortOrder
+    if (configDidChange) {
+      console.debug("Qualif templates will sync update :", quickQualifTemplates);
+      // Lookup to ensure reactivity on below changes : (Svelte do not do deep detect...)
+      timingQualifConfig, maxLimit, itemWidth, sortOrder,
+      syncQualifConfigWithBackend();
+      configDidChange = false; // NEEDED performance, can't call network each 10 milliseconds...
+      lastDataset = {
+        quickQualifTemplates, timingQualifConfig,
+        maxLimit, itemWidth, sortOrder
+      }
+    }
   }
   quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
 
@@ -114,6 +149,9 @@
       quickQualifTemplates.sort(function (a, b) {
         return collator.compare(a.label, b.label);
       });
+      qualifTemplates.sort(function (a, b) {
+        return collator.compare(a.label, b.label);
+      });
       quickQualifTemplates = quickQualifTemplates;
       sortOrder = null;
     }
@@ -134,6 +172,17 @@
           (b.timeTags.length - nbSimilar)
         );
       });
+      // TODO : trying to keep qualifTemplates in sync
+      //      but lot of action may have change quickQualifTemplates ?
+      qualifTemplates.sort(function (a, b) {
+        const similar = intersect(a.timeTags, b.timeTags);
+        const nbSimilar = similar.length;
+        return -(
+          a.timeTags.length -
+          nbSimilar -
+          (b.timeTags.length - nbSimilar)
+        );
+      });
       quickQualifTemplates = quickQualifTemplates;
       sortOrder = null;
     }
@@ -142,30 +191,32 @@
   let needRefresh;
   export const syncQualifWithBackend = async (qualif) => {
     const data = {
-      _csrf_token: stateGet(get(state), 'csrfTimingQualifSync'),
+      _csrf_token: stateGet(get(state), "csrfTimingQualifSync"),
       qualif: JSON.stringify(qualif),
     };
-		let headers = {};
-    const formData  = new FormData();      
-    for(const name in data) {
+    let headers = {};
+    const formData = new FormData();
+    for (const name in data) {
       formData.append(name, data[name]);
     }
     const resp = await fetch(
-      Routing.generate('mws_timing_qualif_sync', {
+      Routing.generate("mws_timing_qualif_sync", {
         _locale: locale,
-      }), {
+      }),
+      {
         method: "POST",
         headers,
         body: formData,
         credentials: "same-origin",
-        redirect: 'error',
+        redirect: "error",
       }
-    ).then(async resp => {
-      console.log(resp);
-      if (!resp.ok) {
-        // make the promise be rejected if we didn't get a 2xx response
-        throw new Error("Not 2xx response", {cause: resp});
-      } else {
+    )
+      .then(async (resp) => {
+        console.log(resp);
+        if (!resp.ok) {
+          // make the promise be rejected if we didn't get a 2xx response
+          throw new Error("Not 2xx response", { cause: resp });
+        } else {
           // got the desired response
           const data = await resp.json();
           // qualif = data.qualif; // TODO : in case of backend updates ?
@@ -180,22 +231,77 @@
           _.merge(qualif, data.sync);
 
           if (data.didDelete) {
-            quickQualifTemplates = quickQualifTemplates
-            .filter((q) => q.id !== qualif.id);
-            qualifTemplates = qualifTemplates
-            .filter((q) => q.id !== qualif.id);
+            quickQualifTemplates = quickQualifTemplates.filter(
+              (q) => q.id !== qualif.id
+            );
+            qualifTemplates = qualifTemplates.filter((q) => q.id !== qualif.id);
           }
 
           stateUpdate(state, {
             csrfTimingQualifSync: data.newCsrf,
           });
-      }
-    }).catch(e => {
-      console.error(e);
-      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-      const shouldWait = confirm("Echec de l'enregistrement.");
-    });
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
     return qualif;
+  };
+
+  export const syncQualifConfigWithBackend = async () => {
+    timingQualifConfig.list = quickQualifTemplates.map((q) => q.label);
+    timingQualifConfig.maxLimit = maxLimit;
+    timingQualifConfig.sortOrder = sortOrder;
+    timingQualifConfig.itemWidth = itemWidth;
+    const data = {
+      _csrf_token: stateGet(get(state), "csrfTimingQualifConfigSync"),
+      config: JSON.stringify({
+        timing: {
+          quickQualif: timingQualifConfig,
+        },
+      }),
+    };
+    let headers = {};
+    const formData = new FormData();
+    for (const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate("mws_timing_qualif_config_sync", {
+        _locale: locale,
+      }),
+      {
+        method: "POST",
+        headers,
+        body: formData,
+        credentials: "same-origin",
+        redirect: "error",
+      }
+    )
+      .then(async (resp) => {
+        console.log(resp);
+        if (!resp.ok) {
+          // make the promise be rejected if we didn't get a 2xx response
+          throw new Error("Not 2xx response", { cause: resp });
+        } else {
+          // got the desired response
+          const data = await resp.json();
+
+          timingQualifConfig = data.sync?.timing?.quickQualif;
+
+          stateUpdate(state, {
+            csrfTimingQualifConfigSync: data.newCsrf,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
+    return timingQualifConfig;
   };
 
 </script>
@@ -225,13 +331,16 @@
               class:classHovered={numberHoveredItem === numberCounter}
             >
               <ItemView
-              bind:qualif
-              bind:quickQualifTemplates
-              bind:maxItemsLimit={maxLimit}
-              bind:isHeaderExpanded
-              {syncQualifWithBackend} {locale}
-              {confirmUpdateOrNew} {allTagsList}
-              qualifLookups={qualifTemplates} />
+                bind:qualif
+                bind:quickQualifTemplates
+                bind:maxItemsLimit={maxLimit}
+                bind:isHeaderExpanded
+                {syncQualifWithBackend}
+                {locale}
+                {confirmUpdateOrNew}
+                {allTagsList}
+                qualifLookups={qualifTemplates}
+              />
             </div>
           </SortableItem>
           <!-- <div // TODO : strange pop-over showing and following move animation... 
@@ -288,7 +397,8 @@
       >
         <option value={null}>Chose a sort function</option>
         <option value={"byLabel"}>Par ordre alphabétique</option>
-        <option value={"byTagsSimilarity"}>Par nombre de tags similaires</option>
+        <option value={"byTagsSimilarity"}>Par nombre de tags similaires</option
+        >
       </select>
       <span>
         <label for="LimiteMax">Limite Max</label>
@@ -302,7 +412,7 @@
             quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
           }}
           on:keydown={(e) => {
-            if ('Enter' == e.key) {
+            if ("Enter" == e.key) {
               // TODO : compatibility issues with other browsers than last chrome ?
               // https://stackoverflow.com/questions/2520650/how-do-you-clear-the-focus-in-javascript
               if (document.activeElement instanceof HTMLElement)
@@ -315,10 +425,12 @@
     </div>
 
     <ConfirmUpdateOrNew
-    {syncQualifWithBackend}
-    bind:this={confirmUpdateOrNew}></ConfirmUpdateOrNew>
+      {syncQualifWithBackend}
+      bind:this={confirmUpdateOrNew}
+    />
   </div>
 {/key}
+
 <style>
   .classHovered {
     background-color: lightblue;

@@ -66,6 +66,7 @@ class MwsTimingController extends AbstractController
         PaginatorInterface $paginator,
         Request $request,
     ): Response {
+        /** @var MwsUser $user */
         $user = $this->getUser();
         if (!$user) {
             // TIPS : redondant, but better if used without routing system secu...
@@ -170,6 +171,7 @@ class MwsTimingController extends AbstractController
 
         return $this->render('@MoonManager/mws_timing/qualif.html.twig', [
             'timings' => $timings,
+            'userConfig' => $user->getConfig(),
             'allTagsList' => $allTagsList,
             'timeQualifs' => $timeQualifs,
             'lookupForm' => $filterForm,
@@ -2082,6 +2084,62 @@ class MwsTimingController extends AbstractController
                 // 'maxPriceTag' => $timeSlot->getMaxPriceTag(),
             ],
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-sync')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
+        '/qualif/config-sync/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_qualif_config_sync',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function qualifConfigSync(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        MwsTimeQualifRepository $mwsTimeQualifRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        /** @var MwsUser $user */
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-config-sync', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $config = $request->request->get('config');
+        $config = json_decode($config, true);
+
+        // dd($config);
+        $quickQualif = &$config['timing']['quickQualif'] ?? null;
+        $quickQualifList = &$config['timing']['quickQualif']['list'] ?? null;
+
+        $quickQualifList = array_filter($quickQualifList, function(
+            $qualifLabel
+        ) use ($mwsTimeQualifRepository) {
+            return $mwsTimeQualifRepository->findOneBy([
+                "label" => $qualifLabel,
+            ]);
+        });
+
+        $mergedConfig = array_merge($user->getConfig() ?? [], $config ?? []);
+
+        $user->setConfig($mergedConfig);
+        $this->em->persist($user);
+        $this->em->flush();
+
+        return $this->json([
+            'sync' => [ ...$config ],
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-config-sync')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
     }

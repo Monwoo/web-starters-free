@@ -55,6 +55,9 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type:"string")]
     private $password;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $config = null;
+
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'teamOwners')]
     #[Serializer\Annotation\Ignore]
     private Collection $teamMembers;
@@ -570,6 +573,18 @@ class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->quickQualifHistory->removeElement($quickQualifHistory)) {
             $quickQualifHistory->removeQuickUserHistory($this);
         }
+
+        return $this;
+    }
+
+    public function getConfig(): ?array
+    {
+        return $this->config;
+    }
+
+    public function setConfig(?array $config): static
+    {
+        $this->config = $config;
 
         return $this;
     }

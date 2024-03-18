@@ -10,12 +10,14 @@
 	{{ parent() }}
 	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
 		'allTagsList': allTagsList,
+		'userConfig': userConfig,
 		'csrfTimingDeleteAll': csrf_token('mws-csrf-timing-delete-all'),
 		'csrfTimingToggleQualif': csrf_token('mws-csrf-timing-qualif-toggle'),
 		'csrfTimingTagRemove': csrf_token('mws-csrf-timing-tag-remove'),
 		'csrfTimingTagAdd': csrf_token('mws-csrf-timing-tag-add'),
 		'csrfTimingTagRemoveAll': csrf_token('mws-csrf-timing-tag-remove-all'),
 		'csrfTimingQualifSync': csrf_token('mws-csrf-timing-qualif-sync'),
+		'csrfTimingQualifConfigSync': csrf_token('mws-csrf-timing-qualif-config-sync'),
 	} |serialize('json')|e('html_attr'), }) }}></div>
 {% endblock %}
 
