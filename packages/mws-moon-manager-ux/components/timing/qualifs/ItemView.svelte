@@ -44,7 +44,7 @@
   // typeahead.close(), // only in onMount... bind:this=t...
 
   console.debug("qualif Item view ", qualif);
-  console.debug("Type ahead", qualifLookups);
+  // console.debug("Type ahead", qualifLookups);
 
   const collator = new Intl.Collator(undefined, {
     numeric: true,

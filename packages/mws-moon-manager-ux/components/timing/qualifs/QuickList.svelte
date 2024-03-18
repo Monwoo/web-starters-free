@@ -43,7 +43,7 @@
   let numberHoveredItem;
   /////
   const defaultItemW = "w-3/12"; // TODO : from crm config or user config....
-  const userConfig = stateGet(get(state), "timingQualifConfig");
+  const userConfig = stateGet(get(state), "userConfig");
   export let timingQualifConfig = userConfig?.timing?.quickQualif ?? {};
   export let maxLimit = timingQualifConfig?.maxLimit ?? 12;
   export let itemWidth = timingQualifConfig?.itemWidth ?? defaultItemW;
@@ -144,18 +144,55 @@
         quickQualifTemplates: quickQualifTemplates?.slice().map((q) => ({
           // ...q,
           // Keep copy of needed compare elt
-          id: q.id, label: q.label,
+          id: q.id,
+          label: q.label,
         })),
         // TIPS : DEEP test
         // quickQualifTemplates: JSON.stringify(quickQualifTemplates ?? []),
-        timingQualifConfig,
         maxLimit,
         itemWidth,
         sortOrder,
       };
     }
   }
-  quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
+
+  // // from all crm ordered templates
+  // quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
+  $: {
+    // on timingQualifConfig, update inner props :
+    if (timingQualifConfig) {
+      console.debug('Update quicklist from config');
+      let quickQLookup = timingQualifConfig?.list?.reduce((acc, qLabel, idx) => {
+        acc[qLabel] = idx;
+        return acc;
+      }, {});
+      let historyQualif = qualifTemplates
+      // .filter((q) => q.label in quickQLookup) // Will not keep order...
+      .reduce((acc,q)=> {
+        if (q.label in quickQLookup) {
+          acc[quickQLookup[q.label]] = q;
+        }
+        return acc;
+      }, []);
+      quickQualifTemplates = historyQualif.length
+        ? historyQualif
+        : quickQualifTemplates?.length
+        ? quickQualifTemplates
+        : qualifTemplates.slice(0, maxLimit);
+      maxLimit = timingQualifConfig?.maxLimit;
+      itemWidth = timingQualifConfig?.itemWidth;
+      sortOrder = timingQualifConfig?.sortOrder;
+
+      // set null to refresh only on next config set
+      // allowing regular behavior
+      // if not in setup config mode '! timingQualifConfig'
+      timingQualifConfig = null;
+    }
+  }
+  // TIPS : opti : could also get it from store with 'userConfig' ?
+  // syncQualifConfigWithBackend(); // will update timingQualifConfig
+  // // Already setupWith :
+  // export let timingQualifConfig = userConfig?.timing?.quickQualif ?? {};
 
   // $: {
   //   // Triky auto update from qualifTemplates (not ordered)
@@ -255,7 +292,7 @@
       }
     )
       .then(async (resp) => {
-        console.log(resp);
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
         if (!resp.ok) {
           // make the promise be rejected if we didn't get a 2xx response
           throw new Error("Not 2xx response", { cause: resp });
@@ -294,6 +331,7 @@
   };
 
   export const syncQualifConfigWithBackend = async () => {
+    timingQualifConfig = {};
     timingQualifConfig.list = quickQualifTemplates.map((q) => q.label);
     timingQualifConfig.maxLimit = maxLimit;
     timingQualifConfig.sortOrder = sortOrder;
@@ -324,7 +362,7 @@
       }
     )
       .then(async (resp) => {
-        console.log(resp);
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
         if (!resp.ok) {
           // make the promise be rejected if we didn't get a 2xx response
           throw new Error("Not 2xx response", { cause: resp });
@@ -336,6 +374,8 @@
 
           stateUpdate(state, {
             csrfTimingQualifConfigSync: data.newCsrf,
+             // TODO : full configs set or partial Merge or property path setter ?
+            userConfig: data.sync,
           });
         }
       })

@@ -2121,7 +2121,7 @@ class MwsTimingController extends AbstractController
 
         // dd($config);
         $quickQualif = &$config['timing']['quickQualif'] ?? null;
-        $quickQualifList = &$config['timing']['quickQualif']['list'] ?? null;
+        $quickQualifList = &$quickQualif['list'] ?? null;
 
         $quickQualifList = array_filter($quickQualifList, function(
             $qualifLabel

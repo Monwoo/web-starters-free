@@ -177,7 +177,7 @@
       }
     )
       .then(async (resp) => {
-        console.log(resp);
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
         if (!resp.ok) {
           throw new Error("Not 2xx response", { cause: resp });
         } else {
@@ -231,7 +231,7 @@
       }
     )
       .then(async (resp) => {
-        console.log(resp);
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
         if (!resp.ok) {
           throw new Error("Not 2xx response", { cause: resp });
         } else {
