@@ -57,17 +57,18 @@
   // TIPS : do not refresh sortOrder to avoid infinit loop
   // since will trigger list sort when list might be in custom user mode
 
-  const quickQLookupInit = timingQualifConfig?.list?.reduce((acc, qLabel, idx) => {
+  const quickQLookupInit = Object.values(timingQualifConfig?.list ?? {})
+  .reduce((acc, qLabel, idx) => {
     acc[qLabel] = idx;
     return acc;
   }, {});
-  quickQualifTemplates = qualifTemplates?.reduce((acc, q) => {
+  quickQualifTemplates = Object.values(qualifTemplates?.reduce((acc, q) => {
     // .filter((q) => q.label in quickQLookupInit) // Will not keep order...
     if (q.label in quickQLookupInit) {
       acc[quickQLookupInit[q.label]] = q;
     }
     return acc;
-  }, []);
+  }, []));
 
   export let sortOrder = null; // timingQualifConfig?.sortOrder;
 
@@ -117,8 +118,8 @@
       if (
         // e1.id !== e2?.id
         // ! _.isEqual(e1, e2) // 1st level compare, then refs...
-        e1.id !== e2?.id ||
-        e1.label !== e2?.label
+        e1?.id !== e2?.id ||
+        e1?.label !== e2?.label
       ) {
         succed = false;
         break;
