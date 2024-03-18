@@ -10,10 +10,11 @@
   import Base from "../../layout/Base.svelte";
   import ColorPicker, { ChromeVariant, A11yVariant,  } from 'svelte-awesome-color-picker';
   import newUniqueId from "locally-unique-id-generator";
-import { onMount, tick } from "svelte";
+  import { onMount, tick } from "svelte";
   // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
   const UID = newUniqueId();
 
+  export let locale;
   export let qualif;
   export let qualifLookups;
   export let selectedTarget;
@@ -32,6 +33,7 @@ import { onMount, tick } from "svelte";
   export let itemSuggestionTagsId = `ItemViewTags-${UID}`;
   export let quickQualifTemplates;
   export let maxItemsLimit;
+  export let syncQualifWithBackend; // TODO : ok passing props ? better use redux or async system ?
 	let copyBuffer;
   let typeahead;
   let confirmInProgress = false;
@@ -59,8 +61,43 @@ import { onMount, tick } from "svelte";
   export const openConfirmUpdateOrNew = async (label) => {
     if (label && label.length
     && qualif.label != label) {
-      confirmUpdateOrNew.srcQualif = qualif;
+      confirmUpdateOrNew.qualif = qualif;
       confirmUpdateOrNew.newName = label;
+      const originalSync = confirmUpdateOrNew.syncQualifWithBackend;
+      confirmUpdateOrNew.syncQualifWithBackend = async (qualifParam) => {
+        const r = await originalSync(qualifParam);
+        // TIPS : nice to overlap event or callback
+        //        to trigger inner reactivity if not done by redux models
+        qualif = qualif; // for self reactivity
+        if (r && r._isNewId) { // _isNewId means it was added as New one
+          // TODO : remove code duplication with on:select...
+          let targetIdx = -1;
+          for (let idx = 0; idx < quickQualifTemplates.length; idx++) {
+            const qQualif = quickQualifTemplates[idx];
+            // TIPPS BELEOW will have TROUBLE if same label, use ids instead...
+            // if (qQualif.label === qualif.label) {
+            if (qQualif.id === qualif.id) {
+              targetIdx = idx;
+            }
+            if (targetIdx >= 0) {
+              break;
+            }
+          }
+          // const targetIdx = quickQualifTemplates.indexOf(selectedTarget);
+          console.log('Switch qualif ', // targetIdx,
+          ' just before the selected one at ', targetIdx, "for new ", r);
+          quickQualifTemplates = quickQualifTemplates.slice(0, targetIdx > 0 ? targetIdx : 0)
+          .concat([r], quickQualifTemplates.slice(targetIdx)).slice(0, maxItemsLimit)
+          // Clean current item select value :
+          typeAheadValue = qualif.label;
+          await tick(); // Wait for value set of 'typeAheadValue = qualif.label;' to propagate
+          document.body.click(); // OK, but will close ALL menus, with timeout, strange if we switch from one input to other too fast (direct click for example)
+        }
+        // bring back to normal :
+        confirmUpdateOrNew.syncQualifWithBackend = originalSync;
+        return r;
+      };
+
       confirmUpdateOrNew.eltModal.show();
       return true;
     }
@@ -72,6 +109,17 @@ import { onMount, tick } from "svelte";
   ? `${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a}`
   : null;
   $: hexTxt = hex;
+
+  $: hex = qualif.primaryColorHex ?? hex;
+  // $: rgb = qualif.primaryColorRgb; ! should split etc,
+  // Setting hex is enough for color picker only...
+  const colorProps = ['r', 'g', 'b', 'a']
+  const isString = value => typeof value === 'string' || value instanceof String;
+  $: if (qualif.primaryColorRgb && isString(qualif.primaryColorRgb))
+  rgb = qualif.primaryColorRgb?.split(',').reduce((acc, part, idx) => {
+    acc[colorProps[idx]] = parseFloat(part);
+    return acc;
+  }, {}) ?? rgb;
 
   let copyStatus = 'Copiez';
 
@@ -87,10 +135,6 @@ import { onMount, tick } from "svelte";
 
   onMount(() => {
   });
-
-  const syncQualifWithBackend = () => {
-    console.log("TODO sync", qualif);
-  }
 </script>
 
 <div class="w-full flex flex-wrap justify-center">
@@ -175,7 +219,7 @@ import { onMount, tick } from "svelte";
           console.debug('TODO : sync new color', hex, rgb, ' for id : ', qualif.id);
           qualif.primaryColorHex = hex;
           qualif.primaryColorRgb = rgb;
-          await syncQualifWithBackend();
+          await syncQualifWithBackend(qualif);
         }}
       />
     </span>
@@ -303,7 +347,7 @@ import { onMount, tick } from "svelte";
           // cf https://github.com/metonym/svelte-typeahead/blob/master/src/Typeahead.svelte#L170
           // Will be closed on any click OUTSIDE of container (container is wrongly configured to tail ?)
 
-          await tick(); await tick(); await tick(); await tick(); 
+          // await tick(); await tick(); await tick(); await tick(); 
           await tick(); // Wait for value set of 'typeAheadValue = qualif.label;' to propagate
           document.body.click(); // OK, but will close ALL menus, with timeout, strange if we switch from one input to other too fast (direct click for example)
           // await tick(); // Wait for onClick to propagate ? no effect when modal is shown ?
@@ -316,17 +360,16 @@ import { onMount, tick } from "svelte";
           console.log('Did select', e);
           typeAheadDetails = e.detail;
           selectedTarget = typeAheadDetails.original;
-          const src = qualif;
           // qualif = typeAheadDetails.original;
           // const srcIdx = quickQualifTemplates.indexOf(src);
           let targetIdx = -1;
           let srcIdx = -1;
           for (let idx = 0; idx < quickQualifTemplates.length; idx++) {
             const qQualif = quickQualifTemplates[idx];
-            if (qQualif.label === selectedTarget.label) {
+            if (qQualif.id === selectedTarget.id) {
               srcIdx = idx;
             }
-            if (qQualif.label === qualif.label) {
+            if (qQualif.id === qualif.id) {
               targetIdx = idx;
             }
             if (srcIdx >= 0 && targetIdx >= 0) {

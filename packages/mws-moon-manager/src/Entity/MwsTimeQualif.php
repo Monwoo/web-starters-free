@@ -20,6 +20,12 @@ class MwsTimeQualif
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $primaryColorRgb = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $primaryColorHex = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $shortcut = null;
 
@@ -28,12 +34,6 @@ class MwsTimeQualif
 
     #[ORM\ManyToMany(targetEntity: MwsUser::class, inversedBy: 'quickQualifHistory')]
     private Collection $quickUserHistory;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $primaryColorRgb = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $primaryColorHex = null;
 
     public function __construct()
     {

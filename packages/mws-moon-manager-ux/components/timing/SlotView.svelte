@@ -584,7 +584,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each} -->
-      <QuickList {allTagsList} bind:isHeaderExpanded bind:qualifTemplates />
+      <QuickList {allTagsList} bind:isHeaderExpanded bind:qualifTemplates
+      {locale}
+      />
 
       <Loader {isLoading} />
 

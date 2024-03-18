@@ -7,6 +7,9 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
+  import Routing from "fos-router";
+  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
   import { MoveIcon, SortableItem } from "svelte-sortable-items";
   import { flip } from "svelte/animate";
   import ItemView from "./ItemView.svelte";
@@ -15,6 +18,7 @@
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
 
+  export let locale;
   export let isHeaderExpanded = false;
   // // TIPS : MUST NOT be setup for top root binds
   // //         to be able to feed with initial values ?
@@ -135,6 +139,52 @@
     }
   }
 
+  let needRefresh;
+  export const syncQualifWithBackend = async (qualif) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfTimingQualifSync'),
+      qualif: JSON.stringify(qualif),
+    };
+		let headers = {};
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate('mws_timing_qualif_sync', {
+        _locale: locale,
+      }), {
+        method: "POST",
+        headers,
+        body: formData,
+        credentials: "same-origin",
+        redirect: 'error',
+      }
+    ).then(async resp => {
+      console.log(resp);
+      if (!resp.ok) {
+        // make the promise be rejected if we didn't get a 2xx response
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+          // got the desired response
+          const data = await resp.json();
+          // qualif = data.qualif; // TODO : in case of backend updates ?
+          // needRefresh = {}; // All new obj is uniq, force UI refresh on data inputs
+          // BUT not enough for reactivity refresh, so foce with :
+          // quickQualifTemplates = quickQualifTemplates; // TOO much
+          // BUT WILL CLOSE current opened stuff + loose btn colors ?
+          qualif.id = data.sync.id;
+          stateUpdate(state, {
+            csrfTimingQualifSync: data.newCsrf,
+          });
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+    });
+    return qualif;
+  };
 
 </script>
 
@@ -143,109 +193,120 @@
   <script src="https://unpkg.com/svelte-drag-drop-touch"></script>
   <!---- >
 </svelte:head> -->
-
-<div class="float-right w-full flex flex-row flex-wrap">
-  <div class="flex w-full flex-wrap justify-evenly">
-    <!-- {#each arrayUsers as currentUser, numberCounter (currentUser.id)} -->
-    {#each quickQualifTemplates as qualif, numberCounter (qualif.id)}
-      <div animate:flip class="p-0 grow {itemWidth}">
-        <SortableItem
-          class="h-full w-full flex justify-center content-start"
-          propItemNumber={numberCounter}
-          bind:propData={quickQualifTemplates}
-          bind:propHoveredItemNumber={numberHoveredItem}
-        >
-          <div
-            _data-tooltip-target="tooltip-hover-{numberCounter}"
-            _data-tooltip-trigger="hover"
-            class="flex flex-row flex-wrap h-full w-full
-            justify-center content-start align-middle hover:cursor-move"
-            class:classHovered={numberHoveredItem === numberCounter}
+{#key needRefresh}
+  <div class="float-right w-full flex flex-row flex-wrap">
+    <div class="flex w-full flex-wrap justify-evenly">
+      <!-- {#each arrayUsers as currentUser, numberCounter (currentUser.id)} -->
+      {#each quickQualifTemplates as qualif, numberCounter (qualif.id)}
+        <div animate:flip class="p-0 grow {itemWidth}">
+          <SortableItem
+            class="h-full w-full flex justify-center content-start"
+            propItemNumber={numberCounter}
+            bind:propData={quickQualifTemplates}
+            bind:propHoveredItemNumber={numberHoveredItem}
           >
-            <ItemView
-            bind:qualif
-            bind:quickQualifTemplates
-            bind:maxItemsLimit={maxLimit}
-            bind:isHeaderExpanded
-            {confirmUpdateOrNew} {allTagsList}
-            qualifLookups={qualifTemplates} />
-          </div>
-        </SortableItem>
-        <!-- <div // TODO : strange pop-over showing and following move animation... 
-          + shoud change message when hovering tag toggle button 
-          or shortcut edit or listags edits ?
-          
-          id="tooltip-hover-{numberCounter}"
-          role="tooltip"
-          class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-        >
-          <p class="bg-slate-700 fill-blue-400 flex">
-            Utiliser <MoveIcon propSize={12} /> pour déplacer la qualif {qualif.label}.
-          </p>
-          <div class="tooltip-arrow" data-popper-arrow />
-        </div> -->
-      </div>
-    {/each}
-  </div>
-  <div class="p-2">
-    Taille de liste :
-    <select
-      name="itemWidth"
-      bind:value={itemWidth}
-      on:change={async () => {
-        console.debug("New item width : ", itemWidth);
-        // await onItemWChange(itemWidth);
-      }}
-      class="opacity-30 hover:opacity-100 
-      bg-gray-50 border border-gray-300 text-gray-900 
-        text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
-        inline-flex w-[10rem] p-1 px-2 m-1 dark:bg-gray-700 dark:border-gray-600 
-      dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
-      dark:focus:border-blue-500"
-    >
-      {#each allSizes as size}
-        <option value={size.value}>{size.label}</option>
+            <div
+              _data-tooltip-target="tooltip-hover-{numberCounter}"
+              _data-tooltip-trigger="hover"
+              class="flex flex-row flex-wrap h-full w-full
+              justify-center content-start align-middle hover:cursor-move"
+              class:classHovered={numberHoveredItem === numberCounter}
+            >
+              <ItemView
+              bind:qualif
+              bind:quickQualifTemplates
+              bind:maxItemsLimit={maxLimit}
+              bind:isHeaderExpanded
+              {syncQualifWithBackend} {locale}
+              {confirmUpdateOrNew} {allTagsList}
+              qualifLookups={qualifTemplates} />
+            </div>
+          </SortableItem>
+          <!-- <div // TODO : strange pop-over showing and following move animation... 
+            + shoud change message when hovering tag toggle button 
+            or shortcut edit or listags edits ?
+            
+            id="tooltip-hover-{numberCounter}"
+            role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+          >
+            <p class="bg-slate-700 fill-blue-400 flex">
+              Utiliser <MoveIcon propSize={12} /> pour déplacer la qualif {qualif.label}.
+            </p>
+            <div class="tooltip-arrow" data-popper-arrow />
+          </div> -->
+        </div>
       {/each}
-    </select>
-  </div>
-  <div class="p-2">
-    Trier par :
-    <select
-      bind:value={sortOrder}
-      on:change={() => {
-        console.debug("Will sort width : ", sortOrder);
-      }}
-      name="sortOrder"
-      class="opacity-30 hover:opacity-100 
-      bg-gray-50 border border-gray-300 text-gray-900 
-        text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
-        inline-flex w-[10rem] p-1 px-2 m-1 dark:bg-gray-700 dark:border-gray-600 
-      dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
-      dark:focus:border-blue-500"
-    >
-      <option value={null}>Chose a sort function</option>
-      <option value={"byLabel"}>Par ordre alphabétique</option>
-      <option value={"byTagsSimilarity"}>Par nombre de tags similaires</option>
-    </select>
-    <span>
-      <label for="LimiteMax">Limite Max</label>
-      <input
-        class="text-black opacity-30 hover:opacity-100 w-[5rem]"
-        bind:value={maxLimit}
-        type="number"
-        name="maxLimit"
-        on:change={() => {
-          // Since $: reactivity might be overloaded
-          quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
+    </div>
+    <div class="p-2">
+      Taille de liste :
+      <select
+        name="itemWidth"
+        bind:value={itemWidth}
+        on:change={async () => {
+          console.debug("New item width : ", itemWidth);
+          // await onItemWChange(itemWidth);
         }}
-      />
-    </span>
+        class="opacity-30 hover:opacity-100 
+        bg-gray-50 border border-gray-300 text-gray-900 
+          text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+          inline-flex w-[10rem] p-1 px-2 m-1 dark:bg-gray-700 dark:border-gray-600 
+        dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+        dark:focus:border-blue-500"
+      >
+        {#each allSizes as size}
+          <option value={size.value}>{size.label}</option>
+        {/each}
+      </select>
+    </div>
+    <div class="p-2">
+      Trier par :
+      <select
+        bind:value={sortOrder}
+        on:change={() => {
+          console.debug("Will sort width : ", sortOrder);
+        }}
+        name="sortOrder"
+        class="opacity-30 hover:opacity-100 
+        bg-gray-50 border border-gray-300 text-gray-900 
+          text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+          inline-flex w-[10rem] p-1 px-2 m-1 dark:bg-gray-700 dark:border-gray-600 
+        dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+        dark:focus:border-blue-500"
+      >
+        <option value={null}>Chose a sort function</option>
+        <option value={"byLabel"}>Par ordre alphabétique</option>
+        <option value={"byTagsSimilarity"}>Par nombre de tags similaires</option>
+      </select>
+      <span>
+        <label for="LimiteMax">Limite Max</label>
+        <input
+          class="text-black opacity-30 hover:opacity-100 w-[5rem]"
+          bind:value={maxLimit}
+          type="number"
+          name="maxLimit"
+          on:change={() => {
+            // Since $: reactivity might be overloaded
+            quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
+          }}
+          on:keydown={(e) => {
+            if ('Enter' == e.key) {
+              // TODO : compatibility issues with other browsers than last chrome ?
+              // https://stackoverflow.com/questions/2520650/how-do-you-clear-the-focus-in-javascript
+              if (document.activeElement instanceof HTMLElement)
+                document.activeElement.blur();
+              e.target.blur();
+            }
+          }}
+        />
+      </span>
+    </div>
+
+    <ConfirmUpdateOrNew
+    {syncQualifWithBackend}
+    bind:this={confirmUpdateOrNew}></ConfirmUpdateOrNew>
   </div>
-
-  <ConfirmUpdateOrNew
-  bind:this={confirmUpdateOrNew}></ConfirmUpdateOrNew>
-</div>
-
+{/key}
 <style>
   .classHovered {
     background-color: lightblue;

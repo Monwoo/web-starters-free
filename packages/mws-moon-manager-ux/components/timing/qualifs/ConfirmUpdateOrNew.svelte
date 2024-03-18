@@ -3,12 +3,14 @@
   import newUniqueId from "locally-unique-id-generator";
   import { Modal } from "flowbite";
   import { onMount } from "svelte";
+import AddModal from "../tags/AddModal.svelte";
 
   const UID = newUniqueId();
   let cssClass;
   export { cssClass as class };
   export let modalId = `confirmUpdateOrNew-${UID}`;
-  export let srcQualif;
+  export let qualif;
+  export let syncQualifWithBackend;
   export let newName;
   export let isOpen = false;
   export let eltModal;
@@ -119,7 +121,7 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         > -->
         <p class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300">
           <!-- Do you want to update or add new item? -->
-          Voulez-vous renommer ou ajouter une qualification de [ {srcQualif?.label ??
+          Voulez-vous renommer ou ajouter une qualification de [ {qualif?.label ??
             ""} ] vers [ {newName} ] ?
         </p>
       </slot>
@@ -147,6 +149,17 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             dark:bg-red-500 dark:hover:bg-red-600 flex flex-wrap
             dark:focus:ring-red-900"
             style="--mws-primary-rgb: 255, 0, 0"
+            on:click={async ()=> {
+              eltModal?.hide();
+              // qualif.id = null; // Nop, not on self, will be added
+              // qualif.label = newName;
+              await syncQualifWithBackend({
+                ...qualif,
+                id: null,
+                label: newName,
+                _isNewId: true,
+              });
+            }}
           >
             <svg
               class="w-full h-7 text-gray-800 dark:text-white"
@@ -175,6 +188,11 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             dark:bg-red-500 dark:hover:bg-red-600 flex flex-wrap
             dark:focus:ring-red-900"
             style="--mws-primary-rgb: 255, 0, 0"
+            on:click={async ()=> {
+              eltModal?.hide();
+              qualif.label = newName;
+              await syncQualifWithBackend(qualif);
+            }}
           >
             <svg
               class="w-full h-7 text-gray-800 dark:text-white"
@@ -193,7 +211,7 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
               />
             </svg>
-            Renommer la qualif {srcQualif?.label ?? ""}
+            Renommer la qualif {qualif?.label ?? ""}
           </button>
         </div>
       </slot>

@@ -5,6 +5,7 @@ namespace MWS\MoonManagerBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
+use MWS\MoonManagerBundle\Entity\MwsTimeQualif;
 use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
 use MWS\MoonManagerBundle\Entity\MwsTimeTag;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
@@ -1961,6 +1962,108 @@ class MwsTimingController extends AbstractController
                 'maxPriceTag' => $timeSlot->getMaxPriceTag(),
             ],
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-toggle')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
+        '/qualif/sync/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_qualif_sync',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function qualifSync(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        MwsTimeQualifRepository $mwsTimeQualifRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-sync', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $qualifInput = $request->request->get('qualif');
+        // TODO : use serializer deserialize ?
+        $qualifInput = json_decode($qualifInput, true);
+        // dd($qualifInput);
+
+        $criteria = [
+            "id" => $qualifInput['id'],
+        ];
+        $qualif = count($criteria)
+            ? $mwsTimeQualifRepository->findOneBy($criteria)
+            : null;
+        if (!$qualif) {
+            $qualif = new MwsTimeQualif();
+        }
+
+        $sync = function ($path) use (&$qualif, &$qualifInput) {
+            $get = 'get' . ucfirst($path);
+            $v =  $qualifInput[$path] ?? null;
+            if (null !== $v) {
+                $set = 'set' . ucfirst($path);
+                if (!method_exists($qualif, $set)) {
+                    // Is collection :
+                    $add = 'add' . ucfirst($path);
+                    if (!method_exists($qualif, $add)) {
+                        $add = preg_replace('/s$/', '', $add);
+                    }
+                    $collection = $qualif->$get();
+                    $collection->clear();
+                    foreach ($v as $subV) {
+                        $qualif->$add($subV);
+                    }
+                } else {
+                    $qualif->$set($v);
+                }
+            }
+        };
+
+        $sync('label');
+        if (is_array($qualifInput['primaryColorRgb'] ?? false)) {
+            $qualifInput['primaryColorRgb'] = implode(
+                ', ', $qualifInput['primaryColorRgb']
+            );
+        }
+        $sync('primaryColorHex');
+        $sync('primaryColorRgb');
+        if ($qualifInput['timeTags'] ?? false) {
+            foreach ($qualifInput['timeTags'] as $idx => $tagSlug) {
+                $tag = $mwsTimeTagRepository->findOneBy([
+                    "slug" => $tagSlug,
+                ]);
+                // TODO : what if not found ? null value ok or create tag ?
+                $qualifInput['timeTags'][$idx] = $tag;
+            }
+        }
+        $sync('timeTags');
+        $sync('shortcut');
+        // TODO : $sync('quickUserHistory');
+
+        // dd($qualif);
+
+        $this->em->persist($qualif);
+        $this->em->flush();
+
+        return $this->json([
+            'sync' => [
+                'id' => $qualif->getId(),
+                // TODO : $qualif export serialization ? (Sync group ?)
+                // 'maxPath' => $timeSlot->getMaxPath(),
+                // 'maxPriceTag' => $timeSlot->getMaxPriceTag(),
+            ],
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-sync')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
     }
