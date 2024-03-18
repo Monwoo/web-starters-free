@@ -94,10 +94,10 @@ import ExportQualifs from "./ExportQualifs.svelte";
       const e1 = arr1[idx];
       const e2 = arr2[idx] ?? undefined;
       if (
-        // e1.id !== e2.id
+        // e1.id !== e2?.id
         // ! _.isEqual(e1, e2) // 1st level compare, then refs...
-        e1.id !== e2.id ||
-        e1.label !== e2.label
+        e1.id !== e2?.id ||
+        e1.label !== e2?.label
       ) {
         succed = false;
         break;
