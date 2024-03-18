@@ -19,9 +19,15 @@
   import ItemView from "./ItemView.svelte";
   import _ from "lodash";
   import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
-import ExportQualifs from "./ExportQualifs.svelte";
+  import ExportQualifs from "./ExportQualifs.svelte";
+  import debounce from 'lodash/debounce'
+
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
+
+  // TIPS : avoid concurency infinit loop refresh with debounce :
+  // 400ms for user input debounce
+  export let userDelay = 300;
 
   export let locale;
   export let isHeaderExpanded = false;
@@ -48,7 +54,22 @@ import ExportQualifs from "./ExportQualifs.svelte";
   export let timingQualifConfig = userConfig?.timing?.quickQualif ?? {};
   export let maxLimit = timingQualifConfig?.maxLimit ?? 12;
   export let itemWidth = timingQualifConfig?.itemWidth ?? defaultItemW;
-  export let sortOrder = timingQualifConfig?.sortOrder;
+  // TIPS : do not refresh sortOrder to avoid infinit loop
+  // since will trigger list sort when list might be in custom user mode
+
+  const quickQLookupInit = timingQualifConfig?.list?.reduce((acc, qLabel, idx) => {
+    acc[qLabel] = idx;
+    return acc;
+  }, {});
+  quickQualifTemplates = qualifTemplates?.reduce((acc, q) => {
+    // .filter((q) => q.label in quickQLookupInit) // Will not keep order...
+    if (q.label in quickQLookupInit) {
+      acc[quickQLookupInit[q.label]] = q;
+    }
+    return acc;
+  }, []);
+
+  export let sortOrder = null; // timingQualifConfig?.sortOrder;
 
   export let allSizes = [
     {
@@ -112,6 +133,8 @@ import ExportQualifs from "./ExportQualifs.svelte";
   };
   $: {
     console.debug("Will check timing config sync");
+    // console.debug("Will check timing config sync", lastDataset.quickQualifTemplates, quickQualifTemplates);
+
     // TODO : $$props not covering all props, need to encapsulate ?
     // configDidChange = Object.keys(lastDataset).reduce((acc, k) => {
     //   return lastDataset[k] !== $$props[k] || acc;
@@ -162,27 +185,33 @@ import ExportQualifs from "./ExportQualifs.svelte";
   $: {
     // on timingQualifConfig, update inner props :
     if (timingQualifConfig) {
-      console.debug('Update quicklist from config');
-      let quickQLookup = timingQualifConfig?.list?.reduce((acc, qLabel, idx) => {
-        acc[qLabel] = idx;
+      console.debug("Update quicklist from config");
+      // .list is the old one to update...
+      // let quickQLookup = timingQualifConfig?.list?.reduce((acc, qLabel, idx) => {
+      let quickQLookup = quickQualifTemplates?.reduce((acc, q, idx) => {
+        acc[q.label] = idx;
         return acc;
       }, {});
-      let historyQualif = qualifTemplates
-      // .filter((q) => q.label in quickQLookup) // Will not keep order...
-      .reduce((acc,q)=> {
+      // let historyQualif = ([...quickQualifTemplates ?? []])
+      let historyQualif = quickQualifTemplates?.reduce((acc, q) => {
+        // .filter((q) => q.label in quickQLookup) // Will not keep order...
         if (q.label in quickQLookup) {
           acc[quickQLookup[q.label]] = q;
         }
         return acc;
       }, []);
-      quickQualifTemplates = historyQualif.length
-        ? historyQualif
-        : quickQualifTemplates?.length
-        ? quickQualifTemplates
-        : qualifTemplates.slice(0, maxLimit);
+      quickQualifTemplates = (
+        historyQualif?.length
+          ? historyQualif
+          : quickQualifTemplates?.length
+          ? quickQualifTemplates
+          : qualifTemplates
+      ).slice(0, maxLimit);
       maxLimit = timingQualifConfig?.maxLimit;
       itemWidth = timingQualifConfig?.itemWidth;
-      sortOrder = timingQualifConfig?.sortOrder;
+      // TIPS : do not refresh sortOrder to avoid infinit loop
+      // since will trigger list sort when list might be in custom user mode
+      // sortOrder = timingQualifConfig?.sortOrder;
 
       // set null to refresh only on next config set
       // allowing regular behavior
@@ -310,6 +339,7 @@ import ExportQualifs from "./ExportQualifs.svelte";
           //        BUT : will add to existing list...
           qualif.timeTags = []; // Reset list to ensure clean merge // TODO : review is _.merge is ok or use way to reset lists ?
           _.merge(qualif, data.sync);
+          // _.merge(qualif, data.sync);
 
           if (data.didDelete) {
             quickQualifTemplates = quickQualifTemplates.filter(
@@ -375,7 +405,7 @@ import ExportQualifs from "./ExportQualifs.svelte";
 
           stateUpdate(state, {
             csrfTimingQualifConfigSync: data.newCsrf,
-             // TODO : full configs set or partial Merge or property path setter ?
+            // TODO : full configs set or partial Merge or property path setter ?
             userConfig: data.sync,
           });
         }
@@ -447,11 +477,12 @@ import ExportQualifs from "./ExportQualifs.svelte";
       Taille de liste :
       <select
         name="itemWidth"
-        bind:value={itemWidth}
-        on:change={async () => {
+        value={itemWidth}
+        on:change={debounce(async (e) => {
+          itemWidth = e.target.value;
           console.debug("New item width : ", itemWidth);
           // await onItemWChange(itemWidth);
-        }}
+        }, userDelay)}
         class="opacity-30 hover:opacity-100 
         bg-gray-50 border border-gray-300 text-gray-900 
           text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
@@ -467,10 +498,11 @@ import ExportQualifs from "./ExportQualifs.svelte";
     <div class="p-2">
       Trier par :
       <select
-        bind:value={sortOrder}
-        on:change={() => {
+        value={sortOrder}
+        on:change={debounce(async (e) => {
+          sortOrder = e.target.value;
           console.debug("Will sort width : ", sortOrder);
-        }}
+        }, userDelay)}
         name="sortOrder"
         class="opacity-30 hover:opacity-100 
         bg-gray-50 border border-gray-300 text-gray-900 
@@ -488,14 +520,30 @@ import ExportQualifs from "./ExportQualifs.svelte";
         <label for="LimiteMax">Limite Max</label>
         <input
           class="text-black opacity-30 hover:opacity-100 w-[5rem]"
-          bind:value={maxLimit}
+          value={maxLimit}
           type="number"
           name="maxLimit"
-          on:change={() => {
+          on:change={debounce(async (e) => {
+            // bind:value={maxLimit} // BIND will BREAK debounce,
+            //           svelte reactivity will flow instead
             // Since $: reactivity might be overloaded
-            quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
-          }}
-          on:keydown={(e) => {
+            // quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
+            maxLimit = e.target.valueAsNumber;
+            if (
+              maxLimit > quickQualifTemplates.length &&
+              qualifTemplates.length > quickQualifTemplates.length
+            ) {
+              quickQualifTemplates = quickQualifTemplates.concat(
+                qualifTemplates.filter(
+                  (q) =>
+                    quickQualifTemplates.filter((qq) => qq.label === q.label)
+                      .length === 0
+                )
+              );
+            }
+            quickQualifTemplates = quickQualifTemplates.slice(0, maxLimit);
+          }, userDelay * 4)}
+          on:keydown={debounce(async (e) => {
             if ("Enter" == e.key) {
               // TODO : compatibility issues with other browsers than last chrome ?
               // https://stackoverflow.com/questions/2520650/how-do-you-clear-the-focus-in-javascript
@@ -503,7 +551,7 @@ import ExportQualifs from "./ExportQualifs.svelte";
                 document.activeElement.blur();
               e.target.blur();
             }
-          }}
+          }, userDelay)}
         />
       </span>
     </div>
@@ -518,8 +566,7 @@ import ExportQualifs from "./ExportQualifs.svelte";
     
     // TODO : link user maps to qualif or useless mapping ?
     -->
-    <ExportQualifs {locale}></ExportQualifs>
-
+    <ExportQualifs {locale} />
   </div>
 {/key}
 

@@ -293,8 +293,8 @@
   const isKey = {
     space: (k) => k.keyCode == 32,
     return: (k) => k.keyCode == 13,
-    zoomLower: (k) => k.key == '<',
-    zoomHigher: (k) => k.key == '>',
+    zoomLower: (k) => k.key == "<",
+    zoomHigher: (k) => k.key == ">",
     qualifShortcut: (k) => qualifShortcut[k.key.charCodeAt(0)] ?? null,
   };
 
@@ -307,13 +307,12 @@
     }
     const zoomStep = 5;
     if (isKey.zoomLower(e)) {
-      zoomRange = zoomRange >= zoomStep
-      ? zoomRange - zoomStep : zoomRange;
+      zoomRange = zoomRange >= zoomStep ? zoomRange - zoomStep : zoomRange;
       e.preventDefault();
     }
     if (isKey.zoomHigher(e)) {
-      zoomRange = zoomRange <= (100 - zoomStep)
-      ? zoomRange + zoomStep : zoomRange;
+      zoomRange =
+        zoomRange <= 100 - zoomStep ? zoomRange + zoomStep : zoomRange;
       e.preventDefault();
     }
     if (isKey.return(e)) {
@@ -511,7 +510,8 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <span
         class="float-right m-1 cursor-context-menu hover:opacity-90"
         on:click|stopPropagation={() => {
-          Height = null; slotHeight = null;
+          Height = null;
+          slotHeight = null;
           isHeaderExpanded = !isHeaderExpanded;
           zoomRange = 50;
         }}
@@ -601,8 +601,11 @@ style:opacity={isLoading ? 0.8 : 1} -->
           [{String.fromCharCode(qt.shortcut)}] {qt.label}
         </button>
       {/each} -->
-      <QuickList {allTagsList} bind:isHeaderExpanded bind:qualifTemplates
-      {locale}
+      <QuickList
+        {allTagsList}
+        bind:isHeaderExpanded
+        bind:qualifTemplates
+        {locale}
       />
 
       <Loader {isLoading} />
@@ -685,25 +688,34 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <div class="fill-white/70 text-white/70 bg-black/50 w-full">
         <input
           bind:value={zoomRange}
-          id="zoom-range" type="range" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+          id="zoom-range"
+          type="range"
+          class="w-full h-1 bg-gray-200/50 rounded-lg
+          appearance-none cursor-pointer outline-none
+           "
+        />
       </div>
     </div>
     <object
       bind:this={slotView}
       on:click={() => (resizing ? null : (isFullScreen = !isFullScreen))}
       class="object-contain border-solid border-4 w-full"
-      class:h-[80vh]={!slotHeight && (zoomRange == 50) && isFullScreen && !isHeaderExpanded}
+      class:h-[80vh]={!slotHeight &&
+        zoomRange == 50 &&
+        isFullScreen &&
+        !isHeaderExpanded}
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
       type="image/png"
       style={`
-      ${slotHeight && zoomRange == 50
-        ? `
+      ${
+        slotHeight && zoomRange == 50
+          ? `
           height: ${slotHeight}px;
         `
-        : ""
-      } /* transform: scale(${2 * zoomRange/100}); */
+          : ""
+      } /* transform: scale(${(2 * zoomRange) / 100}); */
       width: ${2 * zoomRange}%;
       `}
     >
@@ -753,7 +765,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
     <div class="overflow-visible flex items-end
     z-50 w-full">
       <div class="fill-white text-white bg-black w-full">
-        <label for="default-range" class="block mb-2 text-sm font-medium">Zoom range {zoomRange}</label>
+        <label for="default-range" class="block mb-2 text-sm font-medium"
+          >Zoom range {zoomRange}</label
+        >
       </div>
     </div>
 
