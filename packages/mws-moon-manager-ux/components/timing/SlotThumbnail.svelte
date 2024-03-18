@@ -36,15 +36,18 @@ overflow-hidden border-solid border-4"
 >
   <!-- https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
   <object
-    data="{timingSlot.thumbnailJpeg}"
+    class="w-full h-full"
+    data="{timingSlot.thumbnailJpeg ?? '/404'}"
     type="image/png"
   >
     <img
       loading="lazy"
-      class="object-contain"
-      src="{timingSlot.thumbnailJpeg}"
+      class="object-contain w-full h-full"
+      src="{"screenshot" == timingSlot?.source?.type ? slotPath : ""}"
     />
-    <!-- src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
+    <!-- 
+      TODO : generate thumb ? but eat spaces for slow rendering...
+      src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
 
   </object>
 
