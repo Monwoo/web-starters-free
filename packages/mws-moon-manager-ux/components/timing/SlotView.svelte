@@ -296,7 +296,8 @@
   };
 
   const onKeyDown = async (e) => {
-    console.debug("Key down : ", e);
+    // console.debug("Key down : ", e);
+    console.debug("Key down : ", e.code);
     if (isKey.space(e)) {
       isFullScreen = !isFullScreen;
       e.preventDefault();

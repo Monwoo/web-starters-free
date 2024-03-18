@@ -14,7 +14,7 @@
     const timingSlot = timings[lastSelectedIndex];
     console.debug(
       `[timing/SquareList] Selected timingSlot ${lastSelectedIndex} :`,
-      timingSlot
+      timingSlot.sourceStamp
     );
     selectedSourceStamps = {
       [timingSlot?.sourceStamp]: true,

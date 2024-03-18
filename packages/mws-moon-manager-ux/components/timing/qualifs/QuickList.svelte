@@ -84,32 +84,75 @@
   let configDidChange = false;
   let lastDataset = {};
   // const configDidChange = false;
+  // TODO : opti with event system better than ordered arrays parses ?
+  const arrObjComp = (arr1, arr2) => {
+    let succed = true;
+    // TIPS : only check for ID or Label changes,
+    //        other props are saved with another Api for qualif sync
+    for (let idx = 0; idx < (arr1?.length ?? 0); idx++) {
+      const e1 = arr1[idx];
+      const e2 = arr2[idx] ?? undefined;
+      if (
+        // e1.id !== e2.id
+        // ! _.isEqual(e1, e2) // 1st level compare, then refs...
+        e1.id !== e2.id ||
+        e1.label !== e2.label
+      ) {
+        succed = false;
+        break;
+      }
+    }
+
+    // // TIPS : deep compare, will update on colors changes too :
+    // // arr1: JSON.stringify(arr1 ?? [])
+    // arr2 = JSON.stringify(arr2 ?? []);
+    // succed = arr1 === arr2;
+    return succed;
+  };
   $: {
-    console.debug('Will check', Object.keys(lastDataset));
+    console.debug("Will check timing config sync");
     // TODO : $$props not covering all props, need to encapsulate ?
     // configDidChange = Object.keys(lastDataset).reduce((acc, k) => {
     //   return lastDataset[k] !== $$props[k] || acc;
     //   // return lastDataset[k] !== $$restProps[k] || acc;
     // }, !Object.keys(lastDataset).length)
-    configDidChange = 
-    // TODO : deep detect changes ?
-    // lastDataset.quickQualifTemplates != quickQualifTemplates
-    // || lastDataset.timingQualifConfig != timingQualifConfig // Will detect change if ref change not the content...
-    lastDataset.quickQualifTemplates != quickQualifTemplates
-    // || lastDataset.timingQualifConfig != timingQualifConfig
-    || lastDataset.maxLimit != maxLimit
-    || lastDataset.itemWidth != itemWidth
-    || lastDataset.sortOrder != sortOrder
+    configDidChange =
+      // TODO : deep detect changes ? or notif system ?
+      // lastDataset.quickQualifTemplates != quickQualifTemplates
+      // || lastDataset.timingQualifConfig != timingQualifConfig // Will detect change if ref change not the content...
+      // lastDataset.quickQualifTemplates?.length != quickQualifTemplates?.length
+      !arrObjComp(lastDataset.quickQualifTemplates, quickQualifTemplates) ||
+      // || lastDataset.timingQualifConfig != timingQualifConfig
+      lastDataset.maxLimit != maxLimit ||
+      lastDataset.itemWidth != itemWidth ||
+      lastDataset.sortOrder != sortOrder;
     if (configDidChange) {
-      console.debug("Qualif templates will sync update :", quickQualifTemplates);
+      console.debug(
+        "Qualif templates will sync update :",
+        quickQualifTemplates
+      );
       // Lookup to ensure reactivity on below changes : (Svelte do not do deep detect...)
-      timingQualifConfig, maxLimit, itemWidth, sortOrder,
-      syncQualifConfigWithBackend();
+      timingQualifConfig,
+        maxLimit,
+        itemWidth,
+        sortOrder,
+        syncQualifConfigWithBackend();
       configDidChange = false; // NEEDED performance, can't call network each 10 milliseconds...
       lastDataset = {
-        quickQualifTemplates, timingQualifConfig,
-        maxLimit, itemWidth, sortOrder
-      }
+        // Do not keep same ref or svelte reactivity will update values
+        // only array name and order changes :
+        quickQualifTemplates: quickQualifTemplates?.slice().map((q) => ({
+          // ...q,
+          // Keep copy of needed compare elt
+          id: q.id, label: q.label,
+        })),
+        // TIPS : DEEP test
+        // quickQualifTemplates: JSON.stringify(quickQualifTemplates ?? []),
+        timingQualifConfig,
+        maxLimit,
+        itemWidth,
+        sortOrder,
+      };
     }
   }
   quickQualifTemplates = qualifTemplates.slice(0, maxLimit);
