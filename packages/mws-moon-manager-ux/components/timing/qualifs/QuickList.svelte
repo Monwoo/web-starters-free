@@ -19,6 +19,7 @@
   import ItemView from "./ItemView.svelte";
   import _ from "lodash";
   import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
+import ExportQualifs from "./ExportQualifs.svelte";
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
 
@@ -511,12 +512,15 @@
       {syncQualifWithBackend}
       bind:this={confirmUpdateOrNew}
     />
-  </div>
 
-  <!-- // TODO : if expanded, add import/export user timing config history
-  Ok for now, sqlite DB backup...
-  
-  -->
+    <!-- // TODO : if expanded, add import/export user timing config history
+    Ok for now, sqlite DB backup or easy to redo with full qualif bckup...
+    
+    // TODO : link user maps to qualif or useless mapping ?
+    -->
+    <ExportQualifs {locale}></ExportQualifs>
+
+  </div>
 {/key}
 
 <style>

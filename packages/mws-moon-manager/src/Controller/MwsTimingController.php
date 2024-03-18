@@ -2143,4 +2143,108 @@ class MwsTimingController extends AbstractController
             'viewTemplate' => $viewTemplate,
         ]);
     }
+
+    #[Route(
+        '/qualif/export/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_qualif_export',
+        methods: ['POST', 'GET'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function qualifExport(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeQualifRepository $mwsTimeQualifRepository,
+        // CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        // TIPS : no csrf renew ? only check user logged is ok ?
+        // TODO : or add async CSRF token manager notif route
+        //         to sync new redux token to frontend ?
+        // $csrf = $request->request->get('_csrf_token');
+        // if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-export', $csrf)) {
+        //     $this->logger->debug("Fail csrf with", [$csrf, $request]);
+        //     throw $this->createAccessDeniedException('CSRF Expired');
+        // }
+
+        $format = $request->get('format') ?? 'yaml';
+
+        // $timingLookup = $request->get('timingLookup');
+        // // dd($timingLookup);
+
+        $qb = $mwsTimeQualifRepository->createQueryBuilder('q');
+
+        // if ($timingLookup) {
+        //     $timingLookup = json_decode($timingLookup, true);
+        //     // dump($timingLookup);
+        //     // $this->logger->debug('Timing lookup', $timingLookup);
+        //     $qb->join('t.mwsTimeSlots', 's');
+        //     $mwsTimeSlotRepository->applyTimingLokup($qb, $timingLookup, 's');
+        // }
+
+        $qualifs = $qb->getQuery()->getResult();
+
+        $qualifsSerialized = $this->serializer->serialize(
+            $qualifs,
+            $format,
+            // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            [
+                // ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                AbstractNormalizer::IGNORED_ATTRIBUTES => [
+                    'id', 'quickUserHistory'
+                ],
+                AbstractNormalizer::CALLBACKS => [
+                    'timeTags' => function (
+                        $innerObject,
+                        $outerObject,
+                        string $attributeName,
+                        string $format = null,
+                        array $context = []
+                    ) {
+                        if ($innerObject && !($context['deserialization_path'] ?? null)) {
+                            $norm = array_map(
+                                function (MwsTimeTag $o) {
+                                    // return $o->getSlug();
+                                    return ['slug'  => $o?->getSlug()] ?? null;
+                                },
+                                $innerObject->toArray() ?? []
+                            );
+                            sort($norm);
+                            $innerObject = $norm;
+                        }
+                        return $innerObject;
+                    },
+                ],
+            ],
+        );
+
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+
+        $filename = "MoonManager-v" . $packageVersion
+            . "-TimeQualifsExport-" . time() . ".{$format}"; // . '.pdf';
+
+        $response = new Response();
+        $mime = [
+            'json' => 'application/json',
+            'csv' => 'text/comma-separated-values',
+            'xml' => 'application/x-xml', // TODO : x-xml or xml ?
+            'yaml' => 'application/x-yaml', // TODO : x-yaml or yaml ?
+        ][$format] ?? 'text/plain';
+        if ($mime) {
+            $response->headers->set('Content-Type', $mime);
+        }
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
+
+        $response->setContent($qualifsSerialized);
+        return $response;
+    }
+
 }
