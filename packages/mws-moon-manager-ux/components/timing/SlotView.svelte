@@ -46,6 +46,7 @@
   export let allTagsList;
   export let slotHeader;
   export let slotView;
+  export let zoomRange = 50;
 
   allTagsList = allTagsList ?? stateGet(get(state), "allTagsList");
 
@@ -292,14 +293,27 @@
   const isKey = {
     space: (k) => k.keyCode == 32,
     return: (k) => k.keyCode == 13,
+    zoomLower: (k) => k.key == '<',
+    zoomHigher: (k) => k.key == '>',
     qualifShortcut: (k) => qualifShortcut[k.key.charCodeAt(0)] ?? null,
   };
 
   const onKeyDown = async (e) => {
     // console.debug("Key down : ", e);
-    console.debug("Key down : ", e.code);
+    console.debug("Key down : ", e.code, e);
     if (isKey.space(e)) {
       isFullScreen = !isFullScreen;
+      e.preventDefault();
+    }
+    const zoomStep = 5;
+    if (isKey.zoomLower(e)) {
+      zoomRange = zoomRange >= zoomStep
+      ? zoomRange - zoomStep : zoomRange;
+      e.preventDefault();
+    }
+    if (isKey.zoomHigher(e)) {
+      zoomRange = zoomRange <= (100 - zoomStep)
+      ? zoomRange + zoomStep : zoomRange;
       e.preventDefault();
     }
     if (isKey.return(e)) {
@@ -385,6 +399,7 @@
     }
     console.debug("Drag to", deltaY, "from", slotInitialHeight);
     if (slotResizing) {
+      zoomRange = 50; // Only att range 50 for scrolls
       slotHeight = Math.max(
         slotMinHeight,
         Math.min(slotMaxHeight, slotInitialHeight + deltaY)
@@ -498,6 +513,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         on:click|stopPropagation={() => {
           Height = null; slotHeight = null;
           isHeaderExpanded = !isHeaderExpanded;
+          zoomRange = 50;
         }}
       >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
@@ -568,7 +584,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         {/each}
       </span>
       <button
-        class="bg-red-500 float-right m-1"
+        class="bg-red-500 float-right m-2"
         on:click|stopPropagation={removeAllTags}
       >
         [d] Supprimer tous les tags
@@ -662,21 +678,34 @@ style:opacity={isLoading ? 0.8 : 1} -->
       // user can resize part of screen if want to fit part of it...
       class:h-[95vh]={isFullScreen && isHeaderExpanded}
 
+      use:panzoom={{ render, width: image.width, height: image.height }}
     -->
+    <div class="overflow-visible flex items-end sticky top-0
+    z-50 w-full">
+      <div class="fill-white/70 text-white/70 bg-black/50 w-full">
+        <input
+          bind:value={zoomRange}
+          id="zoom-range" type="range" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+      </div>
+    </div>
     <object
       bind:this={slotView}
       on:click={() => (resizing ? null : (isFullScreen = !isFullScreen))}
       class="object-contain border-solid border-4 w-full"
-      class:h-[80vh]={isFullScreen && !isHeaderExpanded}
+      class:h-[80vh]={!slotHeight && (zoomRange == 50) && isFullScreen && !isHeaderExpanded}
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
       type="image/png"
-      style={slotHeight
+      style={`
+      ${slotHeight && zoomRange == 50
         ? `
-        height: ${slotHeight}px;
-      `
-        : ""}
+          height: ${slotHeight}px;
+        `
+        : ""
+      } /* transform: scale(${2 * zoomRange/100}); */
+      width: ${2 * zoomRange}%;
+      `}
     >
       <img class="w-full" loading="eager" src={timingSlot.thumbnailJpeg} />
     </object>
@@ -721,6 +750,13 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </svg>
       </div>
     </div>
+    <div class="overflow-visible flex items-end
+    z-50 w-full">
+      <div class="fill-white text-white bg-black w-full">
+        <label for="default-range" class="block mb-2 text-sm font-medium">Zoom range {zoomRange}</label>
+      </div>
+    </div>
+
     <!-- TIPS : add bottom margin to allow height size increase
      (other wise, no bottom space to scroll up to...) -->
     <div class:mb-[5rem]={isHeaderExpanded} />
@@ -746,3 +782,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
     </div> -->
   </div>
 </div>
+
+<!-- <styles>
+  object {
+    transition: transform .2s;
+  }
+</styles> -->

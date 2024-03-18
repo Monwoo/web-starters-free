@@ -139,6 +139,9 @@ importers:
       svelte-loader:
         specifier: ^3.1.9
         version: 3.1.9(svelte@4.2.2)
+      svelte-pan-zoom:
+        specifier: ^0.0.11
+        version: 0.0.11(svelte@4.2.2)
       svelte-photoswipe:
         specifier: ^0.0.2
         version: 0.0.2
@@ -9601,6 +9604,10 @@ packages:
     resolution: {integrity: sha512-oU+Xv7Dl4kRU2kdFjsoPLfJfnt5hUhsFUZtuzI3Ku/f2iAFZqBoEuXOqK3N9ngD4dxQOmN4OKWPHVi3NeAeAfQ==}
     dev: true
 
+  /svelte-disable-preload@0.0.2:
+    resolution: {integrity: sha512-xA6aaT3jgcMgSeOpzlfkIUa1SgKIc5yesPou8N/QiSOWYVq8EMlzFiBGaoDJbr+UEGLs8vBCAjwcYXtDXmFRrQ==}
+    dev: true
+
   /svelte-drag-drop-touch@0.1.9:
     resolution: {integrity: sha512-DWAMC+6xBRkl5OuVR7ze+znSKERlX9t9cx4/kzoWOnPwLFvv4g8YTtQxmO8wfWfETi9qgg/cnw58gmhZKY9vyw==}
     dependencies:
@@ -9700,6 +9707,16 @@ packages:
   /svelte-loading-spinners@0.3.4:
     resolution: {integrity: sha512-vKaW71QMCBcTNijAGc0mUl8k3DQ66iYmp6MB8BMGCXyWk82bTrcLy8FOnSm9fE+8q6TwzD6PLUoYFHt0II93Xw==}
     dev: false
+
+  /svelte-pan-zoom@0.0.11(svelte@4.2.2):
+    resolution: {integrity: sha512-uID2g2aVrsYJRPB4W4vUdr5q9cuw3rkxAti6DQiwu+vIrv7xXPwax2p58kjFthlhytlMfugBntAXlkZ9HidQgg==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0
+    dependencies:
+      svelte: 4.2.2
+      svelte-disable-preload: 0.0.2
+      svelte-resize-observer-action: 0.0.3
+    dev: true
 
   /svelte-photoswipe@0.0.2:
     resolution: {integrity: sha512-Pa8f3uOsxjWyAUG0VbRQT+QMz3cVt9X6FuPSw/DjR3MSD3wj2+Ng2yNaaqxut2llLO7aulXLK7Vt3JxYiemfDw==}
@@ -9899,6 +9916,10 @@ packages:
       svelte: 3.58.0
       typescript: 5.2.2
     dev: false
+
+  /svelte-resize-observer-action@0.0.3:
+    resolution: {integrity: sha512-v6BbS1TW5r8j1zm48qsAlld41ob8fJhomKdADKiHKplL0plkxjUn3NCehOgW3Ge6kgRrGwATBGYBy3fTGbxM9g==}
+    dev: true
 
   /svelte-search@1.1.0:
     resolution: {integrity: sha512-e5hci9fZPMXb3fuRZvcYJGqh448M8vV3biY4lN4Nr9fqrG/HBnTjWYstKb399aUe9tsBxRbxRAWgtKicisL23g==}
