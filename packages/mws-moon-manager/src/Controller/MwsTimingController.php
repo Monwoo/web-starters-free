@@ -1523,9 +1523,9 @@ class MwsTimingController extends AbstractController
         // ->setParameter('xx', $xx);
 
         $query = $qb->getQuery();
-        dump($query->getSql());
+        // dump($query->getSql());
         $resp = $query->execute();
-        dump($resp);
+        // dump($resp);
 
         $this->em->flush();
 

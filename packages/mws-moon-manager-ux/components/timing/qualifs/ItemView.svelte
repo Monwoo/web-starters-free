@@ -227,11 +227,42 @@
       --picker-indicator-size="25px"
       --picker-z-index="10"
       --input-size="100px"
+      https://svelte-awesome-color-picker.vercel.app/
+      	a11yColors={[
+          { textHex: '#FFF', reverse: true, placeholder: 'background' },
+          { textHex: '#FFF', bgHex: '#FF0000', reverse: true, placeholder: 'background' },
+          { bgHex: '#FFF', placeholder: 'title', size: 'large' },
+          { bgHex: '#7F7F7F', placeholder: 'button' }
+        ]}
+
     /> -->
     <span class="p-2">
       <ColorPicker
         bind:rgb
         bind:hex
+        nullable
+        texts={{
+          label: {
+            h: 'teinte',
+            s: 'saturation',
+            v: 'luminosité',
+            r: 'rouge',
+            g: 'vert',
+            b: 'bleu',
+            a: 'transparence',
+            hex: 'couleur hexadécimale',
+            withoutColor: 'sans couleur'
+          },
+          color: {
+            rgb: 'rgb',
+            hsv: 'hsv',
+            hex: 'hex'
+          },
+          changeTo: 'changer à '
+        }}
+        isDialog={false}
+        isTextInput={true}
+        textInputModes={['hex', 'rgb', 'hsv']}
         --focus-color="green"
         label="Couleur"
         sliderDirection="horizontal"
