@@ -245,7 +245,7 @@
     {/if}
     {#each tag.self.pricePerHrRules ?? [] as rule, ruleIdx}
       <span>
-        <strong>{rule.maxLimitPriority} :</strong> {rule.price.toPrettyNum(2)} €
+        <strong>{rule.maxLimitPriority ?? 0} :</strong> {rule.price.toPrettyNum(2)} €
         <br/>With :<br/>
         {#each rule.withTags as tagSlug}
           <span

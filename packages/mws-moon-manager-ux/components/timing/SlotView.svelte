@@ -528,7 +528,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
             .format("YYYY/MM/DD H:mm:ss")}
         </span>
       </span>
-      <span class="float-right right-0 top-0 z-40 sticky">
+      <span class="float-right right-0 top-0 z-30 sticky">
         <span
           class="float-right right-0 top-0 w-[6em] sticky pointer-events-none"
         >
@@ -616,7 +616,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <!-- 
         TOO tricky with inner auto scroll at bottom ?
         <div class="draggable absolute bottom-0 left-0
-       fill-white text-white bg-black/50 z-50 p-2"
+       fill-white text-white bg-black/50 z-40 p-2"
       use:draggable={{
         helper:'clone', revert:true
       }}
@@ -631,7 +631,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     class:hidden={resizing} -->
     <div
       class="overflow-visible sticky top-0 h-[0px] flex items-end
-    fill-white/70 text-white/70 bg-black/50 z-50"
+    fill-white/70 text-white/70 bg-black/50 z-40"
       class:hidden={resizing}
       on:click|stopPropagation|preventDefault
       on:mousedown|stopPropagation|preventDefault
@@ -684,7 +684,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       use:panzoom={{ render, width: image.width, height: image.height }}
     -->
     <div class="overflow-visible flex items-end sticky top-0
-    z-50 w-full">
+    z-40 w-full">
       <div class="fill-white/70 text-white/70 bg-black/50 w-full">
         <input
           bind:value={zoomRange}
@@ -723,7 +723,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     </object>
     <div
       class="overflow-visible sticky top-0 flex items-end h-[0px]
-    fill-white/70 text-white/70 bg-black/50 z-50"
+    fill-white/70 text-white/70 bg-black/50 z-40"
       class:hidden={slotResizing}
       on:click|stopPropagation|preventDefault
       on:mousedown|stopPropagation|preventDefault
@@ -763,7 +763,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       </div>
     </div>
     <div class="overflow-visible flex items-end
-    z-50 w-full">
+    z-40 w-full">
       <div class="fill-white text-white bg-black w-full">
         <label for="default-range" class="block mb-2 text-sm font-medium"
           >Zoom range {zoomRange}</label

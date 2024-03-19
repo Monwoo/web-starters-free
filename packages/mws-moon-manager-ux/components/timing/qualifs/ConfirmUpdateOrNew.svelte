@@ -27,7 +27,10 @@
   onMount(async () => {
     const modalOptions = {
       // placement: "bottom-right",
-      // backdrop: "dynamic",
+      backdrop: "static",
+      // TODO : when timing slot view in fullscreen,
+      // it go over popup disallowing user events inside the popup...
+      backdropClasses: "invisible pointer-events-none",
       // backdropClasses:
       //   "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
       onHide: () => {

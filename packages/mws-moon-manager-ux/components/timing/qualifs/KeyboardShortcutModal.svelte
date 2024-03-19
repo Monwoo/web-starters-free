@@ -27,11 +27,17 @@
   const onKeyDown = async (e) => {
     console.debug("Key down from shortcut modal : ", e.code, e);
     selectedKey = e.key;
-    e.preventDefault();
+    // e.preventDefault();
   };
 
   onMount(async () => {
     const modalOptions = {
+      backdrop: "static",
+      // TODO : when timing slot view in fullscreen,
+      // it go over popup disallowing user events inside the popup...
+      backdropClasses: "invisible pointer-events-none",
+      // backdropClasses:
+      //   "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
       onHide: () => {
         console.log("modal is hidden");
       },
@@ -54,11 +60,12 @@
 
 </script>
 
-<svelte:window on:keydown={onKeyDown} />
+<!-- <svelte:window on:keydown|stopPropagation|preventDefault={onKeyDown} /> -->
 
 <div
   id={modalId}
   tabindex="-1"
+  on:keydown|stopPropagation|preventDefault={onKeyDown}
   aria-hidden="true"
   class="hidden overflow-y-auto overflow-x-hidden 
   fixed top-0 right-0 left-0 z-50 justify-center items-center
