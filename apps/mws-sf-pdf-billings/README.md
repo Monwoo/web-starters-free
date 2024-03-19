@@ -154,6 +154,9 @@ templates translations \
 vendor var .env.local.php \
 -x '**/node_modules/**' 
 
+# test local prod (if no base href configs ?)
+APP_ENV=prod symfony server:start 2> /dev/null
+
 # clean for local dev :
 rm .env.local.php
 ```
