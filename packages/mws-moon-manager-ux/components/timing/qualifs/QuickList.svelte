@@ -528,8 +528,16 @@ import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
         <option value={"byTagsSimilarity"}>Par nombre de tags similaires</option
         >
       </select>
-      <span>
+      <!-- TIPS : protect from root keydown catches :
+        |preventDefault is too much, prevent input types too ?
+      on:keydown|stopPropagation|preventDefault -->
+      <span
+      on:keydown|stopPropagation
+      >
         <label for="LimiteMax">Limite Max</label>
+        <!-- TIPS : protect from root keydown catches :
+        on:keydown|stopPropagation|preventDefault 
+        BUT : NOT ON INPUT : will catch keyboard key for input too otherwise -->
         <input
           class="text-black opacity-30 hover:opacity-100 w-[5rem]"
           value={maxLimit}

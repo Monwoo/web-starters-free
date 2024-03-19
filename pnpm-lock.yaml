@@ -355,7 +355,7 @@ importers:
         version: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.0.0)(svelte@4.2.2)
       '@symfony/webpack-encore':
         specifier: ^4.0.0
-        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss@8.4.31)(ts-loader@9.5.1)(typescript@5.4.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
+        version: 4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss@8.4.35)(ts-loader@9.5.1)(typescript@5.4.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0)
       core-js:
         specifier: ^3.23.0
         version: 3.23.0
@@ -3037,7 +3037,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@symfony/webpack-encore@4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss@8.4.31)(ts-loader@9.5.1)(typescript@5.4.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0):
+  /@symfony/webpack-encore@4.4.0(@babel/core@7.21.4)(@babel/preset-env@7.16.0)(@symfony/stimulus-bridge@3.2.0)(postcss@8.4.35)(ts-loader@9.5.1)(typescript@5.4.2)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.74.0):
     resolution: {integrity: sha512-p3n2Z16sGV6odZ3ihIU+gupYc55KfrfCt62+Gppe8MUo6QuT5Bk2cXXjR4Hb89KvCRDHnjYEWVfnewRsfE8TRQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
@@ -3142,7 +3142,7 @@ packages:
       fast-levenshtein: 3.0.0
       mini-css-extract-plugin: 2.7.6(webpack@5.74.0)
       pkg-up: 3.1.0
-      postcss: 8.4.31
+      postcss: 8.4.35
       pretty-error: 4.0.0
       resolve-url-loader: 5.0.0
       semver: 7.5.0

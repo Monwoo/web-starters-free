@@ -9,6 +9,8 @@ const Encore = require('@symfony/webpack-encore');
 const svelteConfig = require('./svelte.config.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+// TODO : configure css to avoid build and bundle floders inside public folder ?
+
 console.warn("svelteConfig from webpack.config.js : ", svelteConfig);
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
@@ -48,6 +50,9 @@ Encore
     // .addPlugin(new MiniCssExtractPlugin({filename:'[app].css'}))
     // TIPS : Error: Conflict: Multiple chunks emit assets to the same file, use [name]
     // https://stackoverflow.com/questions/42148632/conflict-multiple-assets-emit-to-the-same-filename
+
+    // TODO : config to avoid public/build etc minification ? should only come from asset folder ?
+    // Nop, even without, still css build err
     .addPlugin(new MiniCssExtractPlugin({filename:'[name].css'}))
 
     .enablePostCssLoader()
@@ -129,7 +134,7 @@ Encore
             mainFields: ['svelte', 'browser', 'module', 'main'],
             extensions: ['.mjs', '.js', '.svelte'],
         },
-        test: /\.svelte$/,
+        test: /assets\/.+\.svelte$/,
         loader: 'svelte-loader',
         options: svelteConfig,
         // options: {
@@ -162,7 +167,7 @@ Encore
     // })
     .addLoader({ // TODO : Error: ParseError: The keyword 'let' is reserved (17:1)
         // test: /assets\/.+\.svelte$/,
-        test: /\.(ts|d.ts)$/,
+        test: /assets\/.+\.(ts|d.ts)$/,
         loader: 'ts-loader',
         resolve: {
             extensions: ['.ts', '.d.ts'],
@@ -181,7 +186,7 @@ Encore
     //     }
     // })
     .addLoader({
-        test: /\.css$/,
+        test: /assets\/.+\.css$/,
         use: [
             MiniCssExtractPlugin.loader,
             {
