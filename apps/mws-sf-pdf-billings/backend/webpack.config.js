@@ -134,7 +134,7 @@ Encore
             mainFields: ['svelte', 'browser', 'module', 'main'],
             extensions: ['.mjs', '.js', '.svelte'],
         },
-        test: /assets\/.+\.svelte$/,
+        test: /(assets|mws-moon-manager-ux|node_modules)\/.+\.svelte$/,
         loader: 'svelte-loader',
         options: svelteConfig,
         // options: {
@@ -167,7 +167,7 @@ Encore
     // })
     .addLoader({ // TODO : Error: ParseError: The keyword 'let' is reserved (17:1)
         // test: /assets\/.+\.svelte$/,
-        test: /assets\/.+\.(ts|d.ts)$/,
+        test: /(assets|mws-moon-manager-ux|node_modules)\/.+\.(ts|d.ts)$/,
         loader: 'ts-loader',
         resolve: {
             extensions: ['.ts', '.d.ts'],
@@ -186,7 +186,7 @@ Encore
     //     }
     // })
     .addLoader({
-        test: /assets\/.+\.css$/,
+        test: /(assets|mws-moon-manager-ux)\/.+\.css$/,
         use: [
             MiniCssExtractPlugin.loader,
             {
