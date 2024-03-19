@@ -37,8 +37,8 @@ overflow-hidden border-solid border-4"
   <!--
         data="{timingSlot.thumbnailJpeg ?? '#404'}" won't work, will sub load current page
         data="{timingSlot.thumbnailJpeg ?? '/404'}" ok, but eat one fail request on our server
-        data="{timingSlot.thumbnailJpeg ?? 'https://wrong-host.localhost/404'}" // ok, but error message
-        data={timingSlot.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"}
+        data="{timingSlot.thumbnailJpeg ?? 'https://wrong-host.localhost/404'}" // ok, but network error message
+        data={timingSlot.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"} // ok, fail silently
         data={timingSlot.thumbnailJpeg ?? null} // no effect
 
         // TODO : SeoManager for translated alt / arial-label / title / meta data etc...
