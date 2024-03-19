@@ -34,14 +34,27 @@ overflow-hidden border-solid border-4"
   style:height={size}
   style:width={size}
 >
-  <!-- https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
+  <!--
+        data="{timingSlot.thumbnailJpeg ?? '#404'}" won't work, will sub load current page
+        data="{timingSlot.thumbnailJpeg ?? '/404'}" ok, but eat one fail request on our server
+        data="{timingSlot.thumbnailJpeg ?? 'https://wrong-host.localhost/404'}" // ok, but error message
+        data={timingSlot.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"}
+        data={timingSlot.thumbnailJpeg ?? null} // no effect
+
+        // TODO : SeoManager for translated alt / arial-label / title / meta data etc...
+    https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
   <object
     class="w-full h-full"
-    data="{timingSlot.thumbnailJpeg ?? '/404'}"
+    data={timingSlot.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"}
     type="image/png"
+    alt="screenshot"
+    arial-label="screenshot"
+    title="screenshot"
   >
     <img
       loading="lazy"
+      alt="screenshot"
+      arial-label="screenshot"
       class="object-contain w-full h-full"
       src="{"screenshot" == timingSlot?.source?.type ? slotPath : ""}"
     />
