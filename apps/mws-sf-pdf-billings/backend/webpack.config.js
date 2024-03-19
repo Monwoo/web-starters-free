@@ -41,7 +41,7 @@ Encore
 
     // https://github.com/FriendsOfSymfony/FOSJsRoutingBundle/blob/master/Resources/doc/usage.rst
     // .addPlugin(new FosRouting()) // SOUND messed up with bundle load...
-    
+
     // .addPlugin(new MiniCssExtractPlugin({filename:'styles.css'}))
     // Additionally, if you're using multiple entrypoints, 
     // you may wish to change new MiniCssExtractPlugin('styles.css') for 
@@ -53,7 +53,7 @@ Encore
 
     // TODO : config to avoid public/build etc minification ? should only come from asset folder ?
     // Nop, even without, still css build err
-    .addPlugin(new MiniCssExtractPlugin({filename:'[name].css'}))
+    .addPlugin(new MiniCssExtractPlugin({ filename: '[name].css' }))
 
     .enablePostCssLoader()
 
@@ -203,16 +203,48 @@ Encore
     .enableTypeScriptLoader()
 
 
-    // uncomment if you use React
-    //.enableReactPreset()
+// uncomment if you use React
+//.enableReactPreset()
 
-    // uncomment to get integrity="..." attributes on your script & link tags
-    // requires WebpackEncoreBundle 1.4 or higher
-    //.enableIntegrityHashes(Encore.isProduction())
+// uncomment to get integrity="..." attributes on your script & link tags
+// requires WebpackEncoreBundle 1.4 or higher
+//.enableIntegrityHashes(Encore.isProduction())
 
-    // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
-    ;
+// uncomment if you're having problems with a jQuery plugin
+//.autoProvidejQuery()
+
+// Replaced by terser :
+// .configureUglifyJsPlugin((uglifyJsPluginConfig) => {
+//     // https://github.com/symfony/webpack-encore/issues/343
+//     if (Encore.isProduction()) {
+//         uglifyJsPluginConfig.compress.drop_console = true;
+//     }
+// })
+// https://stackoverflow.com/questions/54561070/remove-console-log-with-terserwebpackplugin
+// https://stackoverflow.com/questions/56810403/how-to-minify-with-terserplugin-and-webpack-encore
+.configureTerserPlugin((options) => {
+    if (Encore.isProduction()) {
+        // https://github.com/webpack-contrib/terser-webpack-plugin/issues/57
+        options.extractComments = true;
+        // options.sourceMap = false; // Must be set to true if using source-maps in production
+        // options.cache = true; NOP, legacy ?
+        options.parallel = true;
+        // .minify? ?
+        // { test?, include?, exclude?, terserOptions?, extractComments?, parallel?, minify? }
+        options.terserOptions = {
+            // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+            output: {
+                comments: false,
+            },
+            // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+            // extractComments: 'all', // Not supported ? which version do I have ?
+            compress: {
+                drop_console: true,
+            },
+        }
+    }
+})
+;
 
 let config = Encore.getWebpackConfig();
 // config.resolve.alias = {

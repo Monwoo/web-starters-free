@@ -93,9 +93,15 @@ class MwsTimingController extends AbstractController
                         function (MwsTimeTag $tag) {
                             return $tag->getSlug();
                         },
-                        $tagQb->where($tagQb->expr()->isNotNull("t.category"))
-                            ->getQuery()->getResult()
+                        $tagQb->getQuery()->getResult() //  $timingTags
                     ),
+                    // 'allTimingTags' => array_map(
+                    //     function (MwsTimeTag $tag) {
+                    //         return $tag->getSlug();
+                    //     },
+                    //     $tagQb->where($tagQb->expr()->isNotNull("t.category"))
+                    //         ->getQuery()->getResult()
+                    // ),
                 ]
             )),
         ];

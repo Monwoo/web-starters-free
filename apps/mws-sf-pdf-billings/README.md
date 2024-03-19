@@ -123,7 +123,9 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 APP_ENV=prod composer dump-env prod
 
 # refresh assets :
-php bin/console assets:install --symlink public
+# php bin/console --env=prod assets:install
+php bin/console --env=prod assets:install --symlink public
+# php bin/console assets:install --symlink public
 bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
 
 # bootstrap database

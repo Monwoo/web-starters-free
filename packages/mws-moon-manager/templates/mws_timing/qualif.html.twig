@@ -6,9 +6,11 @@
 {# // TODO : by project ? by tag or group of tags ?
 // (having project category tags,custom tag per projects ?) #}
 
+{# // TODO refactor duplication timingAvailableTags vs allTagsList ? #}
 {% block storesInit %}
 	{{ parent() }}
 	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
+		'timingAvailableTags': allTagsList,
 		'allTagsList': allTagsList,
 		'userConfig': userConfig,
 		'csrfTimingDeleteAll': csrf_token('mws-csrf-timing-delete-all'),
