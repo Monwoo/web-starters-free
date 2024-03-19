@@ -3,6 +3,7 @@
   import { slide } from "svelte/transition";
   import { quintOut, quintIn } from "svelte/easing";
   import { fly } from "svelte/transition";
+  import _ from "lodash";
   import Typeahead from "svelte-typeahead";
   import Loader from "../../layout/widgets/Loader.svelte";
   import AddModal from "../tags/AddModal.svelte";
@@ -25,6 +26,7 @@
   export { cssClass as class };
   export let typeAheadDetails;
   export let confirmUpdateOrNew;
+  export let keyboardShortcutModal;
   export let isLoading = false;
   export let typeAheadValue;
   export let newTagLabel;
@@ -103,6 +105,26 @@
     }
     // TODO : wait for response ?
     return false;
+  };
+
+  
+  export const openKeyboardShortcutModal = async () => {
+    keyboardShortcutModal.qualif = qualif;
+    const originalSync = keyboardShortcutModal.syncQualifWithBackend;
+
+    keyboardShortcutModal.syncQualifWithBackend = async (qualifParam) => {
+      const r = await originalSync(qualifParam);
+      // qualif = qualif; // for self reactivity
+      // qualif = qualifParam; // for self reactivity (up to quickQualifTemplates)
+      // _.merge(qualif, qualifParam); // for self DEEP reactivity (up to qualifTemplates ok but need ui refresh ?)
+      qualif = _.merge(qualif, qualifParam); // OK : ui refresh + DEEP reactivity (up to qualifTemplates items REFS OK
+      // bring back to normal : or, keep refresh on all changes ?...
+      // => strange behavior if commented : will delete previously updated qualif... ok with below :
+      keyboardShortcutModal.syncQualifWithBackend = originalSync;
+      return r;
+    };
+
+    keyboardShortcutModal.eltModal.show();
   };
 
   $: rgbTxt = rgb
@@ -262,6 +284,7 @@
      bind:value={hexTxt} bind:this={copyBuffer}></textarea>
 
      <button on:click={async ()=>{
+      await openKeyboardShortcutModal();
     }}
     class="hover:bg-slate-400 font-light text-sm m-2"
     style="--mws-primary-rgb: 0, 200, 0"

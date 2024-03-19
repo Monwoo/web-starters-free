@@ -10,8 +10,8 @@
   export { cssClass as class };
   export let modalId = `confirmUpdateOrNew-${UID}`;
   export let qualif;
+  export let selectedKey = String.fromCharCode(qualif?.shortcut);
   export let syncQualifWithBackend;
-  export let newName;
   export let isOpen = false;
   export let eltModal;
   export let locale;
@@ -24,21 +24,21 @@
     }
   }
 
+  const onKeyDown = async (e) => {
+    console.debug("Key down from shortcut modal : ", e.code, e);
+    selectedKey = e.key;
+    e.preventDefault();
+  };
+
   onMount(async () => {
     const modalOptions = {
-      // placement: "bottom-right",
-      // backdrop: "dynamic",
-      // backdropClasses:
-      //   "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
       onHide: () => {
         console.log("modal is hidden");
       },
       onShow: () => {
-        // TIPS : force refresh, since public accessor
-        // update the value but do not trigger reactive refresh...
-        // (since set surveyModel.data inside it instead of re-assign)
-        // surveyModel = surveyModel;
         console.log("modal is shown");
+        eltModal._targetEl.focus(); // For key listening, not direct ?
+        selectedKey = String.fromCharCode(qualif?.shortcut); // TODO : redux sync event instead of detailed data updates ?
       },
       onToggle: () => {
         console.log("modal has been toggled");
@@ -54,16 +54,7 @@
 
 </script>
 
-<!-- <button 
-data-modal-target="{modalId}"
-data-modal-toggle="{modalId}"
-class="block text-white bg-primary-700
-hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300
-font-medium rounded-lg text-sm px-5 py-2.5 text-center 
-dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
- type="button">
-  Show new
-</button> -->
+<svelte:window on:keydown={onKeyDown} />
 
 <div
   id={modalId}
@@ -121,8 +112,8 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         > -->
         <p class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300">
           <!-- Do you want to update or add new item? -->
-          Voulez-vous renommer ou ajouter une qualification de [ {qualif?.label ??
-            ""} ] vers [ {newName} ] ?
+          Tapez sur une touche puis validez [{selectedKey}] pour [{qualif?.label ??
+            ""}] ?
         </p>
       </slot>
       <slot name="mws-confirm-actions">
@@ -151,13 +142,9 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             style="--mws-primary-rgb: 255, 0, 0"
             on:click={async () => {
               eltModal?.hide();
-              // qualif.id = null; // Nop, not on self, will be added
-              // qualif.label = newName;
               await syncQualifWithBackend({
                 ...qualif,
-                id: null,
-                label: newName,
-                _isNewId: true,
+                shortcut: selectedKey.charCodeAt(0),
               });
             }}
           >
@@ -178,40 +165,7 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
-            Ajouter une qualif
-          </button>
-          <button
-            type="submit"
-            class="py-2 px-3 text-sm font-medium text-center 
-            text-white bg-red-600 rounded-lg hover:bg-red-700 
-            focus:ring-4 focus:outline-none focus:ring-red-300
-            dark:bg-red-500 dark:hover:bg-red-600 flex flex-wrap
-            dark:focus:ring-red-900"
-            style="--mws-primary-rgb: 255, 0, 0"
-            on:click={async () => {
-              eltModal?.hide();
-              qualif.label = newName;
-              await syncQualifWithBackend(qualif);
-            }}
-          >
-            <svg
-              class="w-full h-7 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
-              />
-            </svg>
-            Renommer la qualif {qualif?.label ?? ""}
+            Définir sur "{selectedKey}"
           </button>
         </div>
       </slot>

@@ -149,7 +149,7 @@
       //   pricePerHr ?? 0,
       //   timingsByIds[tId]?.maxPricePerHr ?? 0
       // );
-      const maxPath = JSON.parse(maxPaths[idx]);
+      const maxPath = JSON.parse(maxPaths[idx] ?? '{}');
       const label = labels ? labels[idx] ?? null : null;
       const tags = {
         ...(tagSlug

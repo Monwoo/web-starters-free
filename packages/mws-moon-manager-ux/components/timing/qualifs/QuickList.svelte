@@ -21,6 +21,7 @@
   import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
   import ExportQualifs from "./ExportQualifs.svelte";
   import debounce from 'lodash/debounce'
+import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
 
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
@@ -31,6 +32,9 @@
 
   export let locale;
   export let isHeaderExpanded = false;
+  export let confirmUpdateOrNew;
+  export let keyboardShortcutModal;
+
   // // TIPS : MUST NOT be setup for top root binds
   // //         to be able to feed with initial values ?
   // //           => Did juste messup with component name,
@@ -101,8 +105,6 @@
       label: "1 par lignes",
     },
   ];
-
-  export let confirmUpdateOrNew;
 
   let configDidChange = false;
   let lastDataset = {};
@@ -201,13 +203,13 @@
         }
         return acc;
       }, []);
-      quickQualifTemplates = (
+      quickQualifTemplates = Object.values((
         historyQualif?.length
           ? historyQualif
           : quickQualifTemplates?.length
           ? quickQualifTemplates
           : qualifTemplates
-      ).slice(0, maxLimit);
+      ).slice(0, maxLimit));
       maxLimit = timingQualifConfig?.maxLimit;
       itemWidth = timingQualifConfig?.itemWidth;
       // TIPS : do not refresh sortOrder to avoid infinit loop
@@ -428,6 +430,14 @@
 </svelte:head> -->
 {#key needRefresh}
   <div class="float-right w-full flex flex-row flex-wrap">
+    <ConfirmUpdateOrNew
+      {syncQualifWithBackend}
+      bind:this={confirmUpdateOrNew}
+    />
+    <KeyboardShortcutModal
+      {syncQualifWithBackend}
+      bind:this={keyboardShortcutModal}
+    />
     <div class="flex w-full flex-wrap justify-evenly">
       <!-- {#each arrayUsers as currentUser, numberCounter (currentUser.id)} -->
       {#each quickQualifTemplates as qualif, numberCounter (qualif.id)}
@@ -453,6 +463,7 @@
                 {syncQualifWithBackend}
                 {locale}
                 {confirmUpdateOrNew}
+                {keyboardShortcutModal}
                 {allTagsList}
                 qualifLookups={qualifTemplates}
               />
@@ -536,7 +547,7 @@
             ) {
               quickQualifTemplates = quickQualifTemplates.concat(
                 qualifTemplates.filter(
-                  (q) =>
+                  (q) => q &&
                     quickQualifTemplates.filter((qq) => qq.label === q.label)
                       .length === 0
                 )
@@ -556,11 +567,6 @@
         />
       </span>
     </div>
-
-    <ConfirmUpdateOrNew
-      {syncQualifWithBackend}
-      bind:this={confirmUpdateOrNew}
-    />
 
     <!-- // TODO : if expanded, add import/export user timing config history
     Ok for now, sqlite DB backup or easy to redo with full qualif bckup...

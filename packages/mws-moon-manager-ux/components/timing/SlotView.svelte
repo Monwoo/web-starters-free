@@ -276,7 +276,7 @@
     };
     return q;
   });
-  let qualifShortcut = qualifTemplates.reduce(
+  $: qualifShortcut = (qualifTemplates ?? {}).reduce(
     (acc, qt) => {
       acc[String.fromCharCode(qt.shortcut).charCodeAt(0)] = qt.toggleQualif;
       return acc;
