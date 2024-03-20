@@ -220,7 +220,7 @@
       Supprimer
     </button>
   </td>
-  <th scope="row">
+  <th scope="row" class="text-left">
     <span>{tag.self.slug}</span>
   </th>
   <td class="text-left">
