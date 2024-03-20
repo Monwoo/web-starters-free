@@ -75,7 +75,7 @@ class MwsTimeTagRepository extends ServiceEntityRepository
         //     $request->query->getInt('pageLimit', 124), /*page limit */
         // );
 
-        $qb->orderBy('t.slug');
+        $qb->orderBy('LOWER(t.slug)');
         // $qb->orderBy('tQualifCount', 'DESC');
         // $qb->addOrderBy('tSlotCount');
         // $qb->addOrderBy('categoriesCount');
