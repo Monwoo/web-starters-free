@@ -86,7 +86,7 @@ overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
     <SlotThumbnail
       {timingSlot}
       size={`${thumbSize.toFixed(0)}px`}
-      forceHeight={(zoomRange > 50) ? 'auto' : null}
+      forceHeight={(zoomRange > startZoom) ? 'auto' : null}
       isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
       on:click={() => {
         lastSelectedIndex = idx;
