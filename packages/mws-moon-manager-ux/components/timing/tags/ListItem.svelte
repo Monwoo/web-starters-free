@@ -247,7 +247,7 @@
       <span>
         <strong>{rule.maxLimitPriority ?? 0} :</strong> {rule.price.toPrettyNum(2)} €
         <br/>With :<br/>
-        {#each rule.withTags as tagSlug}
+        {#each rule.withTags ?? [] as tagSlug}
           <span
           class='p-1 m-1 border rounded-md border-gray-700'
           >

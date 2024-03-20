@@ -32,6 +32,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -1297,6 +1298,13 @@ class MwsTimingController extends AbstractController
         // $tagData = get_object_vars($tagData);
         // TODO : use serializer deserialize ?
         $tagData = json_decode($tagData, true);
+        if (!($tagData['slug'] ?? false)) {
+            if ($tagData['label'] ?? false) {
+                $slugger = new AsciiSlugger();
+                // https://symfony.com/doc/current/components/string.html#slugger
+                $tagData['slug'] = $slugger->slug($tagData['label']);
+            }
+        }
         // dd($tagData);
         $criteria = [
             "slug" => $tagData['slug'] ?? null,
@@ -2023,7 +2031,7 @@ class MwsTimingController extends AbstractController
                 'didDelete' => true,
                 'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-sync')->getValue(),
                 'viewTemplate' => $viewTemplate,
-            ]);    
+            ]);
         }
         $sync = function ($path) use (&$qualif, &$qualifInput) {
             $get = 'get' . ucfirst($path);
@@ -2050,7 +2058,8 @@ class MwsTimingController extends AbstractController
         $sync('label');
         if (is_array($qualifInput['primaryColorRgb'] ?? false)) {
             $qualifInput['primaryColorRgb'] = implode(
-                ', ', $qualifInput['primaryColorRgb']
+                ', ',
+                $qualifInput['primaryColorRgb']
             );
         }
         $sync('primaryColorHex');
@@ -2129,7 +2138,7 @@ class MwsTimingController extends AbstractController
         $quickQualif = &$config['timing']['quickQualif'] ?? null;
         $quickQualifList = &$quickQualif['list'] ?? null;
 
-        $quickQualifList = array_filter($quickQualifList, function(
+        $quickQualifList = array_filter($quickQualifList, function (
             $qualifLabel
         ) use ($mwsTimeQualifRepository) {
             return $mwsTimeQualifRepository->findOneBy([
@@ -2144,7 +2153,7 @@ class MwsTimingController extends AbstractController
         $this->em->flush();
 
         return $this->json([
-            'sync' => [ ...$config ],
+            'sync' => [...$config],
             'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-config-sync')->getValue(),
             'viewTemplate' => $viewTemplate,
         ]);
@@ -2252,5 +2261,4 @@ class MwsTimingController extends AbstractController
         $response->setContent($qualifsSerialized);
         return $response;
     }
-
 }

@@ -20,8 +20,8 @@
   import _ from "lodash";
   import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
   import ExportQualifs from "./ExportQualifs.svelte";
-  import debounce from 'lodash/debounce'
-import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
+  import debounce from 'lodash/debounce';
+  import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
 
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");

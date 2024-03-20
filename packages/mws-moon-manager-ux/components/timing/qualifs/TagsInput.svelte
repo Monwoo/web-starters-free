@@ -100,7 +100,7 @@
       timeTags = timeTags.filter((t) => t.slug !== tag.slug);
       // await tick(); // wait for qualif to update from svelte reactivity, cf $:
       console.debug('TimeTagsInput delete will update with', qualif);
-      syncQualifWithBackend(qualif);
+      await syncQualifWithBackend(qualif);
     }}
     type="button" class="inline-flex items-center p-1 ml-2 text-sm
     text-pink-400 bg-transparent rounded-sm hover:bg-pink-200
@@ -131,7 +131,7 @@ bind:value={addedTagKey} on:change={async () => {
   // });
   // await tick(); // wait for qualif to update from svelte reactivity, cf $:
   console.debug('TimeTagsInput add will update with', qualif);
-  syncQualifWithBackend({
+  await syncQualifWithBackend({
     ...qualif,
     timeTags: (qualif.timeTags ?? []).concat([{
       slug: addedTagKey

@@ -4,6 +4,7 @@
   import { quintOut, quintIn } from "svelte/easing";
   import { fly } from "svelte/transition";
   import _ from "lodash";
+  import Routing from "fos-router";
   import Typeahead from "svelte-typeahead";
   import Loader from "../../layout/widgets/Loader.svelte";
   import AddModal from "../tags/AddModal.svelte";
@@ -12,9 +13,13 @@
   import ColorPicker, { ChromeVariant, A11yVariant,  } from 'svelte-awesome-color-picker';
   import newUniqueId from "locally-unique-id-generator";
   import { onMount, tick } from "svelte";
+  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
+  import debounce from 'lodash/debounce';
   // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
   const UID = newUniqueId();
 
+  export let userDelay = 300;
   export let locale;
   export let qualif;
   export let qualifLookups;
@@ -154,6 +159,53 @@
   //     needClose = true;
   //   }
   // }
+
+  let updatedTag;
+
+  // TODO : remove code duplication of updateTimingTag ?
+  export let updateTimingTag = async (timeTag) => {
+    const data = {
+        _csrf_token: stateGet(get(state), "csrfTimingTagUpdate"),
+        timeTag: JSON.stringify(timeTag),
+    };
+    const formData = new FormData();
+    for (const name in data) {
+        formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+        Routing.generate("mws_timing_tag_update", {
+            _locale: locale,
+        }),
+        {
+            method: "POST",
+            body: formData,
+            credentials: "same-origin",
+            redirect: "error",
+        }
+    )
+        .then(async (resp) => {
+            console.log(resp.url, resp.ok, resp.status, resp.statusText);
+            if (!resp.ok) {
+                throw new Error("Not 2xx response", { cause: resp });
+            } else {
+                const data = await resp.json();
+                console.debug("Did update tag", data);
+                updatedTag = data.updatedTag ?? null; // TODO : .sync ?
+                // updatedTag = _.merge(updatedTag, data.updatedTag ?? null); // TODO : .sync ?
+
+                // window.location.reload(); // TODO : send right sync data from server and avoid page reloads ?
+
+                stateUpdate(state, {
+                    csrfTimingTagUpdate: data.newCsrf,
+                });
+            }
+        })
+        .catch((e) => {
+            console.error(e);
+            // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+            const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    };
 
   onMount(() => {
   });
@@ -506,18 +558,13 @@
       {allTagsList} />
 
 
-      <!-- <span class="m-3">
-        // TODO : Quick new tag from label and auto add to qualif ?
+      <span class="m-3">
         <input
           class="text-black opacity-30 hover:opacity-100 w-full"
           bind:value={newTagLabel}
           type="text"
           placeholder="Nouveau Tag"
           name="newTag"
-          on:change={() => {
-            // Since $: reactivity might be overloaded
-            console.debug('Add tag to qualif', newTagLabel);
-          }}
           list={itemSuggestionTagsId}
         />
         <datalist id={itemSuggestionTagsId}>
@@ -533,11 +580,26 @@
             dark:bg-red-500 dark:hover:bg-red-600 
             dark:focus:ring-red-900"
             style="--mws-primary-rgb: 0, 142, 0"
+            on:click={debounce(async () => {
+              // Since $: reactivity might be overloaded
+              console.debug('Add tag :', newTagLabel);
+              await updateTimingTag({
+                label: newTagLabel,
+              });
+              await syncQualifWithBackend({
+                ...qualif,
+                timeTags: (qualif.timeTags ?? []).concat([{
+                  slug: updatedTag.slug
+                }]),
+              });
+              // TODO tags Async failing, wrong server or client? instead of reload, update datas
+              window.location.reload();
+            })}
           >
             Créer le Tag
           </button>
         {/if}
-      </span>   -->
+      </span>  
 
       <button
       class="p-2 m-3 text-sm font-medium text-center 
@@ -546,11 +608,12 @@
       dark:bg-red-500 dark:hover:bg-red-600 
       dark:focus:ring-red-900"
       style="--mws-primary-rgb: 255, 0, 0"
-      on:click={async () => {
-        qualif._shouldDelete = true;
-
-        await syncQualifWithBackend(qualif, true);
-      }}
+      on:click={debounce(async () => {
+        if (confirm('Confirmer la suppression ?')) {
+          qualif._shouldDelete = true;
+          await syncQualifWithBackend(qualif, true);
+        }
+      }, userDelay)}
     >
       Supprimer '{qualif?.label ?? ""}'
     </button>

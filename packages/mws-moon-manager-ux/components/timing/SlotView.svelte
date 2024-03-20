@@ -329,8 +329,6 @@
   // TIPS : in conjunction with tests on lastSelectedIndex, will refresh move position:
   $: lastSelectedIndex, (moveResp = moveSelectedIndex(0));
 
-  // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
-  mapTouchToMouseFor(".draggable");
   // compute from element size at onMount
   let Height, minHeight, maxHeight;
   let initialHeight, initialY;
@@ -418,7 +416,7 @@
     console.debug("Stop height", slotView.offsetHeight);
   };
 
-  onMount(() => {
+  onMount(async () => {
     // Height = slotHeader.offsetHeight; // TIPS : do not setup on mount, will have fixed size otherwise
     minHeight = 12;
     // TIPS : ok to go over screen size since we have multi-scrolls
@@ -427,6 +425,13 @@
     // slotHeight = slotView.offsetHeight; // TIPS : do not setup on mount, will have fixed size otherwise
     slotMinHeight = 12;
     slotMaxHeight = Infinity; // window.screen.height;
+
+    await new Promise((r) => setTimeout(r, 500));
+
+    // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
+    // https://github.com/rozek/svelte-touch-to-mouse
+    mapTouchToMouseFor(".draggable");
+    // mapTouchToMouseFor("div"); // TODO : not working on my Android phone, other error ?
 
     // TIPS : for computed height after css transformations :
     // Height = slotHeader.getBoundingClientRect().height;
@@ -441,7 +446,6 @@
     //   y: 122.3,
     // }
   });
-
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -570,10 +574,24 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <span
         class="float-right max-w-[75%] bg-black/80 rounded-md"
         class:!max-w-[50%]={isFullScreen}
+        class:top-0={!isFullScreen}
+        class:sticky={!isFullScreen}
         class:fixed={isFullScreen}
         class:bottom-0={isFullScreen}
         class:left-0={isFullScreen}
       >
+        <span
+          class="borde p-2"
+          class:border-gray-600={!timingSlot?.tags?.length}
+          class:border-green-400={timingSlot?.tags?.length}
+        >
+          {timingSlot.maxPath?.maxValue ?? 0}/hr [{(timingSlot.maxPath &&
+            (timingSlot.maxPath?.maxValue
+              ? (timingSlot.maxPath.maxValue * 10) / 60
+              : null
+            )?.toPrettyNum(2)) ??
+            "--"} €]
+        </span>
         {#each timingSlot?.tags ?? [] as tag}
           <span
             class="m-1 text-white
@@ -628,7 +646,10 @@ style:opacity={isLoading ? 0.8 : 1} -->
       </div>   -->
     </div>
     <!-- TODO : solve clone or elmt get crasy, for now hide to hide bug with :
-    class:hidden={resizing} -->
+    class:hidden={resizing}
+
+    class:bg-red-500={resizing}  
+    -->
     <div
       class="overflow-visible sticky top-0 h-[0px] flex items-end
     fill-white/70 text-white/70 bg-black/50 z-40"
@@ -642,9 +663,10 @@ style:opacity={isLoading ? 0.8 : 1} -->
       on:touchend|stopPropagation|preventDefault
     >
       <div
+        class:bg-red-500={resizing}
         class="draggable"
         use:draggable={{
-          helper: "clone", // TODO: clone is going faster than mouse on Y...?
+          // helper: "clone", // TODO: clone is going faster than mouse on Y...?
           revert: true,
         }}
         on:drag:move={onDragMove}
@@ -683,8 +705,10 @@ style:opacity={isLoading ? 0.8 : 1} -->
 
       use:panzoom={{ render, width: image.width, height: image.height }}
     -->
-    <div class="overflow-visible flex items-end sticky top-0
-    z-40 w-full">
+    <div
+      class="overflow-visible flex items-end sticky top-0
+    z-40 w-full"
+    >
       <div class="fill-white/70 text-white/70 bg-black/50 w-full">
         <input
           bind:value={zoomRange}
@@ -762,8 +786,10 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </svg>
       </div>
     </div>
-    <div class="overflow-visible flex items-end
-    z-40 w-full">
+    <div
+      class="overflow-visible flex items-end
+    z-40 w-full"
+    >
       <div class="fill-white text-white bg-black w-full">
         <label for="default-range" class="block mb-2 text-sm font-medium"
           >Zoom range {zoomRange}</label
@@ -797,8 +823,24 @@ style:opacity={isLoading ? 0.8 : 1} -->
   </div>
 </div>
 
-<!-- <styles>
-  object {
-    transition: transform .2s;
+<!-- // TODO : <style global lang="scss">
+       working or just request feature ?
+       https://github.com/sveltejs/svelte/issues/6186
+       https://github.com/sveltejs/svelte/issues/5492 -->
+<style lang="scss">
+  :global(object) {
+    transition: transform 0.2s;
   }
-</styles> -->
+  :global(.draggable) {
+    // https://github.com/rozek/svelte-touch-to-mouse
+    // for the MouseEvent consumers to work as expected :
+    -webkit-touch-callout: none;
+    -ms-touch-action: none;
+    touch-action: none;
+    // added in https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12 :
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+</style>
