@@ -2,6 +2,9 @@
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   export let bottom = 'bottom-[-1.25rem]';
   export let right = 'right-[-1.25rem]';
+  // export let isMobile = true;
+  // class="p-1 {isMobile ? 'max-w-[100%]' : 'max-w-[50%]'}
+
   let cssClass = '';
   export {cssClass as class};
 </script>
@@ -16,8 +19,9 @@ print:fixed print:bottom-0 print:right-0 z-50
 {cssClass}
 ">
   <span
-    class="p-1 max-w-[50%]
-  rounded-ss-md font-medium 
+    class="p-1 max-w-[100%] md:max-w-[50%]}
+  rounded-ss-md font-xs md:font-normal
+  text-xs md:text-base
   bg-gray-100 text-gray-700"
   >
     Données confidentielles. Merci de conserver le secret professionnel et

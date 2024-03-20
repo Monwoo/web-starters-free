@@ -41,10 +41,7 @@
   // every {} is unique, {} === {} evaluates to false
   let uniqueKey = {};
 
-  let isMobile = window.matchMedia("(max-width: 768px)")?.matches;
-  const onResize = async (e) => {
-    isMobile = window.matchMedia("(max-width: 768px)")?.matches;
-  }
+  let isMobile;
 
   const movePageIndex = (delta) => {
     const newPageNum = parseInt(pageNumber) + delta;
@@ -167,13 +164,14 @@
   // }
 </script>
 
-<svelte:window on:resize={debounce(onResize, 400)} />
-
-<Base {copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
+<Base
+bind:isMobile
+{copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
   <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
-    <div class="mws-menu-wrapper inline-flex flex-col sticky top-0 z-40 bg-yellow-100">
-      <!-- https://flowbite.com/docs/components/navbar/#example -->
+    <!-- <div class="mws-menu-wrapper inline-flex flex-col sticky top-0 z-40 bg-yellow-100"> -->
+    <div class="mws-menu-wrapper inline-flex flex-col bg-yellow-100">
+        <!-- https://flowbite.com/docs/components/navbar/#example -->
       <!-- {#key uniqueKey} // TODO : needed for out to work... but 
       better make work create_out_transition ? -->
       <div
@@ -238,7 +236,7 @@
         </div>
       </div>
       <!-- {/key} -->
-      <div class="inline-flex">
+      <div class="inline-flex text-xs md:text-base">
         <button
           id="menu-timing-opener"
           data-collapse-toggle="menu-timing"

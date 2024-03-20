@@ -7,6 +7,7 @@
   //        (and standalone component export....)
   import Header from "./Header.svelte";
   // import TemplateChoiceItem from '../message/TemplateChoiceItem.svelte';
+  import debounce from 'lodash/debounce';
 
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let headerClass = "md:py-5";
@@ -15,6 +16,13 @@
    
   export let locale;
   export let viewTemplate;
+
+  export let userDelay = 300;
+  export let isMobile = window.matchMedia("(max-width: 768px)")?.matches;
+
+  const onResize = async (e) => {
+    isMobile = window.matchMedia("(max-width: 768px)")?.matches;
+  }
 
   // TODO : scroll top on page load to avoid auto scroll
   // when loading letting scroll at wrong place
@@ -27,6 +35,8 @@
   // // customElements.define('mws-msg-template-choice-item', () => (new TemplateChoiceItem({})).element);
   // window.customElements.define('mws-msg-template-choice-item',  TemplateChoiceItem);
 </script>
+
+<svelte:window on:resize={debounce(onResize, userDelay)} />
 
 <slot name="mws-body">
   <div class="flex flex-col h-screen overflow-hidden print:h-auto">
@@ -43,7 +53,10 @@
       <slot />
     </main>
     <slot name="mws-footer-container">
-      <footer class="bg-gray-700 text-gray-300 text-center text-white {footerClass}">
+      <footer class="bg-gray-700 text-gray-300
+        text-center text-white
+        text-xs md:text-base
+        {footerClass}">
         <Footer {copyright}>
           <slot name="mws-footer" />
         </Footer>
