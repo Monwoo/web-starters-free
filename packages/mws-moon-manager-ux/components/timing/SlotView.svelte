@@ -501,7 +501,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     <div
       on:click|stopPropagation
       bind:this={slotHeader}
-      class="overflow-scroll relative"
+      class="mws-timing-slot-header overflow-scroll relative"
       class:h-[7rem]={!isHeaderExpanded}
       style={Height
         ? `
@@ -651,7 +651,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     class:bg-red-500={resizing}  
     -->
     <div
-      class="overflow-visible sticky top-0 h-[0px] flex items-end
+      class="overflow-visible sticky top-0 flex items-end h-[0px] 
     fill-white/70 text-white/70 bg-black/50 z-40"
       class:hidden={resizing}
       on:click|stopPropagation|preventDefault
@@ -666,7 +666,16 @@ style:opacity={isLoading ? 0.8 : 1} -->
         class:bg-red-500={resizing}
         class="draggable"
         use:draggable={{
-          // helper: "clone", // TODO: clone is going faster than mouse on Y...?
+          helper: "clone", // TODO: handler is going faster than mouse on Y...?
+
+          // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
+          // TODO : handler way, this one is out of the div to resize ? so
+          //        top resized box messup thumb pointer position ?
+          // use:draggable={{
+          //   handle:'.Note-Titlebar', containment:'parent', cursor:'grabbing'
+          // }}
+          cursor: "grabbing",
+          // handle:'.mws-timing-slot-header',
           revert: true,
         }}
         on:drag:move={onDragMove}
@@ -674,7 +683,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         on:click|stopPropagation|preventDefault
       >
         <svg
-          class="w-7 h-7"
+          class="w-7 h-7 ml-8"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -768,7 +777,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         on:click|stopPropagation|preventDefault
       >
         <svg
-          class="w-7 h-7"
+          class="w-7 h-7 ml-8"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"

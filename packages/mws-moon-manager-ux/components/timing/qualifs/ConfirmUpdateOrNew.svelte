@@ -76,18 +76,22 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
   fixed top-0 right-0 left-0 z-50 justify-center items-center
   w-full md:inset-0 h-modal md:h-full {cssClass}"
 >
-  <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+  <div class="relative p-3 w-full max-w-md h-full md:h-auto
+  bg-gradient-to-r from-indigo-500 from-10%
+  via-sky-500 via-30% 
+  to-emerald-500 to-90%
+  shadow-lg	border rounded-md border-black">
     <!-- Modal content -->
     <div
       class="relative p-4 text-center bg-white rounded-lg shadow
-       dark:bg-gray-800 sm:p-5"
+       dark:bg-gray-300 sm:p-5"
     >
       <slot name="mws-confirm-header">
         <div class="w-full flex content-end">
           <!-- data-modal-toggle={modalId} is opening another back drop ? -->
           <button
             type="button"
-            class="text-gray-400 m-5 bg-transparent
+            class="text-gray-400 mb-3 bg-transparent
           hover:bg-gray-200 hover:text-gray-900 rounded-lg 
           text-sm p-1.5 ml-auto inline-flex items-center 
           dark:hover:bg-gray-600 dark:hover:text-white"

@@ -26,6 +26,9 @@ class MwsTimeQualif
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $primaryColorHex = null;
 
+    // TODO : refactor : should be inside user CONFIG
+    //         => not a global shortcut, otherwise, each user
+    //         will change shortcuts of every ones...
     #[ORM\Column(nullable: true)]
     private ?int $shortcut = null;
 
