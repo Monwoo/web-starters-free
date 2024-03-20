@@ -225,7 +225,7 @@
   </th>
   <td class="text-left">
     <span
-      class="p-2 rounded"
+      class="rounded"
       style:color={tag.self.textColor || "black"}
       style:background-color={tag.self.bgColor || "lightgrey"}
     >
