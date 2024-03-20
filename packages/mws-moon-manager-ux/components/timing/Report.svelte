@@ -1149,5 +1149,8 @@
     </table>
   </div>
 
+  <!-- // TODO : allow resize of detailed screen shoot to review screen per level ?
+  + Auto stacked sticky titles.... -->
+
   <ConfidentialityStamp />
 </div>

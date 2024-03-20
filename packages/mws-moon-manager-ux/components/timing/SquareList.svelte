@@ -6,6 +6,7 @@
 
   let classNames = "";
   export { classNames as class };
+  export let style;
   export let timings;
   export let selectedSourceStamps = {};
   export let lastSelectedIndex = 0;
@@ -24,6 +25,9 @@
       [timingSlot?.sourceStamp]: true,
     };
   }
+
+  export let thumbSize;
+  $: thumbSize = ((50 * (100 / startZoom) * zoomRange) / 100);
 
   // TIPS : selectedSourceStamps MUST be an argument for
   //        svelte reactive to trigger...
@@ -76,11 +80,13 @@
 <div
   class="mws-timing-square-list
 overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
+  {style}  
 >
   {#each timings ?? [] as timingSlot, idx}
     <SlotThumbnail
       {timingSlot}
-      size={`${((50 * (100 / startZoom) * zoomRange) / 100).toFixed(0)}px`}
+      size={`${thumbSize.toFixed(0)}px`}
+      forceHeight={(zoomRange > 50) ? 'auto' : null}
       isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
       on:click={() => {
         lastSelectedIndex = idx;
@@ -100,7 +106,7 @@ overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
       <input
         value={zoomRange}
         on:change={debounce((e)=> (zoomRange = e.target.value), 400)}
-        id="zoom-range"
+        id="list-zoom-range"
         type="range"
         class="w-full h-2 bg-gray-200/50 rounded-lg
     appearance-none cursor-pointer outline-none

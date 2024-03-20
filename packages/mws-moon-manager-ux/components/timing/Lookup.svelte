@@ -18,6 +18,7 @@
   import { fly } from "svelte/transition";
   import { create_in_transition, create_out_transition } from "svelte/internal";
   import { Collapse } from "flowbite";
+  import debounce from 'lodash/debounce';
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -29,6 +30,8 @@
   export let viewTemplate;
   export let lookupForm;
   export let isFullScreen = false;
+  export let splitRange = 50;
+  export let thumbSize;
   const urlParams = new URLSearchParams(window.location.search);
   export let lastSelectedIndex = parseInt(
     urlParams.get("lastSelectedIndex") ?? "0"
@@ -37,6 +40,11 @@
   // https://stackoverflow.com/questions/59062025/is-there-a-way-to-perform-svelte-transition-without-a-if-block
   // every {} is unique, {} === {} evaluates to false
   let uniqueKey = {};
+
+  let isMobile = window.matchMedia("(max-width: 768px)")?.matches;
+  const onResize = async (e) => {
+    isMobile = window.matchMedia("(max-width: 768px)")?.matches;
+  }
 
   const movePageIndex = (delta) => {
     const newPageNum = parseInt(pageNumber) + delta;
@@ -158,6 +166,8 @@
   });
   // }
 </script>
+
+<svelte:window on:resize={debounce(onResize, 400)} />
 
 <Base {copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
   <div slot="mws-header-container" />
@@ -308,7 +318,11 @@
       [{pageNumber}-{lastSelectedIndex}]
     </span>
 
-    <div class="flex flex-col h-[80vh] w-[100vw] md:flex-row">
+    <div class="flex flex-col h-[72vh] w-[100vw] md:flex-row"
+    style="
+      { (thumbSize > 50) ? `min-width: ${thumbSize}px` : `` }
+    "  
+    >
       <!-- { JSON.stringify(timings) } -->
       {#if timings[lastSelectedIndex] ?? false}
         <SlotView
@@ -320,6 +334,12 @@
           {locale}
           bind:timingSlot={timings[lastSelectedIndex]}
           class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
+          style={`
+            ${ isMobile
+              ? `height: ${splitRange}%`
+              : `width: ${splitRange}%`
+            }
+          `}
           fullscreenClass={isFullScreen ? "pb-8" : ""}
         />
       {:else}
@@ -327,10 +347,30 @@
       {/if}
       <SquareList
         bind:lastSelectedIndex
+        bind:thumbSize
         {timings}
         {movePageIndex}
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
+        style={`
+          ${ isMobile
+            ? `height: ${100 - splitRange}%`
+            : `width: ${100 - splitRange}%`
+          }
+        `}
       />
+    </div>
+    <div class="flex items-start w-full">
+      <div class="fill-white/70 text-white/70 w-full">
+        <input
+          value={splitRange}
+          on:change={debounce((e)=> (splitRange = e.target.value), 400)}
+          id="split-range"
+          type="range"
+          class="w-full h-2 bg-gray-200/50 rounded-lg
+            appearance-none cursor-pointer outline-none
+            "
+        />
+      </div>
     </div>
     <div>{@html timingsPaginator}</div>
 

@@ -7,6 +7,7 @@
   export let timingSlot;
   export let isSelected = false;
   export let size = "50px";
+  export let forceHeight;
 
   $: slotName = timingSlot.sourceStamp.split(/[\\/]/).pop();
   $: slotPath = timingSlot.source?.path
@@ -46,7 +47,7 @@ overflow-hidden border-solid border-4"
   class:border-gray-600={!isSelected}
   class:border-blue-600={isSelected}
   class:border-green-400={!isSelected && timingSlot.tags?.length}
-  style:height={size}
+  style:height={forceHeight ? forceHeight : size}
   style:width={size}
 >
   <!--

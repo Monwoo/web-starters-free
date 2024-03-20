@@ -35,6 +35,7 @@
 
   let classNames = "";
   export { classNames as class };
+  export let style;
   export let timingSlot;
   export let isFullScreen = false;
   export let moveSelectedIndex;
@@ -450,6 +451,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
   class="mws-timing-slot-view overflow-y-auto
   flex flex-row flex-wrap content-start max-h-full
   {classNames}"
+  {style}
   class:pointer-events-none={isLoading}
   style::pointer-events={isLoading ? "none" : "auto"}
 >
@@ -739,7 +741,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       type="image/png"
       style={`
       ${
-        slotHeight && zoomRange == 50
+        (slotHeight && zoomRange == 50)
           ? `
           height: ${slotHeight}px;
         `
