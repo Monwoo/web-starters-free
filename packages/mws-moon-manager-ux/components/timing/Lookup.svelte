@@ -162,7 +162,7 @@
 <Base {copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
   <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
-    <div class="mws-menu-wrapper inline-flex flex-col">
+    <div class="mws-menu-wrapper inline-flex flex-col sticky top-0">
       <!-- https://flowbite.com/docs/components/navbar/#example -->
       <!-- {#key uniqueKey} // TODO : needed for out to work... but 
       better make work create_out_transition ? -->
@@ -275,7 +275,7 @@
     </div>
 
     <button
-      class="float-right m-1"
+      class="float-right m-1 sticky top-0"
       style:opacity={lastSelectedIndex < timings.length - 1 ? 1 : 0.7}
       on:click={() => moveSelectedIndex(1)}
     >
@@ -283,7 +283,7 @@
     </button>
 
     <button
-      class="float-right m-1"
+      class="float-right m-1 sticky top-0"
       style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}
       on:click={() => moveSelectedIndex(-1)}
     >
@@ -291,20 +291,20 @@
     </button>
 
     <button
-      class="float-right m-1"
+      class="float-right m-1 sticky top-0"
       on:click|stopPropagation={() => movePageIndex(1)}
     >
       Next. Page
     </button>
     {#if pageNumber > 1}
       <button
-        class="float-right m-1"
+        class="float-right m-1 sticky top-0"
         on:click|stopPropagation={() => movePageIndex(-1)}
       >
         Prev. Page
       </button>
     {/if}
-    <span class="float-right m-1 text-black">
+    <span class="float-right m-1 text-black sticky top-0">
       [{pageNumber}-{lastSelectedIndex}]
     </span>
 
@@ -329,7 +329,7 @@
         bind:lastSelectedIndex
         {timings}
         {movePageIndex}
-        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%] p-7"
+        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
       />
     </div>
     <div>{@html timingsPaginator}</div>

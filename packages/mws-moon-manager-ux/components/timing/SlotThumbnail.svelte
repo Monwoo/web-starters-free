@@ -7,6 +7,7 @@
   export let timingSlot;
   export let isSelected = false;
   export let size = "50px";
+
   $: slotName = timingSlot.sourceStamp.split(/[\\/]/).pop();
   $: slotPath = timingSlot.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
@@ -18,11 +19,17 @@
       })
     : null;
 
-  onMount(() => {
+  // onMount(() => { // Only once at load...
+  //   if (isSelected) {
+  //     htmlRoot?.scrollIntoView();
+  //   }
+  // });
+
+  $: {
     if (isSelected) {
       htmlRoot?.scrollIntoView();
     }
-  });
+  }
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->

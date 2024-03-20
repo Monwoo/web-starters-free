@@ -9,6 +9,8 @@
   export let selectedSourceStamps = {};
   export let lastSelectedIndex = 0;
   export let movePageIndex;
+  const startZoom = 5;
+  export let zoomRange = startZoom;
 
   $: console.debug("[timing/SquareList] Having timings :", timings);
   $: {
@@ -65,17 +67,19 @@
       lastSelectedIndex = timings.length - 1; // Do not move
     }
   }
-
 </script>
 
 <!-- <svelte:window on:keydown|preventDefault={onKeyDown} /> -->
 <svelte:window on:keydown={onKeyDown} />
 
-<div class="mws-timing-square-list
-overflow-y-auto flex flex-wrap content-start items-start {classNames}">
+<div
+  class="mws-timing-square-list
+overflow-y-auto flex flex-wrap content-center justify-center {classNames}"
+>
   {#each timings ?? [] as timingSlot, idx}
     <SlotThumbnail
       {timingSlot}
+      size={`${((50 * (100 / startZoom) * zoomRange) / 100).toFixed(0)}px`}
       isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
       on:click={() => {
         lastSelectedIndex = idx;
@@ -88,4 +92,17 @@ overflow-y-auto flex flex-wrap content-start items-start {classNames}">
       }}
     />
   {/each}
+
+  <div class="flex items-start sticky bottom-0 z-40 w-full">
+    <div class="fill-white/70 text-white/70 w-full">
+      <input
+        bind:value={zoomRange}
+        id="zoom-range"
+        type="range"
+        class="w-full h-2 bg-gray-200/50 rounded-lg
+    appearance-none cursor-pointer outline-none
+     "
+      />
+    </div>
+  </div>
 </div>

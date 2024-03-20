@@ -454,7 +454,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
   style::pointer-events={isLoading ? "none" : "auto"}
 >
   <!-- {JSON.stringify(timingSlot)} -->
-  <div class="pr-2 sticky top-0 left-0 bg-white/95 z-40">
+  <div class="pr-2 sticky top-0 left-0 bg-white/95 z-30">
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
       .format("YYYY/MM/DD H:mm:ss")}
@@ -474,7 +474,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     </span>
     <!-- {/if} -->
   </div>
-  <div class="sticky top-0 left-0 bg-white/95 z-40">
+  <div class="sticky top-0 left-0 bg-white/95 z-30">
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
@@ -482,8 +482,10 @@ style:opacity={isLoading ? 0.8 : 1} -->
   <!-- {timingSlot?.sourceStamp} -->
   <div
     class="full-screen-container bg-black text-white fill-white
-    rounded-se-lg overflow-scroll
+    rounded-se-lg overflow-scroll z-20
     {fullscreenClass}"
+    class:z-20={!isFullScreen}
+    class:z-40={isFullScreen}
     class:fixed={isFullScreen}
     class:top-0={isFullScreen}
     class:bottom-0={isFullScreen}
@@ -566,7 +568,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         {/if}
       </span>
       <span
-        class="float-right max-w-[75%] rounded-md z-30"
+        class="float-right max-w-[75%] rounded-md z-40"
         class:!max-w-[50%]={isFullScreen}
         class:top-0={!isFullScreen}
         class:sticky={!isFullScreen}
