@@ -30,7 +30,7 @@
       <button class="btn btn-outline-primary p-1 m-1">Editer</button>
     </a>
   </td>
-  <th scope="row">
+  <th scope="row" class="text-left">
     <span>{tag.slug}</span>
     <!-- { JSON.stringify(tag.categoryOkWithMultiplesTags) } -->
     <span

@@ -200,6 +200,20 @@
     </button>
     <button
       class="btn btn-outline-primary p-1 m-1"
+      on:click={() => {
+        console.debug("Will show :", tag);
+        // TODO : wan user : NEED to change tags, tag slug already used err...
+        addModal.surveyModel.data = {
+          ...tag.self,
+          id: null
+        };
+        addModal.eltModal.show();
+      }}
+    >
+      Dupliquer
+    </button>
+    <button
+      class="btn btn-outline-primary p-1 m-1"
       style="--mws-primary-rgb: 255, 0, 0"
       on:click={deleteTag}
     >
@@ -208,8 +222,6 @@
   </td>
   <th scope="row">
     <span>{tag.self.slug}</span>
-    <!-- { JSON.stringify(tag.self.categoryOkWithMultiplesTags) } -->
-    <span class:hidden={!tag.self.categoryOkWithMultiplesTags}> [MultiOk]</span>
   </th>
   <td class="text-left">
     <span
