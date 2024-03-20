@@ -36,12 +36,32 @@
     left: (k) => k.keyCode == 37,
   };
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const pageNumber = urlParams.get("page") ?? "1";
+  const movePageIndex = (delta) => {
+    const newPageNum = parseInt(pageNumber) + delta;
+    // TODO : how to know max page num ? data.length / pageLimit, need to know details...
+    urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
+    urlParams.set("lastSelectedIndex", '' + lastSelectedIndex);
+    window.location.search = '' + urlParams;
+  };
+
   function onKeyDown(e) {
     if (isKey.left(e) || isKey.up(e)) {
-      lastSelectedIndex--;
+      lastSelectedIndex--; // TODO : if < 0 ? or elt exist ?
+      if (e.shiftKey) {
+        // Move last elt previous page :
+        lastSelectedIndex = 123; // TODO : from CRM configs ...
+        movePageIndex(-1);
+      }
       e.preventDefault();
     }
     if (isKey.right(e) || isKey.down(e)) {
+      if (e.shiftKey) {
+        // Move 1st elt next page :
+        lastSelectedIndex = 0;
+        movePageIndex(1);
+      }
       lastSelectedIndex++;
       e.preventDefault();
     }

@@ -107,6 +107,12 @@
     const newPageNum = parseInt(pageNumber) + delta;
     // TODO : how to know max page num ? data.length / pageLimit, need to know details...
     urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
+    // // TIPS : or redux sync or component props ?
+    // const urlParams = new URLSearchParams(window.location.search);
+    // const lastSelectedIndex = urlParams.get("lastSelectedIndex") ?? "1";
+    // lastSelectedIndex = 123; // TODO : from CRM configs ...
+    lastSelectedIndex = delta < 0 ? 123 : 0;
+    urlParams.set("lastSelectedIndex", '' + lastSelectedIndex);
     window.location.search = urlParams;
   };
 
