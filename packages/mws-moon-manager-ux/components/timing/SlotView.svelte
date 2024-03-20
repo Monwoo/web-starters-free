@@ -712,7 +712,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     -->
     <div
       class="overflow-visible flex items-end sticky top-0
-    z-40 w-full"
+    z-30 w-full"
     >
       <div class="fill-white/70 text-white/70 bg-black/50 w-full">
         <input

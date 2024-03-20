@@ -2,6 +2,7 @@
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
   import SlotThumbnail from "./SlotThumbnail.svelte";
+  import debounce from 'lodash/debounce';
 
   let classNames = "";
   export { classNames as class };
@@ -74,7 +75,7 @@
 
 <div
   class="mws-timing-square-list
-overflow-y-auto flex flex-wrap content-center justify-center {classNames}"
+overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
 >
   {#each timings ?? [] as timingSlot, idx}
     <SlotThumbnail
@@ -93,10 +94,12 @@ overflow-y-auto flex flex-wrap content-center justify-center {classNames}"
     />
   {/each}
 
-  <div class="flex items-start sticky bottom-0 z-40 w-full">
+  <!-- TIPS : too slow to load lot of iùg, debounce to make it fluid -->
+  <div class="flex items-start sticky bottom-0 z-30 w-full">
     <div class="fill-white/70 text-white/70 w-full">
       <input
-        bind:value={zoomRange}
+        value={zoomRange}
+        on:change={debounce((e)=> (zoomRange = e.target.value), 400)}
         id="zoom-range"
         type="range"
         class="w-full h-2 bg-gray-200/50 rounded-lg

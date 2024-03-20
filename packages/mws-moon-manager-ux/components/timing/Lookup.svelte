@@ -162,7 +162,7 @@
 <Base {copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
   <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
-    <div class="mws-menu-wrapper inline-flex flex-col sticky top-0">
+    <div class="mws-menu-wrapper inline-flex flex-col sticky top-0 z-40">
       <!-- https://flowbite.com/docs/components/navbar/#example -->
       <!-- {#key uniqueKey} // TODO : needed for out to work... but 
       better make work create_out_transition ? -->
