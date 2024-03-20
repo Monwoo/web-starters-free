@@ -1,7 +1,9 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
+  import { onMount } from "svelte";
 
+  export let htmlRoot;
   export let timingSlot;
   export let isSelected = false;
   export let size = "50px";
@@ -16,6 +18,11 @@
       })
     : null;
 
+  onMount(() => {
+    if (isSelected) {
+      htmlRoot?.scrollIntoView();
+    }
+  });
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->
@@ -23,6 +30,7 @@
   event forwarding : use on:click without values ?
 -->
 <div
+  bind:this={htmlRoot}
   on:click
   class="mws-timing-slot
 flex justify-center items-center
@@ -56,12 +64,11 @@ overflow-hidden border-solid border-4"
       alt="screenshot"
       arial-label="screenshot"
       class="object-contain w-full h-full"
-      src="{"screenshot" == timingSlot?.source?.type ? slotPath : ""}"
+      src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
     />
     <!-- 
       TODO : generate thumb ? but eat spaces for slow rendering...
       src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
-
   </object>
 
   <!-- <img

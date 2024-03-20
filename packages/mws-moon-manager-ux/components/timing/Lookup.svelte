@@ -42,6 +42,13 @@
     const newPageNum = parseInt(pageNumber) + delta;
     // TODO : how to know max page num ? data.length / pageLimit, need to know details...
     urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
+    // // TIPS : or redux sync or component props ?
+    // const urlParams = new URLSearchParams(window.location.search);
+    // const lastSelectedIndex = urlParams.get("lastSelectedIndex") ?? "1";
+    // lastSelectedIndex = 123; // TODO : from CRM configs ...
+    const newSelectedIndex =
+      delta < 0 ? 123 : 0 === delta ? lastSelectedIndex : 0;
+    urlParams.set("lastSelectedIndex", "" + newSelectedIndex);
     window.location.search = urlParams;
   };
   // dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
@@ -150,7 +157,6 @@
     }
   });
   // }
-
 </script>
 
 <Base {copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
@@ -310,19 +316,19 @@
           bind:lastSelectedIndex
           bind:timeQualifs
           {moveSelectedIndex}
+          {movePageIndex}
           {locale}
           bind:timingSlot={timings[lastSelectedIndex]}
           class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
           fullscreenClass={isFullScreen ? "pb-8" : ""}
         />
       {:else}
-        <div class="w-50">
-          Sélectionner un temps pour voir son détail.
-        </div>
+        <div class="w-50">Sélectionner un temps pour voir son détail.</div>
       {/if}
       <SquareList
         bind:lastSelectedIndex
         {timings}
+        {movePageIndex}
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%] p-7"
       />
     </div>
@@ -349,5 +355,4 @@
   // .fixed-important {
   //   @apply fixed #{!important};
   // }
-
 </style>

@@ -38,6 +38,7 @@
   export let timingSlot;
   export let isFullScreen = false;
   export let moveSelectedIndex;
+  export let movePageIndex;
   export let lastSelectedIndex = 0;
   export let timeQualifs = [];
   export let locale;
@@ -102,19 +103,6 @@
   declare interface Number {
     toPrettyNum(length: number): string;
   }
-
-  const movePageIndex = (delta) => {
-    const newPageNum = parseInt(pageNumber) + delta;
-    // TODO : how to know max page num ? data.length / pageLimit, need to know details...
-    urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
-    // // TIPS : or redux sync or component props ?
-    // const urlParams = new URLSearchParams(window.location.search);
-    // const lastSelectedIndex = urlParams.get("lastSelectedIndex") ?? "1";
-    // lastSelectedIndex = 123; // TODO : from CRM configs ...
-    lastSelectedIndex = delta < 0 ? 123 : 0;
-    urlParams.set("lastSelectedIndex", '' + lastSelectedIndex);
-    window.location.search = urlParams;
-  };
 
   const hackyRefresh = (data) => {
     // TODO : better sync all in-coming props from 'needSync' attr ?
@@ -466,7 +454,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
   style::pointer-events={isLoading ? "none" : "auto"}
 >
   <!-- {JSON.stringify(timingSlot)} -->
-  <div class="pr-2">
+  <div class="pr-2 sticky top-0 left-0 bg-white/95 z-40">
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
       .format("YYYY/MM/DD H:mm:ss")}
@@ -486,7 +474,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     </span>
     <!-- {/if} -->
   </div>
-  <div>
+  <div class="sticky top-0 left-0 bg-white/95 z-40">
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
@@ -578,7 +566,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         {/if}
       </span>
       <span
-        class="float-right max-w-[75%] bg-black/80 rounded-md"
+        class="float-right max-w-[75%] rounded-md z-30"
         class:!max-w-[50%]={isFullScreen}
         class:top-0={!isFullScreen}
         class:sticky={!isFullScreen}
@@ -587,7 +575,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         class:left-0={isFullScreen}
       >
         <span
-          class="borde p-2"
+          class="border p-2 bg-black/90"
           class:border-gray-600={!timingSlot?.tags?.length}
           class:border-green-400={timingSlot?.tags?.length}
         >
@@ -600,7 +588,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </span>
         {#each timingSlot?.tags ?? [] as tag}
           <span
-            class="m-1 text-white
+            class="m-1 text-white bg-black/90
           border-blue-600 border rounded-sm p-1"
           >
             {tag.label}

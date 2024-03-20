@@ -8,6 +8,7 @@
   export let timings;
   export let selectedSourceStamps = {};
   export let lastSelectedIndex = 0;
+  export let movePageIndex;
 
   $: console.debug("[timing/SquareList] Having timings :", timings);
   $: {
@@ -34,16 +35,6 @@
     down: (k) => k.keyCode == 40,
     right: (k) => k.keyCode == 39,
     left: (k) => k.keyCode == 37,
-  };
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const pageNumber = urlParams.get("page") ?? "1";
-  const movePageIndex = (delta) => {
-    const newPageNum = parseInt(pageNumber) + delta;
-    // TODO : how to know max page num ? data.length / pageLimit, need to know details...
-    urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
-    urlParams.set("lastSelectedIndex", '' + lastSelectedIndex);
-    window.location.search = '' + urlParams;
   };
 
   function onKeyDown(e) {
