@@ -79,6 +79,7 @@
 
   let csrfTimingDelete = stateGet(get(state), "csrfTimingDeleteAll");
 
+  let moveResp;
   const moveSelectedIndex = (delta = 1) => {
     const lastValue = lastSelectedIndex;
     lastSelectedIndex += delta;
@@ -87,11 +88,12 @@
     } else if (lastSelectedIndex < 0) {
       lastSelectedIndex = 0;
     }
-    return {
+    moveResp = {
       didChange: lastValue != lastSelectedIndex,
       isFirst: lastSelectedIndex == 0,
       isLast: lastSelectedIndex == timings.length - 1,
     };
+    return moveResp;
   };
   let menuIsOpen = false;
 
@@ -282,39 +284,46 @@ bind:isMobile
       </div>
     </div>
 
-    <button
-      class="float-right m-1 sticky top-0"
-      style:opacity={lastSelectedIndex < timings.length - 1 ? 1 : 0.7}
-      on:click={() => moveSelectedIndex(1)}
-    >
-      Next.
-    </button>
-
-    <button
-      class="float-right m-1 sticky top-0"
-      style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}
-      on:click={() => moveSelectedIndex(-1)}
-    >
-      Prev.
-    </button>
-
-    <button
-      class="float-right m-1 sticky top-0"
-      on:click|stopPropagation={() => movePageIndex(1)}
-    >
-      Next. Page
-    </button>
-    {#if pageNumber > 1}
-      <button
-        class="float-right m-1 sticky top-0"
-        on:click|stopPropagation={() => movePageIndex(-1)}
-      >
-        Prev. Page
-      </button>
-    {/if}
-    <span class="float-right m-1 text-black sticky top-0">
+    <span class="float-right m-1 text-black sticky z-30
+    bg-white/70 text-xs md:text-base
+    top-1 pointer-events-none">
       [{pageNumber}-{lastSelectedIndex}]
     </span>
+    <span class="text-xs md:text-base float-right 
+    right-14 top-0 z-30 sticky">
+      <button
+        class="float-right m-1 sticky top-0"
+        style:opacity={!moveResp.isLast ? 1 : 0.7}
+        on:click={() => moveSelectedIndex(1)}
+      >
+        Next.
+      </button>
+      {#if moveResp && moveResp.isLast}
+        <button
+          class="float-right m-1 sticky top-0"
+          on:click|stopPropagation={() => movePageIndex(1)}
+        >
+          Next. Page
+        </button>
+      {/if}
+      <button
+        class="float-right m-1 sticky top-0"
+        style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}
+        on:click={() => moveSelectedIndex(-1)}
+      >
+        Prev.
+      </button>
+      {#if moveResp && moveResp.isFirst}
+        <button
+          class="float-right m-1 sticky top-0"
+          on:click|stopPropagation={() => movePageIndex(-1)}
+        >
+          Prev. Page
+        </button>
+      {/if}
+    </span>
+    <!-- // TODO : same height as fixed nav if fixed nav ? -->
+    <!-- <span class="h-7 w-full"></span> -->
 
     <div class="flex flex-col h-[80vh] w-[100vw] md:flex-row"
     style="

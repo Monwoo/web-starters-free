@@ -457,7 +457,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
   style::pointer-events={isLoading ? "none" : "auto"}
 >
   <!-- {JSON.stringify(timingSlot)} -->
-  <div class="pr-2 sticky top-0 left-0 bg-white/95 z-30">
+  <div class="pr-2 sticky top-0 left-0 bg-white/95 z-20">
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
       .format("YYYY/MM/DD H:mm:ss")}
@@ -477,7 +477,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
     </span>
     <!-- {/if} -->
   </div>
-  <div class="sticky top-0 left-0 bg-white/95 z-30">
+  <div class="sticky top-0 left-0 bg-white/95 z-20">
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
