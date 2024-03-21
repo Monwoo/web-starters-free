@@ -325,7 +325,7 @@ bind:isMobile
     <!-- // TODO : same height as fixed nav if fixed nav ? -->
     <!-- <span class="h-7 w-full"></span> -->
 
-    <div class="flex flex-wrap w-[100vw] h-[100vh] md:flex-row"
+    <div class="flex flex-wrap w-[100vw] h-[95vh] md:flex-row"
     style="
       { (thumbSize > 50) ? `min-width: ${thumbSize}px` : `` }
     "  
@@ -343,12 +343,12 @@ bind:isMobile
           {locale}
           bind:timingSlot={timings[lastSelectedIndex]}
           class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
-          mr-0 md:mr-[0.5%] mb-[0.5%] md:mb-0"
+          mr-0 md:mr-[0.5%] mb-[2%] md:mb-0"
           sizeStyle={`
             ${ isMobile
               // ? `height: ${splitRange}%` // TODO : % instead of vh ?
               // : `width: ${splitRange}%`
-              ? `height: ${(splitRange * 2 * 49.5/100).toFixed(2)}%`
+              ? `height: ${(splitRange * 2 * 48/100).toFixed(2)}%`
               : `width: ${(splitRange * 2 * 49.5/100).toFixed(2)}%`
             }
           `}
@@ -357,16 +357,25 @@ bind:isMobile
       {:else}
         <div class="w-50">Sélectionner un temps pour voir son détail.</div>
       {/if}
+      {#if isMobile}
+        <div class="h-2 w-full
+          bg-gradient-to-r from-indigo-500 from-10%
+          via-sky-500 via-30% 
+          to-emerald-500 to-90%
+          shadow-lg	border rounded-md border-black
+        ">
+        </div>
+      {/if}
       <SquareList
         bind:lastSelectedIndex
         bind:thumbSize
         {timings}
         {movePageIndex}
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
-        ml-0 md:ml-[0.5%] mt-[0.5%] md:mt-0"
+        ml-0 md:ml-[0.5%] mt-[2%] md:mt-0"
         style={`
           ${ isMobile
-            ? `height: ${((100 - splitRange) * 2 * 49.5/100).toFixed(2)}%`
+            ? `height: ${((100 - splitRange) * 2 * 48/100).toFixed(2)}%`
             : `width: ${((100 - splitRange) * 2 * 49.5/100).toFixed(2)}%`
           }
         `}
