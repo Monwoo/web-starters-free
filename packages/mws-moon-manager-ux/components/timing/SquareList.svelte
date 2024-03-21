@@ -78,7 +78,7 @@
 <svelte:window on:keydown={onKeyDown} />
 
 <div
-  class="mws-timing-square-list md:max-h-[80vh]
+  class="mws-timing-square-list max-h-[80vh]
 overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
   {style}  
 >

@@ -325,7 +325,7 @@ bind:isMobile
     <!-- // TODO : same height as fixed nav if fixed nav ? -->
     <!-- <span class="h-7 w-full"></span> -->
 
-    <div class="flex flex-col w-[100vw] md:flex-row"
+    <div class="flex flex-wrap w-[100vw] h-[100vh] md:flex-row"
     style="
       { (thumbSize > 50) ? `min-width: ${thumbSize}px` : `` }
     "  
@@ -343,11 +343,13 @@ bind:isMobile
           {locale}
           bind:timingSlot={timings[lastSelectedIndex]}
           class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
-          mr-0 md:mr-[0.7em] mb-[0.7em] md:mb-0"
-          style={`
+          mr-0 md:mr-[0.5%] mb-[0.5%] md:mb-0"
+          sizeStyle={`
             ${ isMobile
-              ? `height: ${splitRange}%`
-              : `width: ${splitRange}%`
+              // ? `height: ${splitRange}%` // TODO : % instead of vh ?
+              // : `width: ${splitRange}%`
+              ? `height: ${(splitRange * 49.5/100).toFixed(2)}%`
+              : `width: ${(splitRange * 49.5/100).toFixed(2)}%`
             }
           `}
           fullscreenClass={isFullScreen ? "pb-8" : ""}
@@ -361,31 +363,31 @@ bind:isMobile
         {timings}
         {movePageIndex}
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
-        ml-0 md:ml-[0.7em] mt-[0.7em] md:mt-0"
+        ml-0 md:ml-[0.5%] mt-[0.5%] md:mt-0"
         style={`
           ${ isMobile
-            ? `height: ${100 - splitRange}%`
-            : `width: ${100 - splitRange}%`
+            ? `height: ${((100 - splitRange) * 49.5/100).toFixed(2)}%`
+            : `width: ${((100 - splitRange) * 49.5/100).toFixed(2)}%`
           }
         `}
       />
-    </div>
-    <div class="flex items-start w-full pt-5 md:pt-1">
-      <div class="fill-white/70 text-white/70 w-full">
-        <input
-          value={splitRange}
-          on:change={debounce((e)=> (splitRange = e.target.value), 400)}
-          id="split-range"
-          type="range"
-          class="w-full h-2 bg-gray-200/50 rounded-lg
-            appearance-none cursor-pointer outline-none
-            "
-        />
+      <div class="flex items-start w-full pt-5">
+        <div class="fill-white/70 text-white/70 w-full">
+          <input
+            value={splitRange}
+            on:change={debounce((e)=> (splitRange = e.target.value), 400)}
+            id="split-range"
+            type="range"
+            class="w-full h-2 bg-gray-200/50 rounded-lg
+              appearance-none cursor-pointer outline-none
+              "
+          />
+        </div>
       </div>
+      <div
+      class="pb-12"
+      >{@html timingsPaginator}</div>    
     </div>
-    <div
-    class="pb-12"
-    >{@html timingsPaginator}</div>
 
     <ConfidentialityStamp
       class={isFullScreen ? "opacity-90 !fixed" : ""}

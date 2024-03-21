@@ -35,7 +35,7 @@
 
   let classNames = "";
   export { classNames as class };
-  export let style;
+  export let sizeStyle;
   export let timingSlot;
   export let isFullScreen = false;
   export let moveSelectedIndex;
@@ -450,15 +450,15 @@
 <svelte:window on:keydown={onKeyDown} />
 
 <!-- class:opacity-80={isLoading}
-style:opacity={isLoading ? 0.8 : 1} -->
+  style:pointer-events={isLoading ? "none" : "auto"}
+  style:opacity={isLoading ? 0.8 : 1} -->
 <div
   class="mws-timing-slot-view overflow-y-auto
   text-xs md:text-base
-  flex flex-row flex-wrap content-start max-h-full
+  flex flex-row flex-wrap content-start
   {classNames}"
-  {style}
+  style={sizeStyle}
   class:pointer-events-none={isLoading}
-  style::pointer-events={isLoading ? "none" : "auto"}
 >
   <!-- {JSON.stringify(timingSlot)} -->
   <div class="pr-2 sticky top-0 left-0 bg-white/95 z-20">
