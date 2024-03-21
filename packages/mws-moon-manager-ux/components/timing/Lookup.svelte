@@ -325,7 +325,7 @@ bind:isMobile
     <!-- // TODO : same height as fixed nav if fixed nav ? -->
     <!-- <span class="h-7 w-full"></span> -->
 
-    <div class="flex flex-col h-[80vh] w-[100vw] md:flex-row"
+    <div class="flex flex-col w-[100vw] md:flex-row"
     style="
       { (thumbSize > 50) ? `min-width: ${thumbSize}px` : `` }
     "  
@@ -370,7 +370,7 @@ bind:isMobile
         `}
       />
     </div>
-    <div class="flex items-start w-full pt-5">
+    <div class="flex items-start w-full pt-5 md:pt-1">
       <div class="fill-white/70 text-white/70 w-full">
         <input
           value={splitRange}
