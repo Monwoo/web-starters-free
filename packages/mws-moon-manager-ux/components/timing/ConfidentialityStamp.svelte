@@ -14,7 +14,7 @@
   select-none if pointer-events-none not enough...
   -->
 <div
-  class="sticky {bottom} {right} select-none
+  class="sticky {bottom} {right} w-full select-none
   inline-flex pointer-events-none justify-end content-end
   print:fixed print:bottom-0 print:right-0 z-50
   {cssClass}
