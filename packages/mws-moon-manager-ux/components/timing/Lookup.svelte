@@ -285,7 +285,7 @@ bind:isMobile
     </div>
 
     <span class="float-right m-1 text-black sticky z-30
-    bg-white/70 text-xs md:text-base
+    bg-white/70 text-xs md:text-base p-1
     top-1 pointer-events-none">
       [{pageNumber}-{lastSelectedIndex}]
     </span>

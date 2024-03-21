@@ -207,6 +207,10 @@
 
   export let removeAllTags = async () => {
     isLoading = true;
+    await new Promise((r) => setTimeout(r, 200)); // Wait for isLoading anim
+    if (!confirm('Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?')) {
+      return;
+    }
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingTagRemoveAll"),
       timeSlotId: timingSlot?.id,

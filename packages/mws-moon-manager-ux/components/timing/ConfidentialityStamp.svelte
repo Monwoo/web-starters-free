@@ -26,7 +26,7 @@
     class="p-1 max-w-[100%] md:max-w-[50%]}
   rounded-ss-md font-xs md:font-normal
   text-xs md:text-base
-  bg-gray-100 text-gray-700"
+  bg-gray-100/50 md:bg-gray-100 text-gray-700"
   >
     Données confidentielles. Merci de conserver le secret professionnel et
     privé.
