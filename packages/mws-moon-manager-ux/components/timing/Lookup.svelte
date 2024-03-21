@@ -371,7 +371,7 @@ bind:isMobile
           }
         `}
       />
-      <div class="flex items-start w-full pt-3 pb-4">
+      <div class="flex items-start w-full pt-3 pb-4 z-30">
         <div class="fill-white/70 text-white/70 w-full">
           <input
             value={splitRange}
