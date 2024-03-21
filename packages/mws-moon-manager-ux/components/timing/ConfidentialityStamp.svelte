@@ -11,10 +11,10 @@
 </script>
 
 <!-- TIPS p-5 is 1.25rem, so subtract to fit bottom 
-  
+  select-none if pointer-events-none not enough...
   -->
 <div
-  class="sticky {bottom} {right} w-full
+  class="sticky {bottom} {right} select-none
   inline-flex pointer-events-none justify-end content-end
   print:fixed print:bottom-0 print:right-0 z-50
   {cssClass}
@@ -26,7 +26,7 @@
     class="p-1 max-w-[100%] md:max-w-[50%]}
   rounded-ss-md font-xs md:font-normal
   text-xs md:text-base  pointer-events-none
-  bg-gray-100/50 md:bg-gray-100 text-gray-700"
+  bg-gray-100/90 md:bg-gray-100 text-gray-700"
   >
     Données confidentielles. Merci de conserver le secret professionnel et
     privé.

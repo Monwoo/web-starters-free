@@ -238,7 +238,7 @@ bind:isMobile
         </div>
       </div>
       <!-- {/key} -->
-      <div class="inline-flex text-xs md:text-base">
+      <div class="inline-flex text-xs md:text-base pr-2">
         <button
           id="menu-timing-opener"
           data-collapse-toggle="menu-timing"
@@ -371,7 +371,7 @@ bind:isMobile
           }
         `}
       />
-      <div class="flex items-start w-full pt-5">
+      <div class="flex items-start w-full pt-3 pb-4">
         <div class="fill-white/70 text-white/70 w-full">
           <input
             value={splitRange}
@@ -384,9 +384,7 @@ bind:isMobile
           />
         </div>
       </div>
-      <div
-      class="pb-12"
-      >{@html timingsPaginator}</div>    
+      <div>{@html timingsPaginator}</div>    
     </div>
   </div>
   <ConfidentialityStamp
