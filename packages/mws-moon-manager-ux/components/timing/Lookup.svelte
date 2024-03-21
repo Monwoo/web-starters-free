@@ -383,7 +383,9 @@ bind:isMobile
         />
       </div>
     </div>
-    <div>{@html timingsPaginator}</div>
+    <div
+    class="pb-12"
+    >{@html timingsPaginator}</div>
 
     <ConfidentialityStamp
       class={isFullScreen ? "opacity-90 !fixed" : ""}
