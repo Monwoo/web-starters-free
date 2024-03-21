@@ -348,8 +348,8 @@ bind:isMobile
             ${ isMobile
               // ? `height: ${splitRange}%` // TODO : % instead of vh ?
               // : `width: ${splitRange}%`
-              ? `height: ${(splitRange * 49.5/100).toFixed(2)}%`
-              : `width: ${(splitRange * 49.5/100).toFixed(2)}%`
+              ? `height: ${(splitRange * 2 * 49.5/100).toFixed(2)}%`
+              : `width: ${(splitRange * 2 * 49.5/100).toFixed(2)}%`
             }
           `}
           fullscreenClass={isFullScreen ? "pb-8" : ""}
@@ -366,8 +366,8 @@ bind:isMobile
         ml-0 md:ml-[0.5%] mt-[0.5%] md:mt-0"
         style={`
           ${ isMobile
-            ? `height: ${((100 - splitRange) * 49.5/100).toFixed(2)}%`
-            : `width: ${((100 - splitRange) * 49.5/100).toFixed(2)}%`
+            ? `height: ${((100 - splitRange) * 2 * 49.5/100).toFixed(2)}%`
+            : `width: ${((100 - splitRange) * 2 * 49.5/100).toFixed(2)}%`
           }
         `}
       />
@@ -388,14 +388,13 @@ bind:isMobile
       class="pb-12"
       >{@html timingsPaginator}</div>    
     </div>
-
-    <ConfidentialityStamp
-      class={isFullScreen ? "opacity-90 !fixed" : ""}
-      right="right-0"
-      bottom="bottom-0"
-      fixedBottom={isMobile}
-    />
   </div>
+  <ConfidentialityStamp
+    class={isFullScreen ? "opacity-90 !fixed" : ""}
+    right="right-0"
+    bottom="bottom-0"
+    fixedBottom={isMobile}
+  />
 </Base>
 
 <style lang="scss">
