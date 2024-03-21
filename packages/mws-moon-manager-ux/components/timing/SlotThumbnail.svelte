@@ -28,7 +28,29 @@
 
   $: {
     if (isSelected) {
-      htmlRoot?.scrollIntoView();
+      // Below will also sroll parent's to fit the element at top of screen
+      // htmlRoot?.scrollIntoView();
+
+      // https://stackoverflow.com/questions/24665602/scrollintoview-scrolls-just-too-far
+      // https://stackoverflow.com/questions/56688002/javascript-scrollintoview-only-in-immediate-parent
+      htmlRoot?.scrollIntoView({
+        // block: "start", // Big parent hierarchy scroll
+        // block: "center", // Small parent hierarchy scroll
+        block: "nearest", // No parent hierarchy scroll
+        behavior: "smooth",
+        inline: "nearest"
+      });
+      // TIPS : CSS scroll-margin and scroll-padding
+      // https://stackoverflow.com/questions/24665602/scrollintoview-scrolls-just-too-far
+      // el.scrollIntoView({block: "start", behavior: "smooth"});
+      // .example {
+      //   scroll-margin-top: 10px;
+      // }
+      // => align the top border of the viewport with the top border of the element,
+      //    but with 10px of additional space
+      // these properties of the element are taken into account:
+      // padding-top border-top scroll-margin-top (and not margin-top)
+      // scroll-padding-top (if set)
     }
   }
 </script>

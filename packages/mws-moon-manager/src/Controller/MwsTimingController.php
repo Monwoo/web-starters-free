@@ -79,7 +79,12 @@ class MwsTimingController extends AbstractController
         $searchTags = $requestData['tags'] ?? []; // []);
         $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
 
-        $tagQb = $mwsTimeTagRepository->createQueryBuilder("t");
+        // $tagQb = $mwsTimeTagRepository->createQueryBuilder("t");
+        $allTagsList = $mwsTimeTagRepository
+        ->createQueryBuilder('t')
+        ->orderBy('LOWER(t.slug)')
+        ->getQuery()->getResult();
+
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
@@ -94,7 +99,7 @@ class MwsTimingController extends AbstractController
                         function (MwsTimeTag $tag) {
                             return $tag->getSlug();
                         },
-                        $tagQb->getQuery()->getResult() //  $timingTags
+                        $allTagsList
                     ),
                     // 'allTimingTags' => array_map(
                     //     function (MwsTimeTag $tag) {
@@ -167,14 +172,15 @@ class MwsTimingController extends AbstractController
         // https://www.mysqltutorial.org/mysql-basics/mysql-natural-sorting/
         // https://sqlite.org/forum/info/d5cf6c6317dd7e7f
         // https://stackoverflow.com/questions/20431345/naturally-sort-a-multi-dimensional-array-by-key
-        array_multisort(
-            // array_keys($allTagsList),
-            array_map(function ($t) {
-                return $t->getLabel();
-            }, $allTagsList),
-            SORT_NATURAL | SORT_FLAG_CASE,
-            $allTagsList
-        );
+
+        // array_multisort( // TIPS
+        //     // array_keys($allTagsList),
+        //     array_map(function ($t) {
+        //         return $t->getLabel();
+        //     }, $allTagsList),
+        //     SORT_NATURAL | SORT_FLAG_CASE,
+        //     $allTagsList
+        // );
 
         return $this->render('@MoonManager/mws_timing/qualif.html.twig', [
             'timings' => $timings,
@@ -206,7 +212,9 @@ class MwsTimingController extends AbstractController
         $searchTags = $requestData['tags'] ?? []; // []);
         $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
 
-        $tagQb = $mwsTimeTagRepository->createQueryBuilder("t");
+        $tagQb = $mwsTimeTagRepository->createQueryBuilder("t")
+        ->orderBy('LOWER(t.slug)');
+
         // $timingTags = array_map(
         //     function (MwsTimeTag $tag) {
         //         return $tag->getSlug();

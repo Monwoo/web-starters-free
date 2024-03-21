@@ -449,6 +449,7 @@
 style:opacity={isLoading ? 0.8 : 1} -->
 <div
   class="mws-timing-slot-view overflow-y-auto
+  text-xs md:text-base
   flex flex-row flex-wrap content-start max-h-full
   {classNames}"
   {style}
@@ -510,7 +511,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
       <span
-        class="float-right m-1 cursor-context-menu hover:opacity-90"
+        class="float-right m-1 mt-2 cursor-context-menu hover:opacity-90"
         on:click|stopPropagation={() => {
           Height = null;
           slotHeight = null;
@@ -524,21 +525,35 @@ style:opacity={isLoading ? 0.8 : 1} -->
           percent={1 - $timer / timerStart}
           textRenderer={(percent) => `${$timer.toFixed(0)}`}
         />
-        <span class="flex w-[6em]">
+        <span class="top-0 left-0 flex  pointer-events-none
+        bg-black/70 rounded z-40"
+        class:w-[6em]={!isFullScreen}
+        class:w-[12em]={isFullScreen}
+        class:left-0={isFullScreen}
+        class:fixed={isFullScreen}
+        >
           {dayjs(timingSlot?.sourceTimeGMT)
             .tz("Europe/Paris")
             .format("YYYY/MM/DD H:mm:ss")}
         </span>
       </span>
-      <span class="float-right right-0 top-0 z-30 sticky">
-        <span
-          class="float-right right-0 top-0 w-[6em] sticky pointer-events-none"
-        >
-          [{pageNumber}-{lastSelectedIndex}]
-        </span>
-        {#if isFullScreen}
+      <span
+        class="w-[6em] pointer-events-none
+        bg-black/70 rounded z-40"
+        class:right-0={!isFullScreen}
+        class:absolute={!isFullScreen}
+        class:top-0={!isFullScreen}
+        class:top-5={isFullScreen}
+        class:left-0={isFullScreen}
+        class:fixed={isFullScreen}
+      >
+        [{pageNumber}-{lastSelectedIndex}]
+      </span>
+
+      {#if isFullScreen}
+        <span class="right-14 top-0 z-30 fixed flex">
           <button
-            class="float-right m-1 top-0 sticky"
+            class="float-right m-1"
             style:opacity={!moveResp.isLast ? 1 : 0.7}
             on:click|stopPropagation={() => (moveResp = moveSelectedIndex(1))}
           >
@@ -546,14 +561,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
           </button>
           {#if moveResp.isLast}
             <button
-              class="float-right m-1 top-0 sticky"
+              class="float-right m-1"
               on:click|stopPropagation={() => movePageIndex(1)}
             >
               Next. Page
             </button>
           {/if}
           <button
-            class="float-right m-1 top-0 sticky"
+            class="float-right m-1"
             style:opacity={!moveResp.isFirst ? 1 : 0.7}
             on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
           >
@@ -561,16 +576,23 @@ style:opacity={isLoading ? 0.8 : 1} -->
           </button>
           {#if moveResp.isFirst && pageNumber > 1}
             <button
-              class="float-right m-1 top-0 sticky"
+              class="float-right m-1"
               on:click|stopPropagation={() => movePageIndex(-1)}
             >
               Prev. Page
             </button>
           {/if}
-        {/if}
-      </span>
+        </span>
+        <span class="float-right w-[14rem] h-7">
+        </span>
+      {/if}
       <span
-        class="float-right max-w-[75%] rounded-md z-40"
+        class="float-right max-w-[70%] md:max-w-[75%]
+        rounded-md z-40 inline-flex flex-wrap
+        ml-1 mr-1 text-xs md:text-base
+        pointer-events-none md:pointer-events-auto
+        opacity-90 md:opacity-100
+        "
         class:!max-w-[50%]={isFullScreen}
         class:top-0={!isFullScreen}
         class:sticky={!isFullScreen}
@@ -579,7 +601,7 @@ style:opacity={isLoading ? 0.8 : 1} -->
         class:left-0={isFullScreen}
       >
         <span
-          class="border p-2 bg-black/90"
+          class="border mt-1 p-0 bg-black/90"
           class:border-gray-600={!timingSlot?.tags?.length}
           class:border-green-400={timingSlot?.tags?.length}
         >
@@ -592,8 +614,8 @@ style:opacity={isLoading ? 0.8 : 1} -->
         </span>
         {#each timingSlot?.tags ?? [] as tag}
           <span
-            class="m-1 text-white bg-black/90
-          border-blue-600 border rounded-sm p-1"
+            class="ml-1 mr-1 mt-1 text-white bg-black/90
+          border-blue-600 border rounded-sm p-0"
           >
             {tag.label}
           </span>
@@ -719,6 +741,9 @@ style:opacity={isLoading ? 0.8 : 1} -->
       <div class="fill-white/70 text-white/70 bg-black/50 w-full">
         <input
           bind:value={zoomRange}
+          on:change={(e) => {
+            slotHeight = null;
+          }}
           id="zoom-range"
           type="range"
           class="w-full h-1 bg-gray-200/50 rounded-lg
@@ -727,14 +752,14 @@ style:opacity={isLoading ? 0.8 : 1} -->
         />
       </div>
     </div>
+    <!-- class:h-[80vh]={!slotHeight &&
+      zoomRange == 50 &&
+      isFullScreen &&
+      !isHeaderExpanded} -->
     <object
       bind:this={slotView}
       on:click={() => (resizing ? null : (isFullScreen = !isFullScreen))}
-      class="object-contain border-solid border-4 w-full"
-      class:h-[80vh]={!slotHeight &&
-        zoomRange == 50 &&
-        isFullScreen &&
-        !isHeaderExpanded}
+      class="object-contain border-solid border-4 w-full m-auto"
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}

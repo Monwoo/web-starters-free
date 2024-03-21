@@ -316,13 +316,15 @@ bind:isMobile
       [{pageNumber}-{lastSelectedIndex}]
     </span>
 
-    <div class="flex flex-col h-[72vh] w-[100vw] md:flex-row"
+    <div class="flex flex-col h-[80vh] w-[100vw] md:flex-row"
     style="
       { (thumbSize > 50) ? `min-width: ${thumbSize}px` : `` }
     "  
     >
       <!-- { JSON.stringify(timings) } -->
       {#if timings[lastSelectedIndex] ?? false}
+        <!-- TIPS : use margin to allow space for drag and drop or finger scroll
+        by putting the mouse or draging from that empty margin space... -->
         <SlotView
           bind:isFullScreen
           bind:lastSelectedIndex
@@ -331,7 +333,8 @@ bind:isMobile
           {movePageIndex}
           {locale}
           bind:timingSlot={timings[lastSelectedIndex]}
-          class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
+          class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
+          mr-0 md:mr-[0.7em] mb-[0.7em] md:mb-0"
           style={`
             ${ isMobile
               ? `height: ${splitRange}%`
@@ -348,7 +351,8 @@ bind:isMobile
         bind:thumbSize
         {timings}
         {movePageIndex}
-        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]"
+        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
+        ml-0 md:ml-[0.7em] mt-[0.7em] md:mt-0"
         style={`
           ${ isMobile
             ? `height: ${100 - splitRange}%`
@@ -357,7 +361,7 @@ bind:isMobile
         `}
       />
     </div>
-    <div class="flex items-start w-full">
+    <div class="flex items-start w-full pt-5">
       <div class="fill-white/70 text-white/70 w-full">
         <input
           value={splitRange}
@@ -376,6 +380,7 @@ bind:isMobile
       class={isFullScreen ? "opacity-90 !fixed" : ""}
       right="right-0"
       bottom="bottom-0"
+      fixedBottom={isMobile}
     />
   </div>
 </Base>

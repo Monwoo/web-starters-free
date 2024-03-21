@@ -211,7 +211,7 @@
   });
 </script>
 
-<div class="w-full flex flex-wrap justify-center">
+<div class="w-full flex flex-wrap justify-center text-xs md:text-base">
   <button
     class="m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis
     "

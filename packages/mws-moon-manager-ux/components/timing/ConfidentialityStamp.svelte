@@ -2,6 +2,7 @@
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   export let bottom = 'bottom-[-1.25rem]';
   export let right = 'right-[-1.25rem]';
+  export let fixedBottom = false;
   // export let isMobile = true;
   // class="p-1 {isMobile ? 'max-w-[100%]' : 'max-w-[50%]'}
 
@@ -14,10 +15,13 @@
   -->
 <div
   class="sticky {bottom} {right} w-full
-inline-flex pointer-events-none justify-end content-end
-print:fixed print:bottom-0 print:right-0 z-50
-{cssClass}
-">
+  inline-flex pointer-events-none justify-end content-end
+  print:fixed print:bottom-0 print:right-0 z-50
+  {cssClass}
+  "
+  class:sticky={!fixedBottom}
+  class:fixed={fixedBottom}
+>
   <span
     class="p-1 max-w-[100%] md:max-w-[50%]}
   rounded-ss-md font-xs md:font-normal
