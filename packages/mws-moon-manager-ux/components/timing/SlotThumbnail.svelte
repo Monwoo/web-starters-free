@@ -83,22 +83,25 @@ overflow-hidden border-solid border-4"
     https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
   <object
     class="w-full h-full"
-    data={timingSlot.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"}
+    data={timingSlot?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"}
     type="image/png"
     alt="screenshot"
     arial-label="screenshot"
     title="screenshot"
   >
-    <img
-      loading="lazy"
-      alt="screenshot"
-      arial-label="screenshot"
-      class="object-contain w-full h-full"
-      src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
-    />
-    <!-- 
-      TODO : generate thumb ? but eat spaces for slow rendering...
-      src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
+    {#if !(timingSlot?.thumbnailJpeg ?? false) }
+      <!-- // event : without if, will not preload image event if object has data... !-->
+      <img
+        loading="lazy"
+        alt="screenshot"
+        arial-label="screenshot"
+        class="object-contain w-full h-full"
+        src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+      />
+      <!-- 
+        TODO : generate thumb ? but eat spaces for slow rendering...
+        src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
+    {/if}
   </object>
 
   <!-- <img

@@ -16,6 +16,7 @@
   import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import debounce from 'lodash/debounce';
+  import HtmlIcon from "./HtmlIcon.svelte";
   // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
   const UID = newUniqueId();
 
@@ -195,6 +196,8 @@
 
                 // window.location.reload(); // TODO : send right sync data from server and avoid page reloads ?
 
+                // TODO : sync ok Indicator ? or toaster msg ? or isLoading is enough ?
+
                 stateUpdate(state, {
                     csrfTimingTagUpdate: data.newCsrf,
                 });
@@ -214,22 +217,29 @@
 <div class="w-full flex flex-wrap justify-center text-xs md:text-base">
   <button
     class="m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis
+    flex pl-1 pr-1
     "
     style={rgbTxt ? `--mws-primary-rgb: ${rgbTxt}`: ``}
     on:click|stopPropagation={qualif.toggleQualif}
   >
-    <!--
-      TODO : tailwind multiple text shadow ?
-      https://stackoverflow.com/questions/34931463/how-to-make-multiple-drop-shadow 
-      <span class="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8) 0_-1.2px_1.2px_rgba(0,0,0,0.8)]"> -->
+  <!--
+    TODO : tailwind multiple text shadow ?
+    https://stackoverflow.com/questions/34931463/how-to-make-multiple-drop-shadow 
+    <span class="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8) 0_-1.2px_1.2px_rgba(0,0,0,0.8)]"> -->
     {#if !isHeaderExpanded}
-      <span class="text-slate-400">
+    <span class="text-slate-400">
         [{String.fromCharCode(qualif.shortcut)}]
-      </span>
+    </span>
+    {/if}
+    {#if isHeaderExpanded}
+      <HtmlIcon {qualif}></HtmlIcon>
     {/if}
     <span class="mws-drop-shadow">
       {qualif.label}
     </span>
+    {#if !isHeaderExpanded}
+      <HtmlIcon {qualif}></HtmlIcon>
+    {/if}
   </button>
   <!-- <MoveIcon propSize={12} /> -->
   {#if isHeaderExpanded}
@@ -321,7 +331,7 @@
         on:input={async (event) => {
           // https://svelte-awesome-color-picker.vercel.app/#bind-event-oninput
           // historyHex = [...historyHex, event.detail.hex];
-          console.debug('TODO : sync new color', hex, rgb, ' for id : ', qualif.id);
+          console.debug('Sync new color', hex, rgb, ' for id : ', qualif.id);
           qualif.primaryColorHex = hex;
           qualif.primaryColorRgb = rgb;
           await syncQualifWithBackend(qualif);
@@ -599,7 +609,21 @@
             Créer le Tag
           </button>
         {/if}
-      </span>  
+      </span>
+      <textarea
+      placeholder="Icon HTML"
+      class=""
+      value={qualif.htmlIcon ?? ''}
+      on:change={debounce(async (e)=> {
+          if (isLoading) return;
+          isLoading = true;
+          console.debug('Sync new html icon for id : ', qualif.id);
+          qualif.htmlIcon = e.target.value;
+          await syncQualifWithBackend(qualif);
+          isLoading = false;
+      }, userDelay)}
+      ></textarea>
+  
 
       <button
       class="p-2 m-3 text-sm font-medium text-center 

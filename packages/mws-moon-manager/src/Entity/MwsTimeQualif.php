@@ -4,6 +4,7 @@ namespace MWS\MoonManagerBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use MWS\MoonManagerBundle\Repository\MwsTimeQualifRepository;
 use Symfony\Component\Serializer\Annotation as Serializer;
@@ -37,6 +38,9 @@ class MwsTimeQualif
 
     #[ORM\ManyToMany(targetEntity: MwsUser::class, inversedBy: 'quickQualifHistory')]
     private Collection $quickUserHistory;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $htmlIcon = null;
 
     public function __construct()
     {
@@ -141,6 +145,18 @@ class MwsTimeQualif
     public function setPrimaryColorHex(?string $primaryColorHex): static
     {
         $this->primaryColorHex = $primaryColorHex;
+
+        return $this;
+    }
+
+    public function getHtmlIcon(): ?string
+    {
+        return $this->htmlIcon;
+    }
+
+    public function setHtmlIcon(?string $htmlIcon): static
+    {
+        $this->htmlIcon = $htmlIcon;
 
         return $this;
     }

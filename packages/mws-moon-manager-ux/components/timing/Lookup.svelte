@@ -78,7 +78,6 @@
   console.debug("jsonLookup :", jsonLookup);
 
   let csrfTimingDelete = stateGet(get(state), "csrfTimingDeleteAll");
-
   let moveResp;
   const moveSelectedIndex = (delta = 1) => {
     const lastValue = lastSelectedIndex;
@@ -95,6 +94,7 @@
     };
     return moveResp;
   };
+  moveResp = moveSelectedIndex(0);
   let menuIsOpen = false;
 
   onMount(async () => {
@@ -313,7 +313,7 @@ bind:isMobile
       >
         Prev.
       </button>
-      {#if moveResp && moveResp.isFirst}
+      {#if moveResp.isFirst && pageNumber > 1}
         <button
           class="float-right m-1 sticky top-0"
           on:click|stopPropagation={() => movePageIndex(-1)}
@@ -382,6 +382,9 @@ bind:isMobile
       />
       <div class="flex items-start w-full pt-3 pb-4 z-30">
         <div class="fill-white/70 text-white/70 w-full">
+          <!-- // TODO : userDelay instead of 400 ? not same for all situation,
+          //         might need bigDelay or short or medium ?
+          //         or too specific, keep number easyer than multiples var or const ? -->
           <input
             value={splitRange}
             on:change={debounce((e)=> (splitRange = e.target.value), 400)}

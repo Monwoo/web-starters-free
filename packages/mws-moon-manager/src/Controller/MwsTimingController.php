@@ -625,6 +625,8 @@ class MwsTimingController extends AbstractController
         $attachThumbnails = $request->get('attachThumbnails');
         $thumbnailsSize = intval($request->get('thumbnailsSize', 0));
 
+        // var_dump($attachThumbnails); exit;
+
         // $tSlots = $mwsTimeSlotRepository->findAll() ?? [];
 
         $qb = $mwsTimeSlotRepository->createQueryBuilder('s');
@@ -657,11 +659,13 @@ class MwsTimingController extends AbstractController
                         array $context = []
                     ) use ($attachThumbnails, $thumbnailsSize, $em, $self, $request) {
                         // dump($innerObject);
+                        // var_dump($attachThumbnails); exit;
                         // dd($outerObject);
                         if ($attachThumbnails) { // already ignored, juste in case
                             // dump($innerObject);
                             // dd($outerObject);
-                            if ($innerObject) {
+                            // if ($innerObject) {
+                            {
                                 // Routing.generate("mws_timing_fetchMediatUrl", {
                                 //     url: "file://" + timingSlot.source.path,
                                 //     keepOriginalSize: 1,
@@ -2092,6 +2096,10 @@ class MwsTimingController extends AbstractController
         $sync('timeTags');
         $sync('shortcut');
         // TODO : $sync('quickUserHistory');
+
+        // TODO : sync from Doctrine model with typed extractor instead of adding all model
+        //         change by hand in this king of files ?
+        $sync('htmlIcon');
 
         // dd($qualif);
 

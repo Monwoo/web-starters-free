@@ -465,6 +465,7 @@
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
       .format("YYYY/MM/DD H:mm:ss")}
+    [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     <!-- // TODO : strange : tags are reactive, but not the maxPath etc ? -->
     <!-- {#if timingSlot?.tags?.length} -->
     <span
@@ -482,7 +483,6 @@
     <!-- {/if} -->
   </div>
   <div class="sticky top-0 left-0 bg-white/95 z-20">
-    [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
 
@@ -532,13 +532,14 @@
         <span class="top-0 left-0 flex  pointer-events-none
         bg-black/70 rounded z-40"
         class:w-[6em]={!isFullScreen}
-        class:w-[12em]={isFullScreen}
+        class:w-[14em]={isFullScreen}
         class:left-0={isFullScreen}
         class:fixed={isFullScreen}
         >
           {dayjs(timingSlot?.sourceTimeGMT)
             .tz("Europe/Paris")
             .format("YYYY/MM/DD H:mm:ss")}
+          [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
         </span>
       </span>
       <span
@@ -555,7 +556,22 @@
       </span>
 
       {#if isFullScreen}
-        <span class="right-14 top-0 z-30 fixed flex">
+        <span class="right-14 top-0 z-40 fixed flex">
+          {#if moveResp.isFirst && pageNumber > 1}
+            <button
+              class="float-right m-1"
+              on:click|stopPropagation={() => movePageIndex(-1)}
+            >
+              Prev. Page
+            </button>
+          {/if}
+          <button
+            class="float-right m-1"
+            style:opacity={!moveResp.isFirst ? 1 : 0.7}
+            on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
+          >
+            Prev.
+          </button>
           <button
             class="float-right m-1"
             style:opacity={!moveResp.isLast ? 1 : 0.7}
@@ -569,21 +585,6 @@
               on:click|stopPropagation={() => movePageIndex(1)}
             >
               Next. Page
-            </button>
-          {/if}
-          <button
-            class="float-right m-1"
-            style:opacity={!moveResp.isFirst ? 1 : 0.7}
-            on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
-          >
-            Prev.
-          </button>
-          {#if moveResp.isFirst && pageNumber > 1}
-            <button
-              class="float-right m-1"
-              on:click|stopPropagation={() => movePageIndex(-1)}
-            >
-              Prev. Page
             </button>
           {/if}
         </span>
@@ -605,7 +606,7 @@
         class:left-0={isFullScreen}
       >
         <span
-          class="border mt-1 p-0 bg-black/90"
+          class="border mt-1 p-0 bg-black"
           class:border-gray-600={!timingSlot?.tags?.length}
           class:border-green-400={timingSlot?.tags?.length}
         >
@@ -618,7 +619,7 @@
         </span>
         {#each timingSlot?.tags ?? [] as tag}
           <span
-            class="ml-1 mr-1 mt-1 text-white bg-black/90
+            class="ml-1 mr-1 mt-1 text-white bg-black
           border-blue-600 border rounded-sm p-0"
           >
             {tag.label}
