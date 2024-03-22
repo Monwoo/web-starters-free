@@ -164,8 +164,8 @@
     {tag.label}
     <button
     on:click={() => removeTag(tag) }
-    type="button" class="inline-flex items-center p-1 ml-2 text-sm
-    text-pink-400 bg-transparent rounded-sm hover:bg-pink-200
+    type="button" class="inline-flex rounded-md items-center p-1 ml-2 text-sm
+    text-pink-400 bg-transparent hover:bg-pink-200
      hover:text-pink-900 dark:hover:bg-pink-800 dark:hover:text-pink-300"
     aria-label="Remove">
       <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">

@@ -23,6 +23,7 @@
   import mapTouchToMouseFor from "svelte-touch-to-mouse";
   import { onMount } from "svelte";
   import Base from "../layout/Base.svelte";
+import HtmlIcon from "./qualifs/HtmlIcon.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -208,7 +209,12 @@
   export let removeAllTags = async () => {
     isLoading = true;
     await new Promise((r) => setTimeout(r, 200)); // Wait for isLoading anim
-    if (!confirm('Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?')) {
+    if (
+      !confirm(
+        "Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?"
+      )
+    ) {
+      isLoading = false;
       return;
     }
     const data = {
@@ -275,13 +281,32 @@
     };
     return q;
   });
+
+  let fetchQualifsFor = (timing) => {
+    let allQualifsFor = [];
+    // TODO : refactor qualifTemplates and quickQualifTemplates and history... (no same order)
+    // as history, but we want icon order to be the same as the one in user quick history ?
+    qualifTemplates.forEach((q) => {
+      const filteredArray = timing.tags?.filter(tt => q.timeTags?.filter(
+        (qt) => tt.slug === qt.slug
+      ).length > 0);
+      if (filteredArray.length === q.timeTags.length) {
+        allQualifsFor.push(q);
+      }
+    });
+    return allQualifsFor;
+  }
+
+  $: currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
+
   $: qualifShortcut = (qualifTemplates ?? {}).reduce(
     (acc, qt) => {
       acc[String.fromCharCode(qt.shortcut).charCodeAt(0)] = qt.toggleQualif;
       return acc;
     },
     {
-      ["d".charCodeAt(0)]: removeAllTags,
+      // TIPS : not so used, and eat shortcut in the middle of the keyboard :...
+      // ["d".charCodeAt(0)]: removeAllTags,
     }
   );
 
@@ -445,6 +470,8 @@
     //   y: 122.3,
     // }
   });
+
+  let detailIsHovered = false;
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -511,6 +538,9 @@
         height: ${Height}px;
       `
         : ""}
+      on:mouseover={() => (detailIsHovered = true)}
+      on:mouseleave={() => (detailIsHovered = false)}
+      on:mouseout={() => (detailIsHovered = false)}
     >
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
@@ -525,16 +555,26 @@
       >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
         <!-- {$timer} -->
+        <!--
+          https://tr.javascript.info/bubbling-and-capturing#capturing
+          https://svelte.dev/repl/1ff9d07bc2fc45349874b1b1b2c013e4?version=3.29.4
+          https://stackoverflow.com/questions/1369035/how-do-i-prevent-a-parents-onclick-event-from-firing-when-a-child-anchor-is-cli
+          on:click|capture|stopPropagation // Will stop the event, not clicking elt below
+          TODO : any way to do same like pointer-event-none with hover allowed ?
+        -->
         <ProgressIndicator
           percent={1 - $timer / timerStart}
           textRenderer={(percent) => `${$timer.toFixed(0)}`}
         />
-        <span class="top-0 left-0 flex  pointer-events-none
-        bg-black/70 rounded z-40"
-        class:w-[6em]={!isFullScreen}
-        class:w-[14em]={isFullScreen}
-        class:left-0={isFullScreen}
-        class:fixed={isFullScreen}
+        <span
+          class="top-0 left-0 flex
+        bg-black pointer-events-none
+          rounded z-40"
+          class:opacity-25={isFullScreen && detailIsHovered}
+          class:w-[6em]={!isFullScreen}
+          class:w-[14em]={isFullScreen}
+          class:left-0={isFullScreen}
+          class:fixed={isFullScreen}
         >
           {dayjs(timingSlot?.sourceTimeGMT)
             .tz("Europe/Paris")
@@ -544,7 +584,8 @@
       </span>
       <span
         class="w-[6em] pointer-events-none
-        bg-black/70 rounded z-40"
+        rounded z-40"
+        class:opacity-25={isFullScreen && detailIsHovered}
         class:right-0={!isFullScreen}
         class:absolute={!isFullScreen}
         class:top-0={!isFullScreen}
@@ -552,7 +593,9 @@
         class:left-0={isFullScreen}
         class:fixed={isFullScreen}
       >
-        [{pageNumber}-{lastSelectedIndex}]
+        <span class="bg-black pointer-events-none">
+          [{pageNumber}-{lastSelectedIndex}]
+        </span>
       </span>
 
       {#if isFullScreen}
@@ -588,8 +631,7 @@
             </button>
           {/if}
         </span>
-        <span class="float-right w-[14rem] h-7">
-        </span>
+        <span class="float-right w-[14rem] h-7" />
       {/if}
       <span
         class="float-right max-w-[70%] md:max-w-[75%]
@@ -626,16 +668,9 @@
           </span>
         {/each}
       </span>
-      <button
-        class="bg-red-500 float-right m-2"
-        on:click|stopPropagation={removeAllTags}
-      >
-        [d] Supprimer tous les tags
-      </button>
       <span class="float-right flex flex-wrap justify-end p-2">
         <TagsInput bind:tags={timingSlot.tags} timing={timingSlot} {locale} />
       </span>
-
       <!-- {#each qualifTemplates ?? [] as qt, idx}
         <button
           class="float-right m-1"
@@ -650,7 +685,12 @@
         bind:qualifTemplates
         {locale}
       />
-
+      <button
+        class="bg-red-500 float-right m-2"
+        on:click|stopPropagation={removeAllTags}
+      >
+        Supprimer tous les tags
+      </button>
       <Loader {isLoading} />
 
       <!-- 
@@ -771,7 +811,7 @@
       type="image/png"
       style={`
       ${
-        (slotHeight && zoomRange == 50)
+        slotHeight && zoomRange == 50
           ? `
           height: ${slotHeight}px;
         `
@@ -823,7 +863,17 @@
         </svg>
       </div>
     </div>
-    <div
+    <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem] right-0 bg-white">
+      {#each currentTimeSlotQualifs?? [] as q}
+        <div class="inline-flex border-b-4 border-t-4"
+        style={`
+          border-color: rgba(${q.primaryColorRgb});
+        `}>
+          <HtmlIcon qualif={q}></HtmlIcon>
+        </div>
+      {/each}
+    </div>
+    <!-- <div
       class="overflow-visible flex items-end
     z-40 w-full"
     >
@@ -832,11 +882,11 @@
           >Zoom range {zoomRange}</label
         >
       </div>
-    </div>
+    </div> -->
 
     <!-- TIPS : add bottom margin to allow height size increase
      (other wise, no bottom space to scroll up to...) -->
-    <div class:mb-[5rem]={isHeaderExpanded} />
+    <div class:mb-[5rem]={!isFullScreen} />
 
     <!-- <div
     class="object-contain border-solid border-4"

@@ -53,6 +53,8 @@
       // scroll-padding-top (if set)
     }
   }
+
+  // TODO : detect thumb width, use detail picture first if > à some size
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->

@@ -217,7 +217,7 @@
 <div class="w-full flex flex-wrap justify-center text-xs md:text-base">
   <button
     class="m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis
-    flex pl-1 pr-1
+    flex justify-center pl-1 pr-1
     "
     style={rgbTxt ? `--mws-primary-rgb: ${rgbTxt}`: ``}
     on:click|stopPropagation={qualif.toggleQualif}
