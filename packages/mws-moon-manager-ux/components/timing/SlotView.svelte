@@ -297,7 +297,10 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
     return allQualifsFor;
   }
 
-  $: currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
+  let currentTimeSlotQualifs;
+  // TIPS, use 'qualifTemplates, ' to ensure currentTimeSlotQualifs
+  //       also get refreshed if qualifTemplates did change
+  $: qualifTemplates, currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
 
   $: qualifShortcut = (qualifTemplates ?? {}).reduce(
     (acc, qt) => {
@@ -569,7 +572,7 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
         <span
           class="top-0 left-0 flex
         bg-black pointer-events-none
-          rounded z-40"
+          rounded z-50"
           class:opacity-25={isFullScreen && detailIsHovered}
           class:w-[6em]={!isFullScreen}
           class:w-[14em]={isFullScreen}
@@ -584,7 +587,7 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
       </span>
       <span
         class="w-[6em] pointer-events-none
-        rounded z-40"
+        rounded z-50"
         class:opacity-25={isFullScreen && detailIsHovered}
         class:right-0={!isFullScreen}
         class:absolute={!isFullScreen}
@@ -862,17 +865,32 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
           />
         </svg>
       </div>
-    </div>
-    <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem] right-0 bg-white">
-      {#each currentTimeSlotQualifs?? [] as q}
-        <div class="inline-flex border-b-4 border-t-4"
-        style={`
-          border-color: rgba(${q.primaryColorRgb});
-        `}>
-          <HtmlIcon qualif={q}></HtmlIcon>
+      {#if !isFullScreen }
+        <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem] right-0 bg-white">
+          {#each currentTimeSlotQualifs?? [] as q}
+            <div class="inline-flex border-b-4 border-t-4 object-contain"
+            style={`
+              border-color: rgba(${q.primaryColorRgb});
+            `}>
+              <HtmlIcon qualif={q}></HtmlIcon>
+            </div>
+          {/each}
         </div>
-      {/each}
+      {/if}
     </div>
+    {#if isFullScreen }
+      <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem] right-0 bg-white">
+        {#each currentTimeSlotQualifs?? [] as q}
+          <div class="inline-flex border-b-4 border-t-4 object-contain"
+          style={`
+            border-color: rgba(${q.primaryColorRgb});
+          `}>
+            <HtmlIcon qualif={q}></HtmlIcon>
+          </div>
+        {/each}
+      </div>
+    {/if}
+
     <!-- <div
       class="overflow-visible flex items-end
     z-40 w-full"

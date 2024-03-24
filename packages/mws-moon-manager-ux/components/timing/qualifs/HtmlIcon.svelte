@@ -22,7 +22,7 @@
   class="inline-flex ml-1 mr-1 {height} {width} {cssClass ?? ''}"
   class:pointer-events-none={!isMenu}
 >
-  {@html qualif?.htmlIcon ?? failbackIcon}
+  {@html (qualif?.htmlIcon ?? '').trim().length ? qualif.htmlIcon : failbackIcon}
 </div>
 
 <style global lang="scss">

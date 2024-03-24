@@ -619,6 +619,7 @@
           isLoading = true;
           console.debug('Sync new html icon for id : ', qualif.id);
           qualif.htmlIcon = e.target.value;
+          qualif = qualif;
           await syncQualifWithBackend(qualif);
           isLoading = false;
       }, userDelay)}
