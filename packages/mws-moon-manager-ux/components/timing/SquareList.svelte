@@ -13,6 +13,7 @@
   export let movePageIndex;
   const startZoom = 5;
   export let zoomRange = startZoom;
+  export let quickQualifTemplates;
 
   $: console.debug("[timing/SquareList] Having timings :", timings);
   $: {
@@ -45,6 +46,7 @@
   };
 
   function onKeyDown(e) {
+    // TODO : if other metaKey, etc... activated ?
     if (isKey.left(e) || isKey.up(e)) {
       lastSelectedIndex--; // TODO : if < 0 ? or elt exist ?
       if (e.shiftKey) {
@@ -84,6 +86,7 @@ overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
 >
   {#each timings ?? [] as timingSlot, idx}
     <SlotThumbnail
+      bind:quickQualifTemplates
       {timingSlot}
       size={`${thumbSize.toFixed(0)}px`}
       forceHeight={(zoomRange > startZoom) ? 'auto' : null}

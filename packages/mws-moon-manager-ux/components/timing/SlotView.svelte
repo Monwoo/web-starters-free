@@ -50,6 +50,7 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   export let slotHeader;
   export let slotView;
   export let zoomRange = 50;
+  export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
 
   allTagsList = allTagsList ?? stateGet(get(state), "allTagsList");
 
@@ -282,11 +283,11 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
     return q;
   });
 
+  // TODO : factorize code with SlotTHumbnail etc...
   let fetchQualifsFor = (timing) => {
     let allQualifsFor = [];
-    // TODO : refactor qualifTemplates and quickQualifTemplates and history... (no same order)
-    // as history, but we want icon order to be the same as the one in user quick history ?
-    qualifTemplates.forEach((q) => {
+    console.debug("SlotView checkQualifs for", timing, quickQualifTemplates);
+    quickQualifTemplates?.forEach((q) => {
       const filteredArray = timing.tags?.filter(tt => q.timeTags?.filter(
         (qt) => tt.slug === qt.slug
       ).length > 0);
@@ -294,17 +295,22 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
         allQualifsFor.push(q);
       }
     });
+    // quickQualifTemplates = quickQualifTemplates;
     return allQualifsFor;
   }
 
   let currentTimeSlotQualifs;
-  // TIPS, use 'qualifTemplates, ' to ensure currentTimeSlotQualifs
-  //       also get refreshed if qualifTemplates did change
-  $: qualifTemplates, currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
+  // TIPS, use 'quickQualifTemplates, ' to ensure currentTimeSlotQualifs
+  //       also get refreshed if quickQualifTemplates did change
+  $: quickQualifTemplates, currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
 
-  $: qualifShortcut = (qualifTemplates ?? {}).reduce(
+  $: qualifShortcut = (quickQualifTemplates ?? []).reduce(
     (acc, qt) => {
-      acc[String.fromCharCode(qt.shortcut).charCodeAt(0)] = qt.toggleQualif;
+      const charCode = String.fromCharCode(qt.shortcut).charCodeAt(0);
+      if (!acc[charCode]) {
+        // only pick FIRST same shortcut in user ordered quicklist qualif templates
+        acc[charCode] = qt.toggleQualif;
+      }
       return acc;
     },
     {
@@ -322,7 +328,12 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
     return: (k) => k.keyCode == 13,
     zoomLower: (k) => k.key == "<",
     zoomHigher: (k) => k.key == ">",
-    qualifShortcut: (k) => qualifShortcut[k.key.charCodeAt(0)] ?? null,
+    qualifShortcut: (k) => {
+      if (k.shiftKey || k.altKey || k.metaKey || k.altKey) {
+        return false; // avoid crtl-r to map 'r' shortcut
+      }
+      return qualifShortcut[k.key.charCodeAt(0)] ?? null
+    },
   };
 
   const onKeyDown = async (e) => {
@@ -686,6 +697,7 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
         {allTagsList}
         bind:isHeaderExpanded
         bind:qualifTemplates
+        bind:quickQualifTemplates
         {locale}
       />
       <button

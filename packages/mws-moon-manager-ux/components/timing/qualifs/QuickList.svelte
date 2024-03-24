@@ -180,6 +180,8 @@
         itemWidth,
         sortOrder,
       };
+      // TIPS : force quickQualifTemplates refresh for parend binded value to refresh :
+      quickQualifTemplates = quickQualifTemplates;
     }
   }
 

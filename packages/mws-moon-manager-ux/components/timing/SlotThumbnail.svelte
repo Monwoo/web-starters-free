@@ -1,13 +1,18 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
+  import HtmlIcon from "./qualifs/HtmlIcon.svelte";
+  import newUniqueId from "locally-unique-id-generator";
+  const UID = newUniqueId();
+  export let tooltipId = `htmlIconTooltip-${UID}`;
 
   export let htmlRoot;
   export let timingSlot;
   export let isSelected = false;
   export let size = "50px";
   export let forceHeight;
+  export let quickQualifTemplates;
 
   $: slotName = timingSlot.sourceStamp.split(/[\\/]/).pop();
   $: slotPath = timingSlot.source?.path
@@ -19,12 +24,6 @@
         keepOriginalSize: 1,
       })
     : null;
-
-  // onMount(() => { // Only once at load...
-  //   if (isSelected) {
-  //     htmlRoot?.scrollIntoView();
-  //   }
-  // });
 
   $: {
     if (isSelected) {
@@ -51,10 +50,51 @@
       // these properties of the element are taken into account:
       // padding-top border-top scroll-margin-top (and not margin-top)
       // scroll-padding-top (if set)
+
     }
   }
+  // onMount(() => { // Only once at load...
+  //   if (isSelected) {
+  //     htmlRoot?.scrollIntoView();
+  //   }
+  // });
 
   // TODO : detect thumb width, use detail picture first if > à some size
+
+  // TODO : factorize code with SlotView etc...
+  let fetchQualifsFor = (timing) => {
+    let allQualifsFor = [];
+    console.debug('SlotThumbnail quickQualifTemplates', quickQualifTemplates);
+    quickQualifTemplates?.forEach((q) => {
+      const filteredArray = timing.tags?.filter(tt => q.timeTags?.filter(
+        (qt) => tt.slug === qt.slug
+      ).length > 0);
+      if (filteredArray.length === q.timeTags.length) {
+        allQualifsFor.push(q);
+      }
+    });
+    return allQualifsFor;
+  }
+
+  let currentTimeSlotQualifs;
+  // TIPS, use 'quickQualifTemplates, ' to ensure currentTimeSlotQualifs
+  //       also get refreshed if quickQualifTemplates did change ?
+  $: quickQualifTemplates, currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
+
+  let computedSize;
+  $: {
+    // TIPS : 'size,' to force refresh from html after size changes :
+    size, (async () => {
+      // TIPS : tick() to wait for html changes
+      await tick(), 
+      // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
+      computedSize = htmlRoot?.offsetWidth
+    })();
+  }
+  onMount(() => { // Only once at load... but NEEDED, for first init other than null
+    computedSize = htmlRoot.offsetWidth; // htmlRoot is now != of null...
+  });
+
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->
@@ -64,10 +104,10 @@
 <div
   bind:this={htmlRoot}
   on:click
-  class="mws-timing-slot
+  class="mws-timing-slot relative
 flex justify-center items-center
 m-1 rounded-md
-overflow-hidden border-solid border-4"
+overflow-visible border-solid border-4"
   class:border-gray-600={!isSelected}
   class:border-blue-600={isSelected}
   class:border-green-400={!isSelected && timingSlot.tags?.length}
@@ -85,7 +125,9 @@ overflow-hidden border-solid border-4"
     https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
   <object
     class="w-full h-full"
-    data={timingSlot?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"}
+    data={ computedSize < 120
+    ? timingSlot?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"
+    : "screenshot" == timingSlot?.source?.type ? slotPath : ""}
     type="image/png"
     alt="screenshot"
     arial-label="screenshot"
@@ -98,7 +140,9 @@ overflow-hidden border-solid border-4"
         alt="screenshot"
         arial-label="screenshot"
         class="object-contain w-full h-full"
-        src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+        src={ computedSize < 120
+        ? ("screenshot" == timingSlot?.source?.type ? slotPath : "")
+        : timingSlot?.thumbnailJpeg}
       />
       <!-- 
         TODO : generate thumb ? but eat spaces for slow rendering...
@@ -124,4 +168,40 @@ overflow-hidden border-solid border-4"
   }); -->
 
   <!-- <span>{slotName}</span> -->
+  <div class="absolute z-20 bottom-1 right-0 bg-white
+  max-w-[2rem] max-h-[2rem] opacity-50 hover:opacity-100"
+  style={`
+    width: ${(computedSize * 0.2).toFixed(0)}px;
+    height: ${(computedSize * 0.2).toFixed(0)}px;
+  `}
+  >
+    <!-- // ONLY first qualif for thumbs... -->
+    {#each (currentTimeSlotQualifs?? []).slice(0,1) as q}
+      {#if computedSize > 120}
+        <div class="inline-flex border-b-4 border-t-4 object-contain w-full h-full
+        content-center justify-center"
+        data-tooltip-target={tooltipId}
+        style={`
+          border-color: rgba(${q.primaryColorRgb});
+        `}>
+          <HtmlIcon qualif={q} height={"h-full"} width={"w-full"}></HtmlIcon>
+        </div>
+        <!-- TODO : why HtmlIcon inner tooltip not working? quick hack not working too : -->
+        <div id={tooltipId} role="tooltip" class="absolute z-40 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+          {q?.label}
+          <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+      {:else}
+        <div class="w-full h-full"
+        data-tooltip-target={tooltipId}
+        style={`
+          background-color: rgba(${q.primaryColorRgb});
+        `}></div>
+        <div id={tooltipId} role="tooltip" class="absolute z-40 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+          {q?.label}
+          <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+      {/if}
+    {/each}
+  </div>
 </div>

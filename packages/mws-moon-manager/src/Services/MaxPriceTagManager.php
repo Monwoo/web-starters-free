@@ -106,8 +106,8 @@ class MaxPriceTagManager
         if (self::isRuleValid($rule, $tags, $checkedTagSlugs)
         && floatval($rule['price']) > ($lastMaxRule['price'] ?? 0)) {
           $lastMaxRule = $rule;
-          $lastMaxRule['price'] = floatval($lastMaxRule['price']);
-          $lastMaxRule['maxLimitPriority'] = floatval($lastMaxRule['maxLimitPriority']);
+          $lastMaxRule['price'] = floatval($lastMaxRule['price'] ?? 0);
+          $lastMaxRule['maxLimitPriority'] = floatval($lastMaxRule['maxLimitPriority'] ?? 0);
           $lastCheckedTagSlugs = $checkedTagSlugs;
           $lastMaxIdx = intval($idx);
         }

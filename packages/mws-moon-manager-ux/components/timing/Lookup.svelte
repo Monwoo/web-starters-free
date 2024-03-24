@@ -25,6 +25,7 @@
   export let lookup;
   export let timings = [];
   export let timeQualifs = [];
+  export let quickQualifTemplates;
   export let timingsPaginator;
   export let timingsHeaders = {}; // injected raw html
   export let viewTemplate;
@@ -164,6 +165,13 @@
     }
   });
   // }
+
+  $: {
+    quickQualifTemplates, console.debug(
+        "Lookup : Qualif templates did sync update :",
+        quickQualifTemplates
+      );
+  }
 </script>
 
 <Base
@@ -338,6 +346,7 @@ bind:isMobile
           bind:isFullScreen
           bind:lastSelectedIndex
           bind:timeQualifs
+          bind:quickQualifTemplates
           {moveSelectedIndex}
           {movePageIndex}
           {locale}
@@ -369,6 +378,7 @@ bind:isMobile
       <SquareList
         bind:lastSelectedIndex
         bind:thumbSize
+        {quickQualifTemplates}
         {timings}
         {movePageIndex}
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
