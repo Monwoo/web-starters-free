@@ -84,6 +84,7 @@
   let computedSize;
   $: {
     // TIPS : 'size,' to force refresh from html after size changes :
+    // TODO : debounce and wait for call ends ? well, fast to assign only one props...
     size, (async () => {
       // TIPS : tick() to wait for html changes
       await tick();
@@ -123,7 +124,7 @@ overflow-visible border-solid border-4"
 
         // TODO : SeoManager for translated alt / arial-label / title / meta data etc...
     https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
-  {#if computedSize }
+  <!-- {#if computedSize } // TODO strange : object will no reload right content ?
     <object
       class="w-full h-full"
       data={ computedSize < 120
@@ -135,7 +136,7 @@ overflow-visible border-solid border-4"
       title="screenshot"
     >
       {#if !(timingSlot?.thumbnailJpeg ?? false) }
-        <!-- // event : without if, will not preload image event if object has data... !-->
+        <!-- // event : without if, will not preload image event if object has data... !-- >
         <img
           loading="lazy"
           alt="screenshot"
@@ -147,9 +148,31 @@ overflow-visible border-solid border-4"
         />
         <!-- 
           TODO : generate thumb ? but eat spaces for slow rendering...
-          src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
+          src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -- >
       {/if}
     </object>
+  {/if} -->
+
+  {#if (timingSlot?.thumbnailJpeg ?? false) && (computedSize < 120) }
+    <img
+      loading="lazy"
+      alt="screenshot"
+      arial-label="screenshot"
+      class="object-contain w-full h-full"
+      src={ computedSize < 120
+      ? ("screenshot" == timingSlot?.source?.type ? slotPath : "")
+      : timingSlot?.thumbnailJpeg}
+    />
+  {:else}
+    <img
+      loading="lazy"
+      alt="screenshot"
+      arial-label="screenshot"
+      class="object-contain w-full h-full"
+      src={
+        "screenshot" == timingSlot?.source?.type ? slotPath : ""
+      }
+    />
   {/if}
 
   <!-- <img
