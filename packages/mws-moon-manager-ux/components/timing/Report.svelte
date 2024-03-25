@@ -820,10 +820,12 @@
   // Number.prototype.toPrettyNum = (length: number) => {
   Number.prototype.toPrettyNum = function (this: Number, length: number) {
     var s = this;
-    return s
+    const splited = s
       .toFixed(length)
       .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      .split(',');
+    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    + ',' + (splited[1] ?? '');
   };
 
   declare interface Number {
@@ -1026,7 +1028,7 @@
   <div class="text-lg">Rapport des temps via segmentations de 10 minutes.</div>
   <br />
   <div class="text-lg font-extrabold">
-    {summaryByLevels.sumOfBookedHrs.toPrettyNum(2)} hours au total si effectué par
+    {summaryByLevels.sumOfBookedHrs.toPrettyNum(5)} heures au total si effectué par
     une personne.
   </div>
   <div class="text-lg font-extrabold">
@@ -1037,7 +1039,7 @@
   <br />
   <div class="text-lg font-extrabold">
     <!-- summaryByLevels.deepSumOfMaxPathPerHr     deepSumOfMaxPathPerHr -->
-    {summaryByLevels.deepSumOfBookedHrs.toPrettyNum(2)} hours si charges non cumulables
+    {summaryByLevels.deepSumOfBookedHrs.toPrettyNum(5)} heures si charges non cumulables
     <span class="font-normal">
       (ex : rapport d'équipe avec changement de prix par expert associé).
     </span>
@@ -1050,7 +1052,7 @@
   <br />
   <br />
   <div class="text-lg font-extrabold">
-    {summaryTotals.sumOfBookedHrs.toPrettyNum(2)} hours annexes.
+    {summaryTotals.sumOfBookedHrs.toPrettyNum(4)} hours annexes.
   </div>
   <div class="text-lg font-extrabold">
     <!-- {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes. -->

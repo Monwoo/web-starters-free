@@ -61,12 +61,14 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   // $: currentTimeSlotQualifs, isFullScreen, initFlowbite()
   $: {
     // TODO : debounce async init function ?
-    currentTimeSlotQualifs, isFullScreen, (async () => {
-      // TIPS : tick() to wait for html changes
-      await tick();
-      // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
-      initFlowbite();
-    })();
+    // TODO 2 : too slow to init initFlowbite, plus must WAIT end
+    //          of async last call before triggering again ? will only need to reset tooltips...
+    // currentTimeSlotQualifs, isFullScreen, (async () => {
+    //   // TIPS : tick() to wait for html changes
+    //   await tick();
+    //   // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
+    //   initFlowbite();
+    // })();
   }
 
   // Timer start time. Use it to ensure delay,
@@ -112,10 +114,12 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
 
   Number.prototype.toPrettyNum = function (this: Number, length: number) {
     var s = this;
-    return s
+    const splited = s
       .toFixed(length)
       .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      .split(',');
+    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    + ',' + (splited[1] ?? '');
   };
 
   declare interface Number {

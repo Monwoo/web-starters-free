@@ -159,9 +159,7 @@ overflow-visible border-solid border-4"
       alt="screenshot"
       arial-label="screenshot"
       class="object-contain w-full h-full"
-      src={ computedSize < 120
-      ? ("screenshot" == timingSlot?.source?.type ? slotPath : "")
-      : timingSlot?.thumbnailJpeg}
+      src={ "screenshot" == timingSlot?.source?.type ? timingSlot?.thumbnailJpeg : "" }
     />
   {:else}
     <img

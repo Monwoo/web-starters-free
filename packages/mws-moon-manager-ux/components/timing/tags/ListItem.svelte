@@ -160,10 +160,12 @@
   // TODO : inject from root base layout instead ?
   Number.prototype.toPrettyNum = function (this: Number, length: number) {
     var s = this;
-    return s
+    const splited = s
       .toFixed(length)
       .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      .split(',');
+    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    + ',' + (splited[1] ?? '');
   };
 
   declare interface Number {

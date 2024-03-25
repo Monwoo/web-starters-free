@@ -29,8 +29,12 @@
   // Number.prototype.toPrettyNum = (length: number) => {
   Number.prototype.toPrettyNum = function (this : Number, length: number) {
     var s = this;
-    return s.toFixed(length).replace('.', ',')
-    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    const splited = s
+      .toFixed(length)
+      .replace(".", ",")
+      .split(',');
+    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    + ',' + (splited[1] ?? '');
   };
 
   declare interface Number {
@@ -209,7 +213,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
         ? (10/60).toPrettyNum(2)
         : '-'
       )
-      : (summary.sumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr
+      : (summary.sumOfBookedHrs?.toPrettyNum(5) ?? '-')} hr
     </span>
 
     <!-- <br /> -->
@@ -222,7 +226,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
           ? (10/60).toPrettyNum(2)
           : '--'
         )
-        : (summary.deepSumOfBookedHrs?.toPrettyNum(2) ?? '-')} hr  
+        : (summary.deepSumOfBookedHrs?.toPrettyNum(5) ?? '-')} hr  
     </span>
   </td>
   <td

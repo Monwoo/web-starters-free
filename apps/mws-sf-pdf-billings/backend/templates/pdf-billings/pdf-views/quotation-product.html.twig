@@ -37,7 +37,7 @@
 			{{product.label|striptags(allowedHtmlTags)|raw}}
 		</td>
 		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">
-			{{product.quantity|format_number({fraction_digit: 2})}}
+			{{product.quantity|format_number({min_fraction_digit: 2, max_fraction_digit: 5})}}
 		</td>
 		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">
 			{{product.pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}

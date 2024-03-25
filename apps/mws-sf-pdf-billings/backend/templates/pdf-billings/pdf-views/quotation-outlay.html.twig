@@ -32,7 +32,7 @@
 		border-spacing:{{ (0) * fullWidth }} 0;font-size:9pt;">
 	<tr class="data" style="text-align:right;font-size:10pt;">
 		<td class="description" style="width:{{ 0.28 * fullWidth }};text-align:left;font-size:8pt;">{{description|striptags(allowedHtmlTags)|raw}}</td>
-		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{quantity|format_number({fraction_digit: 2})}}</td>
+		<td class="quantity" style="width:{{ 0.12 * fullWidth }};font-weight:bold;">{{quantity|format_number({min_fraction_digit: 2, max_fraction_digit: 5})}}</td>
 		<td class="price-per-unit-without-taxes" style="width:{{ 0.12 * fullWidth }};">{{pricePerUnitWithoutTaxes|format_currency('EUR', {rounding_mode: 'halfeven'})}}</td>
 		<td class="taxes-percent" style="width:{{ 0.12 * fullWidth }};">
 			{% if taxesPercent or outlay.providerAddedPrice or outlay.percentOnBusinessTotal %}

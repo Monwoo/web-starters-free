@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Product;
+use NumberFormatter;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,7 +15,15 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('label')
-            ->add('quantity')
+            ->add('quantity', NumberType::class, array(
+                'rounding_mode' => NumberFormatter::ROUND_HALFUP,
+                'scale' => 5,
+                // 'attr' => array(
+                //     'min' => -90,
+                //     'max' => 90,
+                //     'step' => 0.01,
+                // ),
+            ))
             ->add('pricePerUnitWithoutTaxes')
             ->add('taxesPercent')
             ->add('discountPercent')
