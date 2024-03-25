@@ -80,6 +80,7 @@
 
   let csrfTimingDelete = stateGet(get(state), "csrfTimingDeleteAll");
   let moveResp;
+  // TODO : debounce until view get's loaded, to ensure img did show before next step comes...
   const moveSelectedIndex = (delta = 1) => {
     const lastValue = lastSelectedIndex;
     lastSelectedIndex += delta;

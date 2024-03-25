@@ -5,6 +5,7 @@
   import { get } from "svelte/store";
   import { tweened } from "svelte/motion";
   import ProgressIndicator from "../layout/widgets/ProgressIndicator.svelte";
+  import newUniqueId from "locally-unique-id-generator";
   // import dayjs from "dayjs"; // TIPS : MODULE import will be useless if double import... ( not configured new instance)
   // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
   // import "dayjs/esm/locale/fr";
@@ -21,8 +22,9 @@
   import QuickList from "./qualifs/QuickList.svelte";
   import { draggable } from "svelte-agnostic-draggable";
   import mapTouchToMouseFor from "svelte-touch-to-mouse";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import Base from "../layout/Base.svelte";
+  import { initFlowbite } from 'flowbite'
 import HtmlIcon from "./qualifs/HtmlIcon.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
@@ -53,6 +55,19 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
 
   allTagsList = allTagsList ?? stateGet(get(state), "allTagsList");
+
+  // TODO : to slow to init all flowbite for tooltips reloads ?
+  // TODO : not enough for fullscreen mode ? need tick ?
+  // $: currentTimeSlotQualifs, isFullScreen, initFlowbite()
+  $: {
+    // TODO : debounce async init function ?
+    currentTimeSlotQualifs, isFullScreen, (async () => {
+      // TIPS : tick() to wait for html changes
+      await tick();
+      // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
+      initFlowbite();
+    })();
+  }
 
   // Timer start time. Use it to ensure delay,
   // example : 507 page of 124 items
@@ -880,24 +895,39 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
       {#if !isFullScreen }
         <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem] right-0 bg-white">
           {#each currentTimeSlotQualifs?? [] as q}
+            {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
             <div class="inline-flex border-b-4 border-t-4 object-contain"
-            style={`
-              border-color: rgba(${q.primaryColorRgb});
+            data-tooltip-target={tooltipId}
+            data-tooltip-placement="top"        
+              style={`
+              border-color: ${q.primaryColorHex};
             `}>
               <HtmlIcon qualif={q}></HtmlIcon>
+            </div>
+            <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+              {q?.label}
+              <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           {/each}
         </div>
       {/if}
     </div>
     {#if isFullScreen }
-      <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem] right-0 bg-white">
+      <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem]
+      right-0 bg-white overflow-visible">
         {#each currentTimeSlotQualifs?? [] as q}
+          {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
           <div class="inline-flex border-b-4 border-t-4 object-contain"
+          data-tooltip-target={tooltipId}
+          data-tooltip-placement="top"        
           style={`
-            border-color: rgba(${q.primaryColorRgb});
+            border-color: ${q.primaryColorHex};
           `}>
             <HtmlIcon qualif={q}></HtmlIcon>
+          </div>
+          <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            {q?.label}
+            <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         {/each}
       </div>

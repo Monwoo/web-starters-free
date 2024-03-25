@@ -29,15 +29,17 @@
 <div
   class="inline-flex ml-1 mr-1
   {height} {width} {cssClass ?? ''}"
-  data-tooltip-target={tooltipId}
-  data-tooltip-placement="top"
 >
   {@html (qualif?.htmlIcon ?? '').trim().length ? qualif.htmlIcon : failbackIcon}
 </div>
-<div id={tooltipId} role="tooltip" class="absolute z-40 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+<!-- 
+  data-tooltip-target={tooltipId}
+  data-tooltip-placement="top"
+
+  <div id={tooltipId} role="tooltip" class="absolute z-40 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
   {qualif?.label}
   <div class="tooltip-arrow" data-popper-arrow></div>
-</div>
+</div> -->
 
 <style global lang="scss">
   img {

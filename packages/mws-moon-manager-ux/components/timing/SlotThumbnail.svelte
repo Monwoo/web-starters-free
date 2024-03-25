@@ -86,7 +86,7 @@
     // TIPS : 'size,' to force refresh from html after size changes :
     size, (async () => {
       // TIPS : tick() to wait for html changes
-      await tick(), 
+      await tick();
       // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
       computedSize = htmlRoot?.offsetWidth
     })();
@@ -123,32 +123,34 @@ overflow-visible border-solid border-4"
 
         // TODO : SeoManager for translated alt / arial-label / title / meta data etc...
     https://blog.sentry.io/fallbacks-for-http-404-images-in-html-and-javascript/#:~:text=Another%20way%20to%20provide%20an,the%20HTML%20element. -->
-  <object
-    class="w-full h-full"
-    data={ computedSize < 120
-    ? timingSlot?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"
-    : "screenshot" == timingSlot?.source?.type ? slotPath : ""}
-    type="image/png"
-    alt="screenshot"
-    arial-label="screenshot"
-    title="screenshot"
-  >
-    {#if !(timingSlot?.thumbnailJpeg ?? false) }
-      <!-- // event : without if, will not preload image event if object has data... !-->
-      <img
-        loading="lazy"
-        alt="screenshot"
-        arial-label="screenshot"
-        class="object-contain w-full h-full"
-        src={ computedSize < 120
-        ? ("screenshot" == timingSlot?.source?.type ? slotPath : "")
-        : timingSlot?.thumbnailJpeg}
-      />
-      <!-- 
-        TODO : generate thumb ? but eat spaces for slow rendering...
-        src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
-    {/if}
-  </object>
+  {#if computedSize }
+    <object
+      class="w-full h-full"
+      data={ computedSize < 120
+      ? timingSlot?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%"
+      : "screenshot" == timingSlot?.source?.type ? slotPath : ""}
+      type="image/png"
+      alt="screenshot"
+      arial-label="screenshot"
+      title="screenshot"
+    >
+      {#if !(timingSlot?.thumbnailJpeg ?? false) }
+        <!-- // event : without if, will not preload image event if object has data... !-->
+        <img
+          loading="lazy"
+          alt="screenshot"
+          arial-label="screenshot"
+          class="object-contain w-full h-full"
+          src={ computedSize < 120
+          ? ("screenshot" == timingSlot?.source?.type ? slotPath : "")
+          : timingSlot?.thumbnailJpeg}
+        />
+        <!-- 
+          TODO : generate thumb ? but eat spaces for slow rendering...
+          src={"screenshot" == timingSlot.source?.type ? slotPath : ""} -->
+      {/if}
+    </object>
+  {/if}
 
   <!-- <img
     src="https://somedomain.com/image.png"
@@ -175,19 +177,21 @@ overflow-visible border-solid border-4"
     height: ${(computedSize * 0.2).toFixed(0)}px;
   `}
   >
-    <!-- // ONLY first qualif for thumbs... -->
+    <!-- // ONLY first qualif for thumbs... 
+    TODO : refactor ? primaryColorRgb is a class or a String, depending of color select picker...
+    -->
     {#each (currentTimeSlotQualifs?? []).slice(0,1) as q}
       {#if computedSize > 120}
         <div class="inline-flex border-b-4 border-t-4 object-contain w-full h-full
         content-center justify-center"
         data-tooltip-target={tooltipId}
         style={`
-          border-color: rgba(${q.primaryColorRgb});
+          border-color: ${q.primaryColorHex};
         `}>
           <HtmlIcon qualif={q} height={"h-full"} width={"w-full"}></HtmlIcon>
         </div>
         <!-- TODO : why HtmlIcon inner tooltip not working? quick hack not working too : -->
-        <div id={tooltipId} role="tooltip" class="absolute z-40 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+        <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
           {q?.label}
           <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
@@ -195,9 +199,9 @@ overflow-visible border-solid border-4"
         <div class="w-full h-full"
         data-tooltip-target={tooltipId}
         style={`
-          background-color: rgba(${q.primaryColorRgb});
+          background-color: ${q.primaryColorHex};
         `}></div>
-        <div id={tooltipId} role="tooltip" class="absolute z-40 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+        <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
           {q?.label}
           <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
