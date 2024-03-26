@@ -2222,6 +2222,10 @@ class MwsTimingController extends AbstractController
 
         $qualifs = $qb->getQuery()->getResult();
 
+        // TODO : order used by user history at TOP, in user history orders ? +
+        //        only export user history limits or always all ? (add info about
+        //        existence in user history for re-import to work ?)
+
         $qualifsSerialized = $this->serializer->serialize(
             $qualifs,
             $format,
