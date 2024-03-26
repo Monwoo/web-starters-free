@@ -27,10 +27,16 @@
   });
 
   // Number.prototype.toPrettyNum = (length: number) => {
-  Number.prototype.toPrettyNum = function (this : Number, length: number) {
+  Number.prototype.toPrettyNum = function (this: Number, length: number, maxLength = null) {
+    if (maxLength === null) maxLength = length;
     var s = this;
     const splited = s
-      .toFixed(length)
+      .toFixed(maxLength).replace(new RegExp(`0{0,${maxLength - length}}$`), "")
+      // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
+      // .toLocaleString('en-US', { // TODO : centralize toPrettyNum and use locals formatings ?
+      //   minimumFractionDigits: 2,
+      //   maximumFractionDigits: 4
+      // })
       .replace(".", ",")
       .split(',');
     return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
@@ -213,7 +219,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
         ? (10/60).toPrettyNum(2)
         : '-'
       )
-      : (summary.sumOfBookedHrs?.toPrettyNum(5) ?? '-')} hr
+      : (summary.sumOfBookedHrs?.toPrettyNum(2, 5) ?? '-')} hr
     </span>
 
     <!-- <br /> -->
@@ -226,7 +232,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
           ? (10/60).toPrettyNum(2)
           : '--'
         )
-        : (summary.deepSumOfBookedHrs?.toPrettyNum(5) ?? '-')} hr  
+        : (summary.deepSumOfBookedHrs?.toPrettyNum(2, 5) ?? '-')} hr  
     </span>
   </td>
   <td
