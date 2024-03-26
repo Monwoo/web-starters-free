@@ -3,8 +3,9 @@
   import Routing from "fos-router";
   import SlotThumbnail from "./SlotThumbnail.svelte";
   import debounce from 'lodash/debounce';
-  import { initFlowbite } from 'flowbite';
-import { tick } from "svelte";
+  //   import { initFlowbite } from 'flowbite';
+  import { tick } from "svelte";
+  import { Tooltip } from "flowbite";
 
   let classNames = "";
   export { classNames as class };
@@ -16,6 +17,7 @@ import { tick } from "svelte";
   const startZoom = 5;
   export let zoomRange = startZoom;
   export let quickQualifTemplates;
+  export let htmlRoot;
 
   $: console.debug("[timing/SquareList] Having timings :", timings);
   $: {
@@ -29,6 +31,43 @@ import { tick } from "svelte";
     };
   }
 
+  const Default = {
+    placement: 'top',
+    triggerType: 'hover',
+    onShow: function () { },
+    onHide: function () { },
+    onToggle: function () { },
+  };
+
+  const refreshTooltips = ()=> {
+    // let myDiv = getElementById("myDiv");
+    // myDiv.querySelectorAll(":scope > .foo");
+    // const tooltipElements = document.querySelectorAll(`[role="tooltip"]`);
+    // const tooltipElements = htmlRoot?.querySelectorAll(`[role="tooltip"]`);
+    // tooltipElements.forEach(t => {
+    //   new Tooltip(t);
+    // });
+
+    // ./node_modules/flowbite/dist/flowbite.js:4269
+    htmlRoot?.querySelectorAll('[data-tooltip-target]').forEach(function ($triggerEl) {
+        var tooltipId = $triggerEl.getAttribute('data-tooltip-target');
+        var $tooltipEl = document.getElementById(tooltipId);
+        if ($tooltipEl) {
+            var triggerType = $triggerEl.getAttribute('data-tooltip-trigger');
+            var placement = $triggerEl.getAttribute('data-tooltip-placement');
+            new Tooltip($tooltipEl, $triggerEl, {
+                placement: placement ? placement : Default.placement,
+                triggerType: triggerType
+                    ? triggerType
+                    : Default.triggerType,
+            });
+        }
+        else {
+            console.error("The tooltip element with id \"".concat(tooltipId, "\" does not exist. Please check the data-tooltip-target attribute."));
+        }
+    });
+  }
+
   export let thumbSize;
   $: thumbSize = ((50 * (100 / startZoom) * zoomRange) / 100);
   // TODO : opti, only for tooltips reloads...
@@ -36,7 +75,8 @@ import { tick } from "svelte";
     // TIPS : tick() to wait for html changes
     await tick(); // First zoomRange change to bigger size, no update otherwise (if test do Svelte rebuild ?)
     await tick();
-    initFlowbite();
+    // initFlowbite();
+    refreshTooltips();
   })();
   
   // TIPS : selectedSourceStamps MUST be an argument for
@@ -89,9 +129,10 @@ import { tick } from "svelte";
 <svelte:window on:keydown={onKeyDown} />
 
 <div
+  bind:this={htmlRoot}
   class="mws-timing-square-list max-h-[80vh]
-overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
-  {style}  
+  overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
+  {style}
 >
   {#each timings ?? [] as timingSlot, idx}
     <SlotThumbnail

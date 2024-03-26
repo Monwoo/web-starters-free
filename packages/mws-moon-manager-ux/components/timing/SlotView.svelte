@@ -24,7 +24,7 @@
   import mapTouchToMouseFor from "svelte-touch-to-mouse";
   import { onMount, tick } from "svelte";
   import Base from "../layout/Base.svelte";
-  import { initFlowbite } from 'flowbite'
+  import { Tooltip } from 'flowbite'
   import HtmlIcon from "./qualifs/HtmlIcon.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
@@ -53,6 +53,38 @@
   export let slotView;
   export let zoomRange = 50;
   export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
+  export let htmlRoot;
+
+  const Default = {
+    placement: 'top',
+    triggerType: 'hover',
+    onShow: function () { },
+    onHide: function () { },
+    onToggle: function () { },
+  };
+
+  const refreshTooltips = ()=> {
+    // let myDiv = getElementById("myDiv");
+    // myDiv.querySelectorAll(":scope > .foo");
+    // const tooltipElements = document.querySelectorAll(`[role="tooltip"]`);
+    htmlRoot?.querySelectorAll('[data-tooltip-target]').forEach(function ($triggerEl) {
+        var tooltipId = $triggerEl.getAttribute('data-tooltip-target');
+        var $tooltipEl = document.getElementById(tooltipId);
+        if ($tooltipEl) {
+            var triggerType = $triggerEl.getAttribute('data-tooltip-trigger');
+            var placement = $triggerEl.getAttribute('data-tooltip-placement');
+            new Tooltip($tooltipEl, $triggerEl, {
+                placement: placement ? placement : Default.placement,
+                triggerType: triggerType
+                    ? triggerType
+                    : Default.triggerType,
+            });
+        }
+        else {
+            console.error("The tooltip element with id \"".concat(tooltipId, "\" does not exist. Please check the data-tooltip-target attribute."));
+        }
+    });
+  }
 
   allTagsList = allTagsList ?? stateGet(get(state), "allTagsList");
 
@@ -72,7 +104,8 @@
       // TIPS : tick() to wait for html changes
       await tick();
       // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
-      initFlowbite(); // Nop, still no tooltip in fullscreen
+      // initFlowbite(); // TOO slow
+      await refreshTooltips();
       // flowbiteInSync = false; // Infinite loop...
     })();
   }
@@ -522,6 +555,7 @@
   style:pointer-events={isLoading ? "none" : "auto"}
   style:opacity={isLoading ? 0.8 : 1} -->
 <div
+  bind:this={htmlRoot}
   class="mws-timing-slot-view overflow-y-auto
   text-xs md:text-base
   flex flex-row flex-wrap content-start
