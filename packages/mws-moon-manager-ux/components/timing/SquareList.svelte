@@ -34,6 +34,7 @@ import { tick } from "svelte";
   // TODO : opti, only for tooltips reloads...
   $: zoomRange, (async () => {
     // TIPS : tick() to wait for html changes
+    await tick(); // First zoomRange change to bigger size, no update otherwise (if test do Svelte rebuild ?)
     await tick();
     initFlowbite();
   })();
