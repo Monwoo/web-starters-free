@@ -18,6 +18,8 @@
   export let zoomRange = startZoom;
   export let quickQualifTemplates;
   export let htmlRoot;
+  // TIPS : opti by not following selection if list is hidden :
+  export let followSelection = true;
 
   $: console.debug("[timing/SquareList] Having timings :", timings);
   $: {
@@ -137,6 +139,7 @@
   {#each timings ?? [] as timingSlot, idx}
     <SlotThumbnail
       bind:quickQualifTemplates
+      {followSelection}
       {timingSlot}
       size={`${thumbSize.toFixed(0)}px`}
       forceHeight={(zoomRange > startZoom) ? 'auto' : null}

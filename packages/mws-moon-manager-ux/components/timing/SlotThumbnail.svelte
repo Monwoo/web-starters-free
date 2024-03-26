@@ -11,6 +11,7 @@
   export let isSelected = false;
   export let size = "50px";
   export let forceHeight;
+  export let followSelection = true;
   export let quickQualifTemplates;
 
   $: slotName = timingSlot.sourceStamp.split(/[\\/]/).pop();
@@ -25,7 +26,10 @@
     : null;
 
   $: {
-    if (isSelected) {
+    // TIPS : opti for fullscreen next img shift :
+    //       avoid sublist not seen animation eating loading time
+    //       with followSelection sentinel
+    if (followSelection && isSelected) {
       // Below will also sroll parent's to fit the element at top of screen
       // htmlRoot?.scrollIntoView();
 

@@ -379,6 +379,7 @@ bind:isMobile
       <SquareList
         bind:lastSelectedIndex
         bind:thumbSize
+        followSelection={!isFullScreen}
         {quickQualifTemplates}
         {timings}
         {movePageIndex}
