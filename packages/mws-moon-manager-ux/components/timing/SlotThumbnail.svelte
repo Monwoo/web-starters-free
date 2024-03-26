@@ -5,7 +5,6 @@
   import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   import newUniqueId from "locally-unique-id-generator";
   const UID = newUniqueId();
-  export let tooltipId = `htmlIconTooltip-${UID}`;
 
   export let htmlRoot;
   export let timingSlot;
@@ -80,6 +79,15 @@
   // TIPS, use 'quickQualifTemplates, ' to ensure currentTimeSlotQualifs
   //       also get refreshed if quickQualifTemplates did change ?
   $: quickQualifTemplates, currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
+
+  // $: currentTimeSlotQualifs?.forEach(q => {
+  //   q.tooltipId = `slotThumbQualifTooltip-${UID}`;
+  // });
+
+  $: tooltipIdsByQId = currentTimeSlotQualifs?.reduce((acc, q) => {
+    acc[q.id] = `slotThumbQualifTooltip-${UID}`;
+    return acc;
+  }, {})
 
   let computedSize;
   $: {
@@ -205,28 +213,26 @@ overflow-visible border-solid border-4"
       {#if computedSize > 120}
         <div class="inline-flex border-b-4 border-t-4 object-contain w-full h-full
         content-center justify-center"
-        data-tooltip-target={tooltipId}
+        data-tooltip-target={tooltipIdsByQId[q.id]}
         style={`
           border-color: ${q.primaryColorHex};
         `}>
           <HtmlIcon qualif={q} height={"h-full"} width={"w-full"}></HtmlIcon>
         </div>
-        <!-- TODO : why HtmlIcon inner tooltip not working? quick hack not working too : -->
-        <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-          {q?.label}
-          <div class="tooltip-arrow" data-popper-arrow></div>
-        </div>
       {:else}
         <div class="w-full h-full"
-        data-tooltip-target={tooltipId}
+        data-tooltip-target={tooltipIdsByQId[q.id]}
         style={`
           background-color: ${q.primaryColorHex};
         `}></div>
-        <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-          {q?.label}
-          <div class="tooltip-arrow" data-popper-arrow></div>
-        </div>
       {/if}
     {/each}
   </div>
+  {#each (currentTimeSlotQualifs?? []).slice(0,1) as q}
+    <!-- TODO : why HtmlIcon inner tooltip not working? quick hack not working too : -->
+    <div id={tooltipIdsByQId[q.id]} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+      {q.label}
+      <div class="tooltip-arrow" data-popper-arrow></div>
+    </div>
+  {/each}
 </div>
