@@ -97,7 +97,9 @@
     // TODO 2 : too slow to init initFlowbite, plus must WAIT end
     //          of async last call before triggering again ? will only need to reset tooltips...
     // currentTimeSlotQualifs, isFullScreen, (async () => {
-    isFullScreen, (async () => {
+    // isFullScreen, (async () => {
+    // TIPS : for mobile, in fullscreen need to reload on each presentations ?
+    lastSelectedIndex, isFullScreen, (async () => {
       // if (flowbiteInSync || !isFullScreen) return; // OK for one fullscreen mode only...
       // flowbiteInSync = true;
 
