@@ -25,7 +25,7 @@
   import { onMount, tick } from "svelte";
   import Base from "../layout/Base.svelte";
   import { initFlowbite } from 'flowbite'
-import HtmlIcon from "./qualifs/HtmlIcon.svelte";
+  import HtmlIcon from "./qualifs/HtmlIcon.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -59,17 +59,26 @@ import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   // TODO : to slow to init all flowbite for tooltips reloads ?
   // TODO : not enough for fullscreen mode ? need tick ?
   // $: currentTimeSlotQualifs, isFullScreen, initFlowbite()
+  let flowbiteInSync = false;
   $: {
     // TODO : debounce async init function ?
     // TODO 2 : too slow to init initFlowbite, plus must WAIT end
     //          of async last call before triggering again ? will only need to reset tooltips...
     // currentTimeSlotQualifs, isFullScreen, (async () => {
-    //   // TIPS : tick() to wait for html changes
-    //   await tick();
-    //   // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
-    //   initFlowbite();
-    // })();
+    isFullScreen, (async () => {
+      // if (flowbiteInSync || !isFullScreen) return; // OK for one fullscreen mode only...
+      // flowbiteInSync = true;
+
+      // TIPS : tick() to wait for html changes
+      await tick();
+      // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
+      initFlowbite(); // Nop, still no tooltip in fullscreen
+      // flowbiteInSync = false; // Infinite loop...
+    })();
   }
+  
+  // TODO : opti, only for tooltips reloads... 
+  // $: isFullScreen, initFlowbite(); // No effect...
 
   // Timer start time. Use it to ensure delay,
   // example : 507 page of 124 items

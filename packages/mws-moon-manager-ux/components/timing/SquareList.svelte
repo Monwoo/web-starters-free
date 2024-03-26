@@ -3,6 +3,8 @@
   import Routing from "fos-router";
   import SlotThumbnail from "./SlotThumbnail.svelte";
   import debounce from 'lodash/debounce';
+  import { initFlowbite } from 'flowbite';
+import { tick } from "svelte";
 
   let classNames = "";
   export { classNames as class };
@@ -29,7 +31,13 @@
 
   export let thumbSize;
   $: thumbSize = ((50 * (100 / startZoom) * zoomRange) / 100);
-
+  // TODO : opti, only for tooltips reloads...
+  $: zoomRange, (async () => {
+    // TIPS : tick() to wait for html changes
+    await tick();
+    initFlowbite();
+  })();
+  
   // TIPS : selectedSourceStamps MUST be an argument for
   //        svelte reactive to trigger...
   const isSlotSelected = (timingSlot, selectedSourceStamps) => {
