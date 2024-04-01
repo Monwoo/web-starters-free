@@ -2,7 +2,7 @@
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
   import SlotThumbnail from "./SlotThumbnail.svelte";
-  import debounce from 'lodash/debounce';
+  import debounce from "lodash/debounce";
   //   import { initFlowbite } from 'flowbite';
   import { tick } from "svelte";
   import { Tooltip } from "flowbite";
@@ -12,6 +12,7 @@
   export let style;
   export let timings;
   export let selectedSourceStamps = {};
+  export let selectionStartIndex;
   export let lastSelectedIndex = 0;
   export let movePageIndex;
   const startZoom = 5;
@@ -31,17 +32,27 @@
     selectedSourceStamps = {
       [timingSlot?.sourceStamp]: true,
     };
+    if (undefined !== selectionStartIndex) {
+      let delta = selectionStartIndex - lastSelectedIndex;
+      let step = delta > 0 ? -1 : 1;
+      while (delta !== 0) {
+        const timingTarget = timings[lastSelectedIndex + delta];
+        selectedSourceStamps[timingTarget?.sourceStamp] = true;
+        // console.log("Selection ok for " + timingTarget.sourceStamp);
+        delta += step;
+      }
+    }
   }
 
   const Default = {
-    placement: 'top',
-    triggerType: 'hover',
-    onShow: function () { },
-    onHide: function () { },
-    onToggle: function () { },
+    placement: "top",
+    triggerType: "hover",
+    onShow: function () {},
+    onHide: function () {},
+    onToggle: function () {},
   };
 
-  const refreshTooltips = ()=> {
+  const refreshTooltips = () => {
     // let myDiv = getElementById("myDiv");
     // myDiv.querySelectorAll(":scope > .foo");
     // const tooltipElements = document.querySelectorAll(`[role="tooltip"]`);
@@ -51,36 +62,41 @@
     // });
 
     // ./node_modules/flowbite/dist/flowbite.js:4269
-    htmlRoot?.querySelectorAll('[data-tooltip-target]').forEach(function ($triggerEl) {
-        var tooltipId = $triggerEl.getAttribute('data-tooltip-target');
+    htmlRoot
+      ?.querySelectorAll("[data-tooltip-target]")
+      .forEach(function ($triggerEl) {
+        var tooltipId = $triggerEl.getAttribute("data-tooltip-target");
         var $tooltipEl = document.getElementById(tooltipId);
         if ($tooltipEl) {
-            var triggerType = $triggerEl.getAttribute('data-tooltip-trigger');
-            var placement = $triggerEl.getAttribute('data-tooltip-placement');
-            new Tooltip($tooltipEl, $triggerEl, {
-                placement: placement ? placement : Default.placement,
-                triggerType: triggerType
-                    ? triggerType
-                    : Default.triggerType,
-            });
+          var triggerType = $triggerEl.getAttribute("data-tooltip-trigger");
+          var placement = $triggerEl.getAttribute("data-tooltip-placement");
+          new Tooltip($tooltipEl, $triggerEl, {
+            placement: placement ? placement : Default.placement,
+            triggerType: triggerType ? triggerType : Default.triggerType,
+          });
+        } else {
+          console.error(
+            'The tooltip element with id "'.concat(
+              tooltipId,
+              '" does not exist. Please check the data-tooltip-target attribute.'
+            )
+          );
         }
-        else {
-            console.error("The tooltip element with id \"".concat(tooltipId, "\" does not exist. Please check the data-tooltip-target attribute."));
-        }
-    });
-  }
+      });
+  };
 
   export let thumbSize;
-  $: thumbSize = ((50 * (100 / startZoom) * zoomRange) / 100);
+  $: thumbSize = (50 * (100 / startZoom) * zoomRange) / 100;
   // TODO : opti, only for tooltips reloads...
-  $: zoomRange, (async () => {
-    // TIPS : tick() to wait for html changes
-    await tick(); // First zoomRange change to bigger size, no update otherwise (if test do Svelte rebuild ?)
-    await tick();
-    // initFlowbite();
-    refreshTooltips();
-  })();
-  
+  $: zoomRange,
+    (async () => {
+      // TIPS : tick() to wait for html changes
+      await tick(); // First zoomRange change to bigger size, no update otherwise (if test do Svelte rebuild ?)
+      await tick();
+      // initFlowbite();
+      refreshTooltips();
+    })();
+
   // TIPS : selectedSourceStamps MUST be an argument for
   //        svelte reactive to trigger...
   const isSlotSelected = (timingSlot, selectedSourceStamps) => {
@@ -142,7 +158,7 @@
       {followSelection}
       {timingSlot}
       size={`${thumbSize.toFixed(0)}px`}
-      forceHeight={(zoomRange > startZoom) ? 'auto' : null}
+      forceHeight={zoomRange > startZoom ? "auto" : null}
       isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
       on:click={() => {
         lastSelectedIndex = idx;
@@ -161,7 +177,7 @@
     <div class="fill-white/70 text-white/70 w-full">
       <input
         value={zoomRange}
-        on:change={debounce((e)=> (zoomRange = e.target.value), 400)}
+        on:change={debounce((e) => (zoomRange = e.target.value), 400)}
         id="list-zoom-range"
         type="range"
         class="w-full h-2 bg-gray-200/50 rounded-lg

@@ -33,6 +33,8 @@
   export let isFullScreen = false;
   export let splitRange = 50;
   export let thumbSize;
+
+  export let selectionStartIndex;
   const urlParams = new URLSearchParams(window.location.search);
   export let lastSelectedIndex = parseInt(
     urlParams.get("lastSelectedIndex") ?? "0"
@@ -346,8 +348,10 @@ bind:isMobile
         <SlotView
           bind:isFullScreen
           bind:lastSelectedIndex
+          bind:selectionStartIndex
           bind:timeQualifs
           bind:quickQualifTemplates
+          bind:timings
           {moveSelectedIndex}
           {movePageIndex}
           {locale}
@@ -378,6 +382,7 @@ bind:isMobile
       {/if}
       <SquareList
         bind:lastSelectedIndex
+        bind:selectionStartIndex
         bind:thumbSize
         followSelection={!isFullScreen}
         {quickQualifTemplates}

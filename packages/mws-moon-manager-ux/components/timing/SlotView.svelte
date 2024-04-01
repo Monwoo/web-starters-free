@@ -44,6 +44,12 @@
   export let moveSelectedIndex;
   export let movePageIndex;
   export let lastSelectedIndex = 0;
+  export let timings;
+  // TODO : add selectionStartIndex inside query +
+  //        backend's toggle service compute with it too to shift all items
+  //        => will need refactor or complement param for 'Page number/page limit...'
+  //        => or do full client side solution, sending list of ids ?
+  export let selectionStartIndex;
   export let timeQualifs = [];
   export let locale;
   export let isHeaderExpanded = false;
@@ -222,11 +228,11 @@
     );
   };
 
-  export let toggleQualif = async (qualif) => {
+  export let toggleQualif = async (qualif, targetSlot) => {
     isLoading = true;
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingToggleQualif"),
-      timeSlotId: timingSlot?.id,
+      timeSlotId: targetSlot?.id,
       qualifId: qualif.id,
     };
     const formData = new FormData();
@@ -252,18 +258,18 @@
           const data = await resp.json();
           // const data = await resp.text();
           // console.debug("resp", data);
-          timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          targetSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           // // TODO : better sync all in-coming props from 'needSync' attr ?
-          // timingSlot?.maxPath = data.sync.maxPath;
-          // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+          // targetSlot?.maxPath = data.sync.maxPath;
+          // targetSlot?.maxPriceTag = data.sync.maxPriceTag;
           hackyRefresh(data);
 
-          // TODO : NO reactivity for timingSlot?.maxPath ?
+          // TODO : NO reactivity for targetSlot?.maxPath ?
           //        => missing live price lookup update at top of SlotView when changing tags,
           //           but : ok on full page refresh...
-          // timingSlot = {...timingSlot}; // TIPS : FORCE Svelte reactivity rebuild, since props check is not deep checked
+          // targetSlot = {...targetSlot}; // TIPS : FORCE Svelte reactivity rebuild, since props check is not deep checked
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
-          console.debug("Did toggle qualif, updated tags : ", timingSlot?.tags);
+          console.debug("Did toggle qualif, updated tags : ", targetSlot?.tags);
           stateUpdate(state, {
             csrfTimingToggleQualif: data.newCsrf,
           });
@@ -276,7 +282,6 @@
       });
     isLoading = false;
   };
-
   export let removeAllTags = async () => {
     isLoading = true;
     await new Promise((r) => setTimeout(r, 200)); // Wait for isLoading anim
@@ -288,9 +293,26 @@
       isLoading = false;
       return;
     }
+    if (undefined !== selectionStartIndex) {
+      // Toggle qualif of all previous or next qualifs :
+      let delta = selectionStartIndex - lastSelectedIndex;
+      let step = delta > 0 ? -1 : 1;
+      while (delta !== 0) {
+        const timingTarget = timings[lastSelectedIndex + delta];
+        await removeAllTagsByTiming(timingTarget);
+        console.log("Selection side qualif for " + timingTarget.sourceStamp);
+        delta += step;
+      }
+    } else {
+      await removeAllTagsByTiming(timingSlot);
+    }
+    isLoading = false;
+  }
+
+  export let removeAllTagsByTiming = async (timingTarget) => {
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingTagRemoveAll"),
-      timeSlotId: timingSlot?.id,
+      timeSlotId: timingTarget?.id,
     };
     const formData = new FormData();
     for (const name in data) {
@@ -313,14 +335,14 @@
           throw new Error("Not 2xx response", { cause: resp });
         } else {
           const data = await resp.json();
-          timingSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          timingTarget?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           // // TODO : better sync all in-coming props from 'needSync' attr ?
-          // timingSlot?.maxPath = data.sync.maxPath;
-          // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+          // timingTarget?.maxPath = data.sync.maxPath;
+          // timingTarget?.maxPriceTag = data.sync.maxPriceTag;
           hackyRefresh(data);
 
           lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
-          console.debug("Did add tag", timingSlot?.tags);
+          console.debug("Did sync tags", timingTarget?.tags);
           stateUpdate(state, {
             csrfTimingTagRemoveAll: data.newCsrf,
           });
@@ -331,7 +353,6 @@
         // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
         const shouldWait = confirm("Echec de l'enregistrement.");
       });
-    isLoading = false;
   };
 
   $: slotPath = timingSlot?.source?.path
@@ -342,13 +363,26 @@
       })
     : null;
 
-  let qualifTemplates = timeQualifs.map((q) => {
+  let qualifTemplates = timeQualifs.map((q, qIdx) => {
     q.toggleQualif = async () => {
-      console.log("Toggle qualif " + q.label, q);
-      // await q.timeTags.forEach(async t => {
-      //   await addTag(t);
-      // });
-      await toggleQualif(q);
+      console.log(qIdx + ": Toggle qualif " + q.label, q);
+
+      if (undefined !== selectionStartIndex) {
+        // Toggle qualif of all previous or next qualifs :
+        let delta = selectionStartIndex - lastSelectedIndex;
+        let step = delta > 0 ? -1 : 1;
+        while (delta !== 0) {
+          const timingTarget = timings[lastSelectedIndex + delta];
+          await toggleQualif(q, timingTarget);
+          console.log("Selection side qualif for " + timingTarget.sourceStamp);
+          delta += step;
+        }
+      } else {
+        // await q.timeTags.forEach(async t => {
+        //   await addTag(t);
+        // });
+        await toggleQualif(q, timingSlot);
+      }
     };
     return q;
   });
@@ -380,7 +414,8 @@
       if (!acc[charCode]) {
         // only pick FIRST same shortcut in user ordered quicklist qualif templates
         acc[charCode] = qt.toggleQualif;
-      }
+      } // TODO : show msg about multiple key ignored ? 
+      // (or cycle shift on key instead of toggle ?)
       return acc;
     },
     {
@@ -393,16 +428,16 @@
   // => allow end user to select shortcut himself
   // TODO : config backend for backup upload /download + save connected user shortcuts...
 
+  const haveNoExtraKey = (k) => 
+    !(k.shiftKey || k.altKey || k.metaKey || k.altKey);
+
   const isKey = {
-    space: (k) => k.keyCode == 32,
-    return: (k) => k.keyCode == 13,
-    zoomLower: (k) => k.key == "<",
-    zoomHigher: (k) => k.key == ">",
+    space: (k) => haveNoExtraKey(k) && k.keyCode == 32,
+    return: (k) => haveNoExtraKey(k) && k.keyCode == 13,
+    zoomLower: (k) => haveNoExtraKey(k) && k.key == "<",
+    zoomHigher: (k) => haveNoExtraKey(k) && k.key == ">",
     qualifShortcut: (k) => {
-      if (k.shiftKey || k.altKey || k.metaKey || k.altKey) {
-        return false; // avoid crtl-r to map 'r' shortcut
-      }
-      return qualifShortcut[k.key.charCodeAt(0)] ?? null
+      return haveNoExtraKey(k) && qualifShortcut[k.key.charCodeAt(0)] ?? null
     },
   };
 
@@ -424,7 +459,15 @@
       e.preventDefault();
     }
     if (isKey.return(e)) {
-      // isFullScreen = !isFullScreen; // TOGGLE QUALIF tags ?
+      // Toggle selection start (will qualif over multiples pages)
+      // => juste hit 'enter' to start selection at current index
+      // then all qualif will go on all selected slots between
+      // start selection and current selection...
+      if (null == selectionStartIndex) {
+        selectionStartIndex = lastSelectedIndex;
+      } else {
+        selectionStartIndex = undefined;
+      }
       e.preventDefault();
     }
     if (isKey.qualifShortcut(e)) {
@@ -679,6 +722,9 @@
         class:fixed={isFullScreen}
       >
         <span class="bg-black pointer-events-none">
+          {#if undefined !== selectionStartIndex}
+            [{selectionStartIndex}]-
+          {/if}
           [{pageNumber}-{lastSelectedIndex}]
         </span>
       </span>
