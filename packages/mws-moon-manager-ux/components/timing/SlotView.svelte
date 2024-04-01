@@ -303,6 +303,7 @@
         console.log("Selection side qualif for " + timingTarget.sourceStamp);
         delta += step;
       }
+      await removeAllTagsByTiming(timingSlot);
     } else {
       await removeAllTagsByTiming(timingSlot);
     }
@@ -377,6 +378,7 @@
           console.log("Selection side qualif for " + timingTarget.sourceStamp);
           delta += step;
         }
+        await toggleQualif(q, timingSlot);
       } else {
         // await q.timeTags.forEach(async t => {
         //   await addTag(t);
@@ -577,7 +579,7 @@
     slotMinHeight = 12;
     slotMaxHeight = Infinity; // window.screen.height;
 
-    await new Promise((r) => setTimeout(r, 500));
+    // await new Promise((r) => setTimeout(r, 500));
 
     // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
     // https://github.com/rozek/svelte-touch-to-mouse
@@ -599,6 +601,18 @@
   });
 
   let detailIsHovered = false;
+
+  $: {
+    isFullScreen, (async () => {
+      // TODO : For if switch, await tick enough ? 
+      await new Promise((r) => setTimeout(r, 200));
+      // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
+      // https://github.com/rozek/svelte-touch-to-mouse
+      mapTouchToMouseFor(".draggable"); // PB ? can be called only once ?
+      // mapTouchToMouseFor("div"); // TODO : not working on my Android phone, other error ?
+    })();
+  }
+
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -711,8 +725,8 @@
         </span>
       </span>
       <span
-        class="w-[6em] pointer-events-none
-        rounded z-50"
+        class="w-[6em]
+        rounded z-50 cursor-pointer"
         class:opacity-25={isFullScreen && detailIsHovered}
         class:right-0={!isFullScreen}
         class:absolute={!isFullScreen}
@@ -720,12 +734,19 @@
         class:top-5={isFullScreen}
         class:left-0={isFullScreen}
         class:fixed={isFullScreen}
-      >
-        <span class="bg-black pointer-events-none">
-          {#if undefined !== selectionStartIndex}
-            [{selectionStartIndex}]-
-          {/if}
-          [{pageNumber}-{lastSelectedIndex}]
+        on:click={() => {
+          if (undefined === selectionStartIndex) {
+            selectionStartIndex = lastSelectedIndex;
+          } else {
+            selectionStartIndex = undefined;
+          }
+        }}
+    >
+        <span class="bg-black"
+        >
+          [{pageNumber}-{
+            undefined !== selectionStartIndex ?
+            `${selectionStartIndex}..` : ''}{lastSelectedIndex}]
         </span>
       </span>
 
