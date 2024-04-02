@@ -77,19 +77,18 @@ class MwsTimingController extends AbstractController
         $requestData = $request->query->all();
         $keyword = $requestData['keyword'] ?? null;
         $searchTags = $requestData['tags'] ?? []; // []);
-        $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
+        $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
+        $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
 
         // $tagQb = $mwsTimeTagRepository->createQueryBuilder("t");
-        $allTagsList = $mwsTimeTagRepository
-        ->createQueryBuilder('t')
-        ->orderBy('LOWER(t.slug)')
-        ->getQuery()->getResult();
+        $allTagsList = $mwsTimeTagRepository->findAllTagsForContext();
 
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
                 "searchTags" => $searchTags,
+                "searchTagsToInclude" => $searchTagsToInclude,
                 "searchTagsToAvoid" => $searchTagsToAvoid,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
@@ -126,6 +125,7 @@ class MwsTimingController extends AbstractController
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? [];
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
                 // dd($searchTags);
                 return $this->redirectToRoute(
@@ -134,7 +134,8 @@ class MwsTimingController extends AbstractController
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
                         "tags" => $searchTags,
-                        "tagsToAvoid" => $searchTagsToAvoid,
+                        "searchTagsToInclude" => $searchTagsToInclude,
+                        "searchTagsToAvoid" => $searchTagsToAvoid,
                         "page" => 1,
                     ]),
                     Response::HTTP_SEE_OTHER
@@ -146,6 +147,7 @@ class MwsTimingController extends AbstractController
         $mwsTimeSlotRepository->applyTimingLokup($qb, [
             'searchKeyword' => $keyword,
             'searchTags' => $searchTags,
+            'searchTagsToInclude' => $searchTagsToInclude,
             'searchTagsToAvoid' => $searchTagsToAvoid,
         ]);
 
@@ -163,7 +165,7 @@ class MwsTimingController extends AbstractController
         $this->logger->debug("Succeed to list timings");
 
         $timeQualifs = $mwsTimeQualifRepository->findAll();
-        $allTagsList = $mwsTimeTagRepository->findAll();
+        $allTagsList = $mwsTimeTagRepository->findAllTagsForContext();
         // $allTagsList = $mwsTimeTagRepository->findBy([], [
         //     // TODO : translated label imports/edits (multilingues)
         //     'label' => 'ASC'
@@ -210,7 +212,8 @@ class MwsTimingController extends AbstractController
         $requestData = $request->query->all();
         $keyword = $requestData['keyword'] ?? null;
         $searchTags = $requestData['tags'] ?? []; // []);
-        $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
+        $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
+        $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
 
         $tagQb = $mwsTimeTagRepository->createQueryBuilder("t")
         ->orderBy('LOWER(t.slug)');
@@ -234,6 +237,7 @@ class MwsTimingController extends AbstractController
                 "MwsTimingLookupType" => true,
                 "searchKeyword" => $keyword,
                 "searchTags" => $searchTags,
+                "searchTagsToInclude" => $searchTagsToInclude,
                 "searchTagsToAvoid" => $searchTagsToAvoid,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
@@ -266,6 +270,7 @@ class MwsTimingController extends AbstractController
                 if ($surveyAnswers['MwsTimingLookupType'] ?? false) {
                     $keyword = $surveyAnswers['searchKeyword'] ?? null;
                     $searchTags = $surveyAnswers['searchTags'] ?? [];
+                    $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? [];
                     $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
                     // dd($searchTags);
                     return $this->redirectToRoute(
@@ -274,7 +279,8 @@ class MwsTimingController extends AbstractController
                             "viewTemplate" => $viewTemplate,
                             "keyword" => $keyword,
                             "tags" => $searchTags,
-                            "tagsToAvoid" => $searchTagsToAvoid,
+                            "searchTagsToInclude" => $searchTagsToInclude,
+                            "searchTagsToAvoid" => $searchTagsToAvoid,
                             "page" => 1,
                         ]),
                         Response::HTTP_SEE_OTHER
@@ -357,6 +363,7 @@ class MwsTimingController extends AbstractController
         $mwsTimeSlotRepository->applyTimingLokup($qb, [
             'searchKeyword' => $keyword,
             'searchTags' => $searchTags,
+            'searchTagsToInclude' => $searchTagsToInclude,
             'searchTagsToAvoid' => $searchTagsToAvoid,
         ]);
 

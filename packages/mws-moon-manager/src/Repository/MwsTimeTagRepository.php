@@ -38,6 +38,15 @@ class MwsTimeTagRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
+    public function findAllTagsForContext($context = null): ?array
+    {
+        // TODO : use context for ADMIN user to see other user stuff ?
+        // TODO : filter tags per users ? Tags shared for every one for this free version
+        $qb = $this->createQueryBuilder('t')
+        ->orderBy('LOWER(t.slug)');
+        
+        return $qb->getQuery()->getResult();
+    }
 
     public function findAllTagsWithCounts(): ?array
     {

@@ -59,13 +59,22 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
             'searchKeyword' => $keyword,
             'searchTags' => $searchTags,
             'searchTagsToAvoid' => $searchTagsToAvoid,
-        ] = $timingLookup;
+            'searchTagsToInclude' => $searchTagsToInclude,            
+        ] = [
+            ...[
+                'searchKeyword' => null,
+                'searchTags' => null,
+                'searchTagsToAvoid' => null,
+                'searchTagsToInclude' => null,            
+            ],
+            ...$timingLookup
+        ];
         if ($keyword) {
             // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
             // ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
         }
 
-        if (count($searchTags)) {
+        if ($searchTags && count($searchTags)) {
             $orClause = '';
             foreach ($searchTags as $idx => $slug) {
                 if ($idx) {
@@ -94,7 +103,25 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
             // dd($qb->getQuery()->getDql());
         }
 
-        if (count($searchTagsToAvoid)) {
+        if ($searchTagsToInclude && count($searchTagsToInclude)) {
+            // dd($searchTagsToAvoid);
+            foreach ($searchTagsToInclude as $idx => $slug) {
+                $dql = '';
+                $tagQb = $this->_em->createQueryBuilder()
+                ->select("t")
+                ->from(MwsTimeTag::class, "t")
+                ->setMaxResults(1)
+                ->where('t.slug = :slug')
+                ->setParameter('slug', $slug);
+                $tag = $tagQb->getQuery()->getResult()[0] ?? null;
+                $dql .= ":tagToInclude$idx MEMBER OF $slotName.tags";
+                $qb->setParameter("tagToInclude$idx", $tag);
+                // dd($dql);
+                $qb = $qb->andWhere($dql);
+            }
+        }
+
+        if ($searchTagsToAvoid && count($searchTagsToAvoid)) {
             // dd($searchTagsToAvoid);
             foreach ($searchTagsToAvoid as $idx => $slug) {
                 $dql = '';

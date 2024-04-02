@@ -13,7 +13,6 @@
   dayjs.extend(timezone); // TODO : user config for self timezone... (slot is computed on UTC date...)
   dayjs.tz.setDefault("Europe/Paris");
   // dayjs.tz.setDefault("Europe/London");
-
 </script>
 
 <script lang="ts">
@@ -149,7 +148,7 @@
       //   pricePerHr ?? 0,
       //   timingsByIds[tId]?.maxPricePerHr ?? 0
       // );
-      const maxPath = JSON.parse((maxPaths ?? {})[idx] ?? '{}');
+      const maxPath = JSON.parse((maxPaths ?? {})[idx] ?? "{}");
       const label = labels ? labels[idx] ?? null : null;
       const tags = {
         ...(tagSlug
@@ -818,11 +817,16 @@
     });
 
   // Number.prototype.toPrettyNum = (length: number) => {
-  Number.prototype.toPrettyNum = function (this: Number, length: number, maxLength = null) {
+  Number.prototype.toPrettyNum = function (
+    this: Number,
+    length: number,
+    maxLength = null
+  ) {
     if (maxLength === null) maxLength = length;
     var s = this;
     const splited = s
-      .toFixed(maxLength).replace(new RegExp(`0{0,${maxLength - length}}$`), "")
+      .toFixed(maxLength)
+      .replace(new RegExp(`0{0,${maxLength - length}}$`), "")
       // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
       // .replace(/0{0,2}$/, "")
       // .toLocaleString('en-US', { // TODO : centralize toPrettyNum and use locals formatings ?
@@ -830,9 +834,12 @@
       //   maximumFractionDigits: 4
       // })
       .replace(".", ",")
-      .split(',');
-    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-    + ',' + (splited[1] ?? '');
+      .split(",");
+    return (
+      (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+      "," +
+      (splited[1] ?? "")
+    );
   };
 
   declare interface Number {
@@ -893,7 +900,6 @@
     }
     isLoading = false;
   };
-
 </script>
 
 <div class="mws-timing-report">
@@ -1004,6 +1010,18 @@
         ) +
         "<br/>"
       : ""}
+    <!-- // TODO : code factorization, indide component ? -->
+    {@html jsonLookup.searchTagsToInclude &&
+    jsonLookup.searchTagsToInclude.length
+      ? "<strong>Tags à inclure : </strong>" +
+        jsonLookup.searchTagsToInclude.reduce(
+          (acc, f) => `
+                    ${acc} [${f}]
+                  `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
     {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
       ? "<strong>Tags à éviter : </strong>" +
         jsonLookup.searchTagsToAvoid.reduce(
@@ -1035,8 +1053,8 @@
   <div class="text-lg">Rapport des temps via segmentations de 10 minutes.</div>
   <br />
   <div class="text-lg font-extrabold">
-    {summaryByLevels.sumOfBookedHrs.toPrettyNum(2, 5)} heures au total si effectué par
-    une personne.
+    {summaryByLevels.sumOfBookedHrs.toPrettyNum(2, 5)} heures au total si effectué
+    par une personne.
   </div>
   <div class="text-lg font-extrabold">
     <!-- {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout. -->
@@ -1046,7 +1064,8 @@
   <br />
   <div class="text-lg font-extrabold">
     <!-- summaryByLevels.deepSumOfMaxPathPerHr     deepSumOfMaxPathPerHr -->
-    {summaryByLevels.deepSumOfBookedHrs.toPrettyNum(2, 5)} heures si charges non cumulables
+    {summaryByLevels.deepSumOfBookedHrs.toPrettyNum(2, 5)} heures si charges non
+    cumulables
     <span class="font-normal">
       (ex : rapport d'équipe avec changement de prix par expert associé).
     </span>

@@ -18,7 +18,7 @@
   import { fly } from "svelte/transition";
   import { create_in_transition, create_out_transition } from "svelte/internal";
   import { Collapse } from "flowbite";
-  import debounce from 'lodash/debounce';
+  import debounce from "lodash/debounce";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -170,7 +170,8 @@
   // }
 
   $: {
-    quickQualifTemplates, console.debug(
+    quickQualifTemplates,
+      console.debug(
         "Lookup : Qualif templates did sync update :",
         quickQualifTemplates
       );
@@ -178,13 +179,18 @@
 </script>
 
 <Base
-bind:isMobile
-{copyright} {locale} {viewTemplate} mainClass="" footerClass="py-2">
+  bind:isMobile
+  {copyright}
+  {locale}
+  {viewTemplate}
+  mainClass=""
+  footerClass="py-2"
+>
   <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
     <!-- <div class="mws-menu-wrapper inline-flex flex-col sticky top-0 z-40 bg-yellow-100"> -->
     <div class="mws-menu-wrapper inline-flex flex-col bg-yellow-100">
-        <!-- https://flowbite.com/docs/components/navbar/#example -->
+      <!-- https://flowbite.com/docs/components/navbar/#example -->
       <!-- {#key uniqueKey} // TODO : needed for out to work... but 
       better make work create_out_transition ? -->
       <div
@@ -271,13 +277,25 @@ bind:isMobile
               ) +
               "<br/>"
             : ""}
+          <!-- // TODO : code factorization, indide component ? -->
+          {@html jsonLookup.searchTagsToInclude &&
+          jsonLookup.searchTagsToInclude.length
+            ? "<strong>Tags à inclure : </strong>" +
+              jsonLookup.searchTagsToInclude.reduce(
+                (acc, f) => `
+                  ${acc} [${f}]
+                `,
+                ``
+              ) +
+              "<br/>"
+            : ""}
           {@html jsonLookup.searchTagsToAvoid &&
           jsonLookup.searchTagsToAvoid.length
             ? "<strong>Tags à éviter : </strong>" +
               jsonLookup.searchTagsToAvoid.reduce(
                 (acc, f) => `
-                ${acc} [${f}]
-              `,
+                  ${acc} [${f}]
+                `,
                 ``
               ) +
               "<br/>"
@@ -295,13 +313,17 @@ bind:isMobile
       </div>
     </div>
 
-    <span class="float-right m-1 text-black sticky z-30
+    <span
+      class="float-right m-1 text-black sticky z-30
     bg-white/70 text-xs md:text-base p-1
-    top-1 pointer-events-none">
+    top-1 pointer-events-none"
+    >
       [{pageNumber}-{lastSelectedIndex}]
     </span>
-    <span class="text-xs md:text-base float-right 
-    right-14 top-0 z-30 sticky">
+    <span
+      class="text-xs md:text-base float-right 
+    right-14 top-0 z-30 sticky"
+    >
       <button
         class="float-right m-1 sticky top-0"
         style:opacity={!moveResp.isLast ? 1 : 0.7}
@@ -336,10 +358,11 @@ bind:isMobile
     <!-- // TODO : same height as fixed nav if fixed nav ? -->
     <!-- <span class="h-7 w-full"></span> -->
 
-    <div class="flex flex-wrap w-[100vw] h-[95vh] md:flex-row"
-    style="
-      { (thumbSize > 50) ? `min-width: ${thumbSize}px` : `` }
-    "  
+    <div
+      class="flex flex-wrap w-[100vw] h-[95vh] md:flex-row"
+      style="
+      {thumbSize > 50 ? `min-width: ${thumbSize}px` : ``}
+    "
     >
       <!-- { JSON.stringify(timings) } -->
       {#if timings[lastSelectedIndex] ?? false}
@@ -359,11 +382,12 @@ bind:isMobile
           class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
           mr-0 md:mr-[0.5%] mb-[2%] md:mb-0"
           sizeStyle={`
-            ${ isMobile
-              // ? `height: ${splitRange}%` // TODO : % instead of vh ?
-              // : `width: ${splitRange}%`
-              ? `height: ${(splitRange * 2 * 48/100).toFixed(2)}%`
-              : `width: ${(splitRange * 2 * 49.5/100).toFixed(2)}%`
+            ${
+              isMobile
+                ? // ? `height: ${splitRange}%` // TODO : % instead of vh ?
+                  // : `width: ${splitRange}%`
+                  `height: ${((splitRange * 2 * 48) / 100).toFixed(2)}%`
+                : `width: ${((splitRange * 2 * 49.5) / 100).toFixed(2)}%`
             }
           `}
           fullscreenClass={isFullScreen ? "pb-8" : ""}
@@ -372,13 +396,14 @@ bind:isMobile
         <div class="w-50">Sélectionner un temps pour voir son détail.</div>
       {/if}
       {#if isMobile}
-        <div class="h-2 w-full
+        <div
+          class="h-2 w-full
           bg-gradient-to-r from-indigo-500 from-10%
           via-sky-500 via-30% 
           to-emerald-500 to-90%
           shadow-lg	border rounded-md border-black
-        ">
-        </div>
+        "
+        />
       {/if}
       <SquareList
         bind:lastSelectedIndex
@@ -391,9 +416,10 @@ bind:isMobile
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
         ml-0 md:ml-[0.5%] mt-[2%] md:mt-0"
         style={`
-          ${ isMobile
-            ? `height: ${((100 - splitRange) * 2 * 48/100).toFixed(2)}%`
-            : `width: ${((100 - splitRange) * 2 * 49.5/100).toFixed(2)}%`
+          ${
+            isMobile
+              ? `height: ${(((100 - splitRange) * 2 * 48) / 100).toFixed(2)}%`
+              : `width: ${(((100 - splitRange) * 2 * 49.5) / 100).toFixed(2)}%`
           }
         `}
       />
@@ -404,7 +430,7 @@ bind:isMobile
           //         or too specific, keep number easyer than multiples var or const ? -->
           <input
             value={splitRange}
-            on:change={debounce((e)=> (splitRange = e.target.value), 400)}
+            on:change={debounce((e) => (splitRange = e.target.value), 400)}
             id="split-range"
             type="range"
             class="w-full h-2 bg-gray-200/50 rounded-lg
@@ -413,7 +439,7 @@ bind:isMobile
           />
         </div>
       </div>
-      <div>{@html timingsPaginator}</div>    
+      <div>{@html timingsPaginator}</div>
     </div>
   </div>
   <ConfidentialityStamp
