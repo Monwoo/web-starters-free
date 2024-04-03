@@ -76,6 +76,9 @@ class MwsTimingController extends AbstractController
 
         $requestData = $request->query->all();
         $keyword = $requestData['keyword'] ?? null;
+        $searchStart = $requestData['searchStart'] ?? null;
+        $searchEnd = $requestData['searchEnd'] ?? null;
+        
         $searchTags = $requestData['tags'] ?? []; // []);
         $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
         $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
@@ -87,6 +90,8 @@ class MwsTimingController extends AbstractController
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
+                "searchStart" => $searchStart,
+                "searchEnd" => $searchEnd,
                 "searchTags" => $searchTags,
                 "searchTagsToInclude" => $searchTagsToInclude,
                 "searchTagsToAvoid" => $searchTagsToAvoid,
@@ -124,7 +129,8 @@ class MwsTimingController extends AbstractController
                     true
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
-                $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchStart = $surveyAnswers['searchStart'] ?? null;
+                $searchEnd = $surveyAnswers['searchEnd'] ?? null;                $searchTags = $surveyAnswers['searchTags'] ?? [];
                 $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? [];
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
                 // dd($searchTags);
@@ -133,6 +139,8 @@ class MwsTimingController extends AbstractController
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
+                        "searchStart" => $searchStart,
+                        "searchEnd" => $searchEnd,
                         "tags" => $searchTags,
                         "searchTagsToInclude" => $searchTagsToInclude,
                         "searchTagsToAvoid" => $searchTagsToAvoid,
@@ -146,6 +154,8 @@ class MwsTimingController extends AbstractController
         $qb = $mwsTimeSlotRepository->createQueryBuilder('s');
         $mwsTimeSlotRepository->applyTimingLokup($qb, [
             'searchKeyword' => $keyword,
+            "searchStart" => $searchStart,
+            "searchEnd" => $searchEnd,
             'searchTags' => $searchTags,
             'searchTagsToInclude' => $searchTagsToInclude,
             'searchTagsToAvoid' => $searchTagsToAvoid,
@@ -211,6 +221,9 @@ class MwsTimingController extends AbstractController
 
         $requestData = $request->query->all();
         $keyword = $requestData['keyword'] ?? null;
+        $searchStart = $requestData['searchStart'] ?? null;
+        $searchEnd = $requestData['searchEnd'] ?? null;
+
         $searchTags = $requestData['tags'] ?? []; // []);
         $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
         $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
@@ -236,6 +249,8 @@ class MwsTimingController extends AbstractController
                 // add public function getBlockPrefix() in form type....
                 "MwsTimingLookupType" => true,
                 "searchKeyword" => $keyword,
+                "searchStart" => $searchStart,
+                "searchEnd" => $searchEnd,
                 "searchTags" => $searchTags,
                 "searchTagsToInclude" => $searchTagsToInclude,
                 "searchTagsToAvoid" => $searchTagsToAvoid,
@@ -269,6 +284,8 @@ class MwsTimingController extends AbstractController
                 );
                 if ($surveyAnswers['MwsTimingLookupType'] ?? false) {
                     $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                    $searchStart = $surveyAnswers['searchStart'] ?? null;
+                    $searchEnd = $surveyAnswers['searchEnd'] ?? null;                $searchTags = $surveyAnswers['searchTags'] ?? [];
                     $searchTags = $surveyAnswers['searchTags'] ?? [];
                     $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? [];
                     $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
@@ -278,6 +295,8 @@ class MwsTimingController extends AbstractController
                         array_merge($request->query->all(), [
                             "viewTemplate" => $viewTemplate,
                             "keyword" => $keyword,
+                            "searchStart" => $searchStart,
+                            "searchEnd" => $searchEnd,
                             "tags" => $searchTags,
                             "searchTagsToInclude" => $searchTagsToInclude,
                             "searchTagsToAvoid" => $searchTagsToAvoid,
@@ -362,6 +381,8 @@ class MwsTimingController extends AbstractController
 
         $mwsTimeSlotRepository->applyTimingLokup($qb, [
             'searchKeyword' => $keyword,
+            "searchStart" => $searchStart,
+            "searchEnd" => $searchEnd,
             'searchTags' => $searchTags,
             'searchTagsToInclude' => $searchTagsToInclude,
             'searchTagsToAvoid' => $searchTagsToAvoid,

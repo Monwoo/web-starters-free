@@ -57,12 +57,16 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
         }
         [
             'searchKeyword' => $keyword,
+            "searchStart" => $searchStart,
+            "searchEnd" => $searchEnd,
             'searchTags' => $searchTags,
             'searchTagsToAvoid' => $searchTagsToAvoid,
             'searchTagsToInclude' => $searchTagsToInclude,            
         ] = [
             ...[
                 'searchKeyword' => null,
+                "searchStart" => null,
+                "searchEnd" => null,
                 'searchTags' => null,
                 'searchTagsToAvoid' => null,
                 'searchTagsToInclude' => null,            
@@ -73,6 +77,9 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
             // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
             $qb->andWhere("LOWER($slotName.sourceStamp) LIKE :keyword")
             ->setParameter('keyword', '%' . strtolower($keyword) . '%');
+        }
+        if ($searchStart && strlen($searchStart)) {
+            dd($searchStart);
         }
 
         if ($searchTags && count($searchTags)) {

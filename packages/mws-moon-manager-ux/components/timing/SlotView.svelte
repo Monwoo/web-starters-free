@@ -818,7 +818,7 @@
           </span>
         {/each}
       </span>
-      <span class="float-right flex flex-wrap justify-end p-2">
+      <span class="float-right flex flex-wrap justify-end items-start p-2">
         <TagsInput 
         bind:timings
         bind:lastSelectedIndex
