@@ -990,6 +990,19 @@
     {/each}
   </div>
   <div class="pt-3">
+    <!-- // TODO : code factorization, indide component ? -->
+    {@html jsonLookup.searchStart &&
+      jsonLookup.searchStart.length
+        ? "<strong>Depuis le : </strong>" +
+          dayjs(jsonLookup.searchStart).format("YYYY/MM/DD H:mm:ss") +
+          "<br/>"
+        : ""}
+    {@html jsonLookup.searchEnd &&
+      jsonLookup.searchEnd.length
+        ? "<strong>Jusqu'au : </strong>" +
+          dayjs(jsonLookup.searchEnd).format("YYYY/MM/DD H:mm:ss") +
+          "<br/>"
+        : ""}
     {@html jsonLookup.customFilters && jsonLookup.customFilters.length
       ? "<strong>Filtres actifs : </strong>" +
         jsonLookup.customFilters.reduce(

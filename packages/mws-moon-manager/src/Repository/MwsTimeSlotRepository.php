@@ -2,6 +2,8 @@
 
 namespace MWS\MoonManagerBundle\Repository;
 
+use DateInterval;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
@@ -60,26 +62,40 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
             "searchStart" => $searchStart,
             "searchEnd" => $searchEnd,
             'searchTags' => $searchTags,
+            'searchTagsToInclude' => $searchTagsToInclude,
             'searchTagsToAvoid' => $searchTagsToAvoid,
-            'searchTagsToInclude' => $searchTagsToInclude,            
         ] = [
             ...[
                 'searchKeyword' => null,
                 "searchStart" => null,
                 "searchEnd" => null,
                 'searchTags' => null,
+                'searchTagsToInclude' => null,
                 'searchTagsToAvoid' => null,
-                'searchTagsToInclude' => null,            
             ],
             ...$timingLookup
         ];
         if ($keyword) {
             // TODO : MwsKeyword Data model stuff todo, paid level 2 ocr ?
             $qb->andWhere("LOWER($slotName.sourceStamp) LIKE :keyword")
-            ->setParameter('keyword', '%' . strtolower($keyword) . '%');
+                ->setParameter('keyword', '%' . strtolower($keyword) . '%');
         }
         if ($searchStart && strlen($searchStart)) {
-            dd($searchStart);
+            // dd($searchStart);
+            $searchStart = (new DateTime($searchStart));
+            // dd($searchStart);
+            $qb->andWhere("$slotName.sourceTimeGMT > :searchStart")
+                ->setParameter('searchStart', $searchStart);
+            // $searchEnd = (new DateTime($searchStart))
+            //     ->add(new DateInterval('PT24H'));
+            // dd($searchEnd);
+        }
+        if ($searchEnd && strlen($searchEnd)) {
+            // dd($searchStart);
+            $searchStart = (new DateTime($searchEnd));
+            // dd($searchStart);
+            $qb->andWhere("$slotName.sourceTimeGMT < :searchEnd")
+                ->setParameter('searchEnd', $searchEnd);
         }
 
         if ($searchTags && count($searchTags)) {
@@ -94,11 +110,11 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
                 // $qb->setParameter("tagCategory$idx", $category);
 
                 $tagQb = $this->_em->createQueryBuilder()
-                ->select("t")
-                ->from(MwsTimeTag::class, "t")
-                ->setMaxResults(1)
-                ->where('t.slug = :slug')
-                ->setParameter('slug', $slug);
+                    ->select("t")
+                    ->from(MwsTimeTag::class, "t")
+                    ->setMaxResults(1)
+                    ->where('t.slug = :slug')
+                    ->setParameter('slug', $slug);
                 $tag = $tagQb->getQuery()->getResult()[0] ?? null;
                 // dd($tag);
                 // $tag = $this->mwsTimeTagRepository->findOneBy([
@@ -116,11 +132,11 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
             foreach ($searchTagsToInclude as $idx => $slug) {
                 $dql = '';
                 $tagQb = $this->_em->createQueryBuilder()
-                ->select("t")
-                ->from(MwsTimeTag::class, "t")
-                ->setMaxResults(1)
-                ->where('t.slug = :slug')
-                ->setParameter('slug', $slug);
+                    ->select("t")
+                    ->from(MwsTimeTag::class, "t")
+                    ->setMaxResults(1)
+                    ->where('t.slug = :slug')
+                    ->setParameter('slug', $slug);
                 $tag = $tagQb->getQuery()->getResult()[0] ?? null;
                 $dql .= ":tagToInclude$idx MEMBER OF $slotName.tags";
                 $qb->setParameter("tagToInclude$idx", $tag);
@@ -134,11 +150,11 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
             foreach ($searchTagsToAvoid as $idx => $slug) {
                 $dql = '';
                 $tagQb = $this->_em->createQueryBuilder()
-                ->select("t")
-                ->from(MwsTimeTag::class, "t")
-                ->setMaxResults(1)
-                ->where('t.slug = :slug')
-                ->setParameter('slug', $slug);
+                    ->select("t")
+                    ->from(MwsTimeTag::class, "t")
+                    ->setMaxResults(1)
+                    ->where('t.slug = :slug')
+                    ->setParameter('slug', $slug);
                 $tag = $tagQb->getQuery()->getResult()[0] ?? null;
                 // $tag = $this->mwsTimeTagRepository->findOneBy([
                 //     'slug' => $slug,
