@@ -19,6 +19,12 @@
   export let maxPriceTag;
   export let modalId;
 
+  // TODO : refactor : should not be Done by TagsInput
+  //        but some centralized system (Service ? Event Listener ? ...)
+  export let lastSelectedIndex = 0;
+  export let timings;
+  export let selectionStartIndex;
+
   allTagsList = allTagsList ?? stateGet(get(state), 'allTagsList');
 
   // Tips : sync inner data on component changes :
@@ -36,10 +42,26 @@
   }
 
   let addedTagKey;
+
   export let removeTag = async (tag, comment = null) => {
+    if (undefined !== selectionStartIndex) {
+      // TODO : factorize Toggle qualif of all previous or next qualifs :
+      let delta = selectionStartIndex - lastSelectedIndex;
+      let step = delta > 0 ? -1 : 1;
+      while (delta !== 0) {
+        const timingTarget = timings[lastSelectedIndex + delta];
+        await removeTagExtended(timingTarget, tag, comment);
+        console.log("Selection side qualif for " + timingTarget.sourceStamp);
+        delta += step;
+      }
+    }
+    await removeTagExtended(timing, tag, comment);
+  }
+
+  export let removeTagExtended = async (timingTarget, tag, comment = null) => {
     const data = {
       _csrf_token: stateGet(get(state), 'csrfTimingTagRemove'),
-      timeSlotId: timing.id,
+      timeSlotId: timingTarget.id,
       tagSlug: tag.slug,
       comment, // TODO : allow optional comment on status switch ?
     };
@@ -77,6 +99,7 @@
           // got the desired response
           const data = await resp.json();
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          timingTarget.tags = tags;
           // TODO : better sync all in-coming props from 'needSync' attr ?
           maxPath = data.sync.maxPath;
           maxPriceTag = data.sync.maxPriceTag;
@@ -93,7 +116,22 @@
     });
   };
 
-  export let addTag = async (tagSlug, tagCategorySlug, comment = null) => {
+  export let addTag = async (tag, comment = null) => {
+    if (undefined !== selectionStartIndex) {
+      // TODO : factorize Toggle qualif of all previous or next qualifs :
+      let delta = selectionStartIndex - lastSelectedIndex;
+      let step = delta > 0 ? -1 : 1;
+      while (delta !== 0) {
+        const timingTarget = timings[lastSelectedIndex + delta];
+        await addTagExtended(timingTarget, tag, comment);
+        console.log("Selection side qualif for " + timingTarget.sourceStamp);
+        delta += step;
+      }
+    }
+    await addTagExtended(timing, tag, comment);
+  }
+
+  export let addTagExtended = async (timingTarget, tagSlug, tagCategorySlug, comment = null) => {
     // TODO : fetch modal response
     const $ = window.$;
     const modalBtn = $(`[data-modal-target="${modalId}"]`);
@@ -102,7 +140,7 @@
 
     const data = {
       _csrf_token: stateGet(get(state), 'csrfTimingTagAdd'),
-      timeSlotId: timing.id,
+      timeSlotId: timingTarget.id,
       tagSlug: tagSlug,
       comment, // TODO : allow optional comment on status switch ?
       tagCategorySlug: tagCategorySlug,
@@ -128,6 +166,7 @@
       } else {
           const data = await resp.json();
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          timingTarget.tags = tags;
           // TODO : better sync all in-coming props from 'needSync' attr ?
           maxPath = data.sync.maxPath;
           maxPriceTag = data.sync.maxPriceTag;

@@ -1,10 +1,12 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   export let isLoading = false;
+  let cssClass  = "sticky top-0";
+  export { cssClass as class};
 </script>
 
 {#if isLoading}
-  <span role="status">
+  <span role="status" class={cssClass}>
     <svg
       aria-hidden="true"
       class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"

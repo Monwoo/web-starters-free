@@ -294,7 +294,7 @@
       return;
     }
     if (undefined !== selectionStartIndex) {
-      // Toggle qualif of all previous or next qualifs :
+      // TODO : factorize Toggle qualif of all previous or next qualifs :
       let delta = selectionStartIndex - lastSelectedIndex;
       let step = delta > 0 ? -1 : 1;
       while (delta !== 0) {
@@ -303,10 +303,8 @@
         console.log("Selection side qualif for " + timingTarget.sourceStamp);
         delta += step;
       }
-      await removeAllTagsByTiming(timingSlot);
-    } else {
-      await removeAllTagsByTiming(timingSlot);
     }
+    await removeAllTagsByTiming(timingSlot);
     isLoading = false;
   }
 
@@ -821,7 +819,11 @@
         {/each}
       </span>
       <span class="float-right flex flex-wrap justify-end p-2">
-        <TagsInput bind:tags={timingSlot.tags} timing={timingSlot} {locale} />
+        <TagsInput 
+        bind:timings
+        bind:lastSelectedIndex
+        bind:selectionStartIndex
+        bind:tags={timingSlot.tags} timing={timingSlot} {locale} />
       </span>
       <!-- {#each qualifTemplates ?? [] as qt, idx}
         <button

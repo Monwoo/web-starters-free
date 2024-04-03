@@ -11,6 +11,7 @@
   export let allTagsList;
   export let timeTags;
   export let modalId;
+  export let selectionStartIndex;
 
   allTagsList = allTagsList ?? stateGet(get(state), 'allTagsList');
 
