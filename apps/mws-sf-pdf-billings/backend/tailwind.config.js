@@ -48,7 +48,9 @@ module.exports = {
   plugins: [
     // https://github.com/tailwindlabs/tailwindcss-forms
     require('@tailwindcss/forms'),
-    require('flowbite/plugin'),
+    require('flowbite/plugin')({
+      charts: true,
+  }),
     // require('../../../packages/mws-moon-manager/node_modules/@preline/plugin')
     // TODO : ReferenceError: self is not defined @preline/scrollspy/index.js:1:299 :
     //        Why post css going up to this file ? tailwind check ? but ok on svelte file ?
