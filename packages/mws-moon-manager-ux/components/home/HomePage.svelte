@@ -1,8 +1,11 @@
 <script>
-    // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+    // 🌖🌖 Copyright Monwoo 2023-2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
     import Routing from 'fos-router';
     // TODO : namespace
     import Base from '../layout/Base.svelte';
+import GitLogsChart from '../layout/widgets/GitLogsChart.svelte';
+import Jumbotron from '../layout/widgets/Jumbotron.svelte';
+import MultiScreen from '../layout/widgets/MultiScreen.svelte';
 
     export let title = null;
     export let currentLanguage = null;
@@ -24,7 +27,22 @@
 </script>
 
 <Base>
-    {currentLanguage ?? ""}
+    <!-- {currentLanguage ?? ""} -->
+    <MultiScreen>
+        
+    </MultiScreen>
+
+    <Jumbotron>
+        
+    </Jumbotron>
+    <Jumbotron>
+        
+    </Jumbotron>
+    <Jumbotron>
+        
+    </Jumbotron>
+
+    <GitLogsChart></GitLogsChart>
 
     <h1>{ title ?? "" }</h1>
     <div class="nav-item dropdown">Billings :
