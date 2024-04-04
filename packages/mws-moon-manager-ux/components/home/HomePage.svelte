@@ -169,7 +169,7 @@
                 )}
                 class="
             text-lg font-medium inline-flex items-center
-            pt-6 pb-12"
+            px-4 pt-6 pb-12"
             >
                 <button>Services</button>
             </a>
@@ -185,7 +185,7 @@
                 })}
                 class="
             text-lg font-medium inline-flex items-center
-            pt-6 pb-12"
+            px-4 pt-6 pb-12"
             >
                 <button>Rechercher une offre</button>
             </a>
@@ -204,10 +204,26 @@
                 )}
                 class="
             text-lg font-medium inline-flex items-center
-            pt-6 pb-12"
+            px-4 pt-6 pb-12"
             >
                 <button>Timings</button>
             </a>
+
+            <a
+            class="
+            text-lg font-medium inline-flex items-center
+            px-4 pt-6 pb-12"
+            href={Routing.generate(
+              "mws_timings_qualif",
+              {
+                _locale: locale ?? "",
+              },
+              true
+            )}
+          >
+            <button> Qualification des temps </button>
+          </a>
+        
         </div>
         <Video youtubeId="pGW_DdicUW4" />
 

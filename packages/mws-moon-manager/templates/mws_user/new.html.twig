@@ -13,23 +13,13 @@
 		~ form_end(form))|e('html_attr'),
 		'viewTemplate' : viewTemplate,
 	} ) }}>
-		{% if app.user %}
-			<a href="{{ path('mws_user_logout') }}">
-				<u>Logout from
-					{{ app.user.username }}</u>
-			</a>
-		{% endif %}
-		{# {% block editForm %}
-			<div>
-					{{ form_start(formUser, { 'attr' : {
-						'class': 'd-flex flex-wrap'
-					} }) }}
-					{{ form_end(formUser) }}
+		<div class="flex flex-col justify-end content-end items-stretch h-screen overflow-hidden print:h-auto">
+			{{ block('header') }}
+			<div
+			class="flex-1 overflow-y-auto">
+				{{ block('content') }}
 			</div>
-		{% endblock %} #}
-
-		<div class="example-wrapper">
-			<h1>{{ block('title') }}! ✅</h1>
+			{{ block('footer') }}
 		</div>
 	</div>
 {% endblock %}

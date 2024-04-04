@@ -10,7 +10,7 @@
   import debounce from 'lodash/debounce';
 
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
-  export let headerClass = "md:py-5";
+  export let headerClass = ""; // "md:py-5";
   export let mainClass = "p-5";
   export let footerClass = "py-4";
    
