@@ -35,7 +35,13 @@ composer install
 php bin/console assets:install --symlink public
 php bin/console fos:js-routing:dump
 
+pnpm install
 pnpm run build
+
+php bin/console doctrine:migrations:migrate -n
+# Generate one user to be able to login : (-c 1 will remove existing users)
+# php bin/console mws:add-user -c 1
+php bin/console mws:add-user
 
 # Use SYMFONY dev server (not same as php builtin or bin/console)
 wget https://get.symfony.com/cli/installer -O - | bash
