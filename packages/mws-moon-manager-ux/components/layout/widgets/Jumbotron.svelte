@@ -9,9 +9,11 @@
 </script>
 
 <section class={cssClass}>
-  <div class="py-8 px-4 mx-auto lg:py-16">
+  <div class="pt-8 px-4 mx-auto lg:pt-16">
     <div
-      class="bg-gray-50/50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 md:p-12 mb-8"
+      class="bg-gray-50/50 dark:bg-gray-800
+      border border-gray-200 dark:border-gray-700 rounded-lg
+      p-8"
     >
       <!-- <a
         href="#"

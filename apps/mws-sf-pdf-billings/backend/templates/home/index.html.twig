@@ -3,11 +3,15 @@
 {% block title %}{{ 'mws.home.title'|trans }}{% endblock %}
 
 {# TODO : security issue if using
- 'copyright': 'mws.copyright'|trans, ? not escaped ? #}
+ 'copyright': 'mws.copyright'|trans, ? not escaped ? 
+ TODO : viewTemplate feature ?
+ #}
 {% block body %}
     <div {{ svelte_component('Home', {
         'copyright': 'mws.copyright'|trans,
         'title': block('title'),
+		'viewTemplate': null,
+		'locale': app.locale,
         'currentLanguage' : app.request.locale|locale_name(app.request.locale)|u.title,
         'billingsLocales' : [
             {

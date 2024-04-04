@@ -7,8 +7,15 @@
     import Jumbotron from "../layout/widgets/Jumbotron.svelte";
     import MultiScreen from "../layout/widgets/MultiScreen.svelte";
     import Separator from "../layout/widgets/Separator.svelte";
+    import Video from "../layout/widgets/Video.svelte";
+    // import { goto } from "$app/navigation"; // TODO : not from encore bundle ?
+    const goto = (url) => {
+        window.location = url;
+    }
 
     export let title = null;
+    export let locale = null;
+    export let viewTemplate = null;
     export let currentLanguage = null;
     export let billingsLocales = [];
     export let moonManagerLocales = [];
@@ -33,54 +40,172 @@
     <!-- <h1>{ title ?? "" }</h1> -->
     <div class="flex flex-wrap">
         <h1
-            class="text-gray-900 dark:text-white text-3xl md:text-5xl font-extrabold mb-2"
+            class="text-gray-900 dark:text-white text-3xl md:text-5xl font-extrabold m-2"
         >
-            Monwoo Web Starter - Symfony PDF Billings
+            Monwoo Web Starter - PDF Billings
         </h1>
         <Separator />
         <div class="w-full flex flex-wrap">
             <MultiScreen
+                extraClass="cursor-pointer"
+                on:click={() => {
+                    goto(
+                        Routing.generate(
+                            "app_pdf_billings",
+                            {
+                                _locale: locale ?? "",
+                            },
+                            true
+                        )
+                    );
+                }}
                 capture={{
                     title: "Facturation PDF",
                     mobile: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-light.png",
                 }}
             />
             <MultiScreen
+                extraClass="cursor-pointer"
+                on:click={() => {
+                    goto(
+                        Routing.generate("mws_offer_lookup", {
+                            _locale: locale ?? "",
+                            viewTemplate: viewTemplate ?? null,
+                        })
+                    );
+                }}
                 capture={{
                     title: "Recherche d'offres",
                     mobile: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-light.png",
                 }}
             />
             <MultiScreen
+                extraClass="cursor-pointer"
+                on:click={() => {
+                    goto(
+                        Routing.generate(
+                            "mws_timings_report",
+                            {
+                                _locale: locale ?? "",
+                            },
+                            true
+                        )
+                    );
+                }}
                 capture={{
                     title: "Suivi des temps",
                     mobile: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-light.png",
                 }}
             />
             <MultiScreen
+                extraClass="cursor-pointer"
+                on:click={() => {
+                    goto(
+                        Routing.generate(
+                            "app_pdf_billings",
+                            {
+                                _locale: locale ?? "",
+                            },
+                            true
+                        )
+                    );
+                }}
                 capture={{
                     title: "Facturation PDF",
-                    desktop: "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
+                    desktop:
+                        "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
                 }}
             />
             <MultiScreen
+                extraClass="cursor-pointer"
+                on:click={() => {
+                    goto(
+                        Routing.generate("mws_offer_lookup", {
+                            _locale: locale ?? "",
+                            viewTemplate: viewTemplate ?? null,
+                        })
+                    );
+                }}
                 capture={{
                     title: "Recherche d'offres",
-                    desktop: "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
+                    desktop:
+                        "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
                 }}
             />
             <MultiScreen
+                extraClass="cursor-pointer"
+                on:click={() => {
+                    goto(
+                        Routing.generate(
+                            "mws_timings_report",
+                            {
+                                _locale: locale ?? "",
+                            },
+                            true
+                        )
+                    );
+                }}
                 capture={{
                     title: "Suivi des temps",
-                    desktop: "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
+                    desktop:
+                        "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
                 }}
             />
         </div>
         <Separator />
 
-        <Jumbotron title="Facturation PDF" content="Devis public pré-remplissable par un tiers." />
+        <Jumbotron
+            title="Facturation PDF"
+            content="Devis public pré-remplissable par un tiers."
+        />
+        <a
+            href={Routing.generate(
+                "app_pdf_billings",
+                {
+                    _locale: locale ?? "",
+                },
+                true
+            )}
+            class="
+            text-lg font-medium inline-flex items-center
+            pt-6 pb-12"
+        >
+            <button>Services</button>
+        </a>
+        <Video youtubeId="pGW_DdicUW4" />
+
         <Jumbotron title="Recherche d'offres" />
+        <a
+            href={Routing.generate("mws_offer_lookup", {
+                _locale: locale ?? "",
+                viewTemplate: viewTemplate ?? null,
+            })}
+            class="
+            text-lg font-medium inline-flex items-center
+            pt-6 pb-12"
+        >
+            <button>Rechercher une offre</button>
+        </a>
+        <Video youtubeId="pGW_DdicUW4" />
+
         <Jumbotron title="Suivi des temps" />
+        <a
+            href={Routing.generate(
+                "mws_timings_report",
+                {
+                    _locale: locale ?? "",
+                },
+                true
+            )}
+            class="
+            text-lg font-medium inline-flex items-center
+            pt-6 pb-12"
+        >
+            <button>Timings</button>
+        </a>
+        <Video youtubeId="pGW_DdicUW4" />
+
+        <Separator />
 
         <GitLogsChart />
     </div>

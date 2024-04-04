@@ -519,6 +519,9 @@ importers:
       svelte-typeahead:
         specifier: ^4.4.1
         version: 4.4.1
+      svelte-youtube-embed:
+        specifier: ^0.2.3
+        version: 0.2.3
 
   packages/next-js-eslint-config:
     dependencies:
@@ -9992,6 +9995,10 @@ packages:
     dependencies:
       fuzzy: 0.1.3
       svelte-search: 1.1.0
+    dev: true
+
+  /svelte-youtube-embed@0.2.3:
+    resolution: {integrity: sha512-+HYK224eJ5tSEM6chZgODuSOuaXqv/l5Xj6tvvjqQfrQzdG33jyjYVNzREXIVTerdWSvyqbm5A2BpL8tdwNhQw==}
     dev: true
 
   /svelte2tsx@0.6.23(svelte@3.58.0)(typescript@5.2.2):

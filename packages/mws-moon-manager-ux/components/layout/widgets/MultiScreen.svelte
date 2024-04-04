@@ -18,12 +18,13 @@
         "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen-dark.png",
     },
   };
+  export let extraClass;
   let cssClass = "flex flex-col w-full md:w-1/3 p-7";
   export { cssClass as class };
   export let useLaptop = true;
 </script>
 
-<div class={cssClass}>
+<div on:click class="{cssClass} {extraClass ?? ''}">
   <!-- {capture.title} -->
   {#if capture?.mobile}
     <div
