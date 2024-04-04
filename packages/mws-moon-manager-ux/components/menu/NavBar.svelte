@@ -8,6 +8,8 @@
   export let locale;
   export let viewTemplate;
 
+  // TODO : hide logout if not logged... cf user in redux store ?
+
   // TODO : assets routes from fos-router ?
   const baseHref = window && window.baseHref;
   // TODO : from DB configs ?
