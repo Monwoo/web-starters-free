@@ -6,23 +6,20 @@
 {% endblock %}
 
 {% block body %}
-	{% if error %}
-		<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-	{% endif %}
-	{% if app.user %}
-		<div class="mb-6 text-center">
-			Bienvenue
-			<a href="{{ path('mws_user_show', {'id': app.user.id}) }}">
-				<u>{{ app.user.username }}</u>
-			</a>
-		</div>
-	{% endif %}
-	{% for notice in app.flashes('notice') %}
-		<p>
-			{{ notice|trans({}, 'mws-moon-manager') }}
-		</p>
-	{% endfor %}
-	<div class="content h-[80vh] overflow-auto pt-8" style="">
+	<div class="content h-[80vh] overflow-auto pt-8 text-center" style="">
+		{% if app.user %}
+			<div class="mb-6 text-center">
+				Bienvenue
+				<a href="{{ path('mws_user_show', {'id': app.user.id}) }}">
+					<u>{{ app.user.username }}</u>
+				</a>
+			</div>
+		{% endif %}
+		{% for notice in app.flashes('notice') %}
+			<p>
+				{{ notice|trans({}, 'mws-moon-manager') }}
+			</p>
+		{% endfor %}
 		<div class="row">
 			<div class="col-lg-4 col-md-3"></div>
 			<div class="col-lg-4 col-md-3">
@@ -52,6 +49,9 @@
 							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" >
 
 							<button type="submit">Se connecter</button>
+							{% if error %}
+								<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+							{% endif %}
 						</form>
 					</div>
 				</div>

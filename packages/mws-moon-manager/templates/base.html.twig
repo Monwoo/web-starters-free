@@ -81,9 +81,11 @@
 					{# // TODO : force FIXED bottom, but should not be mendatory,
 					Flex should align it at end of page, even if previous content is empty
 					=> cf rebuild of layout from svelte OK, but fail from twig way... 
-					Ok with fixed for now... #}
+					Ok with fixed for now... 
+					fixed bottom-0 
+					#}
 					<footer
-					class="fixed bottom-0 w-full bg-gray-700 text-gray-300 text-center text-white text-xs md:text-base py-4
+					class="w-full bg-gray-700 text-gray-300 text-center text-white text-xs md:text-base py-4
 					"
 					{{ svelte_component('MwsFooter', {
 						'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
