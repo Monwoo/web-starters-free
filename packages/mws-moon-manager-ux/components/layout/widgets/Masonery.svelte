@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // https://flowbite.com/docs/components/gallery/
 </script>

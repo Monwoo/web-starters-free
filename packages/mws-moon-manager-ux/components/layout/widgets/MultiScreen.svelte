@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // https://flowbite.com/docs/components/device-mockups/
   export let capture = {
@@ -7,19 +7,25 @@
       "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-light.png",
     desktop:
       "https://flowbite.s3.amazonaws.com/docs/device-mockups/screen-image-imac.png",
+    laptop:
+      "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
     dark: {
       mobile:
         "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-dark.png",
       desktop:
         "https://flowbite.s3.amazonaws.com/docs/device-mockups/screen-image-imac-dark.png",
+      laptop:
+        "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen-dark.png",
     },
   };
-  let cssClass = "w-full md:w-1/3 p-7";
-  export {cssClass as class};
+  let cssClass = "flex flex-col w-full md:w-1/3 p-7";
+  export { cssClass as class };
+  export let useLaptop = true;
 </script>
 
-{#if capture?.desktop}
-  <div class={cssClass}>
+<div class={cssClass}>
+  <!-- {capture.title} -->
+  {#if capture?.mobile}
     <div
       class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl"
     >
@@ -50,32 +56,64 @@
         />
       </div>
     </div>
-  </div>
-{/if}
-{#if capture?.desktop}
-  <div class="w-full md:w-1/3 p-7">
-    <div
-      class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[16px] rounded-t-xl h-[172px] max-w-[301px] md:h-[294px] md:max-w-[512px]"
-    >
-      <div class="rounded-xl overflow-hidden h-[140px] md:h-[262px]">
-        <img
-          src={capture?.desktop}
-          class="dark:hidden h-[140px] md:h-[262px] w-full rounded-xl"
-          alt={capture?.title}
-        />
-        <img
-          src={capture?.dark?.desktop ?? capture?.desktop}
-          class="hidden dark:block h-[140px] md:h-[262px] w-full rounded-xl"
-          alt={capture?.title}
+  {/if}
+  {#if capture?.desktop}
+    {#if useLaptop}
+      <div
+        class="relative mx-auto border-gray-800 dark:border-gray-800 
+        bg-gray-800 border-[8px] rounded-t-xl 
+        w-[301px]
+        md:w-[512px]
+        max-w-[85%]
+        md:max-w-[85%]"
+      >
+        <div
+          class="rounded-lg overflow-hidden h-[195px] md:h-[195px] bg-white dark:bg-gray-800"
+        >
+          <img
+            src={capture?.laptop ?? capture?.desktop}
+            class="dark:hidden h-[156px] md:h-[195px] w-full rounded-xl"
+            alt={capture?.title}
+          />
+          <img
+            src={capture?.dark?.laptop ??
+              capture?.dark?.desktop ??
+              capture?.desktop}
+            class="hidden dark:block h-[156px] md:h-[195px] w-full rounded-lg"
+            alt={capture?.title}
+          />
+        </div>
+      </div>
+      <div
+        class="w-full relative mx-auto bg-gray-700 dark:bg-gray-700 rounded-b-xl rounded-t-sm h-[17px] max-w-[351px] md:h-[21px] md:max-w-[597px]"
+      >
+        <div
+          class="absolute left-1/2 top-0 -translate-x-1/2 rounded-b-xl w-[56px] h-[5px] md:w-[96px] md:h-[8px] bg-gray-500"
         />
       </div>
-    </div>
-    <div
-      class="relative mx-auto bg-gray-900 dark:bg-gray-700 rounded-b-xl h-[24px] max-w-[301px] md:h-[42px] md:max-w-[512px]"
-    />
-    <div
-      class="relative mx-auto bg-gray-800 rounded-b-xl h-[55px] max-w-[83px] md:h-[95px] md:max-w-[142px]"
-    />
-  </div>
-{/if}
- 
+    {:else}
+      <div
+        class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[16px] rounded-t-xl h-[172px] max-w-[301px] md:h-[294px] md:max-w-[512px]"
+      >
+        <div class="rounded-xl overflow-hidden h-[140px] md:h-[262px]">
+          <img
+            src={capture?.desktop}
+            class="dark:hidden h-[140px] md:h-[262px] w-full rounded-xl"
+            alt={capture?.title}
+          />
+          <img
+            src={capture?.dark?.desktop ?? capture?.desktop}
+            class="hidden dark:block h-[140px] md:h-[262px] w-full rounded-xl"
+            alt={capture?.title}
+          />
+        </div>
+      </div>
+      <div
+        class="w-full relative mx-auto bg-gray-900 dark:bg-gray-700 rounded-b-xl h-[24px] max-w-[301px] md:h-[42px] md:max-w-[512px]"
+      />
+      <div
+        class="w-full relative mx-auto bg-gray-800 rounded-b-xl h-[55px] max-w-[83px] md:h-[95px] md:max-w-[142px]"
+      />
+    {/if}
+  {/if}
+</div>

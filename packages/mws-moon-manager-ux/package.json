@@ -18,6 +18,7 @@
     "apexcharts": "^3.48.0",
     "core-js": "^3.33.1",
     "dayjs": "^1.11.10",
+    "dsv-loader": "^2.0.0",
     "eslint-config-svelte": "workspace:*",
     "flowbite": "^1.8.1",
     "flowbite-svelte": "^0.44.18",

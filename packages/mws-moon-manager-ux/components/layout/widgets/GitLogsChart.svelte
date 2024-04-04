@@ -1,21 +1,106 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
+  import dayjs from "dayjs";
 
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // https://flowbite.com/docs/plugins/charts/
   // https://apexcharts.com/
   import ApexCharts from "apexcharts";
 
+  /*
+  Generate logs :
+
+  git log --pretty=$'x\tx\t%ai' --numstat \
+  -i --grep='\[mws-pdf-billings\]' \
+  --grep='\[mws-moon-manager\]' \
+  --branches --tags --remotes --full-history \
+  --date-order --date=iso-local> git-logs.tsv
+
+  */
+  // import gitLogs from "../../../../../apps/mws-sf-pdf-billings/backend/git-logs.tsv"; // TIPS : ok only if you enable dsv-loader with webpack...
+  import gitLogs from "dsv-loader?rows=0&delimiter=\t!../../../../../apps/mws-sf-pdf-billings/backend/git-logs.tsv";
+
+  console.log(gitLogs);
+
+  let byCategories = {};
+  let currentCommitTime = null;
+
+  gitLogs.forEach((log) => {
+    if ("x" == (log[0] ?? null)) {
+      // it's Day Log
+      currentCommitTime = dayjs(log[2]);
+    } else {
+      if (
+        null !== (log[0] ?? null) &&
+        log[0].length &&
+        log[1].length &&
+        !isNaN(Number(log[0])) &&
+        !isNaN(Number(log[1]))
+        // NaN !== Number(log[1])
+      ) {
+        // currentCommitTime.format("YYYY/MM/DD H:mm:ss")
+        const catKey = currentCommitTime.format("YYYY-MM");
+        let cat = byCategories[catKey] ?? null;
+        if (!cat) {
+          cat = [0, 0];
+          byCategories[catKey] = cat;
+        }
+        cat[0] += Number(log[0]);
+        cat[1] += Number(log[1]);
+      }
+    }
+  });
+
+  let addedTotal = 0;
+  let removedTotal = 0;
+  let [addedTotals, removedTotals] = Object.keys(byCategories).reduce(
+    (acc, catKey) => {
+      const cat = byCategories[catKey];
+      acc[0].push(cat[0]);
+      acc[1].push(cat[1]);
+      addedTotal += cat[0];
+      removedTotal += cat[1];
+      return acc;
+    },
+    [[], []]
+  );
+
+  // Number.prototype.toPrettyNum = (length: number) => {
+  Number.prototype.toPrettyNum = function (
+    this: Number,
+    length: number,
+    maxLength = null
+  ) {
+    if (maxLength === null) maxLength = length;
+    var s = this;
+    const splited = s
+      .toFixed(maxLength)
+      .replace(new RegExp(`0{0,${maxLength - length}}$`), "")
+      // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
+      // .replace(/0{0,2}$/, "")
+      // .toLocaleString('en-US', { // TODO : centralize toPrettyNum and use locals formatings ?
+      //   minimumFractionDigits: 2,
+      //   maximumFractionDigits: 4
+      // })
+      .replace(".", ",")
+      .split(",");
+    return (
+      (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+      (length > 0 ? "," : "") +
+      (splited[1] ?? "")
+    );
+  };
+
   const options = {
     series: [
       {
-        name: "Income",
+        name: "Ajouts",
         color: "#31C48D",
-        data: ["1420", "1620", "1820", "1420", "1650", "2120"],
+        data: addedTotals,
       },
       {
-        name: "Expense",
-        data: ["788", "810", "866", "788", "1100", "1200"],
+        name: "Suppressions",
+        data: removedTotals,
         color: "#F05252",
       },
     ],
@@ -55,7 +140,8 @@
       shared: true,
       intersect: false,
       formatter: function (value) {
-        return "$" + value;
+        // return "$" + value;
+        return value.toPrettyNum(0);
       },
     },
     xaxis: {
@@ -66,10 +152,11 @@
           cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400",
         },
         formatter: function (value) {
-          return "$" + value;
+          // return "$" + value;
+          return value.toPrettyNum(0);
         },
       },
-      categories: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      categories: Object.keys(byCategories),
       axisTicks: {
         show: false,
       },
@@ -101,9 +188,7 @@
   };
 
   onMount(() => {
-    if (
-      document.getElementById("bar-chart")
-    ) {
+    if (document.getElementById("bar-chart")) {
       const chart = new ApexCharts(
         document.getElementById("bar-chart"),
         options
@@ -117,21 +202,51 @@
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </svelte:head> -->
 
-<div
-  class="w-full rounded-lg shadow dark:bg-gray-800 p-4 md:p-6"
+<h1
+  class="text-gray-900 dark:text-white text-3xl md:text-5xl font-extrabold mb-2"
 >
+  Statistiques Git logs
+</h1>
+<a
+  href="https://github.com/Monwoo/web-starters-free"
+  target="_blank"
+  class="uppercase text-sm font-semibold inline-flex
+ items-center rounded-lg text-blue-600 hover:text-blue-700
+  dark:hover:text-blue-500  hover:bg-gray-100
+   dark:hover:bg-gray-700 dark:focus:ring-gray-700
+    dark:border-gray-700 px-3 py-2 float-right"
+>
+  Mettre une étoile via Github
+  <svg
+    class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 6 10"
+  >
+    <path
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="m1 9 4-4-4-4"
+    />
+  </svg>
+</a>
+
+<div class="w-full rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
   <div
     class="flex justify-between border-gray-200 border-b dark:border-gray-700 pb-3"
   >
     <dl>
       <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">
-        Profit
+        Delta
       </dt>
       <dd class="leading-none text-3xl font-bold text-gray-900 dark:text-white">
-        $5,405
+        {(addedTotal - removedTotal).toPrettyNum(0)}
       </dd>
     </dl>
-    <div>
+    <!-- <div>
       <span
         class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300"
       >
@@ -152,26 +267,26 @@
         </svg>
         Profit rate 23.5%
       </span>
-    </div>
+    </div> -->
   </div>
 
   <div class="grid grid-cols-2 py-3">
     <dl>
       <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">
-        Income
+        Ajouts
       </dt>
       <dd
         class="leading-none text-xl font-bold text-green-500 dark:text-green-400"
       >
-        $23,635
+        {addedTotal.toPrettyNum(0)}
       </dd>
     </dl>
     <dl>
       <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">
-        Expense
+        Suppressions
       </dt>
       <dd class="leading-none text-xl font-bold text-red-600 dark:text-red-500">
-        -$18,230
+        {removedTotal.toPrettyNum(0)}
       </dd>
     </dl>
   </div>
@@ -180,9 +295,10 @@
   <div
     class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between"
   >
-    <div class="flex justify-between items-center pt-5">
+    <div class="flex justify-end items-center pt-5">
+      <!-- <div class="flex justify-between items-center pt-5"> -->
       <!-- Button -->
-      <button
+      <!-- <button
         id="dropdownDefaultButton"
         data-dropdown-toggle="lastDaysdropdown"
         data-dropdown-placement="bottom"
@@ -205,9 +321,9 @@
             d="m1 1 4 4 4-4"
           />
         </svg>
-      </button>
+      </button> -->
       <!-- Dropdown menu -->
-      <div
+      <!-- <div
         id="lastDaysdropdown"
         class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
       >
@@ -265,12 +381,17 @@
             >
           </li>
         </ul>
-      </div>
+      </div> -->
       <a
-        href="#"
-        class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2"
+        href="https://github.com/Monwoo/web-starters-free"
+        target="_blank"
+        class="uppercase text-sm font-semibold inline-flex
+         items-center rounded-lg text-blue-600 hover:text-blue-700
+          dark:hover:text-blue-500  hover:bg-gray-100
+           dark:hover:bg-gray-700 dark:focus:ring-gray-700
+            dark:border-gray-700 px-3 py-2 float-right"
       >
-        Revenue Report
+        Mettre une étoile via Github
         <svg
           class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180"
           aria-hidden="true"

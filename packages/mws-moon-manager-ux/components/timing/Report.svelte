@@ -837,7 +837,7 @@
       .split(",");
     return (
       (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
-      "," +
+      (length > 0 ? "," : "") +
       (splited[1] ?? "")
     );
   };
