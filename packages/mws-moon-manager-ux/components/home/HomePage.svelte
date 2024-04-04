@@ -210,20 +210,30 @@
             </a>
 
             <a
-            class="
+                class="
             text-lg font-medium inline-flex items-center
             px-4 pt-6 pb-12"
-            href={Routing.generate(
-              "mws_timings_qualif",
-              {
-                _locale: locale ?? "",
-              },
-              true
-            )}
-          >
-            <button> Qualification des temps </button>
-          </a>
-        
+                href={Routing.generate(
+                    "mws_timings_qualif",
+                    {
+                        _locale: locale ?? "",
+                    },
+                    true
+                )}
+            >
+                <button> Qualification des temps </button>
+            </a>
+            <a
+                class="
+          text-lg font-medium inline-flex items-center
+          px-4 pt-6 pb-12"
+                href={Routing.generate("mws_timing_tag_list", {
+                    _locale: locale ?? "",
+                    viewTemplate: viewTemplate ?? "",
+                })}
+            >
+                <button>Liste des tags</button>
+            </a>
         </div>
         <Video youtubeId="pGW_DdicUW4" />
 
