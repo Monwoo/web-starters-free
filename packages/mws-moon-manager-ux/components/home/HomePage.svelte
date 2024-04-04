@@ -11,7 +11,7 @@
     // import { goto } from "$app/navigation"; // TODO : not from encore bundle ?
     const goto = (url) => {
         window.location = url;
-    }
+    };
 
     export let title = null;
     export let locale = null;
@@ -47,7 +47,7 @@
         <Separator />
         <div class="w-full flex flex-wrap">
             <MultiScreen
-                extraClass="cursor-pointer"
+                extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
                         Routing.generate(
@@ -65,7 +65,7 @@
                 }}
             />
             <MultiScreen
-                extraClass="cursor-pointer"
+                extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
                         Routing.generate("mws_offer_lookup", {
@@ -80,7 +80,7 @@
                 }}
             />
             <MultiScreen
-                extraClass="cursor-pointer"
+                extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
                         Routing.generate(
@@ -98,7 +98,7 @@
                 }}
             />
             <MultiScreen
-                extraClass="cursor-pointer"
+                extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
                         Routing.generate(
@@ -117,7 +117,7 @@
                 }}
             />
             <MultiScreen
-                extraClass="cursor-pointer"
+                extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
                         Routing.generate("mws_offer_lookup", {
@@ -133,7 +133,7 @@
                 }}
             />
             <MultiScreen
-                extraClass="cursor-pointer"
+                extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
                         Routing.generate(
@@ -158,51 +158,57 @@
             title="Facturation PDF"
             content="Devis public pré-remplissable par un tiers."
         />
-        <a
-            href={Routing.generate(
-                "app_pdf_billings",
-                {
-                    _locale: locale ?? "",
-                },
-                true
-            )}
-            class="
+        <div class="w-full flex justify-center items-center">
+            <a
+                href={Routing.generate(
+                    "app_pdf_billings",
+                    {
+                        _locale: locale ?? "",
+                    },
+                    true
+                )}
+                class="
             text-lg font-medium inline-flex items-center
             pt-6 pb-12"
-        >
-            <button>Services</button>
-        </a>
+            >
+                <button>Services</button>
+            </a>
+        </div>
         <Video youtubeId="pGW_DdicUW4" />
 
         <Jumbotron title="Recherche d'offres" />
-        <a
-            href={Routing.generate("mws_offer_lookup", {
-                _locale: locale ?? "",
-                viewTemplate: viewTemplate ?? null,
-            })}
-            class="
+        <div class="w-full flex justify-center items-center">
+            <a
+                href={Routing.generate("mws_offer_lookup", {
+                    _locale: locale ?? "",
+                    viewTemplate: viewTemplate ?? null,
+                })}
+                class="
             text-lg font-medium inline-flex items-center
             pt-6 pb-12"
-        >
-            <button>Rechercher une offre</button>
-        </a>
+            >
+                <button>Rechercher une offre</button>
+            </a>
+        </div>
         <Video youtubeId="pGW_DdicUW4" />
 
         <Jumbotron title="Suivi des temps" />
-        <a
-            href={Routing.generate(
-                "mws_timings_report",
-                {
-                    _locale: locale ?? "",
-                },
-                true
-            )}
-            class="
+        <div class="w-full flex justify-center items-center">
+            <a
+                href={Routing.generate(
+                    "mws_timings_report",
+                    {
+                        _locale: locale ?? "",
+                    },
+                    true
+                )}
+                class="
             text-lg font-medium inline-flex items-center
             pt-6 pb-12"
-        >
-            <button>Timings</button>
-        </a>
+            >
+                <button>Timings</button>
+            </a>
+        </div>
         <Video youtubeId="pGW_DdicUW4" />
 
         <Separator />

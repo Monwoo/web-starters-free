@@ -19,7 +19,7 @@
     },
   };
   export let extraClass;
-  let cssClass = "flex flex-col w-full md:w-1/3 p-7";
+  let cssClass = "flex flex-col w-full md:w-1/3 p-7 rounded-md";
   export { cssClass as class };
   export let useLaptop = true;
 </script>
