@@ -9,7 +9,9 @@
 		.form-input {
 			width: 100%;
 		}
-		button, input, textarea {
+		button,
+		input,
+		textarea {
 			margin: 4px;
 			padding: 7px;
 		}
@@ -91,7 +93,7 @@
 		.workload-details-pre {
 			/* display: pre; */
 			overflow: hidden;
-			height: 0px;
+			height: 0;
 		}
 		.business-aim-details {
 			border: solid 1px black;
@@ -101,9 +103,8 @@
 		.business-aim-details-pre {
 			/* display: pre; */
 			overflow: hidden;
-			height: 0px;
+			height: 0;
 		}
-
 	</style>
 {% endblock %}
 
@@ -111,61 +112,76 @@
 
 {% block body %}
 	<div class="mws-window mws-ratio-4/6">
-		<div class="mws-window-01 p-6">
-			<button data-popover-target="mws-pdf-billing-main-menu"
-			type="button"
-			class="text-white bg-blue-700 hover:bg-blue-800
-			focus:ring-4 focus:outline-none focus:ring-blue-300
-			font-medium rounded-lg text-sm px-5 py-2.5 text-center
-			dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-			>
+		<div
+			class="mws-window-01 p-6">
+			{# <button data-popover-target="mws-pdf-billing-main-menu"
+						type="button"
+						class="text-white bg-blue-700 hover:bg-blue-800
+						focus:ring-4 focus:outline-none focus:ring-blue-300
+						font-medium rounded-lg text-sm px-5 py-2.5 text-center
+						dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						>
+							Menu
+						</button>
+						<div data-popover id="mws-pdf-billing-main-menu" role="tooltip"
+						class="flex absolute z-10 invisible inline-block w-full text-sm
+						text-gray-500 transition-opacity duration-300 
+						bg-white border border-gray-200 rounded-lg shadow-sm 
+						opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
+							<header class="py-5 bg-gray-700 text-white text-center"
+							{{ svelte_component('MwsHeader', {
+			
+							}) }}>
+							</header>
+						</div> #}
+			<button id="menu-timing-opener" data-collapse-toggle="menu-timing" type="button" class="rounded-lg m-2" aria-controls="search-timing-lookup" aria-expanded="false">
 				Menu
 			</button>
-			<div data-popover id="mws-pdf-billing-main-menu" role="tooltip"
-			class="flex absolute z-10 invisible inline-block w-full text-sm
-			text-gray-500 transition-opacity duration-300 
-			bg-white border border-gray-200 rounded-lg shadow-sm 
-			opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
-				<header class="py-5 bg-gray-700 text-white text-center"
-				{{ svelte_component('MwsHeader', {
-
-				}) }}>
-				</header>
+			<div class="mws-menu-wrapper inline-flex flex-col bg-yellow-100">
+				<div id="menu-timing" class="detail hidden">
+					<header class="w-full flex"
+					{{ svelte_component('MwsHeader', {
+	
+					}) }}>
+				</div>
 			</div>
 			<div class="preface m-3">
 				<p>
 					{{ 'mws.copyright'|trans|raw }}
-						<br/>
-						<br/>
-						<a href="https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-sf-pdf-billings"
-						target="_blank">
-								{{ 'mws.goToGithub'|trans|raw }}
-						</a>
+					<br/>
+					<br/>
+					<a href="https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-sf-pdf-billings" target="_blank">
+						{{ 'mws.goToGithub'|trans|raw }}
+					</a>
 				</p>
 
 				<div class="nav-item dropdown">
 					{{ app.request.locale|locale_name(app.request.locale)|u.title }}
 					<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
-							<li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'en'}) }}">
-							{{ 'en'|locale_name('en')|u.title }}
-							</a></li>
-							<li><a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'fr'}) }}">
-							{{ 'fr'|locale_name('fr')|u.title }}
-							</a></li>
+						<li>
+							<a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'en'}) }}">
+								{{ 'en'|locale_name('en')|u.title }}
+							</a>
+						</li>
+						<li>
+							<a class="dropdown-item" href="{{ path('app_pdf_billings', {_locale: 'fr'}) }}">
+								{{ 'fr'|locale_name('fr')|u.title }}
+							</a>
+						</li>
 					</ul>
 				</div>
 
 				<p>
-						{{ 'mws.goToAppSupports'|trans|raw }}
-						<a href="https://github.com/Monwoo/web-starters-free/issues" target="_blank">
+					{{ 'mws.goToAppSupports'|trans|raw }}
+					<a href="https://github.com/Monwoo/web-starters-free/issues" target="_blank">
 						github.com/Monwoo/web-starters-free/issues
-						</a>
+					</a>
 				</p>
 				<p>
-						{{ 'mws.goToBusinessSupports'|trans|raw }}
-						<a href="https://www.monwoo.com/don" target="_blank">
+					{{ 'mws.goToBusinessSupports'|trans|raw }}
+					<a href="https://www.monwoo.com/don" target="_blank">
 						www.monwoo.com/don
-						</a>
+					</a>
 				</p>
 				<p>
 					{% if gdprSentinelLoaded %}
@@ -173,7 +189,7 @@
 						{% set gdprLastCleanDate = gdprLastCleanDate ?? date('now') %}
 						{% set gdprNextCleanDate = gdprNextCleanDate ?? date('now') %}
 						{% set dateDiff = date().diff(gdprNextCleanDate) %}
-						
+
 						{{ gdprSentinelRequestCheck ? 'mws.gdpr.checkOK'|trans|raw : 'mws.gdpr.checkIsMissing'|trans|raw }}
 						{{ 'mws.gdpr.endUserWarning'|trans({
 							'%gdprNextCleanDate%': gdprNextCleanDate|format_datetime,
@@ -191,7 +207,7 @@
 					</a>
 				</p>
 				<p style="display:flex;flex-wrap: wrap;">
-						{{ 'mws.templates.availableListLabel'|trans|raw }}
+					{{ 'mws.templates.availableListLabel'|trans|raw }}
 					<br/><br/>
 					{% set monwooTemplates = [ 
 						'monwoo', 'monwoo-02-wp-e-com', 'monwoo-03-php-backend',
@@ -199,7 +215,7 @@
 						'monwoo-06-analytical-study', 'monwoo-07-upkeep',
 						'monwoo-08-backend-learning', 'monwoo-09-empty' ] %}
 					{# TIPS : setup with FULL translated string for extractions 
-					tools to extract translated strings... #}
+										tools to extract translated strings... #}
 					{% set monwooTemplatesTranslatedLabels = {
 						'monwoo' : 'mws.templates.labels.monwoo_01_WpDisplay'|trans,
 						'monwoo-02-wp-e-com' : 'mws.templates.labels.monwoo_02_WpWaConfigECom'|trans,
@@ -212,33 +228,38 @@
 						'monwoo-09-empty' : 'mws.templates.labels.monwoo_09_empty'|trans,
 					} %}
 					{% for monwooTemplate in monwooTemplates %}
-						<a href="{{ path('app_pdf_billings', {
-							billing_config_submitable: {
-								clientSlug: billingConfig.clientSlug,
-								quotationTemplate: monwooTemplate,
-							}, ts:tStamp
-						}) }}" style="font-size:16pt;padding:7px;margin:7px;">
-						{{ monwooTemplatesTranslatedLabels[monwooTemplate] }}
-						</a> &nbsp;&nbsp;&nbsp;
+						<a href="{{ path('app_pdf_billings', { billing_config_submitable: { clientSlug: billingConfig.clientSlug, quotationTemplate: monwooTemplate, }, ts:tStamp }) }}" style="font-size:16pt;padding:7px;margin:7px;">
+							{{ monwooTemplatesTranslatedLabels[monwooTemplate] }}
+						</a>
+						&nbsp;&nbsp;&nbsp;
 					{% endfor %}
-				<br/>
+					<br/>
 				</p>
 			</div>
 
 			<div class="billing-config-summary">
-				<p><strong>
-					{% if billingConfig.quotationNumber %}
-						{{billingConfig.quotationNumber}} via
-					{% endif %}
-					{{billingConfig.quotationSourceNumber}}
-				</strong> pour : {{billingConfig.clientName}}</p>
-				<p>Nb d'heures Monwoo : {{billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours}}</p>
-				<p><strong>Template : </strong>{{billingConfig.quotationTemplate}}</p>
+				<p>
+					<strong>
+						{% if billingConfig.quotationNumber %}
+							{{billingConfig.quotationNumber}}
+							via
+						{% endif %}
+						{{billingConfig.quotationSourceNumber}}
+					</strong>
+					pour :
+					{{billingConfig.clientName}}</p>
+				<p>Nb d'heures Monwoo :
+					{{billingConfig.businessWorkloadHours ?? defaultBusinessWorkloadHours}}</p>
+				<p>
+					<strong>Template :
+					</strong>
+					{{billingConfig.quotationTemplate}}</p>
 				{% if businessWorkloadTemplate %}
-					<p>Détail des heures Monwoo : </p>
+					<p>Détail des heures Monwoo :
+					</p>
 					<div class="workload-details" onclick="const preElt = document.querySelector('.workload-details-pre');
-					preElt.offsetHeight === 0
-					? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
+											preElt.offsetHeight === 0
+											? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
 						billingConfig.businessWorkloadDetails ?? include(businessWorkloadTemplate)
 					)  |striptags(allowedHtmlTags)|raw}}
 					</div>
@@ -247,10 +268,11 @@
 						)  |striptags(allowedHtmlTags)}}
 					</pre>
 				{% endif %}
-				<p>Objectifs de l'activité : </p>
+				<p>Objectifs de l'activité :
+				</p>
 				<div class="business-aim-details" onclick="const preElt = document.querySelector('.business-aim-details-pre');
-				preElt.offsetHeight === 0
-				? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
+									preElt.offsetHeight === 0
+									? (preElt.style.height = 'auto') : (preElt.style.height = '0px');">{{ (
 					include(businessAimTemplate)
 				)  |striptags(allowedHtmlTags)|raw}}
 				</div>
@@ -263,8 +285,8 @@
 
 			<div>
 				{# <a href="{{ asset(file.webPath) }}" download="{{ file.downloadFileName }}">
-					Download current billing backup
-				</a> #}
+									Download current billing backup
+								</a> #}
 				<a href="{{ path('app_download_billing', { clientSlug: billingConfig.clientSlug } ) }}" target="_blank">
 					Download current billing backup
 				</a>
@@ -272,41 +294,34 @@
 
 			{{ form_start(form) }}
 			{# <div class="">
-				<div class="">
-					{{ form_label(form.clientName) }}
-					{{ form_widget(form.clientName) }}
-					{{ form_errors(form.clientName) }}
-				</div>
-			</div> #}
+							<div class="">
+								{{ form_label(form.clientName) }}
+								{{ form_widget(form.clientName) }}
+								{{ form_errors(form.clientName) }}
+							</div>
+						</div> #}
 
 			{# TIPS : https://symfony.com/doc/current/form/form_collections.html
-			https://symfony.com/doc/current/form/form_themes.html#form-custom-prototype #}
-			<ul class="outlays" data-index="{{ form.outlays|length > 0 ? form.outlays|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.outlays.vars.prototype)|e('html_attr') }}"></ul>
+						https://symfony.com/doc/current/form/form_themes.html#form-custom-prototype #}<ul class="outlays" data-index="{{ form.outlays|length > 0 ? form.outlays|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.outlays.vars.prototype)|e('html_attr') }}"> </ul>
 			<ul class="transactions" data-index="{{ form.transactions|length > 0 ? form.transactions|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.transactions.vars.prototype)|e('html_attr') }}"></ul>
 			<ul class="products" data-index="{{ form.products|length > 0 ? form.products|last.vars.name + 1 : 0 }}" data-prototype="{{ form_widget(form.products.vars.prototype)|e('html_attr') }}"></ul>
 
 			{# <input
-				type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}"> #}
+							type="hidden" name="_token" value="{{ csrf_token('pdf-billings') }}"> #}
 			{# TIPS : {{ form_rest(form) }}
-						with {{ form_end(form, {'render_rest': false}) }}
-						to move the forme rest somewhere else
-				#}
+									with {{ form_end(form, {'render_rest': false}) }}
+									to move the forme rest somewhere else
+							#}
 			{{ form_end(form) }}
 			<br/><br/>
-			<button type="button" class="add_outlay_link" data-collection-holder-class="outlays"
-			type="button"
-			>Ajouter un débours</button>
+			<button type="button" class="add_outlay_link" data-collection-holder-class="outlays" type="button">Ajouter un débours</button>
 
 			<br/><br/>
-			<button type="button" class="add_transaction_link" data-collection-holder-class="transactions"
-			type="button"
-			>Ajouter une transaction</button>
+			<button type="button" class="add_transaction_link" data-collection-holder-class="transactions" type="button">Ajouter une transaction</button>
 
 			<br/><br/>
-			<button type="button" class="add_product_link" data-collection-holder-class="products"
-			type="button"
-			>Ajouter un produit</button>
-			
+			<button type="button" class="add_product_link" data-collection-holder-class="products" type="button">Ajouter un produit</button>
+
 			{# https://stackoverflow.com/questions/291813/recommended-way-to-embed-pdf-in-html #}
 			{# Native way : #}
 			<p style="text-align:right">
@@ -315,12 +330,13 @@
 				</a>
 				<br/>
 				Advice : only for quick editing. GDPR sentinel will erase all data every 24hr.
-				So best way to save your data, is to send the pdf by email.
+								So best way to save your data, is to send the pdf by email.
 			</p>
-			<p style="text-align:right">
+			<p
+				style="text-align:right">
 				{# <a href="{{ path('app_pdf_billings_view', { clientSlug: billingConfig.clientSlug, viewPart: 'CGV' } ) }}" target="_blank">
-					Share a realtime PDF updated view of this billings to some client.
-				</a> #}
+									Share a realtime PDF updated view of this billings to some client.
+								</a> #}
 				Comming soon : verify your PDF Authenticity and reload data from billings pdf imports.
 			</p>
 			<p style="text-align:right">
@@ -335,17 +351,14 @@
 		</div>
 		<div class="mws-window-02 h-[70%]">
 			{# TIPS : use Object to load under mobile webbrowser (or use jslib for more comparibilities)
-			<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf"> #}
+						<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf"> #}
 
 			{# <object data="MonwooDevis{{viewPart}}.pdf" type="application/pdf" frameborder="0" width="100%" height="600px" style="padding: 20px;">
-				<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf">
-			</object> #}
-			<iframe
-			src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug, ts:tStamp})|url_encode(true) }}&embedded=true"
-			class="w-full h-full" frameborder="0"></iframe>
+							<embed src="{{ path('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug} ) }}" style="width:100%; min-height:700px;" type="application/pdf">
+						</object> #}<iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view', {clientSlug:billingConfig.clientSlug, ts:tStamp})|url_encode(true) }}&embedded=true" class="w-full h-full" frameborder="0"> </iframe>
 
 			{# TIPS : Need pdf.js integrated library : #}
-			{# <iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
+		{# <iframe src="{{ asset('libs/pdfjs-3.7.107-dist/web/viewer.html') }}?file={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
 
 			{# TIPS : Need to BE online to be valide for gview ? #}
 			{# <iframe src="https://docs.google.com/gview?url={{ url('app_pdf_billings_view')|url_encode(true) }}&embedded=true" style="width:100%; min-height:700px;" frameborder="0"></iframe> #}
@@ -358,218 +371,193 @@
 	{{ parent() }}
 	<script>
 		// https://symfony.com/doc/current/form/form_collections.html#allowing-new-tags-with-the-prototype
-		const addOutlayFormDeleteLink = (item) => {
-			const removeFormButton = document.createElement('button');
-			// Disallow button submit on previous form possible user 'enter' key input
-			// onkeydown="return event.key != 'Enter';"
-			// removeFormButton.setAttribute('onkeydown', "return event.keyCode !== 13;");
-			// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
-			// Type : button: The button has no default behavior, and does nothing
-			// when pressed by default. It can have client-side scripts listen
-			// to the element's events, which are triggered when the events occur.
-			removeFormButton.setAttribute('type', "button");
+const addOutlayFormDeleteLink = (item) => {
+const removeFormButton = document.createElement('button');
+// Disallow button submit on previous form possible user 'enter' key input
+// onkeydown="return event.key != 'Enter';"
+// removeFormButton.setAttribute('onkeydown', "return event.keyCode !== 13;");
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
+// Type : button: The button has no default behavior, and does nothing
+// when pressed by default. It can have client-side scripts listen
+// to the element's events, which are triggered when the events occur.
+removeFormButton.setAttribute('type', "button");
 
-			removeFormButton.innerText = 'Supprimer ce débours';
+removeFormButton.innerText = 'Supprimer ce débours';
 
-			item.append(removeFormButton);
+item.append(removeFormButton);
 
-			removeFormButton.addEventListener('click', (e) => {
-					e.preventDefault();
-					// remove the item for the outlay form
-					item.remove();
-			});
-		}
+removeFormButton.addEventListener('click', (e) => {
+e.preventDefault();
+// remove the item for the outlay form
+item.remove();
+});
+}
 
-		const addOutlayFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
-			const removeFormButton = document.createElement('button');
-			removeFormButton.setAttribute('type', "button");
-			removeFormButton.innerText = 'Supprimer tous les débours';
+const addOutlayFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
+const removeFormButton = document.createElement('button');
+removeFormButton.setAttribute('type', "button");
+removeFormButton.innerText = 'Supprimer tous les débours';
 
-			appendTo.append(removeFormButton);
+appendTo.append(removeFormButton);
 
-			removeFormButton.addEventListener('click', (e) => {
-					e.preventDefault();
-					// remove all items for the outlays form
-					document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
-						item.remove();
-					});
-			});
-		}
+removeFormButton.addEventListener('click', (e) => {
+e.preventDefault();
+// remove all items for the outlays form
+document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
+item.remove();
+});
+});
+}
 
-		const billingConfigOutlaysSelector = '#billing_config_submitable_outlays';
-		const outlaysTarget = document.querySelector(billingConfigOutlaysSelector);
-		const outlaysItemSelector = '[id^="billing_config_submitable_outlays_"]:not([name])';
+const billingConfigOutlaysSelector = '#billing_config_submitable_outlays';
+const outlaysTarget = document.querySelector(billingConfigOutlaysSelector);
+const outlaysItemSelector = '[id^="billing_config_submitable_outlays_"]:not([name])';
 
-		const addOutlayFormToCollection = (e) => {
-			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+const addOutlayFormToCollection = (e) => {
+const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
-			const item = document.createElement('div');
+const item = document.createElement('div');
 
-			const idx = collectionHolder.dataset.index;
-			item.innerHTML = collectionHolder
-			.dataset
-			.prototype
-			.replace(
-				/__name__/g,
-				idx
-			);
-			item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
-			// add a delete link to the new form
-			addOutlayFormDeleteLink(item);
+const idx = collectionHolder.dataset.index;
+item.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, idx);
+item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
+// add a delete link to the new form
+addOutlayFormDeleteLink(item);
 
-			// collectionHolder.appendChild(item);
-			outlaysTarget.appendChild(item);
+// collectionHolder.appendChild(item);
+outlaysTarget.appendChild(item);
 
-			collectionHolder.dataset.index++;
-		};
+collectionHolder.dataset.index ++;
+};
 
-		document.querySelectorAll('.add_outlay_link').forEach(btn => {
-			btn.addEventListener("click", addOutlayFormToCollection)
-		});
+document.querySelectorAll('.add_outlay_link').forEach(btn => {
+btn.addEventListener("click", addOutlayFormToCollection)
+});
 
-		document
-		.querySelectorAll(outlaysItemSelector)
-    .forEach((tag) => {
-        addOutlayFormDeleteLink(tag)
-    })
-		addOutlayFormDeleteAllLink(outlaysTarget.parentElement, outlaysItemSelector);
+document.querySelectorAll(outlaysItemSelector).forEach((tag) => {
+addOutlayFormDeleteLink(tag)
+})
+addOutlayFormDeleteAllLink(outlaysTarget.parentElement, outlaysItemSelector);
 
-		const addTransactionFormDeleteLink = (item) => {
-			const removeFormButton = document.createElement('button');
-			// Type : button: The button has no default behavior, and does nothing
-			removeFormButton.setAttribute('type', "button");
-			removeFormButton.innerText = 'Supprimer cette transaction';
-			item.append(removeFormButton);
+const addTransactionFormDeleteLink = (item) => {
+const removeFormButton = document.createElement('button');
+// Type : button: The button has no default behavior, and does nothing
+removeFormButton.setAttribute('type', "button");
+removeFormButton.innerText = 'Supprimer cette transaction';
+item.append(removeFormButton);
 
-			removeFormButton.addEventListener('click', (e) => {
-					e.preventDefault();
-					// remove the item for the outlay form
-					item.remove();
-			});
-		}
+removeFormButton.addEventListener('click', (e) => {
+e.preventDefault();
+// remove the item for the outlay form
+item.remove();
+});
+}
 
-		const addTransactionFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
-			const removeFormButton = document.createElement('button');
-			removeFormButton.setAttribute('type', "button");
-			removeFormButton.innerText = 'Supprimer toutes les transactions';
+const addTransactionFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
+const removeFormButton = document.createElement('button');
+removeFormButton.setAttribute('type', "button");
+removeFormButton.innerText = 'Supprimer toutes les transactions';
 
-			appendTo.append(removeFormButton);
+appendTo.append(removeFormButton);
 
-			removeFormButton.addEventListener('click', (e) => {
-					e.preventDefault();
-					// remove all items for the transaction form
-					document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
-						item.remove();
-					});
-			});
-		}
+removeFormButton.addEventListener('click', (e) => {
+e.preventDefault();
+// remove all items for the transaction form
+document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
+item.remove();
+});
+});
+}
 
-		const billingConfigTransactionsSelector = '#billing_config_submitable_transactions';
-		const transactionsTarget = document.querySelector(billingConfigTransactionsSelector);
-		const transactionsItemSelector = '[id="billing_config_submitable_transactions"] > div > [id^="billing_config_submitable_transactions_"]';
+const billingConfigTransactionsSelector = '#billing_config_submitable_transactions';
+const transactionsTarget = document.querySelector(billingConfigTransactionsSelector);
+const transactionsItemSelector = '[id="billing_config_submitable_transactions"] > div > [id^="billing_config_submitable_transactions_"]';
 
-		const addTransactionFormToCollection = (e) => {
-			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+const addTransactionFormToCollection = (e) => {
+const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
-			const item = document.createElement('div');
+const item = document.createElement('div');
 
-			const idx = collectionHolder.dataset.index;
-			item.innerHTML = collectionHolder
-			.dataset
-			.prototype
-			.replace(
-				/__name__/g,
-				idx
-			);
-			item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
-			// add a delete link to the new form
-			addTransactionFormDeleteLink(item);
+const idx = collectionHolder.dataset.index;
+item.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, idx);
+item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
+// add a delete link to the new form
+addTransactionFormDeleteLink(item);
 
-			// collectionHolder.appendChild(item);
-			transactionsTarget.appendChild(item);
+// collectionHolder.appendChild(item);
+transactionsTarget.appendChild(item);
 
-			collectionHolder.dataset.index++;
-		};
+collectionHolder.dataset.index ++;
+};
 
-		document.querySelectorAll('.add_transaction_link').forEach(btn => {
-			btn.addEventListener("click", addTransactionFormToCollection)
-		});
+document.querySelectorAll('.add_transaction_link').forEach(btn => {
+btn.addEventListener("click", addTransactionFormToCollection)
+});
 
-		document
-		.querySelectorAll(transactionsItemSelector)
-    .forEach((tag) => {
-        addTransactionFormDeleteLink(tag)
-    })
-		addTransactionFormDeleteAllLink(transactionsTarget.parentElement, transactionsItemSelector);
+document.querySelectorAll(transactionsItemSelector).forEach((tag) => {
+addTransactionFormDeleteLink(tag)
+})
+addTransactionFormDeleteAllLink(transactionsTarget.parentElement, transactionsItemSelector);
 
-		const addProductFormDeleteLink = (item) => {
-			const removeFormButton = document.createElement('button');
-			// Type : button: The button has no default behavior, and does nothing
-			removeFormButton.setAttribute('type', "button");
-			removeFormButton.innerText = 'Supprimer ce produit';
-			item.append(removeFormButton);
+const addProductFormDeleteLink = (item) => {
+const removeFormButton = document.createElement('button');
+// Type : button: The button has no default behavior, and does nothing
+removeFormButton.setAttribute('type', "button");
+removeFormButton.innerText = 'Supprimer ce produit';
+item.append(removeFormButton);
 
-			removeFormButton.addEventListener('click', (e) => {
-					e.preventDefault();
-					// remove the item for the outlay form
-					item.remove();
-			});
-		}
+removeFormButton.addEventListener('click', (e) => {
+e.preventDefault();
+// remove the item for the outlay form
+item.remove();
+});
+}
 
-		const addProductFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
-			const removeFormButton = document.createElement('button');
-			removeFormButton.setAttribute('type', "button");
-			removeFormButton.innerText = 'Supprimer tous les produits';
+const addProductFormDeleteAllLink = (appendTo, itemsToDeleteSelector) => {
+const removeFormButton = document.createElement('button');
+removeFormButton.setAttribute('type', "button");
+removeFormButton.innerText = 'Supprimer tous les produits';
 
-			appendTo.append(removeFormButton);
+appendTo.append(removeFormButton);
 
-			removeFormButton.addEventListener('click', (e) => {
-					e.preventDefault();
-					// remove all items for the product form
-					document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
-						item.remove();
-					});
-			});
-		}
+removeFormButton.addEventListener('click', (e) => {
+e.preventDefault();
+// remove all items for the product form
+document.querySelectorAll(itemsToDeleteSelector).forEach(item => {
+item.remove();
+});
+});
+}
 
-		const billingConfigProductsSelector = '#billing_config_submitable_products';
-		const productsTarget = document.querySelector(billingConfigProductsSelector);
-		const productsItemSelector = '[id^="billing_config_submitable_products_"]:not([name])';
+const billingConfigProductsSelector = '#billing_config_submitable_products';
+const productsTarget = document.querySelector(billingConfigProductsSelector);
+const productsItemSelector = '[id^="billing_config_submitable_products_"]:not([name])';
 
-		const addProductFormToCollection = (e) => {
-			const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+const addProductFormToCollection = (e) => {
+const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
-			const item = document.createElement('div');
+const item = document.createElement('div');
 
-			const idx = collectionHolder.dataset.index;
-			item.innerHTML = collectionHolder
-			.dataset
-			.prototype
-			.replace(
-				/__name__/g,
-				idx
-			);
-			item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
-			// add a delete link to the new form
-			addProductFormDeleteLink(item);
+const idx = collectionHolder.dataset.index;
+item.innerHTML = collectionHolder.dataset.prototype.replace(/__name__/g, idx);
+item.insertAdjacentHTML('afterbegin', '<label class="required">' + idx + '</label>');
+// add a delete link to the new form
+addProductFormDeleteLink(item);
 
-			// collectionHolder.appendChild(item);
-			productsTarget.appendChild(item);
+// collectionHolder.appendChild(item);
+productsTarget.appendChild(item);
 
-			collectionHolder.dataset.index++;
-		};
+collectionHolder.dataset.index ++;
+};
 
-		document.querySelectorAll('.add_product_link').forEach(btn => {
-			btn.addEventListener("click", addProductFormToCollection)
-		});
+document.querySelectorAll('.add_product_link').forEach(btn => {
+btn.addEventListener("click", addProductFormToCollection)
+});
 
-		document
-		.querySelectorAll(productsItemSelector)
-    .forEach((tag) => {
-        addProductFormDeleteLink(tag)
-    })
-		addProductFormDeleteAllLink(productsTarget.parentElement, productsItemSelector);
-
+document.querySelectorAll(productsItemSelector).forEach((tag) => {
+addProductFormDeleteLink(tag)
+})
+addProductFormDeleteAllLink(productsTarget.parentElement, productsItemSelector);
 	</script>
 
 {% endblock %}

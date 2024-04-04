@@ -31,6 +31,7 @@ class MwsMoonManagerController extends AbstractController
     )]
     public function index(): Response
     {
+        // TODO : refactor : not used, cf homeController in apps/mws-sf-pdf-billings
         return $this->render('@MoonManager/mws_moon_manager/index.html.twig', [
             'controller_name' => 'MoonManagerController',
         ]);

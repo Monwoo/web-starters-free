@@ -69,7 +69,7 @@
     </button>
     <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
       <ul
-        class="flex flex-col font-medium p-4 md:p-0 mt-4 border
+        class="flex flex-wrap flex-col font-medium p-4 md:p-0 mt-4 border
          border-gray-100 rounded-lg
           md:flex-row md:space-x-8 md:mt-0 md:border-0
          dark:border-gray-700"
@@ -155,7 +155,7 @@
           <!-- Dropdown menu -->
           <div
             id="dropdownNavbar"
-            class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+            class="z-50 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
           >
             <ul
               class="py-2 text-sm text-gray-700 dark:text-gray-400"
@@ -177,14 +177,14 @@
                   Offers Tags</a
                 >
               </li>
-              <li>
+              <!-- <li>
                 <a
                   href={"#TODO-CalendarEventTags" || Routing.generate("mws_offer_tags")}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Calendar Tags</a
                 >
-              </li>
+              </li> -->
               <li>
                 <a
                   href={Routing.generate("mws_message_list")}
@@ -201,14 +201,14 @@
                   Tchat Medias</a
                 >
               </li>
-              <li>
+              <!-- <li>
                 <a
                   href="#theming-config"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Themings</a
                 >
-              </li>
+              </li> -->
             </ul>
             <div class="py-1">
               <a

@@ -22,7 +22,8 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 // TODO : how to use 'trans' with function notation inside const ?
-function trans(...$args) {
+function trans(...$args)
+{
     // TIPS : only for text string extractor to work,
     // dummy function for i18n simple extractions
     return $args[0] ?? null;
@@ -42,10 +43,12 @@ function trans(...$args) {
 // }
 
 // BELOW const, juste for translator extractor to detect them :
-define('t_MwsLoginFormAuthenticator_failToGrantAccess', 
+define(
+    't_MwsLoginFormAuthenticator_failToGrantAccess',
     trans('MwsLoginFormAuthenticator.failToGrantAccess', [], 'mws-moon-manager')
 );
-define('t_MwsLoginFormAuthenticator_accessDenied', 
+define(
+    't_MwsLoginFormAuthenticator_accessDenied',
     trans('MwsLoginFormAuthenticator.accessDenied', [], 'mws-moon-manager')
 );
 
@@ -55,10 +58,10 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'mws_user_login';
-    public const SUCCESS_LOGIN_ROUTE = 'mws_moon_manager';
+    // public const SUCCESS_LOGIN_ROUTE = 'mws_moon_manager';
+    public const SUCCESS_LOGIN_ROUTE = 'app_home';
     public const t_failToGrantAccess = t_MwsLoginFormAuthenticator_failToGrantAccess;
     public const t_accessDenied = t_MwsLoginFormAuthenticator_accessDenied;
-
 
     public function __construct(
         protected TranslatorInterface $translator,
@@ -66,8 +69,7 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         protected UrlGeneratorInterface $urlGenerator,
         // TODO : service or doc and/or recipe ?
         protected string $firewallName = "mws_secured_area",
-    )
-    {
+    ) {
         $this->logger->debug("[MwsLoginFormAuthenticator] DID construct");
     }
 
@@ -81,7 +83,7 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         // dump($this->getLoginUrl($request));
         // dd($request->getRequestUri());
         $willSupport = $request->isMethod('POST')
-        && $this->getLoginUrl($request) === $request->getRequestUri();
+            && $this->getLoginUrl($request) === $request->getRequestUri();
         $this->logger->debug("[MwsLoginFormAuthenticator] Will Support : $willSupport");
         if (!$willSupport) {
             $lastTargetPath = $this->getTargetPath($request->getSession(), $this->firewallName);
@@ -128,6 +130,7 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         // // on success, let the request continue
         // return null;
 
+        // TODO : better send back url in param ? session for multiple window open will redirect only for first logged window and wipe out redirect for others if did refresh all before login...
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             $this->logger->debug("[MwsLoginFormAuthenticator] targetPathRedirect", [$targetPath]);
             $this->removeTargetPath($request->getSession(), $firewallName); // TIPS : clean it

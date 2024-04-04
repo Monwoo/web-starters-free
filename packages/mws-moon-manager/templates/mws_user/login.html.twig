@@ -22,7 +22,7 @@
 			{{ notice|trans({}, 'mws-moon-manager') }}
 		</p>
 	{% endfor %}
-	<div class="content" style="margin-top:4rem; padding-bottom:0em;">
+	<div class="content h-[80vh] overflow-auto pt-8" style="">
 		<div class="row">
 			<div class="col-lg-4 col-md-3"></div>
 			<div class="col-lg-4 col-md-3">
@@ -30,15 +30,16 @@
 				<div class="card" style="margin-top:2rem; border:none;">
 
 					<div class="card-body">
-						<form action="{{ path('mws_user_login') }}" method="post" class="login-form">
+						<form action="{{ path('mws_user_login') }}" method="post"
+						class="login-form flex flex-wrap justify-center items-center">
 							<h1 class="h3 mb-3 font-weight-normal text-center">Se connecter</h1>
-							<div>
-								<label for="username">Nom d'utilisateur:</label>
-								<input type="text" id="username" name="_username" value="{{ last_username }}">
+							<div class="w-full flex flex-wrap justify-center items-center p-2">
+								<label class="w-[12em] text-right" for="username">Nom d'utilisateur:</label>
+								<input class="m-2 w-[12em]" type="text" id="username" name="_username" value="{{ last_username }}">
 							</div>
-							<div>
-								<label for="password">Mot de passe:</label>
-								<input type="password" id="password" name="_password">
+							<div class="w-full flex flex-wrap justify-center items-center p-2">
+								<label class="w-[12em] text-right" for="password">Mot de passe:</label>
+								<input class="m-2 w-[12em]" type="password" id="password" name="_password">
 							</div>
 
 							{# TODO : If you want to control the URL the user is redirected to on success #}
@@ -56,5 +57,8 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="fixed bottom-0 w-full max-h-[20vh] overflow-hidden">
+		{{ block('footer') }}
 	</div>
 {% endblock %}

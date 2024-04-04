@@ -44,7 +44,7 @@
       <header class="bg-gray-700 text-white text-center {headerClass}">
         <Header {locale} {viewTemplate}>
           <slot name="mws-header">
-              Sticky Header and Footer with Tailwind 😎
+              <!-- Sticky Header and Footer with Tailwind 😎 -->
           </slot>
         </Header>
       </header>
