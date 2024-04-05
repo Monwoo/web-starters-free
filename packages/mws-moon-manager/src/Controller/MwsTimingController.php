@@ -521,6 +521,7 @@ class MwsTimingController extends AbstractController
             if (!$path || !file_exists($path)) {
                 throw $this->createAccessDeniedException('Media path not allowed');
             }
+            $url = $path;
         }
 
         // Or use : https://symfony.com/doc/current/http_client.html
