@@ -12,6 +12,8 @@
 			'username' : knp_pagination_sortable(pagination, 'Login', 'username'),
 		}|serialize('json')|e('html_attr'),
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+		'locale': app.locale,
+		'viewTemplate': null,
 		'users': pagination|serialize('json')|e('html_attr'),
 		'filterTags' : filterTags,
 	} ) }}>

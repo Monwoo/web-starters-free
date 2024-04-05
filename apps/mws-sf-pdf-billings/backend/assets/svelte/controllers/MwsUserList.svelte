@@ -22,6 +22,8 @@
     export let headers = '{}'; // injected raw html
     export let paginator;
     export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
+    export let locale;
+    export let viewTemplate;
 
     users = JSON.parse(decodeHtml(users));
     filterForm = decodeHtml(filterForm);
@@ -30,4 +32,4 @@
 </script>
 
 <!-- <Liste {...$$props}></Liste> -->
-<Liste {users} {filterForm} {paginator} {headers} {copyright}></Liste>
+<Liste {locale} {users} {viewTemplate} {filterForm} {paginator} {headers} {copyright}></Liste>
