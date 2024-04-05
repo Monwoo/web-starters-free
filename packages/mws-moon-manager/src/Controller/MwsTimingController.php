@@ -506,9 +506,21 @@ class MwsTimingController extends AbstractController
         // dd($thumbnailSize);
         $this->logger->debug("Will fetch url : $url");
 
-        // TODO : secu : filter real path to allowed screenshot folders from .env only ?
-        if (false) {
-            throw $this->createAccessDeniedException('Media path not allowed');
+        if (str_starts_with($url, "file://")) {
+            $inputPath = explode("file://", $url)[1] ?? null;
+            $path = realpath($inputPath);
+            if (!$path) {
+                $projectDir = $this->getParameter('kernel.project_dir');
+                $path = realpath("$projectDir/$inputPath");
+                $this->logger->debug("Fixed root url", [$inputPath, $path]);
+            }
+            // TODO : secu : filter real path to 
+            //        allowed screenshot folders from .env only ?
+            // dd($path);
+            $this->logger->debug("Root file", [$inputPath, $path]);
+            if (!$path || !file_exists($path)) {
+                throw $this->createAccessDeniedException('Media path not allowed');
+            }
         }
 
         // Or use : https://symfony.com/doc/current/http_client.html
