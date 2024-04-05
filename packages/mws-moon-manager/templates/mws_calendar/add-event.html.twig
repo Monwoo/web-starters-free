@@ -6,4 +6,6 @@
         'title': block('title'),
         'currentLanguage' : app.request.locale|locale_name(app.request.locale)|u.title,
     }) }}>
+        {{ parent() }}
+    </div>
 {% endblock %}

@@ -30,5 +30,7 @@
 		'locale': app.locale,
 		'tags': tagsGrouped|serialize('json')|e('html_attr'),
 		'viewTemplate' : viewTemplate,
-	} ) }}></div>
+	} ) }}>
+		{{ parent() }}
+	</div>
 {% endblock %}

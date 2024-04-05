@@ -38,7 +38,7 @@
 <Base>
     <!-- {currentLanguage ?? ""} -->
     <!-- <h1>{ title ?? "" }</h1> -->
-    <div class="flex flex-wrap">
+    <div class="flex flex-wrap items-center justify-center content-center">
         <h1
             class="text-gray-900 dark:text-white text-3xl md:text-5xl font-extrabold m-2"
         >
@@ -174,7 +174,7 @@
                 <button>Services</button>
             </a>
         </div>
-        <Video youtubeId="pGW_DdicUW4" />
+        <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" />
 
         <Jumbotron title="Recherche d'offres" />
         <div class="w-full flex justify-center items-center">
@@ -190,7 +190,7 @@
                 <button>Rechercher une offre</button>
             </a>
         </div>
-        <Video youtubeId="pGW_DdicUW4" />
+        <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" />
 
         <Jumbotron title="Suivi des temps" />
         <div class="w-full flex justify-center items-center">
@@ -235,7 +235,7 @@
                 <button>Liste des tags</button>
             </a>
         </div>
-        <Video youtubeId="pGW_DdicUW4" />
+        <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" />
 
         <Separator />
 

@@ -11,5 +11,7 @@
 						} }) ~ form_widget(uploadForm)
 				~ form_end(uploadForm))|e('html_attr'),
 				'reportSummary': reportSummary,
-    }) }}></div>
+    }) }}>
+			{{ parent() }}
+		</div>
 {% endblock %}

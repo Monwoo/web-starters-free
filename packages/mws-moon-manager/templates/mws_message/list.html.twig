@@ -48,5 +48,7 @@
             'updatedAt' : knp_pagination_sortable(messages, 'updatedAt', 'm.updatedAt'),
 		}|serialize('json')|e('html_attr'),
         'offersPaginator': block('offersPaginator'),
-    }) }}></div>
+    }) }}>
+		{{ parent() }}
+    </div>
 {% endblock %}

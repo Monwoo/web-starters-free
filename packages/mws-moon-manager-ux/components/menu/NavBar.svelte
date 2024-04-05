@@ -98,7 +98,14 @@
           </span>      
         </li>
         <li>
-          <a href={Routing.generate("app_home", undefined, true)} aria-current="page">
+          <!-- // TIPS: SEO : fail relative link on empty locale 
+          since url start with '//' => filesystemp path.. with :
+          Routing.generate("app_home", undefined, true)
+          Hopefully, locale is never null :
+          -->
+          <a href={Routing.generate("app_home", {
+            '_locale': locale ?? 'fr',
+          })} aria-current="page">
             <button>Accueil</button>
           </a>
         </li>
@@ -106,8 +113,8 @@
           <!-- // TODO : only if app_pdf_billings route exist ? depend of targeted app.. -->
           <a
             href={Routing.generate("app_pdf_billings", {
-              '_locale': locale ?? '',
-            }, true)}
+              '_locale': locale ?? 'fr',
+            })}
             class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             <button>Services</button>
@@ -116,21 +123,21 @@
         <li>
           <a
             href={Routing.generate("mws_timings_report", {
-              '_locale': locale ?? '',
-            }, true)}
+              '_locale': locale ?? 'fr',
+            })}
             class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             <button>Timings</button>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a
             href="#contact"
             class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             <button>Contact</button>
           </a>
-        </li>
+        </li> -->
         <li>
           <button
             id="dropdownNavbarLink"
@@ -165,7 +172,9 @@
             >
               <li>
                 <a
-                  href={Routing.generate("mws_user_list")}
+                  href={Routing.generate("mws_user_list", {
+                    '_locale': locale ?? 'fr',
+                  })}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Users
@@ -173,7 +182,9 @@
               </li>              
               <li>
                 <a
-                  href={Routing.generate("mws_offer_tags")}
+                  href={Routing.generate("mws_offer_tags", {
+                    '_locale': locale ?? 'fr',
+                  })}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Offers Tags</a
@@ -189,7 +200,9 @@
               </li> -->
               <li>
                 <a
-                  href={Routing.generate("mws_message_list")}
+                  href={Routing.generate("mws_message_list", {
+                    '_locale': locale ?? 'fr',
+                  })}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Messages
@@ -197,7 +210,9 @@
               </li>
               <li>
                 <a
-                  href={Routing.generate("mws_message_tchat_upload_list")}
+                  href={Routing.generate("mws_message_tchat_upload_list", {
+                    '_locale': locale ?? 'fr',
+                  })}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Tchat Medias</a
@@ -214,7 +229,9 @@
             </ul>
             <div class="py-1">
               <a
-                href={Routing.generate("mws_user_logout")}
+                href={Routing.generate("mws_user_logout", {
+                  '_locale': locale ?? 'fr',
+                })}
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                 >Logout out</a
               >

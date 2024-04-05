@@ -2,6 +2,8 @@
 
 namespace MWS\MoonManagerBundle\Controller;
 
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -221,7 +223,19 @@ class MwsTimingController extends AbstractController
 
         $requestData = $request->query->all();
         $keyword = $requestData['keyword'] ?? null;
-        $searchStart = $requestData['searchStart'] ?? null;
+        // TIPS : default start date minus 1 month
+        // To AVOID huge dataset computing (one year
+        // is like 7 sec server side + 40 sec load client side
+        // for 65000 time slots)
+        // https://stackoverflow.com/questions/7068707/how-do-i-remove-3-months-from-a-date
+        // $searchStart = $requestData['searchStart'] ?? (new DateTime())->sub(new DateInterval(
+        //     "3 months"
+        // ))->format('c');
+        // $new_timestamp = strtotime('-3 months', strtotime($date));
+        $searchStart = $requestData['searchStart'] ?? (new DateTime())->modify(
+            "-1 months"
+        )->format('c');
+        // dd($searchStart);
         $searchEnd = $requestData['searchEnd'] ?? null;
 
         $searchTags = $requestData['tags'] ?? []; // []);

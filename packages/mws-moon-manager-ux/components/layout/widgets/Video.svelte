@@ -4,13 +4,16 @@
   // https://www.npmjs.com/package/svelte-youtube-embed
   import Youtube from "svelte-youtube-embed";
 
+  let cssClass = "";
+  export { cssClass as class };
   export let youtubeId:String;
 </script>
 
 <div class="w-full flex justify-center items-center
 h-[70vh] max-w-full max-h-[70vh]
 bg-black
-border border-gray-200 rounded-lg dark:border-gray-700" controls>
+border border-gray-200 rounded-lg dark:border-gray-700
+{cssClass}" controls>
   <Youtube altThumb="{true}" id={youtubeId} />
 </div>
 

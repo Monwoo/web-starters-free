@@ -59,5 +59,7 @@
 			'attr' : { 'class': 'd-flex flex-wrap mws-survey-js-form' }
 		}) ~ form_widget(reportForm) ~ form_end(reportForm))|e('html_attr'),
 		'viewTemplate' : viewTemplate,
-	} ) }}></div>
+	} ) }}>
+		{{ parent() }}
+	</div>
 {% endblock %}

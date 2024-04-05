@@ -19,12 +19,28 @@
     },
   };
   export let extraClass;
-  let cssClass = "flex flex-col w-full md:w-1/3 p-7 rounded-md";
+  let cssClass = "flex flex-col items-center justify-center w-full md:w-1/3 p-7 rounded-md";
   export { cssClass as class };
   export let useLaptop = true;
 </script>
 
-<div on:click class="{cssClass} {extraClass ?? ''}">
+<div on:click class="mws-multi-screen relative {cssClass} {extraClass ?? ''}">
+  <h1 class="hidden absolute z-40
+  w-full justify-center
+  bg-black/50
+  text-white text-xl md:text-2xl font-extrabold
+  whitespace-break-spaces
+  p-2 top-0 left-0">
+    {capture?.title ?? ''}
+  </h1>
+  <h1 class="hidden absolute z-40
+  w-full justify-center
+  bg-black/50
+  text-white text-xl md:text-2xl font-extrabold
+  whitespace-break-spaces
+  p-2 bottom-0 left-0">
+    {capture?.title ?? ''}
+  </h1>
   <!-- {capture.title} -->
   {#if capture?.mobile}
     <div
@@ -118,3 +134,13 @@
     {/if}
   {/if}
 </div>
+
+<style lang="scss">
+  .mws-multi-screen {
+    &:hover {
+      h1 {
+        @apply flex;
+      }
+    }
+  }
+</style>
