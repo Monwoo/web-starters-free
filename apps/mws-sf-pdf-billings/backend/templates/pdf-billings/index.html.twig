@@ -130,7 +130,7 @@
 						opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
 							<header class="py-5 bg-gray-700 text-white text-center"
 							{{ svelte_component('MwsHeader', {
-			
+									"locale": app.locale
 							}) }}>
 							</header>
 						</div> #}
@@ -141,7 +141,7 @@
 				<div id="menu-timing" class="detail hidden">
 					<header class="w-full flex"
 					{{ svelte_component('MwsHeader', {
-	
+							"locale": app.locale
 					}) }}>
 				</div>
 			</div>

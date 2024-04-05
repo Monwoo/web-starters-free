@@ -19,7 +19,7 @@
   console.debug(passwordResetForm);
 </script>
 
-<Base {copyright}>
+<Base {copyright} {locale} {viewTemplate}>
   <div class="flex flex-wrap">
     <div class="label">
       Edition du profil :

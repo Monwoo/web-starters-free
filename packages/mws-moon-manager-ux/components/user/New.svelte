@@ -15,7 +15,7 @@
   console.debug(form);
 </script>
 
-<Base {copyright}>
+<Base {copyright} {locale} {viewTemplate}>
   <div class="flex flex-wrap">
     <div class="label">
       Nouveau du profil :

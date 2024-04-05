@@ -208,7 +208,7 @@
         delay: 0, duration: 3000        
         }} -->
         <header class="bg-gray-700 text-white text-center">
-          <Header />
+          <Header {locale} />
         </header>
         <div class="p-3 flex flex-wrap">
           <a

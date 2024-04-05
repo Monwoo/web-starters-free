@@ -16,6 +16,7 @@
     export let title = null;
     export let locale = null;
     export let viewTemplate = null;
+    export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
     export let currentLanguage = null;
     export let billingsLocales = [];
     export let moonManagerLocales = [];
@@ -35,7 +36,7 @@
     ];
 </script>
 
-<Base>
+<Base {copyright} {locale} {viewTemplate}>
     <!-- {currentLanguage ?? ""} -->
     <!-- <h1>{ title ?? "" }</h1> -->
     <div class="flex flex-wrap items-center justify-center content-center">

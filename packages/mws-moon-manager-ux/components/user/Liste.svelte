@@ -28,7 +28,7 @@
   console.log(users);
 </script>
 
-<Base {copyright}>
+<Base {copyright} {locale} {viewTemplate}>
   <div class="p-3">
     <a href="{ Routing.generate('mws_user_new', {
         'viewTemplate': filterTags

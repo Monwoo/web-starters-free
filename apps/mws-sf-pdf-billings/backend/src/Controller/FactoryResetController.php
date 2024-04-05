@@ -48,6 +48,7 @@ class FactoryResetController extends AbstractController
         if ($forceTimeout && 'dev' === getenv('APP_ENV')) {
             $clean();
         } else {
+            // TODO : timestamp file is better, any db write will postpone timer with current way :
             // https://stackoverflow.com/questions/13386082/filemtime-warning-stat-failed-for
             $db_creation_timestamp = filectime(realpath($database));
             // $stat = stat($database);
