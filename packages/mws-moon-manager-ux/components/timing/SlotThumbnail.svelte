@@ -72,7 +72,7 @@
       const filteredArray = timing.tags?.filter(tt => q.timeTags?.filter(
         (qt) => tt.slug === qt.slug
       ).length > 0);
-      if (filteredArray.length === q.timeTags.length) {
+      if (filteredArray.length === q.timeTags?.length) {
         allQualifsFor.push(q);
       }
     });

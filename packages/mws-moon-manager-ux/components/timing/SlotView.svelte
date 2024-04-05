@@ -378,7 +378,7 @@
         }
         await toggleQualif(q, timingSlot);
       } else {
-        // await q.timeTags.forEach(async t => {
+        // await q.timeTags?.forEach(async t => {
         //   await addTag(t);
         // });
         await toggleQualif(q, timingSlot);
@@ -395,7 +395,7 @@
       const filteredArray = timing.tags?.filter(tt => q.timeTags?.filter(
         (qt) => tt.slug === qt.slug
       ).length > 0);
-      if (filteredArray.length === q.timeTags.length) {
+      if (filteredArray.length === q.timeTags?.length) {
         allQualifsFor.push(q);
       }
     });
@@ -653,13 +653,16 @@
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
 
-  <!-- {timingSlot?.sourceStamp} -->
+  <!-- {timingSlot?.sourceStamp}
+      class:z-20={!isFullScreen}
+      class:z-40={isFullScreen}
+      // z-20 TOO low for side list (absolut of it will go over inside modals...)
+
+  -->
   <div
     class="full-screen-container bg-black text-white fill-white
-    rounded-se-lg overflow-scroll z-20
+    rounded-se-lg overflow-scroll z-40
     {fullscreenClass}"
-    class:z-20={!isFullScreen}
-    class:z-40={isFullScreen}
     class:fixed={isFullScreen}
     class:top-0={isFullScreen}
     class:bottom-0={isFullScreen}

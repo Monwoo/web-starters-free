@@ -76,7 +76,7 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
   fixed top-0 right-0 left-0 z-50 justify-center items-center
   w-full md:inset-0 h-modal md:h-full {cssClass}"
 >
-  <div class="relative p-3 w-full max-w-md h-full md:h-auto
+  <div class="z-50 relative p-3 w-full max-w-md h-full md:h-auto
   bg-gradient-to-r from-indigo-500 from-10%
   via-sky-500 via-30% 
   to-emerald-500 to-90%
@@ -126,7 +126,17 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             clip-rule="evenodd"
           /></svg
         > -->
-        <p class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300">
+        <p
+        class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300"
+        class:hidden={qualif?.timeTags === null}
+        >
+          <!-- Do you want to update or add new item? -->
+          Voulez-vous ajouter une qualification [ {newName} ] ?
+        </p>
+        <p
+        class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300"
+        class:hidden={qualif?.timeTags !== null}
+        >
           <!-- Do you want to update or add new item? -->
           Voulez-vous renommer ou ajouter une qualification de [ {qualif?.label ??
             ""} ] vers [ {newName} ] ?
@@ -187,6 +197,10 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             </svg>
             Ajouter une qualif
           </button>
+          <!-- // TIPS : only placeholder qualif for empty qualifs will have
+          //        timeTags to null ? ... 
+          class:hidden={qualif?.timeTags !== null}
+          -->
           <button
             type="submit"
             class="py-2 px-3 text-sm font-medium text-center 
@@ -194,6 +208,7 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             focus:ring-4 focus:outline-none focus:ring-red-300
             dark:bg-red-500 dark:hover:bg-red-600 flex flex-wrap
             dark:focus:ring-red-900"
+            class:hidden={qualif?.timeTags !== null}
             style="--mws-primary-rgb: 255, 0, 0"
             on:click={async () => {
               eltModal?.hide();

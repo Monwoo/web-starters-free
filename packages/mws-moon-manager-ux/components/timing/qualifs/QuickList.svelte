@@ -136,6 +136,20 @@
   };
   $: {
     console.debug("Will check timing config sync");
+    if (!qualifTemplates || qualifTemplates.length < 1) {
+      qualifTemplates = [{
+        label: '+',
+      }];
+    }
+  }
+  $: {
+    console.debug("Will check timing config sync");
+    // if (!qualifTemplates || qualifTemplates.length < 1) {
+    //   qualifTemplates = [{ // TIPS : Cycle detection if done this place...
+    //     label: null
+    //   }];
+    // }
+
     // console.debug("Will check timing config sync", lastDataset.quickQualifTemplates, quickQualifTemplates);
 
     // TODO : $$props not covering all props, need to encapsulate ?
@@ -282,9 +296,9 @@
         const similar = intersect(a.timeTags, b.timeTags);
         const nbSimilar = similar.length;
         return -(
-          a.timeTags.length -
+          (a.timeTags?.length ?? 0) -
           nbSimilar -
-          (b.timeTags.length - nbSimilar)
+          ((b.timeTags?.length ?? 0) - nbSimilar)
         );
       });
       // TODO : trying to keep qualifTemplates in sync
@@ -293,9 +307,9 @@
         const similar = intersect(a.timeTags, b.timeTags);
         const nbSimilar = similar.length;
         return -(
-          a.timeTags.length -
+          (a.timeTags?.length ?? 0) -
           nbSimilar -
-          (b.timeTags.length - nbSimilar)
+          ((b.timeTags?.length ?? 0) - nbSimilar)
         );
       });
       quickQualifTemplates = quickQualifTemplates;
@@ -305,6 +319,9 @@
 
   let needRefresh;
   export const syncQualifWithBackend = async (qualif) => {
+    // TODO : better flow for 'add' Qualif, use 'isEmptyNew' 
+    // or similar instead of assuming .timeTags === null
+    // or .timeTags !== null
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingQualifSync"),
       qualif: JSON.stringify(qualif),
