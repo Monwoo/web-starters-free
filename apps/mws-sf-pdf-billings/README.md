@@ -17,6 +17,7 @@ Bonus : Basic controller ok for simple JWT authentification if needed.
 # Other php versions might work, but it's not tested yet.
 php -v
 
+# curl -sS https://getcomposer.org/installer | php
 wget https://getcomposer.org/composer.phar
 alias composer="php '$PWD/composer.phar'"                      
 cd apps/mws-sf-pdf-billings/backend
