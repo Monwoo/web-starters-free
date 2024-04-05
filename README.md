@@ -23,7 +23,7 @@ Donate with your comment on :
 ### Monwoo Web Starters
 - `mws-svelte-wp-display-0.0.5`: Free samples for [MWS Svelte-WP-display](https://moonkiosk.monwoo.com/en/produit/mws-svelte-wp-display_en/) (Paied version is confidential. Need paid licence to be fully integrated). [@see apps/mws-svelte-wp-display-0.0.5/README.md](https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-svelte-wp-display-0.0.5#readme). [@demo mws.monwoo.com/demos/svelte-wp-display/](https://mws.monwoo.com/demos/svelte-wp-display/)
 
-- `mws-sf-pdf-billings`: Open Source Apache-2.0 PDF Billings Server in Symfony 5. Provide a PHP 8 local tool for pre-fillable self signed PDF billing templates. Includes Symfony 5, JWT authentifications, TCPDF, etc... [@see apps/mws-sf-pdf-billings/README.md](https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-sf-pdf-billings#readme). [@demo mws.monwoo.com/demos/sf-pdf-billings/](https://mws.monwoo.com/demos/sf-pdf-billings/)
+- `mws-sf-pdf-billings`: Open Source Apache-2.0 PDF Billings Server in Symfony 6. Provide a PHP 8 local tool for pre-fillable self signed PDF billing templates. Includes Symfony 6, JWT authentifications, TCPDF, etc... [@see apps/mws-sf-pdf-billings/README.md](https://github.com/Monwoo/web-starters-free/tree/main/apps/mws-sf-pdf-billings#readme). [@demo mws.monwoo.com/demos/sf-pdf-billings/](https://mws.monwoo.com/demos/sf-pdf-billings/)
 
 
 ### Next JS example
