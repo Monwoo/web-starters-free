@@ -24,11 +24,14 @@ class MwsAccessDeniedHandler implements AccessDeniedHandlerInterface
     public function handle(Request $request, AccessDeniedException $accessDeniedException): ?Response
     {
         // add a custom flash message and redirect to the login page
-        $request->getSession()->getFlashBag()->add(
-            'notice',
-            $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
-            // $this->translator->trans('MwsLoginFormAuthenticator.accessDenied', [], 'mws-moon-manager')
-        );
+        // $request->getSession()->getFlashBag()->add(
+        //     'notice',
+        //     $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
+        //     // $this->translator->trans('MwsLoginFormAuthenticator.accessDenied', [], 'mws-moon-manager')
+        // );
+        // TIPS :
+        // packages/mws-moon-manager/src/EventSubscriber/MwsAccessDeniedSubscriber.php
+        // will catch exception and add flashbags...
 
         return new RedirectResponse($this->urlGenerator->generate(
             MwsLoginFormAuthenticator::LOGIN_ROUTE

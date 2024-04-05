@@ -56,7 +56,8 @@ class MwsAccessDeniedSubscriber implements EventSubscriberInterface
         $request->getSession()->getFlashBag()->add(
             'notice',
             $this->translator->trans(MwsLoginFormAuthenticator::t_accessDenied)
-        );
+        ); // TODO : useless listener, easyest to do inside : ?
+        // packages/mws-moon-manager/src/Security/MwsAccessDeniedHandler.php:27 ?
 
         // TIPS : below will BREAK the 'Default Target Path Behavior' ? keep it as exception
         // https://symfony2-document.readthedocs.io/en/latest/cookbook/security/target_path.html

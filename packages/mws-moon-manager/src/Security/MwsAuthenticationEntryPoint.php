@@ -22,13 +22,16 @@ class MwsAuthenticationEntryPoint implements AuthenticationEntryPointInterface
     public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {
         // add a custom flash message and redirect to the login page
-        $request->getSession()->getFlashBag()->add(
-            'notice',
-            $this->translator->trans(
-                MwsLoginFormAuthenticator::t_accessDenied,
-                [], 'mws-moon-manager'
-            )
-        );
+        // $request->getSession()->getFlashBag()->add(
+        //     'notice',
+        //     $this->translator->trans(
+        //         MwsLoginFormAuthenticator::t_accessDenied,
+        //         [], 'mws-moon-manager'
+        //     )
+        // );
+        // TIPS :
+        // packages/mws-moon-manager/src/EventSubscriber/MwsAccessDeniedSubscriber.php
+        // will catch exception and add flashbags...
 
         return new RedirectResponse($this->urlGenerator->generate(
             MwsLoginFormAuthenticator::LOGIN_ROUTE

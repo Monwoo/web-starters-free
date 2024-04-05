@@ -16,14 +16,20 @@
 			</div>
 		{% endif %}
 		{% for notice in app.flashes('notice') %}
-			<p>
+			<p class="w-full p-2 text-center text-red-500">
 				{{ notice|trans({}, 'mws-moon-manager') }}
 			</p>
 		{% endfor %}
 		<div class="row">
 			<div class="col-lg-4 col-md-3"></div>
 			<div class="col-lg-4 col-md-3">
-				<img src="{{ absolute_url(asset('bundles/moonmanager/medias/MoonManagerLogo.png')) }}" class="mx-auto d-block" style="height:200px; " alt="">
+				<a href={{ path("app_home", {
+							'_locale': locale ?? 'fr',
+						}) }} aria-current="page" class="inline-flex hover:cursor-pointer hover:opacity-80">
+					<img
+					src="{{ absolute_url(asset('bundles/moonmanager/medias/MoonManagerLogo.png')) }}"
+					class="mx-auto d-block hover:cursor-pointer" style="height:200px; " alt="" />
+				</a>
 				<div class="card" style="margin-top:2rem; border:none;">
 
 					<div class="card-body">
@@ -50,7 +56,7 @@
 
 							<button type="submit">Se connecter</button>
 							{% if error %}
-								<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+								<div class="w-full p-2 text-center text-red-600">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 							{% endif %}
 						</form>
 					</div>
