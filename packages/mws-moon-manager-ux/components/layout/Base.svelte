@@ -39,7 +39,7 @@
 <svelte:window on:resize={debounce(onResize, userDelay)} />
 
 <slot name="mws-body">
-  <div class="flex flex-col h-screen overflow-hidden print:h-auto">
+  <div class="flex flex-col h-[100dvh] overflow-hidden print:h-auto">
     <slot name="mws-header-container">
       <header class="bg-gray-700 text-white text-center {headerClass}">
         <Header {locale} {viewTemplate}>

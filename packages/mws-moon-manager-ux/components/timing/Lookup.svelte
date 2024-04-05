@@ -398,7 +398,7 @@
           sizeStyle={`
             ${
               isMobile
-                ? // ? `height: ${splitRange}%` // TODO : % instead of vh ?
+                ? // ? `height: ${splitRange}%` // TODO : % instead of dvh ?
                   // : `width: ${splitRange}%`
                   `height: ${((splitRange * 2 * 48) / 100).toFixed(2)}%`
                 : `width: ${((splitRange * 2 * 49.5) / 100).toFixed(2)}%`

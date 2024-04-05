@@ -29,6 +29,6 @@ border border-gray-200 rounded-lg dark:border-gray-700
 
     // TODO : aspect ration will never change ?
     // width: calc(176* 0.7vh);
-    width: #{(176* 0.7)}vh;
+    width: #{(176* 0.7)}dvh;
   }
 </style>
