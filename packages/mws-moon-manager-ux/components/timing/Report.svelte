@@ -907,9 +907,8 @@
     href={Routing.generate(
       "mws_timings_qualif",
       {
-        _locale: locale ?? "",
-      },
-      true
+        _locale: locale ?? "fr",
+      }
     )}
     class=""
   >
@@ -917,7 +916,7 @@
   </a>
   <a
     href={Routing.generate("mws_timing_tag_list", {
-      _locale: locale ?? "",
+      _locale: locale ?? "fr",
       viewTemplate: viewTemplate ?? "",
       ...jsonLookup,
     })}

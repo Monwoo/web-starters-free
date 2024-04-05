@@ -848,7 +848,7 @@
     href={Routing.generate(
       "mws_timings_qualif",
       {
-        _locale: locale ?? "",
+        _locale: locale ?? "fr",
       },
       true
     )}

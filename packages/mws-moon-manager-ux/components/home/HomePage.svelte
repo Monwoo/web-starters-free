@@ -54,7 +54,7 @@
                         Routing.generate(
                             "app_pdf_billings",
                             {
-                                _locale: locale ?? "",
+                                _locale: locale ?? "fr",
                             },
                             true
                         )
@@ -70,7 +70,7 @@
                 on:click={() => {
                     goto(
                         Routing.generate("mws_offer_lookup", {
-                            _locale: locale ?? "",
+                            _locale: locale ?? "fr",
                             viewTemplate: viewTemplate ?? null,
                         })
                     );
@@ -87,7 +87,7 @@
                         Routing.generate(
                             "mws_timings_report",
                             {
-                                _locale: locale ?? "",
+                                _locale: locale ?? "fr",
                             },
                             true
                         )
@@ -105,7 +105,7 @@
                         Routing.generate(
                             "app_pdf_billings",
                             {
-                                _locale: locale ?? "",
+                                _locale: locale ?? "fr",
                             },
                             true
                         )
@@ -122,7 +122,7 @@
                 on:click={() => {
                     goto(
                         Routing.generate("mws_offer_lookup", {
-                            _locale: locale ?? "",
+                            _locale: locale ?? "fr",
                             viewTemplate: viewTemplate ?? null,
                         })
                     );
@@ -140,7 +140,7 @@
                         Routing.generate(
                             "mws_timings_report",
                             {
-                                _locale: locale ?? "",
+                                _locale: locale ?? "fr",
                             },
                             true
                         )
@@ -164,7 +164,7 @@
                 href={Routing.generate(
                     "app_pdf_billings",
                     {
-                        _locale: locale ?? "",
+                        _locale: locale ?? "fr",
                     },
                     true
                 )}
@@ -181,7 +181,7 @@
         <div class="w-full flex justify-center items-center">
             <a
                 href={Routing.generate("mws_offer_lookup", {
-                    _locale: locale ?? "",
+                    _locale: locale ?? "fr",
                     viewTemplate: viewTemplate ?? null,
                 })}
                 class="
@@ -199,9 +199,8 @@
                 href={Routing.generate(
                     "mws_timings_report",
                     {
-                        _locale: locale ?? "",
-                    },
-                    true
+                        _locale: locale ?? "fr",
+                    }
                 )}
                 class="
             text-lg font-medium inline-flex items-center
@@ -217,9 +216,8 @@
                 href={Routing.generate(
                     "mws_timings_qualif",
                     {
-                        _locale: locale ?? "",
-                    },
-                    true
+                        _locale: locale ?? "fr",
+                    }
                 )}
             >
                 <button> Qualification des temps </button>
@@ -229,7 +227,7 @@
           text-lg font-medium inline-flex items-center
           px-4 pt-6 pb-12"
                 href={Routing.generate("mws_timing_tag_list", {
-                    _locale: locale ?? "",
+                    _locale: locale ?? "fr",
                     viewTemplate: viewTemplate ?? "",
                 })}
             >

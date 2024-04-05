@@ -52,7 +52,7 @@
   <td>
     <!-- <a
       href={Routing.generate("mws_message_view", {
-        _locale: locale ?? "",
+        _locale: locale ?? "fr",
         viewTemplate: viewTemplate ?? "",
         offerSlug: offer.slug,
       })}

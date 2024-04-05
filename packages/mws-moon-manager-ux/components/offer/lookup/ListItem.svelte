@@ -81,7 +81,7 @@
   >
     <a
       href={Routing.generate("mws_offer_view", {
-        _locale: locale ?? "",
+        _locale: locale ?? "fr",
         viewTemplate: viewTemplate ?? "",
         offerSlug: offer.slug,
       })}

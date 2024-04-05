@@ -22,7 +22,7 @@
   <div>
     <a
       href={Routing.generate("mws_offer_lookup", {
-        _locale: locale ?? "",
+        _locale: locale ?? "fr",
         viewTemplate: viewTemplate ?? "",
       })}
     >
@@ -32,7 +32,7 @@
     {#if forceRewrite}
       <a
         href={Routing.generate("mws_offer_import", {
-          _locale: locale ?? "",
+          _locale: locale ?? "fr",
           viewTemplate: viewTemplate ?? "",
         })}
       >
@@ -41,7 +41,7 @@
     {:else}
       <a
         href={Routing.generate("mws_offer_import", {
-          _locale: locale ?? "",
+          _locale: locale ?? "fr",
           viewTemplate: viewTemplate ?? "",
           forceRewrite: true,
           forceStatusRewrite: true,

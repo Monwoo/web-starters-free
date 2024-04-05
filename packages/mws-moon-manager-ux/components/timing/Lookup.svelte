@@ -213,7 +213,7 @@
         <div class="p-3 flex flex-wrap">
           <a
             href={Routing.generate("mws_timing_tag_list", {
-              _locale: locale ?? "",
+              _locale: locale ?? "fr",
               viewTemplate: viewTemplate ?? "",
               ...jsonLookup,
             })}
@@ -223,7 +223,7 @@
           <!-- TODO : only remove current filtered query items instead of all ? -->
           <!-- <form // TODO : no need in qualif stress time, delete from report only is more ok ?
             action={Routing.generate("mws_timing_delete_all", {
-              _locale: locale ?? "",
+              _locale: locale ?? "fr",
               viewTemplate: viewTemplate ?? "",
               ...jsonLookup,
             })}

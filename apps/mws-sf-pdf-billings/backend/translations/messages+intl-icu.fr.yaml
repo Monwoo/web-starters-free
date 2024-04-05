@@ -1,12 +1,12 @@
 mws:
     copyright: 'Copyright © MONWOO 2023, tous droits réservés.'
     goToGithub: 'Accédez au projet open source Github.'
-    goToAppSupports: "Pour obtenir de l'aide de notre part, vous pouvez utiliser les fonctionnalités habituelles de\_:"
+    goToAppSupports: "Pour obtenir de l'aide de notre part, vous pouvez utiliser les fonctionnalités habituelles de :"
     goToBusinessSupports: 'Pour nous soutenir et/ou nous aider à ouvrir plus de logiciels, envoyez une subvention avec :'
     gdpr:
         checkOK: 'Vérification GDPR effectuée.'
         checkIsMissing: 'Vérification GDPR manquante.'
-        endUserWarning: "Heure du serveur : { currentTime }. <strong>ATTENTION\_: La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le\_: { gdprNextCleanDate }. (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le\_: { gdprLastCleanDate }.)"
+        endUserWarning: "Heure du serveur : { currentTime }. <strong>ATTENTION : La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le : { gdprNextCleanDate }. (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le : { gdprLastCleanDate }.)"
         sentinelIsMissing: 'Sentinelle GDPR manquante, veuillez vérifier le service pour apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php'
     resetAppToFactory: "Réinitialiser l'application aux données d'usine"
     templates:
@@ -22,4 +22,4 @@ mws:
             monwoo_08_backendLearning: 'Monwoo formation backend Fullstack'
             monwoo_09_empty: 'Monwoo template vide'
     home:
-        title: mws_mws.home.title
+        title: Accueil

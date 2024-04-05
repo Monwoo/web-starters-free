@@ -24,7 +24,7 @@
     <span class="hidden md:inline">
       <a
       href={Routing.generate("mws_offer_lookup", {
-        _locale: locale ?? "",
+        _locale: locale ?? "fr",
         viewTemplate: viewTemplate ?? null,
       })}
         class="flex items-center"
@@ -80,7 +80,7 @@
           <span class="inline md:hidden">
             <a
             href={Routing.generate("mws_offer_lookup", {
-              _locale: locale ?? "",
+              _locale: locale ?? "fr",
               viewTemplate: viewTemplate ?? null,
             })}
               class="flex items-center"
