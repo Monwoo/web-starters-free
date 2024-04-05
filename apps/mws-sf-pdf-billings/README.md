@@ -392,7 +392,7 @@ open http://localhost:8000/index.php/_error/404
 php bin/console config:dump-reference twig
 php bin/console debug:config twig
 
-# MacOS quick tool to resize png images (and convert to jpeg) :
+# MacOS quick tool to resize png pictures (and convert to jpeg) :
 find . -name '*.png' | sed 's/\.png//g' \
 | xargs -I % sips -Z 1800 \
 --setProperty format jpeg \

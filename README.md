@@ -11,7 +11,7 @@ Contain multiple free webstarters and parts of opened confidential starters (Opt
 
 **Be carefull with cloud** since this solution might consume huge bandwidth for timeSlot pictures reports and qualification.
 
-For example, 1 year of jobs with 60 000 images will load and reload those for qualification(s) or reports. At full size, it's around 100Go of media data. (10 times imports might be 1To without optimisations...)
+For example, 1 year of jobs with 60 000 pictures will load and reload those for qualification(s) or reports. At full size, it's around 100Go of media data. (10 times imports might be 1To without optimisations...)
 
 **Want to give motivation for tests or other stuffs ?**
 
