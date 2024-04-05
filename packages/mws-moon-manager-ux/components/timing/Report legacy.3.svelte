@@ -882,7 +882,7 @@
         Filtres de recherche
       </button>
     </div>
-    <div id="search-timing-lookup" class="detail w-full hidden">
+    <div id="search-timing-lookup" class="detail w-full hidden z-50">
       {@html lookupForm}
     </div>
     <div class="label">

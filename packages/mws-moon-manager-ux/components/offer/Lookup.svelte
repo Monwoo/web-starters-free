@@ -73,7 +73,7 @@
     >
       Filtres de recherche
     </div>
-    <div id="search-offer-lookup" class="detail w-full hidden">
+    <div id="search-offer-lookup" class="detail w-full hidden z-50">
       {@html lookupForm}
     </div>
   </div>

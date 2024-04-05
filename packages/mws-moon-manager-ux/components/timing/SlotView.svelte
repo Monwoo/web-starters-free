@@ -903,7 +903,7 @@
         on:click|stopPropagation|preventDefault
       >
         <svg
-          class="w-7 h-7 ml-8"
+          class="w-7 h-7 ml-1"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -1000,7 +1000,7 @@
         on:click|stopPropagation|preventDefault
       >
         <svg
-          class="w-7 h-7 ml-8"
+          class="w-7 h-7 ml-1"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
