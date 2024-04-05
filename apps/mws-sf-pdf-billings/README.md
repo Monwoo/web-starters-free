@@ -1,5 +1,5 @@
 # Monwoo Web Starter Symfony PDF Billings (Free)
-<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Open Source Apache-2.0 with Copyright © MONWOO 2023**](https://moonkiosk.monwoo.com/en/categorie-produit/produced-solutions/mws_en/)
+<img src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png" alt="" width="42"/> [Build by Miguel Monwoo, **Open Source Apache-2.0 with Copyright © MONWOO 2017-2024**](https://moonkiosk.monwoo.com/en/categorie-produit/produced-solutions/mws_en/)
 
 [www.monwoo.com/don](https://www.monwoo.com/don)
 
@@ -34,6 +34,14 @@ export APP_ENV=dev
 composer install
 php bin/console assets:install --symlink public
 php bin/console fos:js-routing:dump
+
+# generate logs BEFORE frontend build since embeded by
+# packages/mws-moon-manager-ux/components/layout/widgets/GitLogsChart.svelte
+git log --pretty=$'x\tx\t%ai' --numstat \
+-i --grep='\[mws-pdf-billings\]' \
+--grep='\[mws-moon-manager\]' \
+--branches --tags --remotes --full-history \
+--date-order --date=iso-local> git-logs.tsv
 
 pnpm install
 pnpm run build
