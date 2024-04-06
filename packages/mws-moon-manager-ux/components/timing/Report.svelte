@@ -27,6 +27,7 @@
   import ExportTimings from "./ExportTimings.svelte";
   import _ from "lodash";
   import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
+  import debounce from "lodash/debounce";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -42,6 +43,8 @@
   export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
+  export let reportScale = 100;
+
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
 
@@ -115,11 +118,15 @@
 
     console.assert(
       !tagSlugs || tagSlugs.length == ids.length,
-      "Wrong DATASET, <> tagSlugs found"
+      tagSlugs?.length
+      + "Wrong DATASET, <> tagSlugs found"
+      + ids.length
     );
     console.assert(
       allRangeDayIdxBy10Min.length == ids.length,
-      "Wrong DATASET, <> allRangeDayIdxBy10Min found"
+      allRangeDayIdxBy10Min?.length
+      + " Wrong DATASET, <> allRangeDayIdxBy10Min found for "
+      + ids.length
     );
 
     // console.assert( // replaced by maxPath system
@@ -129,12 +136,16 @@
     console.assert(
       // replaced by maxPath system
       !maxPaths || maxPaths.length == ids.length,
-      "Wrong DATASET, <> maxPaths found"
+      maxPaths?.length
+      + "Wrong DATASET, <> maxPaths found"
+      + ids.length
     );
 
     console.assert(
       !sourceStamps || sourceStamps.length == ids.length,
-      "Wrong DATASET, <> sourceStamps found"
+      sourceStamps?.length
+      + "Wrong DATASET, <> sourceStamps found"
+      + ids.length
     );
     // const srcStamps = tSum.srcStamps.split(',');
     ids.forEach((tId, idx) => {
@@ -1098,9 +1109,30 @@
   </div>
   <br />
   <br />
+  <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
+    <div class="fill-white/70 text-white/70 w-full">
+      <!-- // TODO : userDelay instead of 400 ? not same for all situation,
+      //         might need bigDelay or short or medium ?
+      //         or too specific, keep number easyer than multiples var or const ? -->
+      <input
+        value={reportScale}
+        on:change={debounce((e) => (reportScale = e.target.value), 400)}
+        id="report-scale"
+        type="range"
+        class="w-full h-2 bg-gray-200/50 rounded-lg
+          appearance-none cursor-pointer outline-none
+          "
+      />
+    </div>
+  </div>
 
   <div class="block w-full overflow-x-auto ">
-    <table class="items-center w-full bg-transparent border-collapse">
+    <!-- transform: scale(${(reportScale / 100).toFixed(2)}); -->
+
+    <table class="items-center w-full bg-transparent border-collapse"
+    style={`
+      zoom: ${reportScale}%;
+    `}>
       <thead class="sticky">
         <tr>
           <th
