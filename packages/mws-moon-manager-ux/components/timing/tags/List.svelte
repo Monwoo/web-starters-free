@@ -77,7 +77,7 @@
   <AddModal bind:this={addModal} allTags={tags} {locale} />
 
   <p>
-    Attention, les prix ne sont pas directement re-calculé pour des raisons d'optimisations. Pensez à cocher 'Mettre à jour les tags des autres temps' et importez sans fichiers pour mettre à jour le prix des temps segmentés.
+    Attention, les prix ne sont pas directement re-calculé pour des raisons d'optimisations. Pensez à cocher 'Mettre à jour les tags des temps' et importez sans fichiers pour mettre à jour le prix des temps segmentés.
   </p>
 
   <ImportTags {locale} bind:importedTagsGrouped={tags} />

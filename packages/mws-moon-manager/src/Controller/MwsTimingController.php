@@ -1901,6 +1901,7 @@ class MwsTimingController extends AbstractController
         // format
         $format = $request->get('format');
         $shouldOverwrite = $request->get('shouldOverwrite');
+        $shouldRecomputeAllOtherTags = $request->get('shouldRecomputeAllOtherTags');
         // dd($shouldOverwrite);
         // $importFile = $request->request->get('importFile'); // Not txt, will be null
         // dd($importFile);
@@ -1964,6 +1965,10 @@ class MwsTimingController extends AbstractController
 
             $this->em->persist($importTag);
             $this->em->flush();
+        }
+        if ($shouldRecomputeAllOtherTags) {
+            $this->forceTimingsPriceRecompute();
+            // $importReport .= "Did recompute all timings prices<br/>";
         }
 
         [$tags, $tagsGrouped] = $mwsTimeTagRepository->findAllTagsWithCounts();
