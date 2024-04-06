@@ -1422,6 +1422,7 @@ class MwsTimingController extends AbstractController
             // $rule['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
             $pPerRules[$ruleIdx]['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
         }
+        $tag->setPricePerHrRules([]);
         $sync('pricePerHrRules');
         // $tag->addTag($tag);
         // dd($tagData);
