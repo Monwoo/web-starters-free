@@ -686,7 +686,7 @@ class MwsMessageController extends AbstractController
         if ($mime) {
             $response->headers->set('Content-Type', $mime);
         }
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
 
         $response->setContent($messagesSerialized);
         return $response;

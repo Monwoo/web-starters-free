@@ -1864,7 +1864,7 @@ class MwsTimingController extends AbstractController
         if ($mime) {
             $response->headers->set('Content-Type', $mime);
         }
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
 
         $response->setContent($tagsSerialized);
         return $response;
@@ -2332,7 +2332,7 @@ class MwsTimingController extends AbstractController
         if ($mime) {
             $response->headers->set('Content-Type', $mime);
         }
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename);
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
 
         $response->setContent($qualifsSerialized);
         return $response;
