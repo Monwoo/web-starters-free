@@ -119,7 +119,7 @@
     console.assert(
       !tagSlugs || tagSlugs.length == ids.length,
       tagSlugs?.length
-      + "Wrong DATASET, <> tagSlugs found"
+      + " Wrong DATASET, <> tagSlugs found "
       + ids.length
     );
     console.assert(
@@ -137,14 +137,14 @@
       // replaced by maxPath system
       !maxPaths || maxPaths.length == ids.length,
       maxPaths?.length
-      + "Wrong DATASET, <> maxPaths found"
+      + " Wrong DATASET, <> maxPaths found "
       + ids.length
     );
 
     console.assert(
       !sourceStamps || sourceStamps.length == ids.length,
       sourceStamps?.length
-      + "Wrong DATASET, <> sourceStamps found"
+      + " Wrong DATASET, <> sourceStamps found "
       + ids.length
     );
     // const srcStamps = tSum.srcStamps.split(',');
