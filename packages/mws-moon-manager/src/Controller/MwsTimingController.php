@@ -1078,7 +1078,7 @@ class MwsTimingController extends AbstractController
                                             $ruleIdx => [
                                                 'price' => floatval($maxPath['maxValue']),
                                                 'withTags' => array_flip($maxPath['maxSubTags'] ?? []),
-                                                'maxLimitPriority' => floatval($maxPath['maxLimitPriority']),
+                                                'maxLimitPriority' => floatval($maxPath['maxLimitPriority'] ?? 0),
                                             ]
                                         ]);
                                         // unset($pendingNewTags[$slug]);        
@@ -1418,9 +1418,9 @@ class MwsTimingController extends AbstractController
         $pPerRules = &$tagData['pricePerHrRules'];
         foreach ($pPerRules ?? [] as $ruleIdx => &$rule) {
             // dd($rule);
-            $pPerRules[$ruleIdx]['price'] = floatval($rule['price']);
+            $pPerRules[$ruleIdx]['price'] = floatval($rule['price'] ?? 0);
             // $rule['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
-            $pPerRules[$ruleIdx]['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
+            $pPerRules[$ruleIdx]['maxLimitPriority'] = floatval($rule['maxLimitPriority'] ?? 0);
         }
         $tag->setPricePerHrRules([]);
         $sync('pricePerHrRules');
