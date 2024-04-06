@@ -636,7 +636,7 @@
       focus:ring-4 focus:outline-none focus:ring-red-300
       dark:bg-red-500 dark:hover:bg-red-600 
       dark:focus:ring-red-900"
-      class:hidden={qualif?.timeTags !== null}
+      class:hidden={qualif?.useForQualifAdd}
       style="--mws-primary-rgb: 255, 0, 0"
       on:click={debounce(async () => {
         if (confirm('Confirmer la suppression ?')) {

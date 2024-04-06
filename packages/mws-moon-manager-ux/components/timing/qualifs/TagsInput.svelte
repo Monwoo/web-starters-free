@@ -19,6 +19,12 @@
 
   let addedTagKey;
   export const syncQualifWithBackend = async (qualif) => {
+    if (qualif?.useForQualifAdd) {
+      timeTags = allTagsList.filter(t => qualif.timeTags.filter(
+        qt => qt.slug === t.slug
+      ).length); // Extract full tag data...
+      return; // Ignore sync for useForQualifAdd, will only ADD...
+    }
     const data = {
       _csrf_token: stateGet(get(state), 'csrfTimingQualifSync'),
       qualif: JSON.stringify(qualif),

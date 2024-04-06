@@ -128,14 +128,14 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         > -->
         <p
         class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300"
-        class:hidden={qualif?.timeTags === null}
+        class:hidden={!qualif?.useForQualifAdd}
         >
           <!-- Do you want to update or add new item? -->
           Voulez-vous ajouter une qualification [ {newName} ] ?
         </p>
         <p
         class="mb-4 text-gray-500 text-lg font-extrabold dark:text-gray-300"
-        class:hidden={qualif?.timeTags !== null}
+        class:hidden={qualif?.useForQualifAdd}
         >
           <!-- Do you want to update or add new item? -->
           Voulez-vous renommer ou ajouter une qualification de [ {qualif?.label ??
@@ -172,6 +172,7 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               // qualif.label = newName;
               await syncQualifWithBackend({
                 ...qualif,
+                useForQualifAdd: false, // TIPS : new one will not be useForQualifAdd 
                 id: null,
                 label: newName,
                 _isNewId: true,
@@ -197,10 +198,6 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             </svg>
             Ajouter une qualif
           </button>
-          <!-- // TIPS : only placeholder qualif for empty qualifs will have
-          //        timeTags to null ? ... 
-          class:hidden={qualif?.timeTags !== null}
-          -->
           <button
             type="submit"
             class="py-2 px-3 text-sm font-medium text-center 
@@ -208,7 +205,7 @@ dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             focus:ring-4 focus:outline-none focus:ring-red-300
             dark:bg-red-500 dark:hover:bg-red-600 flex flex-wrap
             dark:focus:ring-red-900"
-            class:hidden={qualif?.timeTags !== null}
+            class:hidden={qualif?.useForQualifAdd}
             style="--mws-primary-rgb: 255, 0, 0"
             on:click={async () => {
               eltModal?.hide();

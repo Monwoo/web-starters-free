@@ -139,6 +139,7 @@
     if (!qualifTemplates || qualifTemplates.length < 1) {
       qualifTemplates = [{
         label: '+',
+        useForQualifAdd: true,
       }];
     }
   }
@@ -319,9 +320,9 @@
 
   let needRefresh;
   export const syncQualifWithBackend = async (qualif) => {
-    // TODO : better flow for 'add' Qualif, use 'isEmptyNew' 
-    // or similar instead of assuming .timeTags === null
-    // or .timeTags !== null
+    if (qualif?.useForQualifAdd) {
+      return; // Ignore sync for useForQualifAdd, will only ADD...
+    }
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingQualifSync"),
       qualif: JSON.stringify(qualif),
