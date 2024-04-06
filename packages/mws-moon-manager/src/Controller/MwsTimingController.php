@@ -1196,6 +1196,7 @@ class MwsTimingController extends AbstractController
 
         if ($shouldRecomputeAllOtherTags) {
             $this->forceTimingsPriceRecompute();
+            $importReport .= "Did recompute all timings prices<br/>";
         }
 
         return $this->json([
