@@ -24,6 +24,7 @@
   export let messages;
   export let addModal;
   export let yScrollable;
+  export let reportScale = 100;
 
   // TODO : format leadAt date with dayJs ?
   console.debug("LIST ITEM OFFER : ", offer);
@@ -47,7 +48,7 @@
     const jQuery = window.jQuery;
     const scrollListener = (e) => {
       const target = jQuery(e.target);
-      const fromStart = target.scrollLeft();
+      const fromStart = target.scrollLeft() / (reportScale/100);
       // https://stackoverflow.com/questions/10463518/converting-em-to-px-in-javascript-and-getting-default-font-size/10466205#10466205
       const emToPx = Number(
         getComputedStyle(target[0], null).fontSize.replace(/[^\d]/g, "")

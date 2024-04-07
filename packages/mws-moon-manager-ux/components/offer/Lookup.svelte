@@ -208,10 +208,9 @@
   </div>
 
   <div class="mws-offer-lookup"
-  style={`
-    zoom: ${reportScale}%;
-  `}>
+>
     <List
+      {reportScale}
       {locale}
       {offers}
       {offersHeaders}

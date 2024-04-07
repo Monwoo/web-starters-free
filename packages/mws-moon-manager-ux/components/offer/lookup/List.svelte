@@ -13,6 +13,7 @@
   export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
   export let yScrollable;
+  export let reportScale = 100;
 
   let addModal;
 
@@ -28,7 +29,7 @@
     const scrollListener = (e) => {
       console.debug("listScroll");
       const target = jQuery(e.target);
-      const fromStart = target.scrollLeft();
+      const fromStart = target.scrollLeft() / (reportScale/100);
       // https://stackoverflow.com/questions/10463518/converting-em-to-px-in-javascript-and-getting-default-font-size/10466205#10466205
       const emToPx = Number(
         getComputedStyle(target[0], null).fontSize.replace(/[^\d]/g, "")
@@ -142,7 +143,11 @@
 <!-- https://preline.co/docs/scrollspy.html -->
 
 <!-- <div bind:this={htmlTable}> -->
-<div>
+<!-- TIPS : zoom should be done outside of modal views -->
+<div
+style={`
+  zoom: ${reportScale}%;
+`}>
   <table>
     <!-- TODO : sticky top for title to stay on page ? -->
     <thead class="top-[-24px] sticky z-40">
@@ -190,6 +195,7 @@
         <!-- {@debug offer} -->
         <ListItem
           {offer}
+          {reportScale}
           {locale}
           {viewTemplate}
           {addModal}
