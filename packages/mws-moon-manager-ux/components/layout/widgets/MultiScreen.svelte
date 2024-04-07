@@ -67,12 +67,12 @@
         <!-- class="hidden dark:block w-[100%] max-w-[272px] h-[572px]" -->
         <img
           src={capture?.mobile}
-          class="dark:hidden w-[100%] max-w-[272px]"
+          class="dark:hidden w-[100%] max-w-[272px] aspect-[272/572]"
           alt={capture?.title}
         />
         <img
           src={capture?.dark?.mobile ?? capture?.mobile}
-          class="hidden dark:block w-[100%] max-w-[272px]"
+          class="hidden dark:block w-[100%] max-w-[272px] aspect-[272/572]"
           alt={capture?.title}
         />
       </div>
@@ -94,14 +94,14 @@
         >
           <img
             src={capture?.laptop ?? capture?.desktop}
-            class="dark:hidden w-full rounded-xl"
+            class="dark:hidden w-full rounded-xl aspect-[285/160]"
             alt={capture?.title}
           />
           <img
             src={capture?.dark?.laptop ??
               capture?.dark?.desktop ??
               capture?.desktop}
-            class="hidden dark:block w-full rounded-lg"
+            class="hidden dark:block w-full rounded-lg aspect-[285/160]"
             alt={capture?.title}
           />
         </div>
@@ -122,12 +122,12 @@
         <div class="rounded-xl overflow-hidden">
           <img
             src={capture?.desktop}
-            class="dark:hidden w-full rounded-xl"
+            class="dark:hidden w-full rounded-xl aspect-[285/160]"
             alt={capture?.title}
           />
           <img
             src={capture?.dark?.desktop ?? capture?.desktop}
-            class="hidden dark:block w-full rounded-xl"
+            class="hidden dark:block w-full rounded-xl aspect-[285/160]"
             alt={capture?.title}
           />
         </div>

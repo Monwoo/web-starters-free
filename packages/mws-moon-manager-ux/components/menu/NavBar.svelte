@@ -27,7 +27,7 @@
         _locale: locale ?? "fr",
         viewTemplate: viewTemplate ?? null,
       })}
-        class="flex items-center"
+        class="flex items-center pb-2"
       >
         <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
         <span
@@ -83,7 +83,7 @@
               _locale: locale ?? "fr",
               viewTemplate: viewTemplate ?? null,
             })}
-              class="flex items-center"
+              class="flex items-center pb-2"
             >
               <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
               <span
@@ -105,7 +105,7 @@
           -->
           <a href={Routing.generate("app_home", {
             '_locale': locale ?? 'fr',
-          })} aria-current="page">
+          })} class="block pb-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" aria-current="page">
             <button>Accueil</button>
           </a>
         </li>
@@ -115,7 +115,7 @@
             href={Routing.generate("app_pdf_billings", {
               '_locale': locale ?? 'fr',
             })}
-            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+            class="block pb-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             <button>Services</button>
           </a>
@@ -125,7 +125,7 @@
             href={Routing.generate("mws_timings_report", {
               '_locale': locale ?? 'fr',
             })}
-            class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+            class="block pb-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             <button>Timings</button>
           </a>
