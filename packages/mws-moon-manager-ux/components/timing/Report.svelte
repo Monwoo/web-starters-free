@@ -914,7 +914,7 @@ import Loader from "../layout/widgets/Loader.svelte";
   };
 </script>
 
-<div class="mws-timing-report">
+<div class="mws-timing-report flex flex-wrap items-center">
   <Loader {isLoading} />
 
   <a
@@ -924,7 +924,7 @@ import Loader from "../layout/widgets/Loader.svelte";
         _locale: locale ?? "fr",
       }
     )}
-    class=""
+    class="pb-2 pr-2"
   >
     <button> Qualification des temps </button>
   </a>
@@ -937,7 +937,7 @@ import Loader from "../layout/widgets/Loader.svelte";
   >
     <button>Liste des tags</button>
   </a>
-  <div class="p-3">
+  <div class="p-3 w-full">
     <ImportTimings {locale} timingLookup={jsonLookup} format="csv" />
     <ExportTimings {locale} timingLookup={jsonLookup} format="csv" />
     <ExportTags {locale} timingLookup={jsonLookup} format="csv" />
@@ -957,8 +957,8 @@ import Loader from "../layout/widgets/Loader.svelte";
       {showPictures ? "Cacher" : "Voir"} les screenshots
     </button>
   {/if}
-  <div class="p-3 flex flex-wrap">
-    <div class="label">
+  <div class="w-full p-3 flex flex-wrap">
+    <div class="w-full label pb-2">
       <button
         data-collapse-toggle="search-timing-lookup"
         type="button"
@@ -972,11 +972,11 @@ import Loader from "../layout/widgets/Loader.svelte";
     <div id="search-timing-lookup" class="detail w-full hidden z-50">
       {@html lookupForm}
     </div>
-    <div class="label">
+    <div class="w-full label pb-2">
       <button
         data-collapse-toggle="config-report"
         type="button"
-        class="rounded-lg ml-3"
+        class="rounded-lg"
         aria-controls="config-report"
         aria-expanded="false"
       >
@@ -987,7 +987,7 @@ import Loader from "../layout/widgets/Loader.svelte";
       {@html reportForm}
     </div>
   </div>
-  <div>
+  <div class="w-full">
     {#each [1, 2, 3, 4, 5] as lvl}
       {@html (jsonReport[`lvl${lvl}Tags`] ?? false) &&
       jsonReport[`lvl${lvl}Tags`].length
@@ -1002,7 +1002,7 @@ import Loader from "../layout/widgets/Loader.svelte";
         : ""}
     {/each}
   </div>
-  <div class="pt-3">
+  <div class="pt-3 w-full">
     <!-- // TODO : code factorization, indide component ? -->
     {@html jsonLookup.searchStart &&
       jsonLookup.searchStart.length
@@ -1062,10 +1062,11 @@ import Loader from "../layout/widgets/Loader.svelte";
       ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
       : ``}
   </div>
+  <div class="w-full h-4" />
 
   <!-- {JSON.stringify(timings)} -->
   <!-- <div>{@html timingsPaginator}</div> // TODO : not used, synth all... -->
-  <div>
+  <div class="w-full">
     <strong>{Object.keys(timingsByIds).length.toPrettyNum(0)} points</strong> de
     contrôles sur
     <strong>
@@ -1075,20 +1076,19 @@ import Loader from "../layout/widgets/Loader.svelte";
       ).toPrettyNum(0)} jours</strong
     >
   </div>
-  <br />
-  <div class="text-lg">Rapport des temps via segmentations de 10 minutes.</div>
-  <br />
-  <div class="text-lg font-extrabold">
+  <div class="w-full h-4" />
+  <div class="w-full text-lg">Rapport des temps via segmentations de 10 minutes.</div>
+  <div class="w-full h-4" />
+  <div class="w-full text-lg font-extrabold">
     {summaryByLevels.sumOfBookedHrs.toPrettyNum(2, 5)} heures au total si effectué
     par une personne.
   </div>
-  <div class="text-lg font-extrabold">
+  <div class="w-full text-lg font-extrabold">
     <!-- {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout. -->
     {(summaryByLevels.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € en tout.
   </div>
-  <br />
-  <br />
-  <div class="text-lg font-extrabold">
+  <div class="w-full h-8" />
+  <div class="w-full text-lg font-extrabold">
     <!-- summaryByLevels.deepSumOfMaxPathPerHr     deepSumOfMaxPathPerHr -->
     {summaryByLevels.deepSumOfBookedHrs.toPrettyNum(2, 5)} heures si charges non
     cumulables
@@ -1096,22 +1096,20 @@ import Loader from "../layout/widgets/Loader.svelte";
       (ex : rapport d'équipe avec changement de prix par expert associé).
     </span>
   </div>
-  <div class="text-lg">
+  <div class="w-full text-lg">
     <!-- {summaryByLevels.sumOfMaxPPH.toPrettyNum(2)} € en tout. -->
     {(summaryByLevels.deepSumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € si
     charges non cumulables.
   </div>
-  <br />
-  <br />
-  <div class="text-lg font-extrabold">
+  <div class="w-full h-8" />
+  <div class="w-full text-lg font-extrabold">
     {summaryTotals.sumOfBookedHrs.toPrettyNum(2, 5)} hours annexes.
   </div>
-  <div class="text-lg font-extrabold">
+  <div class="w-full text-lg font-extrabold">
     <!-- {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes. -->
     {(summaryTotals.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € annexes.
   </div>
-  <br />
-  <br />
+  <div class="w-full h-4" />
   <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
     <div class="fill-white/70 text-white/70 w-full">
       <!-- // TODO : userDelay instead of 400 ? not same for all situation,
@@ -1122,7 +1120,7 @@ import Loader from "../layout/widgets/Loader.svelte";
         on:change={debounce((e) => (reportScale = e.target.value), 400)}
         id="report-scale"
         type="range"
-        class="w-full h-2 bg-gray-200/50 rounded-lg
+        class="w-full h-8 bg-gray-200/50 rounded-lg
           appearance-none cursor-pointer outline-none
           "
       />
