@@ -124,7 +124,7 @@
     {offer.sourceDetail?.projectOffers}
   </th>
   <td
-    class="sticky left-[9em] w-[6em] z-10
+    class="sticky max-w-[20vw] left-[9em] w-[6em] z-10
     hover:bg-white/90 hover:opacity-100
       overflow-x-scroll
     "

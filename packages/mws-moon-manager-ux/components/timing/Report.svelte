@@ -28,6 +28,7 @@
   import _ from "lodash";
   import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
   import debounce from "lodash/debounce";
+import Loader from "../layout/widgets/Loader.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -897,10 +898,10 @@
             console.debug("Did remove all tags, resp :", data);
             // TODO : remove self from DOM instead of isHidden ?
             // tags = [];
-            window.location.reload();
             stateUpdate(state, {
               csrfTimingDeleteAll: data.newCsrf,
             });
+            window.location.reload();
           }
         })
         .catch((e) => {
@@ -914,6 +915,8 @@
 </script>
 
 <div class="mws-timing-report">
+  <Loader {isLoading} />
+
   <a
     href={Routing.generate(
       "mws_timings_qualif",

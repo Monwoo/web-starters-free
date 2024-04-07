@@ -43,11 +43,13 @@
   </h1>
   <!-- {capture.title} -->
   {#if capture?.mobile}
+    <!-- class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] -->
     <div
-      class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl"
+      class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem]
+      w-full max-w-[300px] shadow-xl"
     >
       <div
-        class="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"
+        class="w-[50%] max-w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"
       />
       <div
         class="h-[46px] w-[3px] bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"
@@ -58,17 +60,19 @@
       <div
         class="h-[64px] w-[3px] bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"
       />
+      <!-- class="rounded-[2rem] overflow-hidden w-[100%] max-w-[272px] h-[572px] bg-white dark:bg-gray-800" -->
       <div
-        class="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white dark:bg-gray-800"
+        class="rounded-[2rem] overflow-hidden w-[100%] max-w-[272px] bg-white dark:bg-gray-800"
       >
+        <!-- class="hidden dark:block w-[100%] max-w-[272px] h-[572px]" -->
         <img
           src={capture?.mobile}
-          class="dark:hidden w-[272px] h-[572px]"
+          class="dark:hidden w-[100%] max-w-[272px]"
           alt={capture?.title}
         />
         <img
           src={capture?.dark?.mobile ?? capture?.mobile}
-          class="hidden dark:block w-[272px] h-[572px]"
+          class="hidden dark:block w-[100%] max-w-[272px]"
           alt={capture?.title}
         />
       </div>
@@ -84,19 +88,20 @@
         max-w-[85%]
         md:max-w-[85%]"
       >
+        <!-- h-[156px] md:h-[195px]  h-[156px] md:h-[195px] -->
         <div
-          class="rounded-lg overflow-hidden h-[195px] md:h-[195px] bg-white dark:bg-gray-800"
+          class="rounded-lg overflow-hidden bg-white dark:bg-gray-800"
         >
           <img
             src={capture?.laptop ?? capture?.desktop}
-            class="dark:hidden h-[156px] md:h-[195px] w-full rounded-xl"
+            class="dark:hidden w-full rounded-xl"
             alt={capture?.title}
           />
           <img
             src={capture?.dark?.laptop ??
               capture?.dark?.desktop ??
               capture?.desktop}
-            class="hidden dark:block h-[156px] md:h-[195px] w-full rounded-lg"
+            class="hidden dark:block w-full rounded-lg"
             alt={capture?.title}
           />
         </div>
@@ -109,27 +114,31 @@
         />
       </div>
     {:else}
+      <!-- h-[172px] md:h-[294px] -->
       <div
-        class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[16px] rounded-t-xl h-[172px] max-w-[301px] md:h-[294px] md:max-w-[512px]"
+        class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[16px] rounded-t-xl max-w-[301px] md:max-w-[512px]"
       >
-        <div class="rounded-xl overflow-hidden h-[140px] md:h-[262px]">
+        <!-- h-[140px] md:h-[262px] -->
+        <div class="rounded-xl overflow-hidden">
           <img
             src={capture?.desktop}
-            class="dark:hidden h-[140px] md:h-[262px] w-full rounded-xl"
+            class="dark:hidden w-full rounded-xl"
             alt={capture?.title}
           />
           <img
             src={capture?.dark?.desktop ?? capture?.desktop}
-            class="hidden dark:block h-[140px] md:h-[262px] w-full rounded-xl"
+            class="hidden dark:block w-full rounded-xl"
             alt={capture?.title}
           />
         </div>
       </div>
+      <!-- md:h-[42px] -->
       <div
-        class="w-full relative mx-auto bg-gray-900 dark:bg-gray-700 rounded-b-xl h-[24px] max-w-[301px] md:h-[42px] md:max-w-[512px]"
+        class="w-full relative mx-auto bg-gray-900 dark:bg-gray-700 rounded-b-xl h-[21px] max-w-[301px] md:max-w-[512px]"
       />
+      <!-- md:h-[95px] -->
       <div
-        class="w-full relative mx-auto bg-gray-800 rounded-b-xl h-[55px] max-w-[83px] md:h-[95px] md:max-w-[142px]"
+        class="w-full relative mx-auto bg-gray-800 rounded-b-xl h-[42px] max-w-[83px] md:max-w-[142px]"
       />
     {/if}
   {/if}

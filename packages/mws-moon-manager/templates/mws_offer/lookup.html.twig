@@ -13,6 +13,7 @@
 			'offerTagsByCatSlugAndSlug': offerTagsByCatSlugAndSlug,
 			'csrfOfferTagDelete': csrf_token('mws-csrf-offer-tag-delete'),
 			'csrfOfferTagAdd': csrf_token('mws-csrf-offer-tag-add'),
+			'csrfOfferDeleteAll': csrf_token('mws-csrf-offer-delete-all'),
 		}|serialize('json')|e('html_attr'),
 	}) }}></div>
 {% endblock %}

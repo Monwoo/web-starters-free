@@ -554,6 +554,50 @@ class MwsOfferController extends AbstractController
         ]);
     }
 
+    #[Route(
+        '/delete-all/{viewTemplate<[^/]*>?}',
+        name: 'mws_offer_delete_all',
+        methods: ['POST'],
+    )]
+    public function deleteAll(
+        string|null $viewTemplate,
+        Request $request,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) { // TODO : only for admin too ?
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-offer-delete-all', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        $qb = $this->em->createQueryBuilder()
+            ->delete(MwsOffer::class, 'o');
+        $query = $qb->getQuery();
+        $query->execute();
+        $this->em->flush();
+
+        if (in_array('application/json', $request->getAcceptableContentTypes())) {
+            return $this->json([
+                'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-delete-all')->getValue(),
+                'viewTemplate' => $viewTemplate,
+            ]);
+        }
+        return $this->redirectToRoute(
+            'mws_offer_lookup',
+            [ // array_merge($request->query->all(), [
+                "viewTemplate" => $viewTemplate,
+                "page" => 1,
+            ], //),
+            Response::HTTP_SEE_OTHER
+        );
+    }
 
     // Tags are status AND category of status (a category is also a status...)
     #[Route('/tags/list/{viewTemplate<[^/]*>?}', name: 'mws_offer_tags')]

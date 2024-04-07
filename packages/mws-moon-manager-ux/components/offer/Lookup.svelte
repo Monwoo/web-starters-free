@@ -5,6 +5,9 @@
   import Base from "../layout/Base.svelte";
   import List from "./lookup/List.svelte";
   import { onMount } from "svelte";
+  import Loader from "../layout/widgets/Loader.svelte";
+  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -16,7 +19,7 @@
   export let offersHeaders = {}; // injected raw html
   export let viewTemplate;
   export let lookupForm;
-  export let addMessageForm = '';
+  export let addMessageForm = "";
 
   console.debug(locale);
   console.debug(lookup);
@@ -26,11 +29,67 @@
   console.debug(lookupForm);
 
   const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
-  console.debug('jsonLookup :', jsonLookup);
+  console.debug("jsonLookup :", jsonLookup);
   // TODO : basehref ? => NOP, use Routing from fos-routing instead...
-  const baseHref = '/mws';
+  const baseHref = "/mws";
   // const respUrl = `${baseHref}/${locale}/mws-offer/fetch-root-url?url=`
   // + encodeURIComponent(jsonLookup.sourceRootLookupUrl);
+  export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
+
+  const deleteAllOffers = async () => {
+    if (isLoading) return;
+    isLoading = true;
+    // TODO : Wait for loading animation to show
+    // await tick();
+    // await new Promise(r => setTimeout(r, 500));
+    // Or use HTML modal instead of native blocking UI alert
+    await new Promise((r) => setTimeout(r, 100));
+
+    if (confirm("Are you sure you want to delete all offers ?")) {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfOfferDeleteAll"),
+      };
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        Routing.generate("mws_offer_delete_all", {
+          _locale: locale,
+        }),
+        {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          redirect: "error",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp.url, resp.ok, resp.status, resp.statusText);
+          if (!resp.ok) {
+            throw new Error("Not 2xx response");
+          } else {
+            const data = await resp.json();
+            console.debug("Did remove all offers, resp :", data);
+            // TODO : remove self from DOM instead of isHidden ?
+            // tags = [];
+            stateUpdate(state, {
+              csrfOfferDeleteAll: data.newCsrf,
+            });
+            window.location.reload();
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    }
+    isLoading = false;
+  };
 
   onMount(async () => {
     // // NOP, not common, will have security errors this way :
@@ -42,72 +101,101 @@
     // win.document.body.innerHTML = await htmlResp.text();
     const $ = window.$;
     // TIPS opti : use svelte html node ref and pass to jquery ?
-    const htmlLookup = $(lookupForm); 
+    const htmlLookup = $(lookupForm);
     // console.log(htmlLookup);
-    const lookupSurveyJsFormData = Object.fromEntries((new FormData(htmlLookup[0])).entries());
-    const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonLookup]'] ?? '{}')); // TODO : from param or config
+    const lookupSurveyJsFormData = Object.fromEntries(
+      new FormData(htmlLookup[0]).entries()
+    );
+    const lookupSurveyJsData = JSON.parse(
+      decodeURIComponent(
+        lookupSurveyJsFormData["mws_survey_js[jsonLookup]"] ?? "{}"
+      )
+    ); // TODO : from param or config
     // TIPS : same as jsonLookup, updated by survey js or other if using ref element instead of raw string... :
-    console.log('lookupSurveyJsData : ', lookupSurveyJsData);
+    console.log("lookupSurveyJsData : ", lookupSurveyJsData);
   });
 
-  console.log(Routing.generate('mws_offer_import'));
+  console.log(Routing.generate("mws_offer_import"));
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
   <div class="p-3 flex flex-wrap">
-    <a href={ Routing.generate('mws_offer_import', {
-      '_locale': locale ?? '',
-      'viewTemplate': viewTemplate ?? '',
-    }) }>
-      <button class="btn btn-outline-primary p-1">Importer des offres.</button>
-    </a>    
+    <Loader {isLoading} />
+    <a
+      href={Routing.generate("mws_offer_import", {
+        _locale: locale ?? "",
+        viewTemplate: viewTemplate ?? "",
+      })}
+    >
+      <button class="">Importer des offres.</button>
+    </a>
+    <span on:click={deleteAllOffers}>
+      <button class="mx-2"
+      style="--mws-primary-rgb: 255, 0, 0"
+      >Supprimer toutes les offres.</button>
+    </span>
   </div>
   <div class="p-3 flex flex-wrap">
     <div class="label">
       <button
-      data-collapse-toggle="search-offer-lookup"
-      type="button"
-      class="rounded-lg "
-      aria-controls="search-offer-lookup"
-      aria-expanded="false"
-    >
-      Filtres de recherche
+        data-collapse-toggle="search-offer-lookup"
+        type="button"
+        class="rounded-lg "
+        aria-controls="search-offer-lookup"
+        aria-expanded="false"
+      >
+        Filtres de recherche
+      </button>
     </div>
     <div id="search-offer-lookup" class="detail w-full hidden z-50">
       {@html lookupForm}
     </div>
   </div>
   {@html jsonLookup.customFilters && jsonLookup.customFilters.length
-    ? '<strong>Filtres actifs : </strong>' +
-      jsonLookup.customFilters.reduce((acc, f) => `
+    ? "<strong>Filtres actifs : </strong>" +
+      jsonLookup.customFilters.reduce(
+        (acc, f) => `
         ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
+      `,
+        ``
+      ) +
+      "<br/>"
+    : ""}
   {@html jsonLookup.searchTags && jsonLookup.searchTags.length
-    ? '<strong>Tags : </strong>' +
-      jsonLookup.searchTags.reduce((acc, f) => `
+    ? "<strong>Tags : </strong>" +
+      jsonLookup.searchTags.reduce(
+        (acc, f) => `
         ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
+      `,
+        ``
+      ) +
+      "<br/>"
+    : ""}
   {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
-    ? '<strong>Tags à éviter : </strong>' +
-      jsonLookup.searchTagsToAvoid.reduce((acc, f) => `
+    ? "<strong>Tags à éviter : </strong>" +
+      jsonLookup.searchTagsToAvoid.reduce(
+        (acc, f) => `
         ${acc} [${f}]
-      `, ``) + '<br/>'
-    : ''
-  }
+      `,
+        ``
+      ) +
+      "<br/>"
+    : ""}
   {@html jsonLookup.searchKeyword
     ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
-    : ``
-  }
+    : ``}
   {@html offersPaginator}
 
   <!-- { JSON.stringify(offers) } -->
   <div class="mws-offer-lookup">
-    <List {locale} {offers} {offersHeaders} {viewTemplate}
-    {addMessageForm} {messagesByProjectId}></List>
+    <List
+      {locale}
+      {offers}
+      {offersHeaders}
+      {viewTemplate}
+      {addMessageForm}
+      {messagesByProjectId}
+    />
   </div>
   <div>{@html offersPaginator}</div>
 </Base>
