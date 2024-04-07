@@ -194,7 +194,7 @@
         <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" />
 
         <Jumbotron title="Suivi des temps" />
-        <div class="w-full flex justify-center items-center">
+        <div class="w-full flex flex-wrap justify-center items-center">
             <a
                 href={Routing.generate(
                     "mws_timings_report",
@@ -204,7 +204,7 @@
                 )}
                 class="
             text-lg font-medium inline-flex items-center
-            px-4 pt-6 pb-12"
+            px-4 pt-6 pb-4"
             >
                 <button>Timings</button>
             </a>
@@ -212,7 +212,7 @@
             <a
                 class="
             text-lg font-medium inline-flex items-center
-            px-4 pt-6 pb-12"
+            px-4 pt-6 pb-4"
                 href={Routing.generate(
                     "mws_timings_qualif",
                     {
@@ -225,7 +225,7 @@
             <a
                 class="
           text-lg font-medium inline-flex items-center
-          px-4 pt-6 pb-12"
+          px-4 pt-6 pb-4"
                 href={Routing.generate("mws_timing_tag_list", {
                     _locale: locale ?? "fr",
                     viewTemplate: viewTemplate ?? "",
