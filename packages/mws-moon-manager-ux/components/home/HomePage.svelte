@@ -55,8 +55,7 @@
                             "app_pdf_billings",
                             {
                                 _locale: locale ?? "fr",
-                            },
-                            true
+                            }
                         )
                     );
                 }}
@@ -88,8 +87,7 @@
                             "mws_timings_report",
                             {
                                 _locale: locale ?? "fr",
-                            },
-                            true
+                            }
                         )
                     );
                 }}
@@ -106,8 +104,7 @@
                             "app_pdf_billings",
                             {
                                 _locale: locale ?? "fr",
-                            },
-                            true
+                            }
                         )
                     );
                 }}
@@ -141,8 +138,7 @@
                             "mws_timings_report",
                             {
                                 _locale: locale ?? "fr",
-                            },
-                            true
+                            }
                         )
                     );
                 }}
@@ -196,12 +192,9 @@
         <Jumbotron title="Suivi des temps" />
         <div class="w-full flex flex-wrap justify-center items-center">
             <a
-                href={Routing.generate(
-                    "mws_timings_report",
-                    {
-                        _locale: locale ?? "fr",
-                    }
-                )}
+                href={Routing.generate("mws_timings_report", {
+                    _locale: locale ?? "fr",
+                })}
                 class="
             text-lg font-medium inline-flex items-center
             px-4 pt-6 pb-4"
@@ -213,12 +206,9 @@
                 class="
             text-lg font-medium inline-flex items-center
             px-4 pt-6 pb-4"
-                href={Routing.generate(
-                    "mws_timings_qualif",
-                    {
-                        _locale: locale ?? "fr",
-                    }
-                )}
+                href={Routing.generate("mws_timings_qualif", {
+                    _locale: locale ?? "fr",
+                })}
             >
                 <button> Qualification des temps </button>
             </a>
