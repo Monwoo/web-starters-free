@@ -10,7 +10,7 @@
 </script>
 
 <div class="w-full flex justify-center items-center
-h-[70vh] max-h-[70vh]
+aspect-video max-h-[70vh]
 bg-black
 border border-gray-200 rounded-lg dark:border-gray-700
 {cssClass}" controls>
