@@ -8,6 +8,7 @@
   import Loader from "../layout/widgets/Loader.svelte";
   import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
+  import debounce from "lodash/debounce";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -20,6 +21,7 @@
   export let viewTemplate;
   export let lookupForm;
   export let addMessageForm = "";
+  export let reportScale = 100;
 
   console.debug(locale);
   console.debug(lookup);
@@ -122,6 +124,7 @@
   <div class="p-3 flex flex-wrap">
     <Loader {isLoading} />
     <a
+      class="pb-2"
       href={Routing.generate("mws_offer_import", {
         _locale: locale ?? "",
         viewTemplate: viewTemplate ?? "",
@@ -187,7 +190,27 @@
   {@html offersPaginator}
 
   <!-- { JSON.stringify(offers) } -->
-  <div class="mws-offer-lookup">
+  <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
+    <div class="fill-white/70 text-white/70 w-full">
+      <!-- // TODO : userDelay instead of 400 ? not same for all situation,
+      //         might need bigDelay or short or medium ?
+      //         or too specific, keep number easyer than multiples var or const ? -->
+      <input
+        value={reportScale}
+        on:change={debounce((e) => (reportScale = e.target.value), 200)}
+        id="report-scale"
+        type="range"
+        class="w-full h-8 bg-gray-200/50 rounded-lg
+          appearance-none cursor-pointer outline-none
+          "
+      />
+    </div>
+  </div>
+
+  <div class="mws-offer-lookup"
+  style={`
+    zoom: ${reportScale}%;
+  `}>
     <List
       {locale}
       {offers}

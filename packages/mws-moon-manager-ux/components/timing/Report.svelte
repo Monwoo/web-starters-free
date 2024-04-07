@@ -20,6 +20,7 @@
   import Routing from "fos-router";
   import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
+  import debounce from "lodash/debounce";
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
   import ReportSummaryRows from "./ReportSummaryRows.svelte";
   import ExportTags from "./tags/ExportTags.svelte";
@@ -27,7 +28,6 @@
   import ExportTimings from "./ExportTimings.svelte";
   import _ from "lodash";
   import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
-  import debounce from "lodash/debounce";
 import Loader from "../layout/widgets/Loader.svelte";
 
   export let locale;
@@ -1117,7 +1117,7 @@ import Loader from "../layout/widgets/Loader.svelte";
       //         or too specific, keep number easyer than multiples var or const ? -->
       <input
         value={reportScale}
-        on:change={debounce((e) => (reportScale = e.target.value), 400)}
+        on:change={debounce((e) => (reportScale = e.target.value), 200)}
         id="report-scale"
         type="range"
         class="w-full h-8 bg-gray-200/50 rounded-lg

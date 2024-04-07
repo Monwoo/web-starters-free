@@ -100,7 +100,7 @@
   </td>
   <th
     scope="row"
-    class="sticky left-[3em] w-[6em] z-10
+    class="sticky left-[4em] w-[6em] z-10
     hover:bg-white/90 hover:opacity-100"
     class:opacity-0={isSecondColVisible}
   >

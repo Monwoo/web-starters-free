@@ -155,13 +155,13 @@
         >
         <th
           scope="col"
-          class="sticky max-w-[20vw] left-[3em] w-[4em] z-10 
+          class="sticky max-w-[20vw] left-[4em] w-[4em] z-10 
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isSecondColVisible}>[Slug] Status</th
         >
         <th
           scope="col"
-          class="sticky max-w-[20vw] left-[7em] w-[6em] z-10 
+          class="sticky max-w-[20vw] left-[9em] w-[6em] z-10 
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isThirdColVisible}>Tags</th
         >
