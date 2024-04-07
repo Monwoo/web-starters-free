@@ -28,7 +28,7 @@
   import ExportTimings from "./ExportTimings.svelte";
   import _ from "lodash";
   import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
-import Loader from "../layout/widgets/Loader.svelte";
+  import Loader from "../layout/widgets/Loader.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -119,15 +119,13 @@ import Loader from "../layout/widgets/Loader.svelte";
 
     console.assert(
       !tagSlugs || tagSlugs.length == ids.length,
-      tagSlugs?.length
-      + " Wrong DATASET, <> tagSlugs found "
-      + ids.length
+      tagSlugs?.length + " Wrong DATASET, <> tagSlugs found " + ids.length
     );
     console.assert(
       allRangeDayIdxBy10Min.length == ids.length,
-      allRangeDayIdxBy10Min?.length
-      + " Wrong DATASET, <> allRangeDayIdxBy10Min found for "
-      + ids.length
+      allRangeDayIdxBy10Min?.length +
+        " Wrong DATASET, <> allRangeDayIdxBy10Min found for " +
+        ids.length
     );
 
     // console.assert( // replaced by maxPath system
@@ -137,16 +135,14 @@ import Loader from "../layout/widgets/Loader.svelte";
     console.assert(
       // replaced by maxPath system
       !maxPaths || maxPaths.length == ids.length,
-      maxPaths?.length
-      + " Wrong DATASET, <> maxPaths found "
-      + ids.length
+      maxPaths?.length + " Wrong DATASET, <> maxPaths found " + ids.length
     );
 
     console.assert(
       !sourceStamps || sourceStamps.length == ids.length,
-      sourceStamps?.length
-      + " Wrong DATASET, <> sourceStamps found "
-      + ids.length
+      sourceStamps?.length +
+        " Wrong DATASET, <> sourceStamps found " +
+        ids.length
     );
     // const srcStamps = tSum.srcStamps.split(',');
     ids.forEach((tId, idx) => {
@@ -829,6 +825,8 @@ import Loader from "../layout/widgets/Loader.svelte";
     });
 
   // Number.prototype.toPrettyNum = (length: number) => {
+  // TODO : buggy to overwrite with != code dups
+  //     => factorize in one place ... (service/number.ts ?)
   Number.prototype.toPrettyNum = function (
     this: Number,
     length: number,
@@ -849,7 +847,7 @@ import Loader from "../layout/widgets/Loader.svelte";
       .split(",");
     return (
       (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
-      (length > 0 ? "," : "") +
+      (length >= 1 ? "," : "") +
       (splited[1] ?? "")
     );
   };
@@ -918,12 +916,9 @@ import Loader from "../layout/widgets/Loader.svelte";
   <Loader {isLoading} />
 
   <a
-    href={Routing.generate(
-      "mws_timings_qualif",
-      {
-        _locale: locale ?? "fr",
-      }
-    )}
+    href={Routing.generate("mws_timings_qualif", {
+      _locale: locale ?? "fr",
+    })}
     class="pb-2 pr-2"
   >
     <button> Qualification des temps </button>
@@ -1004,18 +999,16 @@ import Loader from "../layout/widgets/Loader.svelte";
   </div>
   <div class="pt-3 w-full">
     <!-- // TODO : code factorization, indide component ? -->
-    {@html jsonLookup.searchStart &&
-      jsonLookup.searchStart.length
-        ? "<strong>Depuis le : </strong>" +
-          dayjs(jsonLookup.searchStart).format("YYYY/MM/DD H:mm:ss") +
-          "<br/>"
-        : ""}
-    {@html jsonLookup.searchEnd &&
-      jsonLookup.searchEnd.length
-        ? "<strong>Jusqu'au : </strong>" +
-          dayjs(jsonLookup.searchEnd).format("YYYY/MM/DD H:mm:ss") +
-          "<br/>"
-        : ""}
+    {@html jsonLookup.searchStart && jsonLookup.searchStart.length
+      ? "<strong>Depuis le : </strong>" +
+        dayjs(jsonLookup.searchStart).format("YYYY/MM/DD H:mm:ss") +
+        "<br/>"
+      : ""}
+    {@html jsonLookup.searchEnd && jsonLookup.searchEnd.length
+      ? "<strong>Jusqu'au : </strong>" +
+        dayjs(jsonLookup.searchEnd).format("YYYY/MM/DD H:mm:ss") +
+        "<br/>"
+      : ""}
     {@html jsonLookup.customFilters && jsonLookup.customFilters.length
       ? "<strong>Filtres actifs : </strong>" +
         jsonLookup.customFilters.reduce(
@@ -1077,7 +1070,9 @@ import Loader from "../layout/widgets/Loader.svelte";
     >
   </div>
   <div class="w-full h-4" />
-  <div class="w-full text-lg">Rapport des temps via segmentations de 10 minutes.</div>
+  <div class="w-full text-lg">
+    Rapport des temps via segmentations de 10 minutes.
+  </div>
   <div class="w-full h-4" />
   <div class="w-full text-lg font-extrabold">
     {summaryByLevels.sumOfBookedHrs.toPrettyNum(2, 5)} heures au total si effectué
@@ -1110,7 +1105,9 @@ import Loader from "../layout/widgets/Loader.svelte";
     {(summaryTotals.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € annexes.
   </div>
   <div class="w-full h-4" />
-  <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
+  <div
+    class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden"
+  >
     <div class="fill-white/70 text-white/70 w-full">
       <!-- // TODO : userDelay instead of 400 ? not same for all situation,
       //         might need bigDelay or short or medium ?
@@ -1130,10 +1127,12 @@ import Loader from "../layout/widgets/Loader.svelte";
   <div class="block w-full overflow-x-auto ">
     <!-- transform: scale(${(reportScale / 100).toFixed(2)}); -->
 
-    <table class="items-center w-full bg-transparent border-collapse"
-    style={`
+    <table
+      class="items-center w-full bg-transparent border-collapse"
+      style={`
       zoom: ${reportScale}%;
-    `}>
+    `}
+    >
       <thead class="sticky">
         <tr>
           <th

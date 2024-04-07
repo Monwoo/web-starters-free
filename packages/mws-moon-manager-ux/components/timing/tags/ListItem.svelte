@@ -171,7 +171,8 @@
       .replace(".", ",")
       .split(',');
     return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-    + ',' + (splited[1] ?? '');
+    (length >= 1 ? "," : "") +
+    (splited[1] ?? '');
   };
 
   declare interface Number {

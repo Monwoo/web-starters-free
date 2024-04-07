@@ -86,7 +86,7 @@
       .split(",");
     return (
       (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
-      (length > 0 ? "," : "") +
+      (length >= 1 ? "," : "") +
       (splited[1] ?? "")
     );
   };
