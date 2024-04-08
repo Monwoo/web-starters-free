@@ -1,0 +1,37 @@
+appInfos:
+    packageVersion: 2.0.10
+    packageName: mws-sf-pdf-billings
+    isDev: true
+clientSlug: '--'
+clientName: ______________________________
+documentType: null
+quotationTemplate: monwoo-05-php-crm
+quotationNumber: ________________
+quotationSourceNumber: null
+quotationAmount: null
+clientEmail: ______________________________
+clientTel: ______________________________
+clientSIRET: ______________________________
+clientTvaIntracom: ______________________________
+clientAddressL1: ______________________________
+clientAddressL2: ______________________________
+clientWebsite: ______________________________
+clientLogoUrl: ______________________________
+businessLogo: null
+businessWorkloadHours: null
+businessAim: null
+businessWorkloadDetails: null
+quotationStartDay: null
+quotationEndDay: null
+percentDiscount: null
+marginBeforeStartItem: null
+marginAfterStartItem: null
+pageBreakAfterStartItem: null
+marginBeforeEndItem: null
+marginAfterEndItem: null
+pageBreakAfterEndItem: null
+hideDefaultOutlaysOnEmptyOutlays: null
+outlays: {  }
+transactions: {  }
+products: {  }
+marginBeforeTotal: null
