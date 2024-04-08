@@ -34,6 +34,8 @@
             }),
         },
     ];
+    const baseHref = window && window.baseHref;
+
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
@@ -61,7 +63,7 @@
                 }}
                 capture={{
                     title: "Facturation PDF",
-                    mobile: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-light.png",
+                    mobile: `${baseHref}/bundles/moonmanager/medias/home/pdf-billings-mobile.jpg`,
                 }}
             />
             <MultiScreen
@@ -76,7 +78,7 @@
                 }}
                 capture={{
                     title: "Recherche d'offres",
-                    mobile: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-light.png",
+                    mobile: `${baseHref}/bundles/moonmanager/medias/home/offers-lookup-mobile.jpg`,
                 }}
             />
             <MultiScreen
@@ -93,7 +95,7 @@
                 }}
                 capture={{
                     title: "Suivi des temps",
-                    mobile: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/hero/mockup-2-light.png",
+                    mobile: `${baseHref}/bundles/moonmanager/medias/home/timings-report-mobile.jpg`,
                 }}
             />
             <MultiScreen
@@ -110,8 +112,7 @@
                 }}
                 capture={{
                     title: "Facturation PDF",
-                    desktop:
-                        "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
+                    desktop: `${baseHref}/bundles/moonmanager/medias/home/pdf-billings-laptop.jpg`,
                 }}
             />
             <MultiScreen
@@ -126,8 +127,7 @@
                 }}
                 capture={{
                     title: "Recherche d'offres",
-                    desktop:
-                        "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
+                    desktop: `${baseHref}/bundles/moonmanager/medias/home/offers-lookup-laptop.jpg`,
                 }}
             />
             <MultiScreen
@@ -144,8 +144,7 @@
                 }}
                 capture={{
                     title: "Suivi des temps",
-                    desktop:
-                        "https://flowbite.s3.amazonaws.com/docs/device-mockups/laptop-screen.png",
+                    desktop: `${baseHref}/bundles/moonmanager/medias/home/timings-report-laptop.jpg`,
                 }}
             />
         </div>

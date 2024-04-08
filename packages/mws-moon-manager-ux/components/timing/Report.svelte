@@ -924,6 +924,7 @@
     <button> Qualification des temps </button>
   </a>
   <a
+    class="pb-2 pr-2"
     href={Routing.generate("mws_timing_tag_list", {
       _locale: locale ?? "fr",
       viewTemplate: viewTemplate ?? "",
