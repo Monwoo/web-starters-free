@@ -1,0 +1,77 @@
+-
+    slug: Knowledge
+    label: Knowledge
+    description: null
+    category: null
+    pricePerHr: 40.0
+    pricePerHrRules: {  }
+-
+    slug: Miguel-Monwoo
+    label: 'Miguel Monwoo'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }
+-
+    slug: Mise-en-oeuvre-experte
+    label: 'Mise en oeuvre experte'
+    description: null
+    category: null
+    pricePerHr: 100.0
+    pricePerHrRules: {  }
+-
+    slug: Mise-en-oeuvre-simple
+    label: 'Mise en oeuvre simple'
+    description: null
+    category: null
+    pricePerHr: 80.0
+    pricePerHrRules: {  }
+-
+    slug: Monwoo-Web-Starters
+    label: 'Monwoo Web Starters'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }
+-
+    slug: TODO-Screenshots
+    label: 'TODO Screenshots'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }
+-
+    slug: TODO-Video-demo
+    label: 'TODO Video démo'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }
+-
+    slug: TODO-Web-demo
+    label: 'TODO Web démo'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }
+-
+    slug: TODO-Offer-test-dataset
+    label: 'TODO Offer test dataset'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }
+-
+    slug: K-Git-log-commande
+    label: 'K - Git log commande'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }
+-
+    slug: Draft-screen-for-desing-history
+    label: 'Draft screen for desing history'
+    description: null
+    category: null
+    pricePerHr: null
+    pricePerHrRules: {  }

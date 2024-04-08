@@ -134,7 +134,7 @@
 							}) }}>
 							</header>
 						</div> #}
-			<button id="menu-timing-opener" data-collapse-toggle="menu-timing" type="button" class="rounded-lg m-2" aria-controls="search-timing-lookup" aria-expanded="false">
+			{# <button id="menu-timing-opener" data-collapse-toggle="menu-timing" type="button" class="rounded-lg m-2" aria-controls="search-timing-lookup" aria-expanded="false">
 				Menu
 			</button>
 			<div class="mws-menu-wrapper inline-flex flex-col bg-yellow-100">
@@ -144,7 +144,17 @@
 							"locale": app.locale
 					}) }}>
 				</div>
+			</div> #}
+			<div class="mws-menu-wrapper inline-flex flex-col w-full">
+			<header class="w-full flex"
+			{{ svelte_component('MwsHeader', {
+					"locale": app.locale,
+					"inlineOpener": true
+			}) }} />
+			{# // TODO : without div wrapper, will break layout.
+			Missing closing tag in sub components ? #}
 			</div>
+
 			<div class="preface m-3">
 				<p>
 					{{ 'mws.copyright'|trans|raw }}

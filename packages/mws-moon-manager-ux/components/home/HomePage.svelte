@@ -170,7 +170,8 @@
                 <button>Services</button>
             </a>
         </div>
-        <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" />
+        <!-- // TODO démo vidéo per domains ? -->
+        <!-- <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" /> -->
 
         <Jumbotron title="Recherche d'offres" />
         <div class="w-full flex justify-center items-center">
@@ -186,7 +187,7 @@
                 <button>Rechercher une offre</button>
             </a>
         </div>
-        <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" />
+        <!-- <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" /> -->
 
         <Jumbotron title="Suivi des temps" />
         <div class="w-full flex flex-wrap justify-center items-center">
@@ -223,7 +224,7 @@
                 <button>Liste des tags</button>
             </a>
         </div>
-        <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" />
+        <!-- <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" /> -->
 
         <Separator />
 
