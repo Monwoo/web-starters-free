@@ -3,6 +3,7 @@
     import Routing from "fos-router";
     // TODO : namespace
     import Base from "../layout/Base.svelte";
+import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
     import GitLogsChart from "../layout/widgets/GitLogsChart.svelte";
     import Jumbotron from "../layout/widgets/Jumbotron.svelte";
     import MultiScreen from "../layout/widgets/MultiScreen.svelte";
@@ -229,6 +230,8 @@
         <Separator />
 
         <GitLogsChart />
+
+        <DonateFunnel />
     </div>
     <!-- <h1>{title ?? ""}</h1>
     <div class="nav-item dropdown">

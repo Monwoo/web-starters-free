@@ -171,3 +171,11 @@ thead[class*="sticky"] {
             RGB(var(--mws-background-light-rgb)),
             RGB(var(--mws-background-rgb)));
 }
+
+a {
+    &:hover {
+        // TODO : /style inside moon-manager-ux instead of SF package for base themes configs ?
+        // @apply no-underline; // TODO : tailwind class apply not working here ? why ?
+        text-decoration: none;
+    }
+}
