@@ -30,9 +30,9 @@ if (class_exists(MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class)) {
         MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class => ['all' => true],
     ]);
 }
-if (class_exists(MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class)) {
+if (class_exists(MWS\DemoBundle\DemoBundle::class)) {
     $bundles = array_merge($bundles, [
-        MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class => ['all' => true],
+        MWS\DemoBundle\DemoBundle::class => ['all' => true],
     ]);
 }
 
