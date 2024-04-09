@@ -128,11 +128,15 @@
         affiliationCode
           ? // TODO : other ways than paypal btn ?
             // ? `?affiliationCode=${encodeURIComponent(affiliationCode)}`
-            `?item_name=${encodeURIComponent(affiliationCode)}&cn=${
-              // TODO : no GET param config for paypal btn ?
+            `?item_name=${
+              encodeURIComponent(affiliationCode).replaceAll("%20", "+")
+            }&cn=${
+              // TODO :  GET param config encoding for paypal btn ?
               // &targetMeta=eyJ6b2lkVmVyc2lvbiI6IjlfMF81OCIsInRhcmdldCI6IkRPTkFURSIsInNka1ZlcnNpb24iOiIwLjguMCJ9
-
-              encodeURIComponent("MWS-PDF-Billings via " + (affiliationCode ?? ""))
+              // Paypal ignore %20 and use '+' for space encode char
+              // + ENCODED '+' char as %2B do not get translated (stay as %2B)
+              encodeURIComponent("MWS-PDF-Billings via " + (affiliationCode ?? "")
+              ).replaceAll("%20", "+")
             }`
           : ``
       }`}
