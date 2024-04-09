@@ -1,7 +1,12 @@
+<script context="module">
+  // let sdkPaypalMissing = !(window.PayPal ?? false);
+  let sdkPaypalMissing = true;
+</script>
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import { onMount } from "svelte";
-  import debounce from 'lodash/debounce';
+  import debounce from "lodash/debounce";
+  import newUniqueId from "locally-unique-id-generator";
   // import dayjs from "dayjs";
 
   // https://medium.com/william-joseph/things-i-wish-id-known-when-starting-website-projects-9133a5188878
@@ -16,12 +21,74 @@
   // https://charityfunnel.io/ => TODO : more advanced than custom paypal ? only for specific known domains ?
   //
   const urlParams = new URLSearchParams(window.location.search);
+  const UID = newUniqueId();
 
   export let affiliationCode = urlParams.get("affiliationCode") ?? null;
   export let userDelay = 200;
+  export let usePaypalBtn = false;
+  const htmlId = `paypal-donate-button-container-${UID}`;
 
-  onMount(() => {});
+  // https://github.com/sveltejs/kit/issues/10502
+  // But async load might still over loads ?
+  let shouldAddPaypalSdk = !sdkPaypalMissing;
+  let isPaypalSdkLoaded = false;
+  let didMount = false;
+  sdkPaypalMissing = false;
+
+  const syncPaypal = () => {
+    console.debug('Did sync PaypalSdk');
+    // https://developer.paypal.com/sdk/donate/
+    const PayPal = window.PayPal;
+
+    PayPal.Donation.Button({
+      // env: 'sandbox', // Will need sandbox btn id...
+      env: "production",
+      hosted_button_id: "F3F9EBQKT3TDG",
+      // https://www.paypal.com/mc/cshelp/article/o%C3%B9-se-trouve-mon-identifiant-de-marchand-s%C3%A9curis%C3%A9-sur-mon-compte-paypal%C2%A0-help538
+      // https://www.paypal.com/businessmanage/account/aboutBusiness
+      // business: 'YOUR_LIVE_EMAIL_OR_PAYERID',
+      // https://developer.paypal.com/api/nvp-soap/ipn/IPNandPDTVariables/
+      // https://developer.paypal.com/api/nvp-soap/paypal-payments-standard/integration-guide/Appx-websitestandard-htmlvariables/
+      cn: "MWS-PDF-Billings via " + (affiliationCode ?? ""), // TODO : reactive sync ?
+      image: {
+        // https://developer.paypal.com/beta/apm-beta/additional-information/method-icons/
+        src: "https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif",
+        title: "PayPal - Faire un don à Monwoo",
+        alt: "Don pour Monwoo",
+      },
+      onComplete: function (params) {
+        // Your onComplete handler
+      },
+    }).render(`#${htmlId}`);
+  }
+
+  $: {
+    if (isPaypalSdkLoaded && didMount) {
+      syncPaypal();
+    }
+  }
+
+  onMount(async () => {
+    // syncPaypal();
+    didMount = true;
+    if (!shouldAddPaypalSdk && usePaypalBtn) {
+      // TODO : should wait for window.PayPal ?
+      await new Promise(r => setTimeout(r, 500));
+      isPaypalSdkLoaded = true;
+    }
+  });
 </script>
+
+<svelte:head>
+  <!-- TIPS : only one injection if already injected ? -->
+  <!-- https://github.com/sveltejs/kit/issues/10502 -->
+  {#if shouldAddPaypalSdk && usePaypalBtn}
+    <script
+    on:load={() => isPaypalSdkLoaded = true}
+    src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js"
+    charset="UTF-8"></script>
+  {/if}
+</svelte:head>
 
 <div class="w-full flex flex-wrap items-center justify-center">
   <h1
@@ -32,35 +99,47 @@
   <div class="w-full text-center">
     <label class="p-2" for="affiliationCode">Code d'affiliation :</label>
     <input
-    class="text-black opacity-30 hover:opacity-100 max-w-[12rem] w-4/5"
-    value={affiliationCode}
-    type="text"
-    name="affiliationCode"
-    on:input={debounce(async (e) => {
-      affiliationCode = e.target.value;
-    }, userDelay * 4)}
-    on:keydown={debounce(async (e) => {
-      if ("Enter" == e.key) {
-        if (document.activeElement instanceof HTMLElement)
-          document.activeElement.blur();
-        e.target.blur();
-        // TODO : auto trigger href link
-      }
-    }, userDelay)}
+      class="text-black opacity-30 hover:opacity-100 max-w-[12rem] w-4/5"
+      value={affiliationCode}
+      type="text"
+      name="affiliationCode"
+      on:input={debounce(async (e) => {
+        affiliationCode = e.target.value;
+      }, userDelay * 4)}
+      on:keydown={debounce(async (e) => {
+        if ("Enter" == e.key) {
+          if (document.activeElement instanceof HTMLElement)
+            document.activeElement.blur();
+          e.target.blur();
+          // TODO : auto trigger href link
+        }
+      }, userDelay)}
     />
   </div>
 
   <!-- // TODO : affiliation code input auto fill for paypal reference trakings ? -->
-  <a
-    class="p-7 text-2xl hover:cursor-pointer hover:no-underline"
-    href={`https://www.monwoo.com/don${
-      affiliationCode
-      ? `?affiliationCode=${encodeURIComponent(affiliationCode)}`
-      : ``
-    }`}
-    target="_blank"
-  >
-    { affiliationCode ? affiliationCode + ' : ' : ''}
-    www.monwoo.com/don
-  </a>
+
+  {#if usePaypalBtn}
+    <div id={htmlId}></div>
+  {:else}
+    <a
+      class="p-7 text-2xl hover:cursor-pointer hover:no-underline"
+      href={`https://www.monwoo.com/don${
+        affiliationCode
+          ? // TODO : other ways than paypal btn ?
+            // ? `?affiliationCode=${encodeURIComponent(affiliationCode)}`
+            `?item_name=${encodeURIComponent(affiliationCode)}&cn=${
+              // TODO : no GET param config for paypal btn ?
+              // &targetMeta=eyJ6b2lkVmVyc2lvbiI6IjlfMF81OCIsInRhcmdldCI6IkRPTkFURSIsInNka1ZlcnNpb24iOiIwLjguMCJ9
+
+              encodeURIComponent("MWS-PDF-Billings via " + (affiliationCode ?? ""))
+            }`
+          : ``
+      }`}
+      target="_blank"
+    >
+      {affiliationCode ? affiliationCode + " : " : ""}
+      www.monwoo.com/don
+    </a>
+  {/if}
 </div>

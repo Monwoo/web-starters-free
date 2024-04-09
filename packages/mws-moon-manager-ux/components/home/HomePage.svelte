@@ -21,20 +21,21 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
     export let currentLanguage = null;
     export let billingsLocales = [];
     export let moonManagerLocales = [];
-    export let moonManagerUserLocales = [
-        {
-            label: "Users list in english",
-            path: Routing.generate("mws_user", {
-                _locale: "en",
-            }),
-        },
-        {
-            label: "Liste des utilisateurs en anglais",
-            path: Routing.generate("mws_user", {
-                _locale: "fr",
-            }),
-        },
-    ];
+    export let affiliationCode;
+    // export let moonManagerUserLocales = [
+    //     {
+    //         label: "Users list in english",
+    //         path: Routing.generate("mws_user", {
+    //             _locale: "en",
+    //         }),
+    //     },
+    //     {
+    //         label: "Liste des utilisateurs en anglais",
+    //         path: Routing.generate("mws_user", {
+    //             _locale: "fr",
+    //         }),
+    //     },
+    // ];
     const baseHref = window && window.baseHref;
 
 </script>
@@ -150,6 +151,8 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
             />
         </div>
         <Separator />
+        <DonateFunnel bind:affiliationCode />
+        <Separator />
 
         <Jumbotron
             title="Facturation PDF"
@@ -231,7 +234,7 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
 
         <GitLogsChart />
 
-        <DonateFunnel />
+        <DonateFunnel bind:affiliationCode />
     </div>
     <!-- <h1>{title ?? ""}</h1>
     <div class="nav-item dropdown">
