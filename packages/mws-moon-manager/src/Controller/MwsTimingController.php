@@ -519,7 +519,8 @@ class MwsTimingController extends AbstractController
             // dd($path);
             $this->logger->debug("Root file", [$inputPath, $path]);
             if (!$path || !file_exists($path)) {
-                throw $this->createAccessDeniedException('Media path not allowed');
+                // throw $this->createAccessDeniedException('Media path not allowed');
+                throw $this->createNotFoundException('Media path not allowed');
             }
             $url = $path;
         }
@@ -970,32 +971,39 @@ class MwsTimingController extends AbstractController
                         if ($context['deserialization_path'] ?? null) {
                             // dd($innerObject); // TODO ; can't have raw input string ?
                             // throw new Exception("TODO : ");
-                            return array_map(function ($tagSlug)
-                            use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags, &$context, $em) {
-                                $tag = $mwsTimeTagRepository->findOneBy([
-                                    'slug' => $tagSlug->getSlug(),
-                                ]);
-                                // dd($tag);
-                                // TODO ; if null tag ?
-                                if (!$tag) {
-                                    $importReport .= "Missing tag for slug {$tagSlug->getSlug()} for {$context['deserialization_path']} <br/>";
-                                    if ($tagSlug->getSlug() && strlen($tagSlug->getSlug())) {
-                                        $pendingNewTags[$tagSlug->getSlug()] = true;
-                                        $tag = new MwsTimeTag();
-                                        $tag->setSlug($tagSlug->getSlug());
-                                        $tag->setLabel("#{$tagSlug->getSlug()}#");
-                                        // TIPS : even if will be saved with 'cascade persiste' attribute
-                                        // save it now to see it on others imports lookups instead of at
-                                        // end of full import query builds...
-                                        $em->persist($tag);
-                                        $em->flush();
-                                    } else {
-                                        $importReport .= "WARNING : null tag for {$context['deserialization_path']} <br/>";
-                                        $this->logger->warning("WARNING : null tag for {$context['deserialization_path']}");
+                            return array_filter(
+                                array_map(function ($tagSlug)
+                                use ($mwsTimeTagRepository, &$importReport, &$pendingNewTags, &$context, $em) {
+                                    $tag = $mwsTimeTagRepository->findOneBy([
+                                        'slug' => $tagSlug->getSlug(),
+                                    ]);
+                                    // dd($tag);
+                                    // TODO ; if null tag ?
+                                    if (!$tag) {
+                                        if ($tagSlug->getSlug() && strlen($tagSlug->getSlug())) {
+                                            $importReport .= "Missing tag for slug {$tagSlug->getSlug()} for {$context['deserialization_path']} <br/>";
+                                            $pendingNewTags[$tagSlug->getSlug()] = true;
+                                            $tag = new MwsTimeTag();
+                                            $tag->setSlug($tagSlug->getSlug());
+                                            $tag->setLabel("#{$tagSlug->getSlug()}#");
+                                            // TIPS : even if will be saved with 'cascade persiste' attribute
+                                            // save it now to see it on others imports lookups instead of at
+                                            // end of full import query builds...
+                                            $em->persist($tag);
+                                            $em->flush();
+                                        } else {
+                                            // TIPS : no need to warn, for CSV emoty row will be null...
+                                            // $importReport .= "WARNING : null tag for {$context['deserialization_path']} <br/>";
+                                            // $this->logger->warning("WARNING : null tag for {$context['deserialization_path']}");
+                                        }
                                     }
+                                    return $tag;
+                                }, $innerObject),
+                                function($t) {
+                                    // filter null
+                                    return !!$t;
                                 }
-                                return $tag;
-                            }, $innerObject);
+                            );
                         } else {
                             // Normalise (cf timing export, not used by import)
                             throw new Exception("Should not happen");

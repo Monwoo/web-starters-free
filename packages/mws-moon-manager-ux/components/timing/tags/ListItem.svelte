@@ -170,7 +170,7 @@
       // })
       .replace(".", ",")
       .split(',');
-    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
     (length >= 1 ? "," : "") +
     (splited[1] ?? '');
   };

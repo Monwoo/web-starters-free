@@ -697,6 +697,7 @@
         pickMaxBetween(yearSummary, maxSlot)?.maxPath ?? null;
       // Deep is same as normal since linear time view...
       yearSummary.deepSumOfMaxPathPerHr = yearSummary.sumOfMaxPathPerHr;
+      yearSummary.deepSumOfBookedHrs = yearSummary.sumOfBookedHrs;
       yearSummary.deepMaxPath = yearSummary.maxPath;
 
       monthSummary.sumOfBookedHrs += delta;
@@ -714,6 +715,7 @@
         pickMaxBetween(monthSummary, maxSlot)?.maxPath ?? null;
       // Deep is same as normal since linear time view...
       monthSummary.deepSumOfMaxPathPerHr = monthSummary.sumOfMaxPathPerHr;
+      monthSummary.deepSumOfBookedHrs = monthSummary.sumOfBookedHrs;
       monthSummary.deepMaxPath = monthSummary.maxPath;
 
       // yearSummary.deepSumOfBookedHrs += delta;
