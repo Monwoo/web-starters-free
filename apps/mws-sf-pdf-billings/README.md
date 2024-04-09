@@ -151,6 +151,10 @@ php bin/console doctrine:migrations:migrate -n
 php bin/console mws:add-user -c 1
 
 cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
+# OR : if you prefer to have some test data loaded :
+cp tests/_data/data.gdpr-ok.db.sqlite var/data.gdpr-ok.db.sqlite
+# then, navigate to '/factory/reset' to rest all CRM data
+curl http://localhost:8001/factory/reset
 
 # rebuild assets for production :
 pnpm run build

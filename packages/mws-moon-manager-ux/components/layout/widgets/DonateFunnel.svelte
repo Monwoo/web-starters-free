@@ -138,7 +138,11 @@
               encodeURIComponent("MWS-PDF-Billings via " + (affiliationCode ?? "")
               ).replaceAll("%20", "+")
             }`
-          : ``
+          : `?item_name=${
+            encodeURIComponent("MWS-PDF-Billings")
+          }&cn=${
+            encodeURIComponent("MWS-PDF-Billings")
+          }`
       }`}
       target="_blank"
     >
