@@ -90,6 +90,8 @@ class FactoryResetController extends AbstractController
             // }
         }
 
+        // TODO : clean upload folders too ?
+
         return $this->json([
             'isOK' => !$didFail,
             'message' => $msg,
