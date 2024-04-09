@@ -55,8 +55,8 @@ class FactoryResetController extends AbstractController
             // $db_creation_timestamp = $stat['ctime']; // date_create(date("Y-m-d", $stat['ctime']));
 
             $next_possible_reset_date->setTimestamp($db_creation_timestamp);
-            // TIPS : allow factory reset only each 5 minutes to avoid service cleanups overloads
-            $next_possible_reset_date->add(new \DateInterval('PT5M'));
+            // TIPS : allow factory reset only each 1 minutes to avoid service cleanups overloads
+            $next_possible_reset_date->add(new \DateInterval('PT1M'));
             if (
                 ($serverClock)->getTimestamp()
                 > $next_possible_reset_date->getTimestamp()

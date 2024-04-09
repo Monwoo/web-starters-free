@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 #[AsCommand(
     name: 'mws:backup',
@@ -39,8 +40,9 @@ class BackupCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // $this->userLogin = $input->getOption("userLogin");
-        $minBackupDelay = 24 * 60 * 60; // attente minimum de 24 heures entre chaque backups...
+        // $minBackupDelay = 24 * 60 * 60; // attente minimum de 24 heures entre chaque backups...
         // $minBackupDelay = 5; // attente minimum de 5 secondes
+        $minBackupDelay = 60; // attente minimum de 1 minute
 
         $cmdStatus = Command::SUCCESS;
 
@@ -58,6 +60,7 @@ class BackupCommand extends Command
         ? $timestamp - $lastBackupTimestamp
         : $minBackupDelay;
         if ($lastBckupDelta < $minBackupDelay) {
+            // dd($lastBckupDelta);
             // backup already done, no need to redo.
             return $cmdStatus;
         }
@@ -72,14 +75,43 @@ class BackupCommand extends Command
         $this->filesystem->mkdir($currentBackupDir);
 
         $this->filesystem->copy($databaseFile, $backupDatabaseFile);
-        file_put_contents($lastTimestampFile, $timestamp);
+
+        // copy Messages medias
+        // $finder = new Finder();
+        // $finder->files()->in( $this->abspath )->exclude( $exclude )->notPath( '/.*\/node_modules\/.*/' );
+        // $finder->copy("$projectDir/");
+        // $uploadSrc = $this->params->get('vich_uploader.mappings.message_tchats_upload.upload_destination');
+        // $uploadSrc = $this->params->get('vich_uploader');
+        $uploadSrc = "$projectDir/public/uploads/messages/tchats";
+        // dd($uploadSrc);
+
+        $this->recursive_copy($uploadSrc, "$currentBackupDir/public/uploads/messages/tchats");
 
         // TODO : remove and clean copy olders than 60 days ? (to keep spaces...)
 
         $output->writeln([
             "<info>Did backup to '$backupDatabaseFile'</info>",
         ]);
-    
+        file_put_contents($lastTimestampFile, $timestamp);
+
         return $cmdStatus;
     }
+
+    function recursive_copy($src,$dst) {
+        // https://gist.github.com/gserrano/4c9648ec9eb293b9377b
+        $dir = opendir($src);
+        @mkdir($dst, 0777, true);
+        while(( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if ( is_dir($src . '/' . $file) ) {
+                    $this->recursive_copy($src .'/'. $file, $dst .'/'. $file);
+                }
+                else {
+                    copy($src .'/'. $file,$dst .'/'. $file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+    
 }
