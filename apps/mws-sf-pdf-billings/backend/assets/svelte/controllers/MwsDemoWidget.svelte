@@ -8,7 +8,12 @@ import { onMount } from 'svelte';
 
   let MwsDemoWidget;
   onMount(async () => {
-    MwsDemoWidget = (await import('mws-demo/assets/svelte/controllers/MwsDemoWidget.svelte')).default ?? null;
+    // https://stackoverflow.com/questions/63859576/sapper-svelte-possible-to-conditionally-import-components
+    MwsDemoWidget = (await import('mws-demo/assets/svelte/controllers/MwsDemoWidget.svelte').catch((r) => {
+      console.warn('ERROR', r);
+      return null;
+    }))?.default ?? null;
+    // MwsDemoWidget = require('mws-demo/assets/svelte/controllers/MwsDemoWidget.svelte').default ?? null;
   });
 
 </script>
