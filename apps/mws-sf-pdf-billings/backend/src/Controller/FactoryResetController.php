@@ -5,6 +5,8 @@ namespace App\Controller;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FactoryResetController extends AbstractController
@@ -17,7 +19,11 @@ class FactoryResetController extends AbstractController
         name: 'app_factory_reset',
         options: ['expose' => true],
     )]
-    public function index(bool $forceTimeout, string $projectDir, LoggerInterface $logger): JsonResponse
+    public function index(
+        bool $forceTimeout, string $projectDir,
+        LoggerInterface $logger,
+        Request $request,
+    ): JsonResponse|RedirectResponse
     {
         $msg = '';
         $didFail = false;
@@ -94,12 +100,16 @@ class FactoryResetController extends AbstractController
         }
 
         // TODO : clean upload folders too ?
-
-        return $this->json([
-            'isOK' => !$didFail,
-            'message' => $msg,
-            'server-clock' => $serverClock,
-            'next-possible-reset' => $next_possible_reset_date,
-        ]);
+        if ($request->isXmlHttpRequest() || $didFail) {
+            return $this->json([
+                'isOK' => !$didFail,
+                'message' => $msg,
+                'server-clock' => $serverClock,
+                'next-possible-reset' => $next_possible_reset_date,
+            ]);    
+        }
+        return $this->redirectToRoute(
+            'app_home'
+        );
     }
 }

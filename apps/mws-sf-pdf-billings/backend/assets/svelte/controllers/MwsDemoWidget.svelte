@@ -5,6 +5,7 @@ import { onMount } from 'svelte';
   // import MwsDemoWidget from "mws-demo/assets/svelte/controllers/MwsDemoWidget.svelte";
   export let locale;
   export let pageViews = 0;
+  export let allPagesViews = 0;
 
   let MwsDemoWidget;
   onMount(async () => {
@@ -24,6 +25,6 @@ import { onMount } from 'svelte';
 </script>
 
 <!-- <MwsDemoWidget {locale} {pageViews} /> -->
-<svelte:component this={MwsDemoWidget} {locale} {pageViews}>
+<svelte:component this={MwsDemoWidget} {locale} {pageViews} {allPagesViews}>
   <p>some slotted content</p>
 </svelte:component>
