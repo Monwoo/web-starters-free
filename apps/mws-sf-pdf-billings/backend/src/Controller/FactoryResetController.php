@@ -3,14 +3,25 @@
 namespace App\Controller;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FactoryResetController extends AbstractController
 {
+    public function __construct(
+        protected KernelInterface $kernel,
+        protected ParameterBagInterface $params,
+    ) { }
+
     #[Route(
         '/factory/reset/{forceTimeout}',
         defaults: [
@@ -20,11 +31,11 @@ class FactoryResetController extends AbstractController
         options: ['expose' => true],
     )]
     public function index(
-        bool $forceTimeout, string $projectDir,
+        string $projectDir,
         LoggerInterface $logger,
         Request $request,
-    ): JsonResponse|RedirectResponse
-    {
+        bool $forceTimeout = false,
+    ): JsonResponse|RedirectResponse {
         $msg = '';
         $didFail = false;
         // TODO : remove code duplication with apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
@@ -44,12 +55,26 @@ class FactoryResetController extends AbstractController
         }
 
         $clean = function () use (
-            $msg, $database, $safeGdprDatabase, $dbBackup
+            $msg,
+            $database,
+            $safeGdprDatabase,
+            $dbBackup
         ) {
-            copy($database, $dbBackup);
-            unlink($database);
-            copy($safeGdprDatabase, $database);
-            $msg .= 'OK : Did resset this application to factory settings. ';
+            // Backup if configured to backup on each factory reset (for possible important data to keep even if should not be public for GDPR purpose)
+            if (json_decode($_SERVER['FACTORY_RESET_DO_BACKUP'] ?? 'true')) {
+                // copy($database, $dbBackup);
+                $this->doBackup();
+            }
+            $filesystem = new Filesystem();
+            $projectDir = $this->params->get('kernel.project_dir');
+            $uploadSrc = "$projectDir/public/uploads/messages/tchats";
+            // unlink($database);
+            $filesystem->remove([
+                $database,
+                $uploadSrc,
+            ]);
+            $filesystem->copy($safeGdprDatabase, $database, true);
+            $msg .= 'OK : Did reset this application to factory settings. ';
         };
         $serverClock = new \DateTime();
         $next_possible_reset_date = new \DateTime();
@@ -66,19 +91,23 @@ class FactoryResetController extends AbstractController
             if (file_exists($lastTimestampFile)) {
                 $lastTimestamp = intval(file_get_contents($lastTimestampFile));
             }
-            $minDelay = 60; // attente minimum de 1 minute avant reset
+            $minDelay = round(json_decode($_SERVER['FACTORY_RESET_DELAY'] ?? '60')); // attente minimum de 1 minute avant reset
             $next_possible_reset_date->setTimestamp($lastTimestamp ?? $timestamp);
-            $next_possible_reset_date->add(new \DateInterval('PT1M'));
+            // $next_possible_reset_date->add(new \DateInterval('PT1M'));
+            $next_possible_reset_date->add(new \DateInterval("PT{$minDelay}S"));
 
             $lastBckupDelta = $lastTimestamp
-            ? $timestamp - $lastTimestamp
-            : $minDelay;
+                ? $timestamp - $lastTimestamp
+                : $minDelay;
             if ($lastBckupDelta < $minDelay) {
                 $didFail = true;
+                $delta = $minDelay - $lastBckupDelta;
                 // TODO : e2e tests on user messages realistic with timings ? (using time stubs etc...)
-                $msg .= 'ERROR : Please wait at most 1 minutes before next factory reset is available. ';
-            } else {
+                $msg .= "ERROR : Please wait at most $delta secondes before next factory reset is available.";
+                $logger->warning($msg);
+                } else {
                 $clean();
+                // dd($timestamp);
                 file_put_contents($lastTimestampFile, $timestamp);
             }
             // $stat = stat($database);
@@ -106,10 +135,21 @@ class FactoryResetController extends AbstractController
                 'message' => $msg,
                 'server-clock' => $serverClock,
                 'next-possible-reset' => $next_possible_reset_date,
-            ]);    
+            ]);
         }
         return $this->redirectToRoute(
             'app_home'
         );
+    }
+
+    protected function doBackup()
+    {
+        $application = new Application($this->kernel);
+        $application->setAutoExit(false);
+        $input = new ArrayInput([
+            'command' => 'mws:backup',
+        ]);
+        $output = new NullOutput();
+        $application->run($input, $output);
     }
 }

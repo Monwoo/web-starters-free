@@ -164,7 +164,7 @@
         <p>${offer.contact1 ?? ""}</p>
         <p>${offer.contact2 ?? ""}</p>      
         <p>${offer.budget ?? ""}</p>      
-        <p>${dayjs(offer.leadStart).format("YYYY/MM/DD h:mm")}</p>      
+        <p>${dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>      
         <a href="${
           offer.clientUrl ?? "#not-found"
         }" target="_blank" rel="noreferrer">
@@ -212,7 +212,7 @@
           <p>${offer.contact1 ?? ""}</p>
           <p>${offer.contact2 ?? ""}</p>      
           <p>${offer.budget ?? ""}</p>      
-          <p>${dayjs(offer.leadStart).format("YYYY/MM/DD h:mm")}</p>      
+          <p>${dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>      
           <a href="${
             offer.clientUrl ?? "#not-found"
           }" target="_blank" rel="noreferrer">
@@ -274,9 +274,9 @@
     </div>
   </td>
   <td>
-    <!-- <Time timestamp={offer.leadStart} format="YYYY/MM/DD h:mm" /> -->
+    <!-- <Time timestamp={offer.leadStart} format="YYYY/MM/DD HH:mm" /> -->
     <!-- https://day.js.org/docs/en/display/format -->
-    {dayjs(offer.leadStart).format("YYYY/MM/DD h:mm")}
+    {dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}
   </td>
   <td>{offer.budget ?? ""}</td>
   <td>

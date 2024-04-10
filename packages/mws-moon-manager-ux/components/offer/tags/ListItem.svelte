@@ -51,5 +51,5 @@
       style:background-color={(offerTagsByKey($state, tag.categorySlug)?.bgColor)||"lightgrey"}
     >{tag.categorySlug ?? ''}</span>
   </td>
-  <td>{dayjs(tag.createdAt).format('YYYY/MM/DD h:mm')}</td>
+  <td>{dayjs(tag.createdAt).format('YYYY/MM/DD HH:mm')}</td>
 </tr>

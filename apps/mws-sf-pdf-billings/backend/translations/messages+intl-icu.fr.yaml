@@ -6,8 +6,8 @@ mws:
     gdpr:
         checkOK: 'Vérification GDPR effectuée.'
         checkIsMissing: 'Vérification GDPR manquante.'
-        endUserWarning: "Heure du serveur : { currentTime }. <strong>ATTENTION : La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le : { gdprNextCleanDate }. (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le : { gdprLastCleanDate }.)"
-        sentinelIsMissing: 'Sentinelle GDPR manquante, veuillez vérifier le service pour apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php'
+        endUserWarning: "Heure du serveur : { currentTime }. <strong>ATTENTION : La prochaine réinitialisation de la base de données</strong> par la sentinelle RGPD sera effectuée le : { gdprNextCleanDate } UTC. (<strong>dans { diffSign } { hoursLeftBeforeReset } heures</strong>. Le dernier nettoyage de la base de données a eu lieu le : { gdprLastCleanDate } UTC.)"
+        sentinelIsMissing: 'Sentinelle GDPR manquante, veuillez vérifier le service pour apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php ou assurez vous que ces données restent privées et non utilisés dans les cadres couvert par le GDPR (Suppression en 72hr max en cas de demande).'
     resetAppToFactory: "Réinitialiser l'application aux données d'usine"
     templates:
         availableListLabel: "<strong>Modèles disponibles :</strong>&nbsp; (veuillez supprimer toutes les dépenses appelées 'débours' avant de changer de modèle pour être sûr d'avoir les dépenses par défaut et non celle que vous venez d'enregistrer...)"

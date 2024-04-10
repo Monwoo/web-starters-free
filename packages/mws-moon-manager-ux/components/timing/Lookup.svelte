@@ -272,13 +272,13 @@
           {@html jsonLookup.searchStart &&
             jsonLookup.searchStart.length
               ? "<strong>Depuis le : </strong>" +
-                dayjs(jsonLookup.searchStart).format("YYYY/MM/DD H:mm:ss") +
+                dayjs(jsonLookup.searchStart).format("YYYY/MM/DD HH:mm:ss") +
                 "<br/>"
               : ""}
           {@html jsonLookup.searchEnd &&
             jsonLookup.searchEnd.length
               ? "<strong>Jusqu'au : </strong>" +
-                dayjs(jsonLookup.searchEnd).format("YYYY/MM/DD H:mm:ss") +
+                dayjs(jsonLookup.searchEnd).format("YYYY/MM/DD HH:mm:ss") +
                 "<br/>"
               : ""}
           {@html jsonLookup.searchTags && jsonLookup.searchTags.length

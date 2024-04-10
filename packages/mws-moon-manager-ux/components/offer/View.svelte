@@ -54,7 +54,7 @@
           <td>{offer.contact1 ?? ''}</td>
           <td>{offer.contact2 ?? ''}</td>      
           <td>{offer.budget ?? ''}</td>      
-          <td>{dayjs(offer.leadStart).format('YYYY/MM/DD h:mm')}</td>      
+          <td>{dayjs(offer.leadStart).format('YYYY/MM/DD HH:mm')}</td>      
         </tr>  
       </tbody>
     </table>

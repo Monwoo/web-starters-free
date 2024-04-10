@@ -31,6 +31,7 @@ class BackupCommand extends Command
 
     protected function configure(): void
     {
+        // TODO : load backup from 'Folder' or 'Multi-file form folder input' or 'zip'
         // $this->addOption(
         //     'userLogin', '-l', InputArgument::OPTIONAL,
         //     "Login de l'utilisateur", $this->userLogin
@@ -99,6 +100,9 @@ class BackupCommand extends Command
 
     function recursive_copy($src,$dst) {
         // https://gist.github.com/gserrano/4c9648ec9eb293b9377b
+        if (!file_exists($src)) {
+            return;
+        }
         $dir = opendir($src);
         @mkdir($dst, 0777, true);
         while(( $file = readdir($dir)) ) {

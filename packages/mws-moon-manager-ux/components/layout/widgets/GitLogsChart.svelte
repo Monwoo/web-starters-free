@@ -38,7 +38,7 @@
         !isNaN(Number(log[1]))
         // NaN !== Number(log[1])
       ) {
-        // currentCommitTime.format("YYYY/MM/DD H:mm:ss")
+        // currentCommitTime.format("YYYY/MM/DD HH:mm:ss")
         const catKey = currentCommitTime.format("YYYY-MM");
         let cat = byCategories[catKey] ?? null;
         if (!cat) {

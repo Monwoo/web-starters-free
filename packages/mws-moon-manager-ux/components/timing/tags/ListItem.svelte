@@ -281,5 +281,5 @@
   <td class="text-center">{tag.categoriesCount}</td>
   <td class="text-center">{tag.tSlotCount}</td>
   <td class="text-center">{tag.tQualifCount}</td>
-  <!-- <td>{dayjs(tag.self.createdAt).format("YYYY/MM/DD h:mm")}</td> -->
+  <!-- <td>{dayjs(tag.self.createdAt).format("YYYY/MM/DD HH:mm")}</td> -->
 </tr>

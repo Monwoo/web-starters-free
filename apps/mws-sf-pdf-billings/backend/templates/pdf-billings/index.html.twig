@@ -194,10 +194,12 @@
 					</a>
 				</p>
 				<p>
-					{% if gdprSentinelLoaded %}
+					{# {% if gdprSentinelLoaded %} #}
+					{# {% if gdprSentinelRequestCheck %} #}
+					{% if (gdprLastCleanDate ?? false) and (gdprNextCleanDate ?? false) %}
 						{# // TODO : why do not exist error in production ? #}
-						{% set gdprLastCleanDate = gdprLastCleanDate ?? date('now') %}
-						{% set gdprNextCleanDate = gdprNextCleanDate ?? date('now') %}
+						{# {% set gdprLastCleanDate = gdprLastCleanDate ?? date('now') %}
+						{% set gdprNextCleanDate = gdprNextCleanDate ?? date('now') %} #}
 						{% set dateDiff = date().diff(gdprNextCleanDate) %}
 
 						{{ gdprSentinelRequestCheck ? 'mws.gdpr.checkOK'|trans|raw : 'mws.gdpr.checkIsMissing'|trans|raw }}
