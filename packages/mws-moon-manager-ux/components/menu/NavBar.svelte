@@ -4,6 +4,7 @@
   // inspired from https://flowbite.com/docs/components/navbar/
   // TIPS : use paied version of flowbite ?
   import Routing from "fos-router";
+  import { state } from "../../stores/reduxStorage.mjs";
 
   export let locale;
   export let viewTemplate;
@@ -16,7 +17,7 @@
   const baseHref = window && window.baseHref;
   // TODO : from DB configs ?
   const crmLogo = `${baseHref}/bundles/moonmanager/medias/MoonManagerLogo.png`;
-  console.debug('inlineOpener', inlineOpener);
+  console.debug("inlineOpener", inlineOpener);
 </script>
 
 <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"> -->
@@ -25,14 +26,12 @@
     class="overflow-scroll max-h-[100vh] flex flex-wrap items-center justify-between mx-auto"
     class:md:p-4={!inlineOpener}
   >
-    <span class="hidden"
-    class:md:inline={!inlineOpener}
-    >
+    <span class="hidden" class:md:inline={!inlineOpener}>
       <a
-      href={Routing.generate("mws_offer_lookup", {
-        _locale: locale ?? "fr",
-        viewTemplate: viewTemplate ?? null,
-      })}
+        href={Routing.generate("mws_offer_lookup", {
+          _locale: locale ?? "fr",
+          viewTemplate: viewTemplate ?? null,
+        })}
         class="flex flex-wrap items-center pb-2"
       >
         <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
@@ -79,27 +78,27 @@
       </svg>
     </button>
     <!-- class:hidden={!inlineOpener} -->
-    <div class="hidden w-full" id="navbar-dropdown"
-    class:md:w-auto={!inlineOpener}
-    class:md:block={!inlineOpener}
+    <div
+      class="hidden w-full"
+      id="navbar-dropdown"
+      class:md:w-auto={!inlineOpener}
+      class:md:block={!inlineOpener}
     >
       <ul
         class="flex flex-wrap flex-col font-medium p-4 mt-4 border
          border-gray-100 rounded-lg
-          {!inlineOpener ?
-          'md:p-0 md:flex-row md:space-x-8 md:mt-0 md:border-0' : ''
-          }
+          {!inlineOpener
+          ? 'md:p-0 md:flex-row md:space-x-8 md:mt-0 md:border-0'
+          : ''}
          dark:border-gray-700"
       >
         <li>
-          <span class="inline"
-          class:md:hidden={!inlineOpener}
-          >
+          <span class="inline" class:md:hidden={!inlineOpener}>
             <a
-            href={Routing.generate("mws_offer_lookup", {
-              _locale: locale ?? "fr",
-              viewTemplate: viewTemplate ?? null,
-            })}
+              href={Routing.generate("mws_offer_lookup", {
+                _locale: locale ?? "fr",
+                viewTemplate: viewTemplate ?? null,
+              })}
               class="flex flex-wrap items-center justify-center pb-2"
             >
               <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
@@ -112,7 +111,7 @@
             <span>
               <slot />
             </span>
-          </span>      
+          </span>
         </li>
         <li>
           <!-- // TIPS: SEO : fail relative link on empty locale 
@@ -120,14 +119,19 @@
           Routing.generate("app_home", undefined, true)
           Hopefully, locale is never null :
           -->
-          <a href={Routing.generate("app_home", {
-            '_locale': locale ?? 'fr',
-          })} class="text-center block py-1 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100
-           {!inlineOpener ?
-            `md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
-           md:dark:hover:text-blue-500 md:dark:hover:bg-transparent`:``}
+          <a
+            href={Routing.generate("app_home", {
+              _locale: locale ?? "fr",
+            })}
+            class="text-center block py-1 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100
+           {!inlineOpener
+              ? `md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
+           md:dark:hover:text-blue-500 md:dark:hover:bg-transparent`
+              : ``}
            dark:hover:bg-gray-700 dark:hover:text-white
-           " aria-current="page">
+           "
+            aria-current="page"
+          >
             <button class="m-auto">Accueil</button>
           </a>
         </li>
@@ -135,12 +139,13 @@
           <!-- // TODO : only if app_pdf_billings route exist ? depend of targeted app.. -->
           <a
             href={Routing.generate("app_pdf_billings", {
-              '_locale': locale ?? 'fr',
+              _locale: locale ?? "fr",
             })}
             class="text-center block py-1 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100
-            {!inlineOpener ?
-             `md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
-            md:dark:hover:text-blue-500 md:dark:hover:bg-transparent`:``}
+            {!inlineOpener
+              ? `md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
+            md:dark:hover:text-blue-500 md:dark:hover:bg-transparent`
+              : ``}
             dark:hover:bg-gray-700 dark:hover:text-white
             "
           >
@@ -150,12 +155,13 @@
         <li>
           <a
             href={Routing.generate("mws_timings_report", {
-              '_locale': locale ?? 'fr',
+              _locale: locale ?? "fr",
             })}
             class="text-center block py-1 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100
-            {!inlineOpener ?
-             `md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
-            md:dark:hover:text-blue-500 md:dark:hover:bg-transparent`:``}
+            {!inlineOpener
+              ? `md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white
+            md:dark:hover:text-blue-500 md:dark:hover:bg-transparent`
+              : ``}
             dark:hover:bg-gray-700 dark:hover:text-white
             "
           >
@@ -176,8 +182,7 @@
             data-dropdown-toggle="dropdownNavbar"
             class="flex items-center justify-between
             w-full
-            {!inlineOpener ?
-              `md:border-0 md:w-auto`:``}"
+            {!inlineOpener ? `md:border-0 md:w-auto` : ``}"
             >Paramètres <svg
               class="w-2.5 h-2.5 ml-2.5"
               aria-hidden="true"
@@ -203,20 +208,23 @@
               class="py-2 text-sm text-gray-700 dark:text-gray-400"
               aria-labelledby="dropdownLargeButton"
             >
-              <li>
-                <a
-                  href={Routing.generate("mws_user_list", {
-                    '_locale': locale ?? 'fr',
-                  })}
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Users
-                </a>
-              </li>              
+              <!-- // TODO isAdmin pre=computed field from db ? $state.user.roles?.includes("ROLE_MWS_ADMIN") -->
+              {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
+                <li>
+                  <a
+                    href={Routing.generate("mws_user_list", {
+                      _locale: locale ?? "fr",
+                    })}
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Users
+                  </a>
+                </li>
+              {/if}
               <li>
                 <a
                   href={Routing.generate("mws_offer_tags", {
-                    '_locale': locale ?? 'fr',
+                    _locale: locale ?? "fr",
                   })}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
@@ -234,7 +242,7 @@
               <li>
                 <a
                   href={Routing.generate("mws_message_list", {
-                    '_locale': locale ?? 'fr',
+                    _locale: locale ?? "fr",
                   })}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
@@ -244,7 +252,7 @@
               <li>
                 <a
                   href={Routing.generate("mws_message_tchat_upload_list", {
-                    '_locale': locale ?? 'fr',
+                    _locale: locale ?? "fr",
                   })}
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
@@ -260,14 +268,24 @@
                 >
               </li> -->
             </ul>
-            <div class="py-1">
-              <a
-                href={Routing.generate("mws_user_logout", {
-                  '_locale': locale ?? 'fr',
-                })}
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                >Logout out</a
-              >
+            <div class="py-1 text-black">
+              {#if $state.user}
+                <div>
+                  <!-- [ { JSON.stringify($state.user.roles) }] -->
+                  {$state.user.roles?.includes("ROLE_MWS_ADMIN") ? "[ Admin ]" : ""}
+                  {$state.user.userIdentifier}
+                </div>
+                <a
+                  href={Routing.generate("mws_user_logout", {
+                    _locale: locale ?? "fr",
+                  })}
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                  >Logout out</a
+                >
+              {/if}
+              <div>
+                [ {$state.packageName} v-{$state.packageVersion} ]
+              </div>
             </div>
           </div>
         </li>

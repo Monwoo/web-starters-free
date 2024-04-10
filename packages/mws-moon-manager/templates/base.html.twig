@@ -28,6 +28,7 @@
 			class="hidden"
 			{{ svelte_component('MwsReduxSync', {
 				'stateUpdate': {
+					'user': app.user,
 					'packageName': packageName,
 					'packageVersion': packageVersion,
 				}|serialize('json')|e('html_attr'),
