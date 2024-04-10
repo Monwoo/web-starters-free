@@ -1,0 +1,12 @@
+tchoulom_view_counter:
+    # https://github.com/tchoulom/ViewCounterBundle/blob/master/Resources/doc/readme/usage-step-1-5.md#step-3-configuration
+    view_counter:
+        view_strategy: hourly_view
+    statistics:
+        enabled: false
+        stats_file_name: stats
+        stats_file_extension:
+    storage:
+        engine: filesystem # filesystem or mongodb or a custom service
+    # geolocation:
+    #     geolocator_id: App\Service\Geolocator

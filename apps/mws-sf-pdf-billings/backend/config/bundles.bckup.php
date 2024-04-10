@@ -22,6 +22,7 @@ $bundles = [
     Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
+    Tchoulom\ViewCounterBundle\TchoulomViewCounterBundle::class => ['all' => true],
 ];
 
 // Paid or private starter might not be loaded, do lazy loads :
@@ -30,9 +31,9 @@ if (class_exists(MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class)) {
         MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class => ['all' => true],
     ]);
 }
-if (class_exists(MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class)) {
+if (class_exists(MWS\DemoBundle\DemoBundle::class)) {
     $bundles = array_merge($bundles, [
-        MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class => ['all' => true],
+        MWS\DemoBundle\DemoBundle::class => ['all' => true],
     ]);
 }
 
@@ -44,6 +45,7 @@ if (class_exists(Symfony\Bundle\DebugBundle\DebugBundle::class)) {
         Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
         Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
     ]);
+    // dd($_ENV);
 }
 
 return $bundles;

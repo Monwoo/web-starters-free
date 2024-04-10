@@ -1,6 +1,6 @@
 <?php
-// TODO : not so good to edit bundles.php (will be rewrite on each composer new package installs...)
-$bundles = [
+
+return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
@@ -22,29 +22,9 @@ $bundles = [
     Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
+    Tchoulom\ViewCounterBundle\TchoulomViewCounterBundle::class => ['all' => true],
+    MWS\DemoBundle\DemoBundle::class => ['all' => true],
+    Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
+    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
+    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
 ];
-
-// Paid or private starter might not be loaded, do lazy loads :
-if (class_exists(MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class)) {
-    $bundles = array_merge($bundles, [
-        MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class => ['all' => true],
-    ]);
-}
-if (class_exists(MWS\DemoBundle\DemoBundle::class)) {
-    $bundles = array_merge($bundles, [
-        MWS\DemoBundle\DemoBundle::class => ['all' => true],
-    ]);
-}
-
-// In case of pre-production debugs, we want to get some messages, but still stay closest to the 
-// production context. With that, we can debug without sending the dev debug bundle in production too ;)
-if (class_exists(Symfony\Bundle\DebugBundle\DebugBundle::class)) {
-    $bundles = array_merge($bundles, [
-        Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
-        Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
-        Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    ]);
-    // dd($_ENV);
-}
-
-return $bundles;

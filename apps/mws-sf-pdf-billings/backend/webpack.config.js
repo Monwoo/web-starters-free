@@ -67,6 +67,13 @@ Encore
     .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/assets/app.js')
     // .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/public/build/app.js')
     .addEntry('app', './assets/app.js')
+    // TODO : If file exist, extra bundle
+    // .addEntry('mwsDemo', '../../../../mws-demo/assets/app.js')
+    // .addEntry('mwsDemo', '../../../../mws-demo/public/build/entrypoints.json')
+
+    /// TODO err : Error: Svelte controller "MwsDemoWidget" does not exist
+    //              quick hack by copy inside root app...
+    // .addEntry('mwsDemo', '../../../../mws-demo/assets/controllers.json')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

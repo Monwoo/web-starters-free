@@ -59,6 +59,7 @@
         "symfony/validator": "6.3.*",
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "6.3.*",
+        "tchoulom/view-counter-bundle": "^6.1",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3.6",
         "twig/string-extra": "^3.6",

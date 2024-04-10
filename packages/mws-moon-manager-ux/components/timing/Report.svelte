@@ -1,4 +1,5 @@
 <script context="module">
+  // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
   // import "dayjs/esm/locale/fr";
   // import dayjs from "dayjs/esm";

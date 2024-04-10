@@ -372,6 +372,9 @@
             "webpack.config.js"
         ]
     },
+    "tchoulom/view-counter-bundle": {
+        "version": "6.1.0"
+    },
     "twig/extra-bundle": {
         "version": "v3.6.1"
     },

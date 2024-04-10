@@ -14,9 +14,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 class MoonManagerExtension extends Extension implements PrependExtensionInterface
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');
         // dd($configs);
         // https://stackoverflow.com/questions/72350032/extend-security-configuration-from-symfony-bundle
@@ -27,7 +27,7 @@ class MoonManagerExtension extends Extension implements PrependExtensionInterfac
     }
 
     // https://stackoverflow.com/questions/50605939/override-bundle-template-from-another-bundle-in-symfony-4-5
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         // I recommend using FileLocator here 
         $thirdPartyBundlesViewFileLocator = (new FileLocator(__DIR__ . '/../../templates/bundles'));
