@@ -11,7 +11,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // TODO : configure css to avoid build and bundle floders inside public folder ?
 
-console.warn("svelteConfig from webpack.config.js : ", svelteConfig);
+// console.warn("svelteConfig from webpack.config.js : ", svelteConfig);
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -27,6 +27,8 @@ const env = dotenv.config();
 // starting with : "/"
 const baseHrefFull = env.parsed?.BASE_HREF_FULL ?? ""; // TODO : duplication ? remove ? easy hack for now...
 const baseHrefPort = env.parsed?.BASE_HREF_PORT ?? null;
+
+console.warn("env from webpack.config.js : ", env);
 
 console.warn("Base href : ", baseHrefFull);
 console.warn("Base port : ", baseHrefPort);
@@ -107,6 +109,9 @@ Encore
         // options['process.env'].BASE_HREF = baseHref;
         // options['process.env'].BASE_HREF_FULL = baseHrefFull;
         // options['process.env'].BASE_HREF_PORT = baseHrefPort;
+        options['process.env'].HAVE_MWS_DEMO = JSON.parse(
+            env.parsed?.HAVE_MWS_DEMO ?? 'false'
+        );
     })
 
     // configure Babel

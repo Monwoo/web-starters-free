@@ -10,7 +10,8 @@ import { onMount } from 'svelte';
   onMount(async () => {
     // https://stackoverflow.com/questions/63859576/sapper-svelte-possible-to-conditionally-import-components
     // TODO : from .env ?
-    if (true) {
+    console.log("Mws demo : ", process.env.HAVE_MWS_DEMO);
+    if (process.env.HAVE_MWS_DEMO ?? false) {
     // if (false) {
       MwsDemoWidget = (await import('mws-demo/assets/svelte/controllers/MwsDemoWidget.svelte').catch((r) => {
         console.warn('ERROR', r);
