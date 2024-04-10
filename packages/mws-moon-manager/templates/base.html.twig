@@ -18,6 +18,7 @@
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('mwsMoonManager') }}
 			{{ encore_entry_link_tags('app') }}
+			{{ HAVE_MWS_DEMO ? encore_entry_link_tags('mwsDemo') : '' }}
 		{% endblock %}
 	</head>
 
@@ -128,6 +129,7 @@
 
 	    {{ encore_entry_script_tags('mwsMoonManager') }}
 	    {{ encore_entry_script_tags('app') }}
+			{{ HAVE_MWS_DEMO ? encore_entry_script_tags('mwsDemo') : '' }}
 			{# TOO late for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}
 
 			{# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}

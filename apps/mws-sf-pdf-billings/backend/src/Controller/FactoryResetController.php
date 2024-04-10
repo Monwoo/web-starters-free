@@ -14,7 +14,8 @@ class FactoryResetController extends AbstractController
         defaults: [
             'forceTimeout' => false,
         ],
-        name: 'app_factory_reset'
+        name: 'app_factory_reset',
+        options: ['expose' => true],
     )]
     public function index(bool $forceTimeout, string $projectDir, LoggerInterface $logger): JsonResponse
     {
@@ -24,6 +25,8 @@ class FactoryResetController extends AbstractController
         $database = $projectDir . '/var/data.db.sqlite';
         $safeGdprDatabase = $projectDir . '/var/data.gdpr-ok.db.sqlite';
         $dbBackup = $projectDir . '/var/data.db.' . date('Ymd_His') . '.bckup.sqlite';
+
+        // TODO : factorize with backup commande
 
         if (!file_exists($database)) {
             $logger->error(

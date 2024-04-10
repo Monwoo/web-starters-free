@@ -27,6 +27,9 @@ const env = dotenv.config();
 // starting with : "/"
 const baseHrefFull = env.parsed?.BASE_HREF_FULL ?? ""; // TODO : duplication ? remove ? easy hack for now...
 const baseHrefPort = env.parsed?.BASE_HREF_PORT ?? null;
+const HAVE_MWS_DEMO = JSON.parse(
+    env.parsed?.HAVE_MWS_DEMO ?? 'false'
+);
 
 console.warn("env from webpack.config.js : ", env);
 
@@ -69,8 +72,12 @@ Encore
     .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/assets/app.js')
     // .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/public/build/app.js')
     .addEntry('app', './assets/app.js')
-    // TODO : If file exist, extra bundle
-    // .addEntry('mwsDemo', '../../../../mws-demo/assets/app.js')
+    ;
+    if (HAVE_MWS_DEMO) {
+        // TODO : If file exist ?
+       Encore.addEntry('mwsDemo', '../../../../mws-demo/assets/app.js')
+    }
+    Encore
     // .addEntry('mwsDemo', '../../../../mws-demo/public/build/entrypoints.json')
 
     /// TODO err : Error: Svelte controller "MwsDemoWidget" does not exist
@@ -109,9 +116,7 @@ Encore
         // options['process.env'].BASE_HREF = baseHref;
         // options['process.env'].BASE_HREF_FULL = baseHrefFull;
         // options['process.env'].BASE_HREF_PORT = baseHrefPort;
-        options['process.env'].HAVE_MWS_DEMO = JSON.parse(
-            env.parsed?.HAVE_MWS_DEMO ?? 'false'
-        );
+        options['process.env'].HAVE_MWS_DEMO = HAVE_MWS_DEMO;
     })
 
     // configure Babel

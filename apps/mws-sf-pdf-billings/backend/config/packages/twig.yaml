@@ -3,6 +3,9 @@ twig:
     # https://stackoverflow.com/questions/28872529/get-kernel-root-dir-in-twig-template-with-symfony-2
     globals:
         kernelRootDir: "%kernel.project_dir%"
+        # https://ourcodeworld.com/articles/read/1177/how-to-retrieve-env-variables-directly-from-a-twig-view-in-symfony-5
+        HAVE_MWS_DEMO: '%env(HAVE_MWS_DEMO)%'
+
     number_format:
         decimals: 4
     # https://symfony.com/doc/current/the-fast-track/en/22-encore.html#leveraging-bootstrap
