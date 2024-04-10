@@ -3,7 +3,7 @@
   import Routing from "fos-router";
   import { state, offerTagsByCatSlugAndSlug, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
-  import FunnelModal from "./FunnelModal.svelte";
+  // import FunnelModal from "./FunnelModal.svelte";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
 
@@ -15,7 +15,8 @@
   export let locale;
   export let offer;
   export let tags;
-  export let modalId;
+  // export let modalId;
+  export let funnelModal;
 
   let addedTagKey;
   export let removeTag = async (tag, comment = null) => {
@@ -75,7 +76,7 @@
   export let addTag = async (tagSlug, tagCategorySlug, comment = null) => {
     // TODO : fetch modal response
     const $ = window.$;
-    const modalBtn = $(`[data-modal-target="${modalId}"]`);
+    const modalBtn = $(`[data-modal-target="${funnelModal.modalId}"]`);
     console.log(modalBtn);
     modalBtn.click();
 
@@ -140,7 +141,22 @@
 
 
 <!-- Modal toggle -->
-<FunnelModal bind:modalId={modalId} {locale} />
+<!-- TODO : funnel to quickly ensure offer success or re-flow
+  // 
+  <button
+    on:click={() => {
+      // funnelModal?. // TODO : customize funnelModal ? add back ?
+      funnelModal?.show();
+    }}
+    class="block text-white bg-blue-700 hover:bg-blue-800
+focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium
+rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
+dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button"
+>
+    Actions
+</button> -->
+
 {#each (tags ?? []) as tag, idx}
   <!-- {@const UID = newUniqueId()} -->
 

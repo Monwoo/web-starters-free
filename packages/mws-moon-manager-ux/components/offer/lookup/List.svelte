@@ -5,6 +5,7 @@
   import AddModal from "../../message/AddModal.svelte";
   import { onMount } from "svelte";
   import { tick } from "svelte";
+import FunnelModal from "../tags/FunnelModal.svelte";
 
   export let locale;
   export let offers = [];
@@ -16,6 +17,7 @@
   export let reportScale = 100;
 
   let addModal;
+  let funnelComponent;
 
   // console.debug("messagesByProjectId :", messagesByProjectId);
   let isScrolling = false;
@@ -61,6 +63,7 @@
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
+<FunnelModal bind:this={funnelComponent} {locale} />
 
 <!-- https://preline.co/docs/scrollspy.html -->
 <!-- <div id="ctc-component-1-tab-1" role="tabpanel" aria-labelledby="ctc-component-1-tab-1-item" class="">
@@ -199,6 +202,7 @@ style={`
           {locale}
           {viewTemplate}
           {addModal}
+          funnelModal={funnelComponent.funnelModal}
           yScrollable={yScrollable}
           messages={messagesByProjectId[
             offer.slug.split("-").slice(-1).join("")

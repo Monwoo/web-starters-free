@@ -1,3 +1,5 @@
+<svelte:options accessors />
+
 <script lang="ts">
     // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
     import { onMount } from "svelte";
@@ -8,7 +10,7 @@
     const UID = newUniqueId();
     export let modalId = `offerFunnelModal-${UID}`;
     export let isOpen = false;
-    export let opener;
+    // export let opener;
     export let funnelModal;
     import Routing from "fos-router";
     export let locale;
@@ -91,18 +93,6 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     data-modal-toggle={modalId}
 
 -->
-
-<button
-    bind:this={opener}
-    on:click={funnelModal?.show()}
-    class="block text-white bg-blue-700 hover:bg-blue-800
-focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium
-rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600
-dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-    type="button"
->
-    Actions
-</button>
 
 <!-- TIPS : only to init flowbite component, need some 
         data-modal-target={modalId} to init the modal...

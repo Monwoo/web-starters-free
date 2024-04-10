@@ -23,6 +23,7 @@
   export let offer;
   export let messages;
   export let addModal;
+  export let funnelModal;
   export let yScrollable;
   export let reportScale = 100;
 
@@ -131,7 +132,7 @@
     "
     class:opacity-0={isThirdColVisible}
   >
-    <TagsInput bind:tags={offer.tags} {offer} {locale} />
+    <TagsInput {funnelModal} bind:tags={offer.tags} {offer} {locale} />
   </td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>
