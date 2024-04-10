@@ -17,18 +17,23 @@
 </p> -->
 
 <div class="flex text-xs md:text-sm">
-  <div class="w-1/3 px-2 text-left text-gray-300">
-    <div>
-      Reset : {
-        dayjs().format("YYYY/MM/DD h:mm")
-      }
-    </div>
-      - {
-        dayjs().add(3.9, "hour").diff(dayjs(), 'hour', true)
-      }
-      heures
-    <div>
-    </div>
+  <div class="w-1/3 px-3 text-left text-gray-300">
+    {#if $state.gdprLastCleanDate && $state.gdprNextCleanDate}
+      <div>
+        Reset : {
+          dayjs($state.gdprLastCleanDate).format("YYYY/MM/DD h:mm")
+        }
+      </div>
+      <div>
+        {
+          dayjs($state.gdprLastCleanDate)
+          .diff(dayjs($state.gdprNextCleanDate), 'hour', true)
+        }
+        heures
+      </div>
+    {:else}
+      Données confidentiels
+    {/if}
   </div>
   <a class="w-1/3 text-xs md:text-sm "
   href="https://www.monwoo.com" target="_blank" rel="noopener">

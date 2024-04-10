@@ -29,6 +29,8 @@
 			{{ svelte_component('MwsReduxSync', {
 				'stateUpdate': {
 					'user': app.user,
+					'gdprLastCleanDate': gdprLastCleanDate ?? null,
+					'gdprNextCleanDate': gdprNextCleanDate ?? null,
 					'packageName': packageName,
 					'packageVersion': packageVersion,
 				}|serialize('json')|e('html_attr'),
