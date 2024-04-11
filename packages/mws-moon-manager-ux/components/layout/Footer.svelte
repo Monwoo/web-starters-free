@@ -40,9 +40,9 @@
 </p> -->
 
 <div class="flex text-xs md:text-sm">
-  <div class="w-1/3 px-3 text-left text-gray-300">
+  <div class="w-1/3 px-3 text-left text-gray-300 flex flex-wrap">
     {#if $state.gdprLastCleanDate && $state.gdprNextCleanDate}
-      <div>
+      <div class="px-1">
         Reset :
         <!-- {
           dayjs($state.gdprNextCleanDate).format("YYYY/MM/DD HH:mm")
