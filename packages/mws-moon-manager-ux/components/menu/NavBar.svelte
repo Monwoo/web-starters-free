@@ -32,8 +32,9 @@
 rounded-e-lg 
 ">
   <div
-    class="overflow-scroll max-h-[100vh] flex flex-wrap items-center justify-between mx-auto"
-    class:md:p-4={!inlineOpener}
+    class="overflow-scroll max-h-[100vh]
+    flex flex-wrap items-center justify-between mx-auto"
+    class:md:p-2={!inlineOpener}
   >
     <span class="hidden" class:md:inline={!inlineOpener}>
       <a
@@ -57,6 +58,10 @@ rounded-e-lg
     <!-- focus:ring-2
     focus:ring-gray-200
     dark:focus:ring-gray-600 -->
+    <span class="max-w-full md:hidden px-3 text-sm
+    whitespace-nowrap overflow-hidden text-ellipsis">
+      {$state.user?.userIdentifier ?? ``}
+    </span>
     <button
       data-collapse-toggle="navbar-dropdown"
       type="button"
@@ -86,10 +91,6 @@ rounded-e-lg
         />
       </svg>
     </button>
-    <span class="max-w-full md:hidden px-3 text-sm
-    whitespace-nowrap overflow-hidden text-ellipsis">
-      {$state.user?.userIdentifier ?? ``}
-    </span>
     <!-- class:hidden={!inlineOpener} -->
     <div
       class="hidden w-full"
@@ -98,7 +99,7 @@ rounded-e-lg
       class:md:block={!inlineOpener}
     >
       <ul
-        class="flex flex-wrap flex-col font-medium p-4 mt-4 border-0
+        class="flex flex-wrap flex-col font-medium p-2 mt-0 border-0
          border-gray-100 rounded-lg
           {!inlineOpener
           ? 'md:p-0 md:flex-row md:space-x-8 md:mt-0 md:border-0'
@@ -193,8 +194,8 @@ rounded-e-lg
           <button
             id="dropdownNavbarLink"
             data-dropdown-toggle="dropdownNavbar"
-            class="flex flex-wrap items-center justify-between
-            w-full
+            class="flex flex-wrap items-center justify-center
+            w-full mt-2 md:mt-0
             {!inlineOpener ? `md:border-0 md:w-auto` : ``}"
             on:click={async() => {
               uniqueKey = {};

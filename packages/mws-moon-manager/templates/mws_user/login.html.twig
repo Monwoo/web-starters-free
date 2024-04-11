@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-	<div class="content h-[80vh] overflow-auto pt-8 text-center" style="">
+	<div class="content h-[80vh] overflow-auto pt-2 text-center" style="">
 		{% if app.user %}
 			<div class="mb-6 text-center">
 				Bienvenue
@@ -28,7 +28,7 @@
 						}) }} aria-current="page" class="inline-flex hover:cursor-pointer hover:opacity-80">
 					<img
 					src="{{ absolute_url(asset('bundles/moonmanager/medias/MoonManagerLogo.png')) }}"
-					class="mx-auto d-block hover:cursor-pointer" style="height:200px; " alt="" />
+					class="mx-auto d-block hover:cursor-pointer max-h-[20dvh]" style="height:200px; " alt="" />
 				</a>
 				<div class="card" style="margin-top:2rem; border:none;">
 
