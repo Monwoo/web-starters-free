@@ -283,7 +283,7 @@ rounded-e-lg
               })}
               class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
             >
-              Users
+              Utilisateurs
             </a>
           </li>
         {/if}
@@ -294,7 +294,7 @@ rounded-e-lg
             })}
             class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
           >
-            Offers Tags</a
+            Tags des offres</a
           >
         </li>
         <!-- <li>
@@ -322,7 +322,7 @@ rounded-e-lg
             })}
             class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
           >
-            Tchat Medias
+            Medias des tchats
           </a>
         </li>
         <li>

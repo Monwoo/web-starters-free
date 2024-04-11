@@ -341,6 +341,20 @@ class MwsMessageController extends AbstractController
         // TODO: protect with csrf form instead of get param :
         $removeAll = $request->query->get('removeAll', false);
         if($removeAll) {
+            // Ensure local file unlinks :
+            $qb = $mwsMessageTchatUploadRepository->createQueryBuilder('m');
+            $query = $qb->getQuery();
+            $all = $query->getResult();
+            /** @var MwsMessageTchatUpload $m */
+            foreach ($all as $m) {
+                // dd($m->getMediaFile());
+                if ($m->getMediaFile() && file_exists(
+                    $fPath = $m->getMediaFile()->getRealPath()
+                )) {
+                    unlink($fPath);
+                }
+            }
+    
             // TODO : e2e test : media uploaded file should be removed too
             // cf vich_uploader config...
             $qb = $this->em->createQueryBuilder()
