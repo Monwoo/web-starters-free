@@ -68,6 +68,28 @@
     }
   }
 
+  $: donateLink = `https://www.monwoo.com/don${
+        affiliationCode
+          ? // TODO : other ways than paypal btn ?
+            // ? `?affiliationCode=${encodeURIComponent(affiliationCode)}`
+            `?item_name=${
+              encodeURIComponent(affiliationCode).replaceAll("%20", "+")
+            }&cn=${
+              // TODO :  GET param config encoding for paypal btn ?
+              // &targetMeta=eyJ6b2lkVmVyc2lvbiI6IjlfMF81OCIsInRhcmdldCI6IkRPTkFURSIsInNka1ZlcnNpb24iOiIwLjguMCJ9
+              // Paypal ignore %20 and use '+' for space encode char
+              // + ENCODED '+' char as %2B do not get translated (stay as %2B)
+              encodeURIComponent("MWS-PDF-Billings via " + (affiliationCode ?? "")
+              ).replaceAll("%20", "+")
+            }`
+          : `?item_name=${
+            encodeURIComponent("MWS-PDF-Billings")
+          }&cn=${
+            encodeURIComponent("MWS-PDF-Billings")
+          }`
+      }
+  `;
+
   onMount(async () => {
     // syncPaypal();
     didMount = true;
@@ -112,6 +134,9 @@
             document.activeElement.blur();
           e.target.blur();
           // TODO : auto trigger href link
+          // window.location = donateLink;
+          // https://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-and-not-a-new-window
+          window.open(donateLink, '_blank').focus();
         }
       }, userDelay)}
     />
@@ -124,26 +149,7 @@
   {:else}
     <a
       class="p-7 text-2xl hover:cursor-pointer hover:no-underline"
-      href={`https://www.monwoo.com/don${
-        affiliationCode
-          ? // TODO : other ways than paypal btn ?
-            // ? `?affiliationCode=${encodeURIComponent(affiliationCode)}`
-            `?item_name=${
-              encodeURIComponent(affiliationCode).replaceAll("%20", "+")
-            }&cn=${
-              // TODO :  GET param config encoding for paypal btn ?
-              // &targetMeta=eyJ6b2lkVmVyc2lvbiI6IjlfMF81OCIsInRhcmdldCI6IkRPTkFURSIsInNka1ZlcnNpb24iOiIwLjguMCJ9
-              // Paypal ignore %20 and use '+' for space encode char
-              // + ENCODED '+' char as %2B do not get translated (stay as %2B)
-              encodeURIComponent("MWS-PDF-Billings via " + (affiliationCode ?? "")
-              ).replaceAll("%20", "+")
-            }`
-          : `?item_name=${
-            encodeURIComponent("MWS-PDF-Billings")
-          }&cn=${
-            encodeURIComponent("MWS-PDF-Billings")
-          }`
-      }`}
+      href={donateLink}
       target="_blank"
     >
       {affiliationCode ? affiliationCode + " : " : ""}
