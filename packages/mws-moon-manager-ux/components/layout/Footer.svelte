@@ -43,9 +43,10 @@
   <div class="w-1/3 px-3 text-left text-gray-300">
     {#if $state.gdprLastCleanDate && $state.gdprNextCleanDate}
       <div>
-        Reset : {
+        Reset :
+        <!-- {
           dayjs($state.gdprNextCleanDate).format("YYYY/MM/DD HH:mm")
-        }
+        } -->
       </div>
       <div>
         {
