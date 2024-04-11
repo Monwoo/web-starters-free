@@ -63,7 +63,7 @@
 
 <div>{@html offersPaginator}</div>
 <table>
-  <thead>
+  <thead class="sticky -top-6 z-40">
     <tr class="users-table-info">
       <th scope="col">Actions</th>
       <th scope="col">

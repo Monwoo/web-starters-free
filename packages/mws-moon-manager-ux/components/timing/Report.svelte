@@ -1146,7 +1146,7 @@
     </div>
   </div>
 
-  <div class="block w-full overflow-x-auto ">
+  <div class="block w-full">
     <!-- transform: scale(${(reportScale / 100).toFixed(2)}); -->
 
     <table
@@ -1155,7 +1155,7 @@
       zoom: ${reportScale}%;
     `}
     >
-      <thead class="sticky">
+      <thead class="sticky -top-6 z-40">
         <tr>
           <th
             class="px-6 text-middle border border-solid
