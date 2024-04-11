@@ -1148,15 +1148,21 @@
 
   <div class="block w-full">
     <!-- transform: scale(${(reportScale / 100).toFixed(2)}); -->
-
+    <!-- // TIPS : will have align issue if zooming the container of 
+    sticky element, position will not fit, so apply to each sub
+    items instead...
+    style={`
+      zoom: ${reportScale}%;
+    `} -->
     <table
       class="items-center w-full bg-transparent border-collapse"
-      style={`
-      zoom: ${reportScale}%;
-    `}
     >
       <thead class="sticky -top-6 z-40">
-        <tr>
+        <tr
+          style={`
+            zoom: ${reportScale}%;
+          `}
+        >
           <th
             class="px-6 text-middle border border-solid
           py-3 text-lg uppercase border-l-0 border-r-0
@@ -1199,7 +1205,11 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody
+        style={`
+          zoom: ${reportScale}%;
+        `}
+      >
         <!-- subLevelKeys={Array.from(subTag.subTags?.keys() ?? [])} -->
         {#each summaryByLevels.subTags ?? [] as subTag, tagIdx}
           {#if subTag ?? false}
