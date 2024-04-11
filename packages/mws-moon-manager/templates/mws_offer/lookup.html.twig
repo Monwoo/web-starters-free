@@ -30,7 +30,7 @@
 		'offersHeaders': {
 			'clientUsername' : knp_pagination_sortable(offers, 'Nom du client', 'o.clientUsername'),
 			'contact1' : knp_pagination_sortable(offers, 'Contact', 'o.contact1'),
-			'contact2' : knp_pagination_sortable(offers, 'Contact bis', 'o.contact2'),
+			'contact2' : knp_pagination_sortable(offers, '(s)', 'o.contact2'),
 			'leadStart' : knp_pagination_sortable(offers, 'Depuis le', 'o.leadStart'),
 			'budget' : knp_pagination_sortable(offers, 'Budget', 'o.budget'),
 		}|serialize('json')|e('html_attr'),

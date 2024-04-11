@@ -18,8 +18,10 @@
 
   */
   // import gitLogs from "../../../../../apps/mws-sf-pdf-billings/backend/git-logs.tsv"; // TIPS : ok only if you enable dsv-loader with webpack...
-  import gitLogs from "dsv-loader?rows=0&delimiter=\t!../../../../../apps/mws-sf-pdf-billings/backend/git-logs.tsv";
+  import gitLogsV1 from "dsv-loader?rows=0&delimiter=\t!../../../../../apps/mws-sf-pdf-billings/backend/git-logs.monwoo-moon-manager-v1.tsv";
+  import gitLogsV2 from "dsv-loader?rows=0&delimiter=\t!../../../../../apps/mws-sf-pdf-billings/backend/git-logs.tsv";
 
+  const gitLogs = gitLogsV2.concat(gitLogsV1);
   console.log(gitLogs);
 
   let byCategories = {};
@@ -110,7 +112,7 @@
       },
       type: "bar",
       width: "100%",
-      height: 400,
+      height: 800,
       toolbar: {
         show: false,
       },

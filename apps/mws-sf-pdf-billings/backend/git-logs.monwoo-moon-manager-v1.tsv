@@ -1,0 +1,1605 @@
+x	x	2022-12-10 02:58:25 +0000
+
+308	203	yarn.lock
+x	x	2022-12-03 21:52:38 +0000
+
+103	103	yarn.lock
+x	x	2022-10-06 18:28:09 +0000
+
+131	656	yarn.lock
+x	x	2022-10-05 22:46:28 +0000
+
+103	103	yarn.lock
+x	x	2022-09-08 08:15:20 +0000
+
+122	147	yarn.lock
+x	x	2022-08-30 23:02:03 +0000
+
+105	105	yarn.lock
+x	x	2022-07-07 09:18:07 +0000
+
+1	1	package.json
+104	104	yarn.lock
+x	x	2022-06-02 22:46:18 +0000
+
+1	1	package.json
+109	105	yarn.lock
+x	x	2022-03-15 19:38:26 +0000
+
+1	1	package.json
+104	104	yarn.lock
+x	x	2022-03-02 04:38:53 +0000
+
+1	1	package.json
+587	439	yarn.lock
+x	x	2022-02-26 13:54:13 +0000
+
+107	107	yarn.lock
+x	x	2022-02-12 14:53:07 +0000
+
+104	106	yarn.lock
+x	x	2022-02-10 08:27:09 +0000
+
+103	105	yarn.lock
+x	x	2021-08-04 05:54:32 +0000
+
+149	114	yarn.lock
+x	x	2021-05-27 19:23:31 +0000
+
+108	104	yarn.lock
+x	x	2021-05-25 09:04:29 +0000
+
+125	117	yarn.lock
+x	x	2021-05-12 00:41:44 +0000
+
+1	1	package.json
+104	104	yarn.lock
+x	x	2021-05-10 20:30:38 +0000
+
+103	103	yarn.lock
+x	x	2021-05-09 19:59:48 +0000
+
+1	1	package.json
+104	104	yarn.lock
+x	x	2021-05-07 22:21:33 +0000
+
+113	115	yarn.lock
+x	x	2021-03-30 19:41:04 +0000
+
+103	103	yarn.lock
+x	x	2021-03-09 10:16:03 +0000
+
+124	120	yarn.lock
+x	x	2021-03-03 02:57:50 +0000
+
+134	126	yarn.lock
+x	x	2020-12-11 13:35:57 +0000
+
+103	103	yarn.lock
+x	x	2020-11-25 00:31:17 +0000
+
+103	103	yarn.lock
+x	x	2020-09-09 22:10:12 +0000
+
+110	112	yarn.lock
+x	x	2020-09-04 14:52:39 +0000
+
+103	103	yarn.lock
+x	x	2020-09-03 11:02:14 +0000
+
+1	1	package.json
+113	113	yarn.lock
+x	x	2020-06-06 23:24:35 +0000
+
+103	103	yarn.lock
+x	x	2020-06-04 02:36:55 +0200
+
+1	1	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+x	x	2020-06-03 20:27:55 +0000
+
+103	103	yarn.lock
+x	x	2020-06-03 20:27:48 +0000
+
+141	110	yarn.lock
+x	x	2020-06-03 20:27:47 +0000
+
+103	103	yarn.lock
+x	x	2020-06-03 20:27:39 +0000
+
+1	1	package.json
+104	104	yarn.lock
+x	x	2020-06-03 22:26:55 +0200
+
+2	1	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+x	x	2019-01-05 06:48:56 +0100
+
+3	3	README.md
+x	x	2019-01-05 06:47:19 +0100
+
+1	1	README.md
+x	x	2019-01-05 06:16:42 +0100
+
+4	0	README.md
+-	-	docs/outputSamples/MoonManager_Private data_For_MoonHotWash-en.pdf
+-	-	docs/outputSamples/MoonManager_Private data_For_MoonHotWash-fr.pdf
+x	x	2018-12-22 09:24:15 +0100
+
+1	1	docs/bibliographie.md
+1	1	src/index.html
+1	1	src/manifest.json
+x	x	2018-12-08 17:28:45 +0100
+
+1	1	package.json
+1	1	src/manifest.json
+x	x	2018-12-08 16:36:37 +0100
+
+16	0	README.md
+4	0	docs/bibliographie.md
+42	42	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+10	2	src/app/moon-manager/services/meta-reducers.ts
+x	x	2018-12-08 14:46:07 +0100
+
+1	1	package.json
+1	1	src/manifest.json
+x	x	2018-12-08 14:41:35 +0100
+
+2	1	src/app/moon-manager/components/body/body.component.html
+2	0	src/app/moon-manager/components/body/body.component.ts
+22	6	src/app/moon-manager/services/medias-buffer.service.ts
+15	2	src/app/moon-manager/services/timings-buffer.service.ts
+x	x	2018-12-08 13:49:30 +0100
+
+4	0	docs/bibliographie.md
+x	x	2018-12-08 13:21:26 +0100
+
+4	0	docs/bibliographie.md
+3	2	src/app/moon-manager/components/body/body.component.ts
+18	10	src/app/moon-manager/services/medias-buffer.service.ts
+13	2	src/app/moon-manager/services/timings-buffer.service.ts
+x	x	2018-12-08 12:48:31 +0100
+
+2	2	src/app/moon-manager/components/body/body.component.html
+7	1	src/app/moon-manager/components/body/body.component.ts
+x	x	2018-12-08 12:17:30 +0100
+
+3	1	docs/bibliographie.md
+1	0	package.json
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+56	44	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+42	35	src/app/moon-manager/components/parameters/parameters.component.ts
+124	77	src/app/moon-manager/services/medias-buffer.service.ts
+13	13	src/app/moon-manager/services/timings-buffer.service.ts
+4	0	yarn.lock
+x	x	2018-12-08 09:18:54 +0100
+
+10	2	src/app/moon-manager/moon-manager.module.ts
+22	0	src/app/moon-manager/services/medias-buffer.actions.ts
+35	0	src/app/moon-manager/services/medias-buffer.service.ts
+15	0	src/app/moon-manager/services/meta-reducers.ts
+4	4	src/app/moon-manager/services/timings-buffer.actions.ts
+5	18	src/app/moon-manager/services/timings-buffer.service.ts
+x	x	2018-12-08 08:34:54 +0100
+
+6	4	src/app/moon-manager/components/body/body.component.ts
+5	3	src/app/moon-manager/components/parameters/parameters.component.ts
+9	6	src/app/moon-manager/services/timings-buffer.actions.ts
+24	1	src/app/moon-manager/services/timings-buffer.service.ts
+x	x	2018-12-08 07:10:17 +0100
+
+5	0	README.md
+4	1	docs/bibliographie.md
+2	0	package.json
+3	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+18	2	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+3	0	src/app/moon-manager/moon-manager.module.ts
+19	0	src/app/moon-manager/services/timings-buffer.actions.ts
+62	11	src/app/moon-manager/services/timings-buffer.service.ts
+8	0	yarn.lock
+x	x	2018-12-07 11:38:46 +0100
+
+1	1	package.json
+1	1	src/manifest.json
+x	x	2018-12-07 11:36:50 +0100
+
+1	1	src/app/moon-manager/components/body/body.component.html
+5	4	src/app/moon-manager/components/body/body.component.ts
+46	42	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+x	x	2018-12-07 10:55:44 +0100
+
+3	0	README.md
+2	0	docs/bibliographie.md
+x	x	2018-12-07 09:23:38 +0100
+
+3	3	src/index.html
+x	x	2018-12-07 08:33:42 +0100
+
+2	0	src/app/moon-manager/services/loading-loader.service.ts
+7	7	src/main.scss
+2	2	src/manifest.json
+x	x	2018-12-07 07:52:31 +0100
+
+10	2	src/app/moon-manager/components/body/body.component.ts
+2	0	src/app/moon-manager/services/loading-loader.service.ts
+1	1	src/index.html
+x	x	2018-12-07 07:23:49 +0100
+
+1	1	README.md
+1	1	package.json
+1	1	src/app/moon-manager/components/footer/footer.component.ts
+1	1	src/app/moon-manager/components/parameters/parameters.component.html
+3	3	src/index.html
+2	2	src/manifest.json
+1	1	src/translations/en-US.json
+3	3	src/translations/fr-FR.json
+x	x	2018-12-07 07:02:07 +0100
+
+48	5	src/translations/en-US.json
+x	x	2018-12-07 06:38:48 +0100
+
+37	34	src/app/moon-manager/components/parameters/parameters.component.html
+11	9	src/app/moon-manager/components/parameters/parameters.component.scss
+26	8	src/app/moon-manager/components/parameters/parameters.component.ts
+19	6	src/translations/fr-FR.json
+x	x	2018-12-07 05:26:57 +0100
+
+96	0	git_logs.csv
+1	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+27	15	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+9	2	src/app/moon-manager/services/loading-loader.service.ts
+x	x	2018-12-07 04:36:43 +0100
+
+4	0	src/app/moon-manager/components/parameters/parameters.component.scss
+x	x	2018-12-07 04:33:07 +0100
+
+3	0	README.md
+1	0	docs/bibliographie.md
+70	10	src/app/moon-manager/components/parameters/parameters.component.scss
+x	x	2018-12-07 04:01:07 +0100
+
+8	1	docs/bibliographie.md
+1	0	package.json
+20	0	src/app/moon-manager/components/parameters/parameters.component.html
+13	0	src/app/moon-manager/components/parameters/parameters.component.scss
+10	1	src/app/moon-manager/components/parameters/parameters.component.ts
+2	0	src/app/moon-manager/moon-manager.module.ts
+3	0	src/translations/fr-FR.json
+13	0	yarn.lock
+x	x	2018-12-07 02:48:01 +0100
+
+3	1	docs/bibliographie.md
+2	0	package.json
+1	0	src/app/moon-manager/components/parameters/parameters.component.html
+43	0	src/app/moon-manager/components/parameters/parameters.component.ts
+2	2	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+3	2	src/app/moon-manager/services/loading-loader.service.ts
+6	4	src/index.html
+1	0	src/translations/fr-FR.json
+8	0	yarn.lock
+x	x	2018-12-07 01:01:16 +0100
+
+5	0	docs/bibliographie.md
+8	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+20	1	src/app/moon-manager/components/parameters/parameters.component.ts
+7	7	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+5	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+12	0	src/app/moon-manager/services/loading-loader.service.spec.ts
+27	0	src/app/moon-manager/services/loading-loader.service.ts
+3	2	src/environments/environment.ts
+3	3	src/index.html
+1	1	src/main.scss
+x	x	2018-12-06 23:08:34 +0100
+
+6	0	docs/bibliographie.md
+-	-	src/assets/simple-pre-loader/images/loader-128x/Preloader_1.gif
+-	-	src/assets/simple-pre-loader/images/loader-128x/Preloader_2.gif
+-	-	src/assets/simple-pre-loader/images/loader-128x/Preloader_3.gif
+-	-	src/assets/simple-pre-loader/images/loader-128x/Preloader_4.gif
+-	-	src/assets/simple-pre-loader/images/loader-128x/Preloader_5.gif
+-	-	src/assets/simple-pre-loader/images/loader-128x/Preloader_6.gif
+-	-	src/assets/simple-pre-loader/images/loader-128x/Preloader_7.gif
+-	-	src/assets/simple-pre-loader/images/loader-32x/loader1.gif
+-	-	src/assets/simple-pre-loader/images/loader-32x/loader2.gif
+-	-	src/assets/simple-pre-loader/images/loader-32x/loader3.gif
+-	-	src/assets/simple-pre-loader/images/loader-32x/loader4.gif
+-	-	src/assets/simple-pre-loader/images/loader-32x/loader5.gif
+-	-	src/assets/simple-pre-loader/images/loader-32x/loader6.gif
+-	-	src/assets/simple-pre-loader/images/loader-32x/loader7.gif
+-	-	src/assets/simple-pre-loader/images/loader-64x/Preloader_1.gif
+-	-	src/assets/simple-pre-loader/images/loader-64x/Preloader_2.gif
+-	-	src/assets/simple-pre-loader/images/loader-64x/Preloader_3.gif
+-	-	src/assets/simple-pre-loader/images/loader-64x/Preloader_4.gif
+-	-	src/assets/simple-pre-loader/images/loader-64x/Preloader_5.gif
+-	-	src/assets/simple-pre-loader/images/loader-64x/Preloader_6.gif
+-	-	src/assets/simple-pre-loader/images/loader-64x/Preloader_7.gif
+68	0	src/assets/simple-pre-loader/index.html
+-	-	src/assets/simple-pre-loader/loader-icons-set-1-32x64x128.zip
+-	-	src/assets/simple-pre-loader/loader-icons-set-2-32x64x128.zip
+-	-	src/assets/simple-pre-loader/loading.gif
+40	0	src/assets/simple-pre-loader/readme.txt
+26	4	src/index.html
+8	0	src/main.scss
+x	x	2018-12-06 22:08:13 +0100
+
+2	1	src/environments/environment.ts
+1	1	src/index.html
+x	x	2018-12-06 22:02:14 +0100
+
+5	0	docs/bibliographie.md
+55	19	src/index.html
+4	0	src/main.scss
+x	x	2018-12-06 21:08:33 +0100
+
+11	0	docs/bibliographie.md
+20	0	src/index.html
+x	x	2018-12-06 17:53:35 +0100
+
+1	0	angular.json
+9	0	docs/bibliographie.md
+2	0	package.json
+1	1	src/app/moon-manager/components/body/body.component.ts
+93	6	src/app/moon-manager/components/parameters/parameters.component.ts
+11	0	yarn.lock
+x	x	2018-12-06 16:59:31 +0100
+
+13	1	docs/bibliographie.md
+1	0	package.json
+50	31	src/app/moon-manager/components/parameters/parameters.component.ts
+4	0	src/app/moon-manager/services/medias-buffer.service.ts
+4	0	yarn.lock
+x	x	2018-12-06 10:42:26 +0100
+
+10	0	src/app/moon-manager/components/parameters/parameters.component.ts
+1	0	src/translations/fr-FR.json
+x	x	2018-12-06 10:24:36 +0100
+
+4	1	docs/bibliographie.md
+32	29	src/app/moon-manager/api/data-model/timing.ts
+2	0	src/app/moon-manager/components/parameters/parameters.component.html
+34	0	src/app/moon-manager/components/parameters/parameters.component.scss
+99	38	src/app/moon-manager/components/parameters/parameters.component.ts
+4	0	src/app/moon-manager/services/medias-buffer.service.ts
+4	0	src/app/moon-manager/services/timings-buffer.service.ts
+2	0	src/translations/fr-FR.json
+x	x	2018-12-06 09:10:05 +0100
+
+23	25	src/app/moon-manager/components/parameters/parameters.component.html
+10	6	src/app/moon-manager/components/parameters/parameters.component.ts
+11	3	src/app/moon-manager/guards/prevent-refresh.guard.ts
+5	0	src/app/moon-manager/services/medias-buffer.service.ts
+x	x	2018-12-06 08:32:19 +0100
+
+1	0	README.md
+13	0	docs/bibliographie.md
+1	1	src/app/moon-manager/components/body/body.component.html
+17	13	src/app/moon-manager/components/body/body.component.ts
+14	13	src/app/moon-manager/components/parameters/config-form.model.ts
+15	0	src/app/moon-manager/guards/prevent-refresh-interface.guard.spec.ts
+20	0	src/app/moon-manager/guards/prevent-refresh-interface.guard.ts
+15	0	src/app/moon-manager/guards/prevent-refresh.guard.spec.ts
+33	0	src/app/moon-manager/guards/prevent-refresh.guard.ts
+3	0	src/app/moon-manager/moon-manager-routing.module.ts
+5	4	src/app/moon-manager/moon-manager.component.ts
+5	7	src/app/moon-manager/services/config-form.model.ts
+5	0	src/app/moon-manager/services/medias-buffer.service.ts
+12	0	src/app/moon-manager/services/timings-buffer.service.spec.ts
+25	0	src/app/moon-manager/services/timings-buffer.service.ts
+2	0	src/app/shell/shell.service.ts
+x	x	2018-12-06 06:26:24 +0100
+
+4	0	docs/bibliographie.md
+2	2	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+25	22	src/app/moon-manager/components/parameters/parameters.component.html
+2	0	src/app/moon-manager/components/parameters/parameters.component.ts
+2	1	src/app/moon-manager/pipes/url-transformer.pipe.ts
+10	4	src/app/moon-manager/services/config-form.model.ts
+67	18	src/app/moon-manager/services/medias-buffer.service.ts
+1	0	src/translations/fr-FR.json
+x	x	2018-12-05 19:37:57 +0100
+
+3	0	docs/bibliographie.md
+20	9	src/app/moon-manager/components/parameters/parameters.component.ts
+1	1	src/app/moon-manager/components/timing-form/timing-form.component.html
+3	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+2	2	src/app/moon-manager/pipes/url-transformer.pipe.ts
+55	16	src/app/moon-manager/services/medias-buffer.service.ts
+x	x	2018-12-05 17:58:12 +0100
+
+29	3	docs/bibliographie.md
+11	1	src/app/moon-manager/components/parameters/parameters.component.ts
+3	1	src/app/moon-manager/services/config-form.model.ts
+1	0	src/manifest.json
+x	x	2018-12-05 17:00:20 +0100
+
+8	9	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+32	0	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+x	x	2018-12-05 16:33:12 +0100
+
+47	5	src/app/moon-manager/components/parameters/parameters.component.ts
+x	x	2018-12-05 15:26:22 +0100
+
+8	1	docs/bibliographie.md
+44	17	src/app/moon-manager/components/parameters/parameters.component.ts
+26	0	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+3	7	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+18	0	src/app/moon-manager/tools.ts
+x	x	2018-12-05 12:21:23 +0100
+
+13	0	docs/bibliographie.md
+2	2	src/app/moon-manager/components/parameters/parameters.component.html
+70	5	src/app/moon-manager/components/parameters/parameters.component.ts
+3	0	src/translations/fr-FR.json
+x	x	2018-12-05 10:52:24 +0100
+
+2	2	src/translations/fr-FR.json
+x	x	2018-12-05 10:51:56 +0100
+
+2	2	src/translations/fr-FR.json
+x	x	2018-12-05 10:48:58 +0100
+
+6	0	docs/bibliographie.md
+10	10	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+6	6	src/app/moon-manager/components/parameters/parameters.component.html
+5	0	src/app/moon-manager/components/parameters/parameters.component.ts
+21	21	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+5	5	src/app/moon-manager/services/config-form.model.ts
+25	6	src/translations/fr-FR.json
+x	x	2018-12-05 09:37:08 +0100
+
+56	0	src/app/moon-manager/components/parameters/parameters.component.html
+103	1	src/app/moon-manager/components/parameters/parameters.component.ts
+x	x	2018-12-05 07:58:38 +0100
+
+2	0	docs/bibliographie.md
+53	5	src/app/moon-manager/components/body/body.component.ts
+0	142	src/app/moon-manager/components/body/config-form.model.ts
+3	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+9	3	src/app/moon-manager/services/config-form.model.ts
+x	x	2018-12-05 07:33:34 +0100
+
+3	0	.vscode/settings.json
+8	0	docs/bibliographie.md
+5	4	src/app/moon-manager/services/config-form.model.ts
+56	4	src/app/moon-manager/services/medias-buffer.service.ts
+4	7	tsconfig.json
+x	x	2018-12-05 06:19:39 +0100
+
+31	8	src/app/moon-manager/components/parameters/config-form.model.ts
+3	13	src/app/moon-manager/components/parameters/parameters.component.ts
+111	0	src/app/moon-manager/services/config-form.model.ts
+x	x	2018-12-05 04:46:55 +0100
+
+2	0	README.md
+142	0	src/app/moon-manager/components/body/config-form.model.ts
+1	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+69	61	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+77	30	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+17	9	src/app/moon-manager/components/parameters/config-form.model.ts
+38	36	src/app/moon-manager/components/parameters/parameters.component.ts
+51	14	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+22	17	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+2	2	src/translations/en-US.json
+4	4	src/translations/fr-FR.json
+x	x	2018-12-05 01:55:51 +0100
+
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-114x114.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-120x120.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-144x144.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-152x152.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-57x57.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-60x60.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-72x72.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-76x76.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-128.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-16x16.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-196x196.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-32x32.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-96x96.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon.ico
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-144x144.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-150x150.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-310x150.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-310x310.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-70x70.png
+4	4	src/manifest.json
+x	x	2018-12-05 01:36:11 +0100
+
+6	1	src/app/moon-manager/components/header/header.component.html
+1	1	src/manifest.json
+x	x	2018-12-05 01:27:27 +0100
+
+2	2	README.md
+-	-	src/assets/logos/MoonManager-128.png
+-	-	src/assets/logos/MoonManager-32.png
+-	-	src/assets/logos/MoonManager-512.png
+-	-	src/assets/logos/MoonManager-64.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-114x114.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-120x120.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-144x144.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-152x152.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-57x57.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-60x60.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-72x72.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-76x76.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-128.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-16x16.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-196x196.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-32x32.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-96x96.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon.ico
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-144x144.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-150x150.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-310x150.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-310x310.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-70x70.png
+x	x	2018-12-04 06:30:17 +0100
+
+5	0	README.md
+1	1	src/manifest.json
+x	x	2018-12-04 06:24:12 +0100
+
+3	0	docs/bibliographie.md
+x	x	2018-12-04 06:16:27 +0100
+
+5	0	docs/bibliographie.md
+5	3	src/app/moon-manager/components/body/body.component.html
+5	5	src/app/moon-manager/components/parameters/config-form.model.ts
+12	0	src/app/moon-manager/components/parameters/parameters.component.scss
+1	0	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+14	4	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.ts
+92	69	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+4	4	src/translations/en-US.json
+x	x	2018-12-04 04:31:31 +0100
+
+15	13	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+6	10	src/app/moon-manager/components/parameters/parameters.component.html
+2	5	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+9	9	src/translations/en-US.json
+3	3	src/translations/fr-FR.json
+x	x	2018-12-04 03:36:25 +0100
+
+1	1	src/app/moon-manager/components/parameters/parameters.component.html
+4	0	src/app/moon-manager/components/parameters/parameters.component.ts
+-	-	src/assets/TimingsIndicatorStory-en.png
+1	0	src/translations/en-US.json
+1	0	src/translations/fr-FR.json
+x	x	2018-12-04 02:38:35 +0100
+
+4	0	src/app/core/i18n.service.ts
+9	1	src/app/moon-manager/components/parameters/parameters.component.ts
+x	x	2018-12-04 01:25:44 +0100
+
+2	0	docs/bibliographie.md
+5	0	src/app/core/i18n.service.ts
+4	4	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+2	2	src/app/moon-manager/components/parameters/config-form.model.ts
+13	12	src/app/moon-manager/components/parameters/parameters.component.html
+18	7	src/app/moon-manager/components/parameters/parameters.component.ts
+x	x	2018-12-03 19:36:34 +0100
+
+18	11	src/app/moon-manager/components/parameters/parameters.component.html
+1	1	src/app/moon-manager/components/parameters/parameters.component.ts
+4	0	src/main.scss
+x	x	2018-12-03 18:01:46 +0100
+
+7	0	docs/bibliographie.md
+72	52	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+34	13	src/app/moon-manager/components/parameters/config-form.model.ts
+3	2	src/app/moon-manager/components/parameters/parameters.component.html
+6	3	src/app/moon-manager/components/parameters/parameters.component.ts
+x	x	2018-12-03 16:04:13 +0100
+
+2	0	README.md
+12	0	docs/bibliographie.md
+12	4	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+11	7	src/app/moon-manager/components/parameters/config-form.model.ts
+242	0	src/assets/translations/messages.xlf
+x	x	2018-12-03 13:36:08 +0100
+
+3	0	docs/bibliographie.md
+5	3	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+6	3	src/app/moon-manager/components/footer/footer.component.html
+6	0	src/app/moon-manager/components/footer/footer.component.scss
+2	0	src/app/moon-manager/components/footer/footer.component.ts
+1	1	src/app/moon-manager/components/parameters/config-form.model.ts
+9	7	src/app/moon-manager/components/parameters/parameters.component.ts
+x	x	2018-12-03 11:09:59 +0100
+
+1	1	src/app/moon-manager/components/aframe-tutorial/aframe-tutorial.component.html
+5	3	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+56	52	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+13	10	src/app/moon-manager/components/parameters/config-form.model.ts
+72	71	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+5	3	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-12-02 20:50:24 +0100
+
+1	0	angular.json
+12	2	docs/bibliographie.md
+1	0	package.json
+1	1	src/app/app.module.ts
+8	0	src/platform/polyfills/canvas/grunt-config.json
+5	0	src/platform/polyfills/canvas/modernizr-config.json
+82	0	src/platform/polyfills/canvas/modernizr-custom.js
+430	0	src/platform/polyfills/weppy-master/weppy.js
+24	1	src/polyfills.ts
+4	0	yarn.lock
+x	x	2018-12-02 17:18:05 +0100
+
+63	2	docs/bibliographie.md
+1	0	package.json
+5	0	src/app/moon-manager/components/aframe-tutorial/aframe-tutorial.component.html
+0	0	src/app/moon-manager/components/aframe-tutorial/aframe-tutorial.component.scss
+24	0	src/app/moon-manager/components/aframe-tutorial/aframe-tutorial.component.spec.ts
+12	0	src/app/moon-manager/components/aframe-tutorial/aframe-tutorial.component.ts
+7	0	src/app/moon-manager/moon-manager-routing.module.ts
+5	1	src/app/moon-manager/moon-manager.module.ts
+228	0	src/platform/polyfills/request-frame-alt.js
+21	0	src/polyfills.ts
+6	0	yarn.lock
+x	x	2018-12-02 10:01:35 +0100
+
+1	1	src/manifest.json
+x	x	2018-12-02 09:41:39 +0100
+
+7	0	README.md
+2	0	docs/bibliographie.md
+24	15	src/app/app.module.ts
+20	1	src/app/core/core.module.ts
+31	31	src/assets/translations/{messages.en.xlf => messages.en-US.xlf}
+242	0	src/assets/translations/messages.fr-FR.xlf
+x	x	2018-12-02 08:12:30 +0100
+
+7	0	README.md
+14	1	docs/bibliographie.md
+24	2	src/app/app.module.ts
+13	2	src/app/core/core.module.ts
+242	0	src/assets/translations/messages.en.xlf
+x	x	2018-12-02 07:15:09 +0100
+x	x	2018-12-02 07:14:45 +0100
+
+21	0	docs/bibliographie.md
+2	0	package.json
+14	3	src/app/app.module.ts
+51	2	src/app/core/core.module.ts
+7	0	src/app/core/i18n.service.ts
+4	0	src/app/moon-manager/components/body/body.component.html
+3	1	src/app/moon-manager/components/body/body.component.ts
+37	0	yarn.lock
+x	x	2018-12-01 09:46:44 +0100
+
+1	1	README.md
+x	x	2018-12-01 09:44:59 +0100
+
+1	1	README.md
+x	x	2018-12-01 09:43:20 +0100
+
+1	1	README.md
+x	x	2018-12-01 09:42:03 +0100
+
+5	0	README.md
+-	-	docs/outputSamples/MoonManager (Private data).pdf
+-	-	docs/outputSamples/MoonManager_Private data_For_MoonWashBeta.pdf
+x	x	2018-12-01 06:33:22 +0100
+
+1	1	package.json
+x	x	2018-12-01 06:30:30 +0100
+
+8	1	README.md
+14	0	docs/bibliographie.md
+2	2	src/app/core/i18n.service.ts
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+7	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+17	5	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+2	2	src/app/moon-manager/components/footer/footer.component.html
+1	1	src/app/moon-manager/components/footer/footer.component.ts
+2	2	src/app/moon-manager/components/header/header.component.html
+2	1	src/app/moon-manager/components/header/header.component.ts
+22	7	src/app/moon-manager/components/parameters/parameters.component.html
+21	3	src/app/moon-manager/components/parameters/parameters.component.ts
+19	5	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+2	1	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.ts
+20	19	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+41	26	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+34	31	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+3	1	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+22	2	src/app/moon-manager/moon-manager.component.ts
+2	0	src/app/moon-manager/moon-manager.module.ts
+2	2	src/environments/environment.ts
+96	3	src/translations/en-US.json
+101	8	src/translations/fr-FR.json
+x	x	2018-12-01 03:08:02 +0100
+
+6	1	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+x	x	2018-12-01 03:02:04 +0100
+
+11	0	src/app/moon-manager/components/parameters/config-form.model.ts
+9	7	src/app/moon-manager/components/parameters/parameters.component.html
+20	11	src/app/moon-manager/components/parameters/parameters.component.ts
+x	x	2018-12-01 01:31:25 +0100
+
+14	10	src/app/moon-manager/components/parameters/parameters.component.html
+7	0	src/app/moon-manager/components/parameters/parameters.component.scss
+2	1	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+5	4	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.scss
+1	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+x	x	2018-12-01 01:09:35 +0100
+
+5	1	README.md
+3	0	docs/bibliographie.md
+1	1	src/app/moon-manager/components/header/header.component.html
+1	1	src/app/moon-manager/components/parameters/parameters.component.html
+13	5	src/app/moon-manager/components/parameters/parameters.component.scss
+8	0	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+6	7	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+16	0	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+3	3	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-12-01 00:22:56 +0100
+
+1	1	docs/bibliographie.md
+x	x	2018-12-01 00:05:51 +0100
+
+19	0	src/index.html
+x	x	2018-11-30 23:57:00 +0100
+
+1	1	README.md
+21	0	docs/bibliographie.md
+20	1	src/index.html
+x	x	2018-11-30 23:14:43 +0100
+
+2	0	README.md
+x	x	2018-11-30 23:12:20 +0100
+
+7	4	README.md
+8	0	docs/bibliographie.md
+x	x	2018-11-30 10:00:41 +0100
+
+3	1	docs/bibliographie.md
+42	13	src/app/moon-manager/components/parameters/config-form.model.ts
+0	33	src/app/moon-manager/components/parameters/parameters.component.html
+8	0	src/app/moon-manager/components/parameters/parameters.component.scss
+40	10	src/app/moon-manager/components/parameters/parameters.component.ts
+104	0	src/app/moon-manager/components/timing-pivot/config-form.model.ts
+4	12	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-11-30 07:47:31 +0100
+
+19	12	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+x	x	2018-11-30 07:41:13 +0100
+
+1	0	README.md
+2	0	docs/bibliographie.md
+11	13	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+59	39	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+33	0	src/app/moon-manager/components/parameters/config-form.model.ts
+29	25	src/app/moon-manager/components/parameters/parameters.component.html
+16	2	src/app/moon-manager/components/parameters/parameters.component.ts
+12	0	src/main.scss
+x	x	2018-11-30 05:10:51 +0100
+
+1	0	README.md
+8	0	docs/bibliographie.md
+3	0	package.json
+2	19	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+63	0	src/app/moon-manager/components/client-files-loader/config-form.model.ts
+5	0	src/app/moon-manager/moon-manager.module.ts
+18	0	yarn.lock
+x	x	2018-11-30 03:39:51 +0100
+
+3	3	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+x	x	2018-11-30 03:30:58 +0100
+
+-	-	docs/outputSamples/MoonManager (Private data).pdf
+17	14	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+25	1	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.scss
+4	0	src/main.scss
+x	x	2018-11-30 02:28:20 +0100
+
+1	0	src/app/moon-manager/components/parameters/parameters.component.ts
+1	1	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.ts
+1	1	src/app/moon-manager/components/timing-form/timing-form.component.html
+x	x	2018-11-30 02:12:06 +0100
+
+7	1	docs/bibliographie.md
+1	0	package.json
+2	2	src/app/moon-manager/components/body/body.component.html
+1	1	src/app/moon-manager/components/body/body.component.scss
+9	0	src/app/moon-manager/components/body/body.component.ts
+3	0	src/app/moon-manager/moon-manager.module.ts
+4	0	src/polyfills.ts
+6	0	yarn.lock
+x	x	2018-11-30 01:02:15 +0100
+
+10	0	docs/bibliographie.md
+2	2	src/app/moon-manager/components/body/body.component.html
+1	1	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+1	1	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.ts
+23	2	src/app/moon-manager/components/timing-form/timing-form.component.html
+38	35	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+1	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+11	0	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+6	2	src/app/moon-manager/moon-manager.module.ts
+x	x	2018-11-29 22:05:38 +0100
+
+5	3	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+37	34	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+-	-	src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Tests/20181129_165121.jpg
+-	-	src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Tests/2018_11_28_23_55_04.png
+-	-	src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Tests/2018_11_28_23_55_54.png
+x	x	2018-11-29 16:36:10 +0100
+
+6	4	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+x	x	2018-11-29 16:18:26 +0100
+
+61	59	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-11-29 16:07:47 +0100
+
+4	0	docs/bibliographie.md
+1	1	src/app/moon-manager/components/body/body.component.html
+1	1	src/app/moon-manager/components/body/body.component.scss
+55	49	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+29	8	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+41	18	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+5	0	src/main.scss
+x	x	2018-11-29 14:40:36 +0100
+
+7	1	README.md
+8	0	docs/bibliographie.md
+14	9	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.ts
+5	2	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+51	0	src/theme/theme-mixins.scss
+3	27	src/theme/theme-variables.scss
+x	x	2018-11-29 14:06:04 +0100
+
+1	0	README.md
+6	0	docs/bibliographie.md
+4	4	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+3	3	src/index.html
+1	1	src/manifest.json
+45	1	src/theme/theme-variables.scss
+x	x	2018-11-28 23:28:39 +0100
+
+4	0	src/app/moon-manager/components/parameters/parameters.component.html
+3	3	src/environments/environment.prod.ts
+x	x	2018-11-28 23:20:14 +0100
+
+16	0	docs/bibliographie.md
+1	0	package.json
+1	1	src/app/moon-manager/components/body/body.component.html
+43	16	src/app/moon-manager/components/parameters/parameters.component.html
+13	2	src/app/moon-manager/moon-manager.module.ts
+8	0	src/app/moon-manager/pipes/has-type.pipe.spec.ts
+11	0	src/app/moon-manager/pipes/has-type.pipe.ts
+172	5	yarn.lock
+x	x	2018-11-28 21:07:02 +0100
+
+6	5	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+15	2	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-11-28 20:49:48 +0100
+
+6	1	docs/bibliographie.md
+1	0	package.json
+65	4	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+1	0	src/app/moon-manager/components/footer/footer.component.scss
+2	0	src/app/moon-manager/moon-manager.module.ts
+67	67	src/assets/demoDataset/git_logs.csv
+6	0	src/main.scss
+11	0	yarn.lock
+x	x	2018-11-28 19:48:05 +0100
+
+1	2	src/app/moon-manager/components/body/body.component.html
+3	1	src/app/moon-manager/components/body/body.component.scss
+8	1	src/app/moon-manager/components/timing-form/timing-form.component.html
+3	0	src/app/moon-manager/components/timing-form/timing-form.component.scss
+3	2	src/app/moon-manager/components/timing-form/timing-form.component.ts
+x	x	2018-11-28 17:42:08 +0100
+
+62	5	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+-	-	src/assets/demoDataset/TimingsIndicatorStory.png
+x	x	2018-11-28 17:32:07 +0100
+
+7	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+12	13	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+x	x	2018-11-28 16:48:02 +0100
+
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.scss
+5	2	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 21.59.18.png" => "src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/RemoteFullTutorialAndKnowledgeTransfert/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 21.59.18.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 21.59.57.png" => "src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/RemoteFullTutorialAndKnowledgeTransfert/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 21.59.57.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.00.36.png" => "src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/RemoteFullTutorialAndKnowledgeTransfert/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.00.36.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.02.05.png" => "src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/RemoteFullTutorialAndKnowledgeTransfert/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.02.05.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.02.18.png" => "src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/RemoteFullTutorialAndKnowledgeTransfert/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.02.18.png"
+x	x	2018-11-28 10:38:03 +0100
+
+7	0	README.md
+6	1	docs/bibliographie.md
+1	0	package.json
+25	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.scss
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+8	2	src/app/moon-manager/components/header/header.component.scss
+9	5	src/app/moon-manager/components/parameters/parameters.component.html
+7	0	src/app/moon-manager/components/parameters/parameters.component.scss
+14	16	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+3	2	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+5	2	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+2	0	src/app/moon-manager/moon-manager.module.ts
+-	-	src/apple-touch-icon-ngx-rocket.png
+-	-	src/apple-touch-icon.png
+-	-	"src/assets/demoDataset/MiguelMonwoo/Capture d\342\200\231\303\251cran 2018-05-29 \303\240 15.24.55.png"
+7	2	src/index.html
+61	0	src/main.scss
+3	3	src/manifest.json
+5	0	src/theme/theme-variables.scss
+6	0	yarn.lock
+x	x	2018-11-28 06:13:11 +0100
+
+3	2	README.md
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+22	18	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+21	21	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-11-28 04:00:45 +0100
+
+33	5	README.md
+3	0	docs/bibliographie.md
+6	3	proxy.conf.js
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+8	0	src/app/moon-manager/components/parameters/parameters.component.html
+3	0	src/app/moon-manager/components/parameters/parameters.component.scss
+67	3	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+10	1	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+2	0	src/app/moon-manager/moon-manager.module.ts
+67	67	src/assets/demoDataset/git_logs.csv
+-	-	src/assets/logos/MoonManager-32-secondary.png
+-	-	src/assets/logos/MoonManager-32.png
+2	1	src/environments/environment.ts
+x	x	2018-11-27 22:45:33 +0100
+
+2	0	README.md
+x	x	2018-11-27 22:29:56 +0100
+
+12	20	README.md
+-	-	src/assets/TimingsIndicatorStory.png
+x	x	2018-11-27 11:24:36 +0100
+
+8	0	git_logs.csv
+x	x	2018-11-27 11:24:08 +0100
+
+1	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-11-27 10:20:16 +0100
+
+2	0	README.md
+x	x	2018-11-27 09:55:03 +0100
+
+2	2	README.md
+1	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-11-27 09:34:47 +0100
+
+1	1	src/app/moon-manager/components/body/body.component.ts
+2	2	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+26	18	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+x	x	2018-11-27 08:35:43 +0100
+
+2	0	docs/bibliographie.md
+3	2	src/app/moon-manager/components/body/body.component.html
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+7	1	src/app/moon-manager/components/header/header.component.scss
+3	3	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+5	0	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.scss
+1	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+18	3	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+1	1	src/index.html
+11	0	src/main.scss
+x	x	2018-11-27 07:04:49 +0100
+
+8	1	angular.json
+6	0	docs/bibliographie.md
+2	0	package.json
+2	2	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+1	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+10	0	yarn.lock
+x	x	2018-11-27 05:35:16 +0100
+
+1	1	src/app/moon-manager/components/body/body.component.html
+x	x	2018-11-27 05:29:17 +0100
+
+2	0	docs/bibliographie.md
+8	0	git_logs.csv
+3	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+4	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.scss
+62	7	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+1	1	src/app/moon-manager/components/header/header.component.html
+1	1	src/app/moon-manager/components/header/header.component.scss
+7	0	src/app/moon-manager/components/parameters/parameters.component.ts
+41	15	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+2	2	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.ts
+16	7	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+281	0	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+55	27	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+1	1	src/app/moon-manager/moon-manager.module.ts
+-	-	"src/assets/demoDataset/Capture d\342\200\231\303\251cran 2018-08-16 \303\240 04.55.32.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/Capture d\342\200\231\303\251cran 2018-10-09 \303\240 20.43.14.png"
+67	0	src/assets/demoDataset/git_logs.csv
+6	0	src/main.scss
+x	x	2018-11-27 01:14:57 +0100
+
+12	0	docs/bibliographie.md
+2	1	src/app/moon-manager/components/body/body.component.html
+1	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+1	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+1	0	src/app/moon-manager/components/header/header.component.html
+10	1	src/app/moon-manager/components/header/header.component.scss
+0	1	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+5	5	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+4	2	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+1	2	src/app/moon-manager/moon-manager.component.html
+3	0	src/app/moon-manager/moon-manager.module.ts
+13	13	src/main.scss
+x	x	2018-11-26 08:02:12 +0100
+
+16	3	README.md
+1	1	docs/bibliographie.md
+2	0	package.json
+2	0	src/app/moon-manager/components/body/body.component.html
+22	0	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.html
+0	0	src/app/moon-manager/components/{timming-form/timming-form.component.scss => timeline-yearly-plan/timeline-yearly-plan.component.scss}
+26	0	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.spec.ts
+114	0	src/app/moon-manager/components/timeline-yearly-plan/timeline-yearly-plan.component.ts
+2	0	src/app/moon-manager/components/timing-form/timing-form.component.html
+0	0	src/app/moon-manager/components/{timming-pivot/timming-pivot.component.scss => timing-form/timing-form.component.scss}
+6	6	src/app/moon-manager/components/{timming-pivot/timming-pivot.component.spec.ts => timing-form/timing-form.component.spec.ts}
+15	0	src/app/moon-manager/components/timing-form/timing-form.component.ts
+100	0	src/app/moon-manager/components/timing-pivot/timing-pivot.component.html
+1	0	src/app/moon-manager/components/timing-pivot/timing-pivot.component.scss
+6	6	src/app/moon-manager/components/{timming-form/timming-form.component.spec.ts => timing-pivot/timing-pivot.component.spec.ts}
+828	0	src/app/moon-manager/components/timing-pivot/timing-pivot.component.ts
+0	1	src/app/moon-manager/components/timming-form/timming-form.component.html
+0	14	src/app/moon-manager/components/timming-form/timming-form.component.ts
+0	1	src/app/moon-manager/components/timming-pivot/timming-pivot.component.html
+0	14	src/app/moon-manager/components/timming-pivot/timming-pivot.component.ts
+8	0	src/app/moon-manager/directives/ng-let.directive.spec.ts
+21	0	src/app/moon-manager/directives/ng-let.directive.ts
+10	5	src/app/moon-manager/moon-manager.module.ts
+11	1	yarn.lock
+x	x	2018-11-26 06:35:14 +0100
+
+1	0	docs/bibliographie.md
+7	6	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+x	x	2018-11-26 06:28:19 +0100
+
+13	8	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+x	x	2018-11-26 06:04:58 +0100
+
+4	0	README.md
+15	0	docs/bibliographie.md
+2	0	src/app/moon-manager/pipes/default.pipe.spec.ts
+12	1	src/app/moon-manager/pipes/url-transformer.pipe.spec.ts
+x	x	2018-11-26 05:19:09 +0100
+
+1	0	docs/bibliographie.md
+3	3	src/app/moon-manager/components/body/body.component.html
+3	2	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+3	1	src/app/moon-manager/moon-manager.module.ts
+8	0	src/app/moon-manager/pipes/url-transformer.pipe.spec.ts
+17	0	src/app/moon-manager/pipes/url-transformer.pipe.ts
+12	0	src/app/moon-manager/services/medias-buffer.service.spec.ts
+26	0	src/app/moon-manager/services/medias-buffer.service.ts
+x	x	2018-11-26 04:26:30 +0100
+
+2	0	docs/bibliographie.md
+2	2	src/app/moon-manager/api/data-model/timing.ts
+28	5	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+3	0	src/app/moon-manager/components/parameters/parameters.component.html
+7	0	src/app/moon-manager/components/parameters/parameters.component.ts
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/AddNotifForSave/Capture d\342\200\231\303\251cran 2018-11-26 \303\240 02.55.30.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/AddNotifForSave/Capture d\342\200\231\303\251cran 2018-11-26 \303\240 02.55.31.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/AddNotifForSave/Capture d\342\200\231\303\251cran 2018-11-26 \303\240 02.55.33.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/AddNotifForSave/Capture d\342\200\231\303\251cran 2018-11-26 \303\240 02.55.36.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 21.59.18.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 21.59.57.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.00.36.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.02.05.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.02.18.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.03.15.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.04.30.png"
+-	-	"src/assets/demoDataset/MiguelMonwoo/ProjetMoonManager/MIT-developpment/Debugging/Capture d\342\200\231\303\251cran 2018-11-25 \303\240 22.05.44.png"
+x	x	2018-11-26 03:02:25 +0100
+
+25	0	git_logs.csv
+x	x	2018-11-26 03:01:41 +0100
+
+0	0	you
+x	x	2018-11-26 03:00:36 +0100
+
+1	1	README.md
+x	x	2018-11-26 02:59:18 +0100
+
+2	56	README.md
+65	0	docs/bibliographie.md
+1	0	package.json
+5	2	src/app/moon-manager/components/parameters/parameters.component.ts
+10	2	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+1	1	src/app/moon-manager/moon-manager.component.html
+4	0	yarn.lock
+x	x	2018-11-26 01:57:46 +0100
+
+1	0	README.md
+1	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+x	x	2018-11-26 01:49:43 +0100
+
+1	1	README.md
+1	1	package.json
+2	2	src/app/moon-manager/components/body/body.component.ts
+1	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+2	2	src/app/moon-manager/components/parameters/parameters.component.ts
+1	0	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+3	2	src/app/moon-manager/moon-manager.module.ts
+1	1	yarn.lock
+x	x	2018-11-26 01:26:16 +0100
+
+6	0	README.md
+9	2	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+7	2	src/app/moon-manager/components/parameters/parameters.component.html
+23	2	src/app/moon-manager/components/parameters/parameters.component.ts
+3	3	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+4	1	src/app/moon-manager/moon-manager.module.ts
+x	x	2018-11-26 00:28:39 +0100
+
+13	2	README.md
+1	0	package.json
+1	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+26	5	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+14	7	src/app/moon-manager/components/parameters/parameters.component.html
+17	2	src/app/moon-manager/components/parameters/parameters.component.ts
+3	1	src/app/moon-manager/moon-manager.module.ts
+8	0	src/app/moon-manager/pipes/default.pipe.spec.ts
+19	0	src/app/moon-manager/pipes/default.pipe.ts
+6	0	yarn.lock
+x	x	2018-11-25 22:22:07 +0100
+
+1	0	README.md
+x	x	2018-11-25 22:20:50 +0100
+
+2	0	README.md
+x	x	2018-11-25 22:17:44 +0100
+
+1	1	README.md
+x	x	2018-11-25 22:09:14 +0100
+
+15	1	README.md
+1	0	angular.json
+1	0	package.json
+2	0	src/app/moon-manager/components/header/header.component.scss
+2	0	src/app/moon-manager/components/header/header.component.spec.ts
+3	1	src/app/moon-manager/components/header/header.component.ts
+11	0	src/app/moon-manager/components/parameters/parameters.component.html
+1	0	src/app/moon-manager/components/parameters/parameters.component.scss
+26	0	src/app/moon-manager/components/parameters/parameters.component.spec.ts
+14	0	src/app/moon-manager/components/parameters/parameters.component.ts
+17	0	src/app/moon-manager/monwoo-moon-manager-wrap.module.ts
+10	2	src/app/moon-manager/moon-manager-routing.module.ts
+1	1	src/app/moon-manager/moon-manager.component.html
+1	1	src/app/moon-manager/moon-manager.component.ts
+8	9	src/app/moon-manager/moon-manager.module.ts
+2	1	src/app/shell/shell.component.html
+2	1	src/app/shell/shell.module.ts
+1	0	src/main.scss
+4	0	yarn.lock
+x	x	2018-11-25 18:50:01 +0100
+
+2	1	README.md
+x	x	2018-11-25 18:48:36 +0100
+
+1	1	README.md
+0	0	you
+x	x	2018-11-25 18:46:16 +0100
+
+8	0	README.md
+x	x	2018-11-25 18:37:50 +0100
+
+2	1	README.md
+x	x	2018-11-25 18:36:04 +0100
+
+5	1	README.md
+x	x	2018-11-25 18:32:46 +0100
+
+59	0	README.md
+x	x	2018-11-25 07:50:00 +0100
+
+3	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+x	x	2018-11-25 07:45:46 +0100
+
+4	2	README.md
+34	0	src/app/moon-manager/api/data-model/timing.ts
+10	1	src/app/moon-manager/components/body/body.component.html
+9	0	src/app/moon-manager/components/body/body.component.scss
+10	0	src/app/moon-manager/components/body/body.component.ts
+5	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+4	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.scss
+63	1	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+x	x	2018-11-25 04:17:16 +0100
+
+25	6	README.md
+1	0	package.json
+2	0	src/app/moon-manager/components/body/body.component.html
+7	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.html
+1	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.scss
+26	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.spec.ts
+47	0	src/app/moon-manager/components/client-files-loader/client-files-loader.component.ts
+1	0	src/app/moon-manager/components/timming-form/timming-form.component.html
+1	0	src/app/moon-manager/components/timming-form/timming-form.component.scss
+26	0	src/app/moon-manager/components/timming-form/timming-form.component.spec.ts
+14	0	src/app/moon-manager/components/timming-form/timming-form.component.ts
+1	0	src/app/moon-manager/components/timming-pivot/timming-pivot.component.html
+1	0	src/app/moon-manager/components/timming-pivot/timming-pivot.component.scss
+26	0	src/app/moon-manager/components/timming-pivot/timming-pivot.component.spec.ts
+14	0	src/app/moon-manager/components/timming-pivot/timming-pivot.component.ts
+28	2	src/app/moon-manager/moon-manager.module.ts
+7	1	yarn.lock
+x	x	2018-11-24 13:09:13 +0100
+
+3	1	README.md
+x	x	2018-11-24 12:57:13 +0100
+
+2	1	README.md
+4	0	package.json
+18	0	src/app/moon-manager/components/footer/footer.component.scss
+16	5	src/app/moon-manager/components/header/header.component.html
+20	1	src/app/moon-manager/components/header/header.component.scss
+5	1	src/app/moon-manager/components/header/header.component.ts
+0	35	src/app/moon-manager/moon-manager.component.scss
+41	1	src/app/moon-manager/moon-manager.module.ts
+36	1	src/main.scss
+11	9	src/manifest.json
+2	6	src/tsconfig.app.json
+24	0	yarn.lock
+x	x	2018-11-24 10:07:11 +0100
+
+23	5	README.md
+11	20	angular.json
+3	0	package.json
+1	0	src/app/moon-manager/components/body/body.component.html
+0	0	src/app/moon-manager/components/body/body.component.scss
+24	0	src/app/moon-manager/components/body/body.component.spec.ts
+14	0	src/app/moon-manager/components/body/body.component.ts
+19	0	src/app/moon-manager/components/footer/footer.component.html
+0	0	src/app/moon-manager/components/footer/footer.component.scss
+24	0	src/app/moon-manager/components/footer/footer.component.spec.ts
+22	0	src/app/moon-manager/components/footer/footer.component.ts
+13	0	src/app/moon-manager/components/header/header.component.html
+31	0	src/app/moon-manager/components/header/header.component.scss
+24	0	src/app/moon-manager/components/header/header.component.spec.ts
+18	0	src/app/moon-manager/components/header/header.component.ts
+6	1	src/app/moon-manager/moon-manager.component.html
+35	0	src/app/moon-manager/moon-manager.component.scss
+4	1	src/app/moon-manager/moon-manager.module.ts
+4	1	src/app/shell/shell.component.html
+-	-	src/assets/logos/{LogoMoonManager-128-secondary.png => MoonManager-128-secondary.png}
+-	-	src/assets/logos/{LogoMoonManager-128.png => MoonManager-128.png}
+-	-	src/assets/logos/{LogoMoonManager-512-secondary.png => MoonManager-512-secondary.png}
+-	-	src/assets/logos/{LogoMoonManager-512.png => MoonManager-512.png}
+-	-	src/assets/logos/{LogoMoonManager-64-secondary.png => MoonManager-64-secondary.png}
+-	-	src/assets/logos/{LogoMoonManager-64.png => MoonManager-64.png}
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-114x114.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-120x120.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-144x144.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-152x152.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-57x57.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-60x60.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-72x72.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/apple-touch-icon-76x76.png
+20	0	src/assets/logos/MoonManager-favicomatic_com/code.txt
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-128.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-16x16.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-196x196.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-32x32.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon-96x96.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/favicon.ico
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-144x144.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-150x150.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-310x150.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-310x310.png
+-	-	src/assets/logos/MoonManager-favicomatic_com/mstile-70x70.png
+25	25	src/index.html
+41	1	yarn.lock
+x	x	2018-11-24 08:55:23 +0100
+
+11	0	README.md
+14	6	package.json
+66	1	yarn.lock
+x	x	2018-11-24 06:52:47 +0100
+
+34	0	git_logs.csv
+x	x	2018-11-24 06:36:19 +0100
+
+1	1	README.md
+x	x	2018-11-24 06:35:49 +0100
+
+1	1	README.md
+x	x	2018-11-24 06:35:33 +0100
+
+4	0	README.md
+x	x	2018-11-24 06:31:41 +0100
+
+1	1	README.md
+x	x	2018-11-24 06:29:23 +0100
+
+3	3	README.md
+x	x	2018-11-24 06:28:00 +0100
+
+15	3	README.md
+x	x	2018-11-24 06:20:17 +0100
+
+1	0	src/app/moon-manager/moon-manager.component.scss
+x	x	2018-11-24 06:19:44 +0100
+
+2	2	src/app/core/core.module.ts
+x	x	2018-11-24 06:13:46 +0100
+
+11	0	README.md
+2	0	src/app/app.module.ts
+4	2	src/app/core/core.module.ts
+30	0	src/app/moon-manager/moon-manager-routing.module.ts
+1	0	src/app/moon-manager/moon-manager.component.html
+0	0	src/app/moon-manager/moon-manager.component.scss
+24	0	src/app/moon-manager/moon-manager.component.spec.ts
+12	0	src/app/moon-manager/moon-manager.component.ts
+5	2	src/app/moon-manager/moon-manager.module.ts
+12	0	src/app/moon-manager/services/routing-sentinel.service.spec.ts
+15	0	src/app/moon-manager/services/routing-sentinel.service.ts
+3	2	src/app/shell/shell.service.ts
+x	x	2018-11-24 05:23:42 +0100
+
+66	22	README.md
+2	4	e2e/protractor.conf.js
+10	3	package.json
+2	4	src/app/about/about-routing.module.ts
+2	3	src/app/about/about.component.spec.ts
+2	4	src/app/about/about.component.ts
+3	9	src/app/about/about.module.ts
+1	1	src/app/app-routing.module.ts
+1	5	src/app/app.component.spec.ts
+7	8	src/app/app.component.ts
+2	3	src/app/app.module.ts
+8	10	src/app/core/authentication/authentication.guard.spec.ts
+1	4	src/app/core/authentication/authentication.guard.ts
+0	2	src/app/core/authentication/authentication.service.mock.ts
+2	4	src/app/core/authentication/authentication.service.spec.ts
+0	2	src/app/core/authentication/authentication.service.ts
+1	8	src/app/core/core.module.ts
+8	11	src/app/core/http/api-prefix.interceptor.spec.ts
+0	1	src/app/core/http/api-prefix.interceptor.ts
+23	29	src/app/core/http/cache.interceptor.spec.ts
+11	14	src/app/core/http/cache.interceptor.ts
+15	15	src/app/core/http/error-handler.interceptor.spec.ts
+0	2	src/app/core/http/error-handler.interceptor.ts
+1	3	src/app/core/http/http-cache.service.ts
+12	22	src/app/core/http/http.service.spec.ts
+8	21	src/app/core/http/http.service.ts
+13	22	src/app/core/i18n.service.spec.ts
+3	4	src/app/core/i18n.service.ts
+4	2	src/app/core/logger.service.spec.ts
+2	4	src/app/core/logger.service.ts
+2	4	src/app/core/route-reusable-strategy.ts
+1	1	src/app/home/home-routing.module.ts
+4	9	src/app/home/home.component.spec.ts
+11	6	src/app/home/home.component.ts
+4	14	src/app/home/home.module.ts
+10	20	src/app/home/quote.service.spec.ts
+1	3	src/app/home/quote.service.ts
+2	4	src/app/login/login-routing.module.ts
+2	9	src/app/login/login.component.spec.ts
+28	22	src/app/login/login.component.ts
+3	11	src/app/login/login.module.ts
+9	0	src/app/moon-manager/moon-manager.module.ts
+2	3	src/app/shared/loader/loader.component.spec.ts
+2	4	src/app/shared/loader/loader.component.ts
+4	10	src/app/shared/shared.module.ts
+3	11	src/app/shell/header/header.component.spec.ts
+7	8	src/app/shell/header/header.component.ts
+4	15	src/app/shell/shell.component.spec.ts
+2	4	src/app/shell/shell.component.ts
+3	12	src/app/shell/shell.module.ts
+2	8	src/app/shell/shell.service.spec.ts
+0	1	src/app/shell/shell.service.ts
+1	4	src/environments/environment.prod.ts
+1	4	src/environments/environment.ts
+2	1	src/main.ts
+4	5	src/polyfills.ts
+2	8	src/test.ts
+12	12	src/theme/theme-variables.scss
+0	1	src/theme/theme.scss
+8797	0	yarn.lock
+x	x	2018-11-24 02:49:35 +0100
+
+1	1	README.md
+x	x	2018-11-24 02:23:12 +0100
+x	x	2018-11-24 02:22:58 +0100
+
+-	-	src/assets/logos/LogoMoonManager-128.png
+-	-	src/assets/logos/LogoMoonManager-512.png
+-	-	src/assets/logos/LogoMoonManager-64.png
+x	x	2018-11-24 02:12:29 +0100
+
+1	3	README.md
+x	x	2018-11-24 02:11:22 +0100
+
+7	2	README.md
+x	x	2018-11-24 02:06:21 +0100
+
+2	1	README.md
+x	x	2018-11-24 02:05:12 +0100
+
+4	2	README.md
+x	x	2018-11-24 02:04:34 +0100
+
+2	1	README.md
+x	x	2018-11-24 02:03:36 +0100
+
+1	1	README.md
+x	x	2018-11-24 01:58:36 +0100
+x	x	2018-11-24 01:58:22 +0100
+
+1	1	README.md
+-	-	src/assets/logos/LogoMoonManager-128-secondary.png
+-	-	src/assets/logos/LogoMoonManager-512-secondary.png
+-	-	src/assets/logos/LogoMoonManager-64-secondary.png
+x	x	2018-11-24 01:02:35 +0100
+
+4	4	README.md
+x	x	2018-11-24 00:19:58 +0100
+
+-	-	src/assets/logos/LogoMoonManager-512.png
+-	-	src/assets/logos/LogoMoonManager-64.png
+x	x	2018-11-24 00:12:03 +0100
+
+-	-	src/assets/logos/LogoMonwoo-128.png
+-	-	src/assets/logos/LogoMoonManager-128.png
+x	x	2018-11-24 00:08:19 +0100
+
+-	-	src/assets/logos/LogoMonwoo-128.png
+x	x	2018-11-23 22:51:45 +0100
+
+6	1	README.md
+-	-	src/assets/{ => logos}/LogoMoonManager-128.png
+-	-	src/assets/{ => logos}/LogoMoonManager-512.png
+-	-	src/assets/{ => logos}/LogoMoonManager-64.png
+x	x	2018-11-23 22:46:47 +0100
+
+6	1	README.md
+-	-	src/assets/LogoMoonManager-128.png
+-	-	src/assets/LogoMoonManager-512.png
+-	-	src/assets/LogoMoonManager-64.png
+x	x	2018-11-23 22:41:52 +0100
+
+6	5	README.md
+x	x	2018-11-23 22:36:24 +0100
+
+7	5	README.md
+x	x	2018-11-23 22:32:00 +0100
+
+4	2	README.md
+x	x	2018-11-23 22:28:24 +0100
+
+29	7	README.md
+165	0	docs/README-NgxStarterKit.md
+x	x	2018-11-23 06:58:51 +0100
+
+2	6	README.md
+x	x	2018-11-23 06:50:52 +0100
+
+15	0	.editorconfig
+54	0	.gitignore
+21	0	.htmlhintrc
+42	0	.stylelintrc
+74	0	README.md
+135	0	angular.json
+5	0	docs/analytics.md
+42	0	docs/backend-proxy.md
+203	0	docs/coding-guides/angular.md
+90	0	docs/coding-guides/e2e-tests.md
+40	0	docs/coding-guides/html.md
+95	0	docs/coding-guides/sass.md
+63	0	docs/coding-guides/typescript.md
+46	0	docs/coding-guides/unit-tests.md
+49	0	docs/corporate-proxy.md
+53	0	docs/i18n.md
+9	0	docs/readme.md
+43	0	docs/routing.md
+41	0	docs/updating.md
+30	0	e2e/protractor.conf.js
+21	0	e2e/src/app.e2e-spec.ts
+32	0	e2e/src/app.po.ts
+14	0	e2e/tsconfig.e2e.json
+27	0	ngsw-config.json
+92	0	package.json
+41	0	proxy.conf.js
+19	0	src/app/about/about-routing.module.ts
+10	0	src/app/about/about.component.html
+0	0	src/app/about/about.component.scss
+25	0	src/app/about/about.component.spec.ts
+18	0	src/app/about/about.component.ts
+18	0	src/app/about/about.module.ts
+14	0	src/app/app-routing.module.ts
+1	0	src/app/app.component.html
+0	0	src/app/app.component.scss
+27	0	src/app/app.component.spec.ts
+61	0	src/app/app.component.ts
+40	0	src/app/app.module.ts
+73	0	src/app/core/authentication/authentication.guard.spec.ts
+25	0	src/app/core/authentication/authentication.guard.ts
+28	0	src/app/core/authentication/authentication.service.mock.ts
+144	0	src/app/core/authentication/authentication.service.spec.ts
+94	0	src/app/core/authentication/authentication.service.ts
+50	0	src/app/core/core.module.ts
+52	0	src/app/core/http/api-prefix.interceptor.spec.ts
+19	0	src/app/core/http/api-prefix.interceptor.ts
+135	0	src/app/core/http/cache.interceptor.spec.ts
+58	0	src/app/core/http/cache.interceptor.ts
+59	0	src/app/core/http/error-handler.interceptor.spec.ts
+30	0	src/app/core/http/error-handler.interceptor.ts
+194	0	src/app/core/http/http-cache.service.spec.ts
+118	0	src/app/core/http/http-cache.service.ts
+140	0	src/app/core/http/http.service.spec.ts
+119	0	src/app/core/http/http.service.ts
+152	0	src/app/core/i18n.service.spec.ts
+83	0	src/app/core/i18n.service.ts
+12	0	src/app/core/index.ts
+72	0	src/app/core/logger.service.spec.ts
+113	0	src/app/core/logger.service.ts
+28	0	src/app/core/route-reusable-strategy.ts
+20	0	src/app/home/home-routing.module.ts
+10	0	src/app/home/home.component.html
+9	0	src/app/home/home.component.scss
+35	0	src/app/home/home.component.spec.ts
+25	0	src/app/home/home.component.ts
+26	0	src/app/home/home.module.ts
+72	0	src/app/home/quote.service.spec.ts
+30	0	src/app/home/quote.service.ts
+16	0	src/app/login/login-routing.module.ts
+62	0	src/app/login/login.component.html
+29	0	src/app/login/login.component.scss
+37	0	src/app/login/login.component.spec.ts
+71	0	src/app/login/login.component.ts
+22	0	src/app/login/login.module.ts
+2	0	src/app/shared/index.ts
+4	0	src/app/shared/loader/loader.component.html
+3	0	src/app/shared/loader/loader.component.scss
+65	0	src/app/shared/loader/loader.component.spec.ts
+17	0	src/app/shared/loader/loader.component.ts
+17	0	src/app/shared/shared.module.ts
+42	0	src/app/shell/header/header.component.html
+9	0	src/app/shell/header/header.component.scss
+38	0	src/app/shell/header/header.component.spec.ts
+47	0	src/app/shell/header/header.component.ts
+2	0	src/app/shell/shell.component.html
+0	0	src/app/shell/shell.component.scss
+43	0	src/app/shell/shell.component.spec.ts
+14	0	src/app/shell/shell.component.ts
+13	0	src/app/shell/shell.module.spec.ts
+23	0	src/app/shell/shell.module.ts
+35	0	src/app/shell/shell.service.spec.ts
+26	0	src/app/shell/shell.service.ts
+-	-	src/apple-touch-icon.png
+-	-	src/assets/ngx-rocket-logo.png
+10	0	src/browserslist
+13	0	src/environments/environment.prod.ts
+26	0	src/environments/environment.ts
+-	-	src/favicon.ico
+27	0	src/index.html
+45	0	src/karma.conf.js
+17	0	src/main.scss
+18	0	src/main.ts
+14	0	src/manifest.json
+80	0	src/polyfills.ts
+5	0	src/robots.txt
+23	0	src/test.ts
+55	0	src/theme/theme-variables.scss
+5	0	src/theme/theme.scss
+16	0	src/translations/en-US.json
+16	0	src/translations/fr-FR.json
+17	0	src/tsconfig.app.json
+22	0	src/tsconfig.spec.json
+12	0	src/typings.d.ts
+26	0	tsconfig.json
+164	0	tslint.json
+x	x	2018-11-23 05:10:09 +0100
+
+21	0	LICENSE
+2	0	README.md

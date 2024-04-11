@@ -153,8 +153,9 @@ style={`
 `}>
   <table>
     <!-- TODO : sticky top for title to stay on page ? -->
-    <thead class="top-[-24px] sticky z-40">
-      <tr class="users-table-info">
+    <!-- <thead class="top-[-24px] sticky z-40"> -->
+    <thead class="-top-6 sticky z-40 text-xs md:text-sm">
+        <tr class="users-table-info">
         <th
           scope="col"
           class="sticky max-w-[20dvw] left-0 w-[3em] z-10 
@@ -177,8 +178,10 @@ style={`
           {@html offersHeaders.clientUsername ?? "Nom du client"}
         </th>
         <th scope="col">
-          {@html offersHeaders.contact1 ?? "Contact"}<br />
-          {@html offersHeaders.contact2 ?? "Contact bis"}
+          <div class="flex items-center">
+            {@html offersHeaders.contact1 ?? "Contact"}
+            {@html offersHeaders.contact2 ?? "(s)"}
+          </div>
         </th>
         <th scope="col" class="min-w-[24rem]"> Messages </th>
         <th scope="col">

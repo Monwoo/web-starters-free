@@ -1157,7 +1157,7 @@
     <table
       class="items-center w-full bg-transparent border-collapse"
     >
-      <thead class="sticky -top-6 z-40">
+      <thead class="sticky -top-6 z-40 text-xs md:text-sm">
         <tr
           style={`
             zoom: ${reportScale}%;

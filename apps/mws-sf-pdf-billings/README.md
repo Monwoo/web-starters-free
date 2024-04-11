@@ -42,7 +42,16 @@ git log --pretty=$'x\tx\t%ai' --numstat \
 -i --grep='\[mws-pdf-billings\]' \
 --grep='\[mws-moon-manager\]' \
 --branches --tags --remotes --full-history \
---date-order --date=iso-local> git-logs.tsv
+--date-order --date=iso-local > git-logs.tsv
+
+# For v1 extraction :
+git clone git@github.com:Monwoo/MoonManager.git
+cd MoonManager
+git log --pretty=$'x\tx\t%ai' --numstat \
+--branches --tags --remotes --full-history \
+--date-order --date=iso-local > git-logs.monwoo-moon-manager-v1.tsv
+cp git-logs.monwoo-moon-manager-v1.tsv ..
+cd .. && rm -rf MoonManager
 
 pnpm install
 pnpm run build
