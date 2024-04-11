@@ -31,7 +31,17 @@ if (class_exists(MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class)) {
         MWS\PDFBillingsMonwooBundle\PDFBillingsMonwooBundle::class => ['all' => true],
     ]);
 }
-if (class_exists(MWS\DemoBundle\DemoBundle::class)) {
+if (class_exists(MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class)) {
+    $bundles = array_merge($bundles, [
+        MWS\PDFBillingsLvl2Bundle\PDFBillingsLvl2Bundle::class => ['all' => true],
+    ]);
+}
+// https://stackoverflow.com/questions/52151783/symfony-4-get-env-parameter-from-a-controller-is-it-possible-and-how
+// dd($_SERVER['HAVE_MWS_DEMO']);
+// dd(json_decode($_SERVER['HAVE_MWS_DEMO'] ?? 'false'));
+if (class_exists(MWS\DemoBundle\DemoBundle::class)
+&& json_decode($_SERVER['HAVE_MWS_DEMO'] ?? 'false')
+) {
     $bundles = array_merge($bundles, [
         MWS\DemoBundle\DemoBundle::class => ['all' => true],
     ]);

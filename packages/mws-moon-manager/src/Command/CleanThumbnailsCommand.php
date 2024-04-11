@@ -21,7 +21,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 #[AsCommand(
     name: 'mws:clean-thumbnails',
     description: 'TODO. ex : \n
-        time php -d memory_limit=8G bin/console mws:recompute-timing-tags',
+        time php bin/console mws:clean-thumbnails',
     hidden: false,
     // aliases: ['app:make-user']
 )]
@@ -81,22 +81,7 @@ class CleanThumbnailsCommand extends Command
 
         /** @var MwsTimeSlot $s */
         foreach ($resp as $s) {
-            // TODO : ok here or better using event system ? (strong design will use other design patterns..)
-            [$maxTag, $maxPath] = MaxPriceTagManager::pickMaxOf(
-                $s->getTags()->toArray()
-            );
-            $s->setMaxPriceTag($maxTag);
-            $s->setMaxPath($maxPath);
-            // $progressBar->setMessage($s->getSourceStamp());
-            // $progressBar->setMessage('hello');
-            // sleep(1);
-            // dd($u);
-
-            // TIPS : will be TOO slow if flushing to storage each time
-            // doing bulk flush at end is lot more faster 
-            // (you might need more memory to run with 'php -d memory_limit=8G' ):
-            // $this->em->flush();
-
+            $s->setThumbnailJpeg(null);
             $progressBar->advance();
         }
         $this->em->flush();    
@@ -106,7 +91,7 @@ class CleanThumbnailsCommand extends Command
         $this->em->flush();    
 
         $output->writeln([
-            "<info>Did recompute all timing tags OK</info>",
+            "<info>Did clean all timing tags OK</info>",
         ]);
 
         return $cmdStatus;

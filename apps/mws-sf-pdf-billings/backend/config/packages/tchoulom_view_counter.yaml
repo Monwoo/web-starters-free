@@ -1,7 +1,7 @@
 tchoulom_view_counter:
     # https://github.com/tchoulom/ViewCounterBundle/blob/master/Resources/doc/readme/usage-step-1-5.md#step-3-configuration
     view_counter:
-        view_strategy: hourly_view
+        view_strategy: view_per_minute
     statistics:
         enabled: false
         stats_file_name: stats
