@@ -148,7 +148,7 @@
 
 <div
   bind:this={htmlRoot}
-  class="mws-timing-square-list max-h-[80vh]
+  class="mws-timing-square-list max-h-[80dvh]
   overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
   {style}
 >

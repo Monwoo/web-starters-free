@@ -157,19 +157,19 @@ style={`
       <tr class="users-table-info">
         <th
           scope="col"
-          class="sticky max-w-[20vw] left-0 w-[3em] z-10 
+          class="sticky max-w-[20dvw] left-0 w-[3em] z-10 
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isFirstColVisible}>Voir</th
         >
         <th
           scope="col"
-          class="sticky max-w-[20vw] left-[4em] w-[4em] z-10 
+          class="sticky max-w-[20dvw] left-[4em] w-[4em] z-10 
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isSecondColVisible}>[Slug] Status</th
         >
         <th
           scope="col"
-          class="sticky max-w-[20vw] left-[9em] w-[6em] z-10 
+          class="sticky max-w-[20dvw] left-[9em] w-[6em] z-10 
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isThirdColVisible}>Tags</th
         >

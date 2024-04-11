@@ -126,7 +126,7 @@
     {offer.sourceDetail?.projectOffers}
   </th>
   <td
-    class="sticky max-w-[20vw] left-[9em] w-[6em] z-10
+    class="sticky max-w-[20dvw] left-[9em] w-[6em] z-10
     hover:bg-white/90 hover:opacity-100
       overflow-x-scroll
     "
@@ -145,7 +145,7 @@
     {offer.contact1 ?? ""}<br />
     {offer.contact2 ?? ""}
   </td>
-  <td class="max-w-[30vw]">
+  <td class="max-w-[30dvw]">
     <button
       class="btn btn-outline-primary m-3"
       on:click={() => {

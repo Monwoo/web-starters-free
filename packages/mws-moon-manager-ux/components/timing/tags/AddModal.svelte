@@ -297,7 +297,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 sourceDetailView.length &&
                 showSourceDetail}
                 <div
-                    class="p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[35vw] h-[60vh] top-[10vh]"
+                    class="p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[35dvw] h-[60dvh] top-[10dvh]"
                 >
                     {@html sourceDetailView}
                 </div>
@@ -305,7 +305,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
             <!-- Modal body -->
             <div
                 class="p-1 space-y-6"
-                class:mr-[25vw]={sourceDetailView &&
+                class:mr-[25dvw]={sourceDetailView &&
                     sourceDetailView.length &&
                     showSourceDetail}
             >

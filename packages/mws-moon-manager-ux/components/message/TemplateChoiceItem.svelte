@@ -185,9 +185,9 @@
       @apply fixed;
       @apply z-50; // TODO hierarchy issue, do not go over detail view... => service to open menu detail popup instantiated in parent ?
       @apply left-0;
-      @apply w-[35vw];
-      @apply h-[30vh];
-      @apply top-[10vh];
+      @apply w-[35dvw];
+      @apply h-[30dvh];
+      @apply top-[10dvh];
     }
     &:hover {
       .mws-choice-detail {

@@ -10,7 +10,7 @@
 </script>
 
 <div class="w-full flex justify-center items-center
-aspect-video max-h-[70vh]
+aspect-video max-h-[70dvh]
 bg-black
 border border-gray-200 rounded-lg dark:border-gray-700
 {cssClass}" controls>
@@ -19,7 +19,7 @@ border border-gray-200 rounded-lg dark:border-gray-700
 
 <style lang="scss">
   :global(.you__tube) {
-    // max-height: 70vh;
+    // max-height: 70dvh;
     // width: 100%;
     // .you__tube.svelte-9tw3qi.svelte-9tw3qi {
     //     position: relative;
@@ -28,7 +28,7 @@ border border-gray-200 rounded-lg dark:border-gray-700
     // }
 
     // TODO : aspect ration will never change ?
-    // width: calc(176* 0.7vh);
+    // width: calc(176* 0.7dvh);
     width: #{(176* 0.7)}dvh;
   }
 </style>

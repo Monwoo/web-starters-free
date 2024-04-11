@@ -136,14 +136,14 @@ table {
 }
 
 html body {
-    height:100vh; // Mandatory for flex sub windows using h-full...
+    height:100dvh; // Mandatory for flex sub windows using h-full...
     @media print {
         height:auto;
     }
 }
 
 .mws-window {
-    // TIPS : MUST set parent height to work (html {height:100vh;})
+    // TIPS : MUST set parent height to work (html {height:100dvh;})
     @apply relative flex flex-wrap h-full;
     .mws-window-01 {
         @apply relative w-full h-[50%] md:w-1/2 md:h-full overflow-auto;

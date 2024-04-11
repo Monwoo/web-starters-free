@@ -929,12 +929,12 @@
     + https://stackoverflow.com/questions/15999760/load-image-asynchronous
     (but load this one first...)
 
-      class:h-[95vh]={isFullScreen && isHeaderExpanded}
+      class:h-[95dvh]={isFullScreen && isHeaderExpanded}
       class:mb-[1rem]={isFullScreen} // bp : will add double scroll
 
       // => not needed any more, use full width for image
       // user can resize part of screen if want to fit part of it...
-      class:h-[95vh]={isFullScreen && isHeaderExpanded}
+      class:h-[95dvh]={isFullScreen && isHeaderExpanded}
 
       use:panzoom={{ render, width: image.width, height: image.height }}
     -->
@@ -956,7 +956,7 @@
         />
       </div>
     </div>
-    <!-- class:h-[80vh]={!slotHeight &&
+    <!-- class:h-[80dvh]={!slotHeight &&
       zoomRange == 50 &&
       isFullScreen &&
       !isHeaderExpanded} -->

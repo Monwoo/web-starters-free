@@ -196,7 +196,7 @@
       better make work create_out_transition ? -->
       <div
         id="menu-timing"
-        class="detail w-[100vw] hidden"
+        class="detail w-[100dvw] hidden"
         out:slide={{
           delay: 0,
           duration: 3000,
@@ -373,7 +373,7 @@
     <!-- <span class="h-7 w-full"></span> -->
 
     <div
-      class="flex flex-wrap w-[100vw] h-[95vh] md:flex-row"
+      class="flex flex-wrap w-[100dvw] h-[95dvh] md:flex-row"
       style="
       {thumbSize > 50 ? `min-width: ${thumbSize}px` : ``}
     "
