@@ -37,7 +37,7 @@ class MwsUserRepository extends ServiceEntityRepository implements PasswordUpgra
             . implode(", ", array_map(function($r) use($availableRoles) {
                 return $availableRoles[$r] ?? $r;
             }, array_filter($roles, function($r) {
-                return $r !== MwsUser::$ROLE_USER;
+                return $r !== MwsUser::ROLE_USER;
             }))) . ' ]';
         };
         $this->teamMembersQuery = function ($roles, $targetUser = null)

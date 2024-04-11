@@ -609,7 +609,7 @@ class MwsOfferController extends AbstractController
     ): Response {
         $user = $this->getUser();
 
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -697,7 +697,7 @@ class MwsOfferController extends AbstractController
     ): Response {
         $user = $this->getUser();
 
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -771,7 +771,7 @@ class MwsOfferController extends AbstractController
         $user = $this->getUser();
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
         $tag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
@@ -1000,7 +1000,7 @@ class MwsOfferController extends AbstractController
         EntityManagerInterface $em,
     ): Response {
         $user = $this->getUser();
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 

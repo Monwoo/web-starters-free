@@ -170,7 +170,7 @@ class MakeUserCommand extends Command
                 // "lastname" => $this->userLogin,
                 // "firstname" => $this->userLogin,
                 // "created_at" => date("Y-m-d H:i:s"),
-                "roles" => [ MwsUser::$ROLE_ADMIN ],
+                "roles" => [ MwsUser::ROLE_ADMIN ],
             ],
         ];
         $this->addUser($output, $config);

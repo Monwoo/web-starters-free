@@ -208,7 +208,7 @@
               class="py-2 text-sm text-gray-700 dark:text-gray-400"
               aria-labelledby="dropdownLargeButton"
             >
-              <!-- // TODO isAdmin pre=computed field from db ? $state.user.roles?.includes("ROLE_MWS_ADMIN") -->
+              <!-- // TODO isAdmin pre=computed field from db ? $state.user.roles?.includes("ROLE_MWS_ADMIN") + secu server side... -->
               {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
                 <li>
                   <a
@@ -267,6 +267,18 @@
                   Themings</a
                 >
               </li> -->
+              {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
+                <li>
+                  <a
+                    href={Routing.generate("mws_config_backup", {
+                      _locale: locale ?? "fr",
+                    })}
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Backup
+                  </a>
+                </li>
+              {/if}
             </ul>
             <div class="py-1 text-black">
               {#if $state.user}

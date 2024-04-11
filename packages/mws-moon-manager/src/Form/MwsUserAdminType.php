@@ -36,8 +36,8 @@ class MwsUserAdminType extends MwsUserBaseType
         $targetUser = $options['targetUser'] ?? false;
         $teamMembersRolesFilter = $options['teamMembersRolesFilter'] ?? []; // No filter for admin;
 
-        if (!in_array(MwsUser::$ROLE_ADMIN, $user->getRoles())) {
-            $this->logger->warning("Missing [" . MwsUser::$ROLE_ADMIN . "]");
+        if (!in_array(MwsUser::ROLE_ADMIN, $user->getRoles())) {
+            $this->logger->warning("Missing [" . MwsUser::ROLE_ADMIN . "]");
             return; // Not an Admin, show nothing
         }
 

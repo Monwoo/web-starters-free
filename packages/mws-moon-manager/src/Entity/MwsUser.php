@@ -20,13 +20,15 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Index(columns: ['roles'])]
 class MwsUser implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    public static $ROLE_USER = 'ROLE_USER';
-    public static $ROLE_ADMIN = 'ROLE_MWS_ADMIN';
-    public static $ROLE_DIRECTOR = 'ROLE_MWS_DIRECTOR';
-    public static $ROLE_COMMERCIAL = 'ROLE_MWS_COMMERCIAL';
-    public static $ROLE_PROSPECTOR = 'ROLE_MWS_PROSPECTOR';
-    public static $ROLE_SUPPLIER = 'ROLE_MWS_SUPPLIER';
-    public static $ROLE_CLIENT = 'ROLE_MWS_CLIENT';
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_MWS_ADMIN';
+    public const ROLE_DIRECTOR = 'ROLE_MWS_DIRECTOR';
+    public const ROLE_COMMERCIAL = 'ROLE_MWS_COMMERCIAL';
+    public const ROLE_PROSPECTOR = 'ROLE_MWS_PROSPECTOR';
+    public const ROLE_SUPPLIER = 'ROLE_MWS_SUPPLIER';
+    public const ROLE_CLIENT = 'ROLE_MWS_CLIENT';
+    public const IS_GRANTED_ROLE_ADMIN = 'ROLE_MWS_CLIENT';
+    
     
     #[ORM\Id]
     #[ORM\GeneratedValue]

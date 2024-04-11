@@ -58,7 +58,7 @@ class MwsMessageController extends AbstractController
         PaginatorInterface $paginator,
     ): Response {
         $user = $this->getUser();
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -249,7 +249,7 @@ class MwsMessageController extends AbstractController
         UploaderHelper $uploaderHelper,
     ): Response {
         $user = $this->getUser();
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -334,7 +334,7 @@ class MwsMessageController extends AbstractController
         PaginatorInterface $paginator,
     ): Response {
         $user = $this->getUser();
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -385,7 +385,7 @@ class MwsMessageController extends AbstractController
         MwsMessageRepository $mwsMessageRepository,
     ): Response {
         $user = $this->getUser();
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
         if ($format != 'yaml') {
@@ -493,7 +493,7 @@ class MwsMessageController extends AbstractController
         MwsMessageRepository $mwsMessageRepository,
     ): Response {
         $user = $this->getUser();
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
 
@@ -653,7 +653,7 @@ class MwsMessageController extends AbstractController
         MwsMessageRepository $mwsMessageRepository,
     ): Response {
         $user = $this->getUser();
-        if (!$user || !$this->security->isGranted(MwsUser::$ROLE_ADMIN)) {
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
         $format = $format ?? "monwoo-extractor-export";
