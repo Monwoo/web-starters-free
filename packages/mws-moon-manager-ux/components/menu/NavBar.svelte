@@ -86,6 +86,10 @@ rounded-e-lg
         />
       </svg>
     </button>
+    <span class="max-w-full md:hidden px-3 text-sm
+    whitespace-nowrap overflow-hidden text-ellipsis">
+      {$state.user?.userIdentifier ?? ``}
+    </span>
     <!-- class:hidden={!inlineOpener} -->
     <div
       class="hidden w-full"
@@ -189,7 +193,7 @@ rounded-e-lg
           <button
             id="dropdownNavbarLink"
             data-dropdown-toggle="dropdownNavbar"
-            class="flex items-center justify-between
+            class="flex flex-wrap items-center justify-between
             w-full
             {!inlineOpener ? `md:border-0 md:w-auto` : ``}"
             on:click={async() => {
@@ -215,7 +219,13 @@ rounded-e-lg
               intro.start();
               intro = null; // redo animation on each expand
             }}
-            >Paramètres <svg
+            >
+              Paramètres
+              <span class="max-w-full md:max-w-[7rem] px-1
+              whitespace-nowrap overflow-hidden text-ellipsis">
+                {$state.user?.userIdentifier ?? ``}
+              </span>
+             <svg
               class="w-2.5 h-2.5 ml-2.5"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
@@ -257,7 +267,7 @@ rounded-e-lg
       class="py-2 text-sm text-gray-700 dark:text-gray-400"
       aria-labelledby="dropdownLargeButton"
     >
-      <!-- // TODO isAdmin pre=computed field from db ? $state.user.roles?.includes("ROLE_MWS_ADMIN") + secu server side... -->
+      <!-- // TODO isAdmin pre=computed field from db ? $state.user?.roles?.includes("ROLE_MWS_ADMIN") + secu server side... -->
       {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
         <li>
           <a
@@ -329,12 +339,12 @@ rounded-e-lg
         </li>
       {/if}
     </ul>
-    <div class="py-1 text-black">
+    <div class="p-2 text-black">
       {#if $state.user}
         <div>
-          <!-- [ { JSON.stringify($state.user.roles) }] -->
-          {$state.user.roles?.includes("ROLE_MWS_ADMIN") ? "[ Admin ]" : ""}
-          {$state.user.userIdentifier}
+          <!-- [ { JSON.stringify($state.user?.roles) }] -->
+          {$state.user?.roles?.includes("ROLE_MWS_ADMIN") ? "[ Admin ]" : ""}
+          {$state.user?.userIdentifier}
         </div>
         <a
           href={Routing.generate("mws_user_logout", {
@@ -362,5 +372,10 @@ rounded-e-lg
     // @media (max-width: $mws-media-phone-w) {
     transform: none !important;
     // }
+  }
+  button {
+    &:hover {
+      @apply opacity-80;
+    }
   }
 </style>

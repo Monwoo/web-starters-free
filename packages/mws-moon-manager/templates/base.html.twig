@@ -89,7 +89,9 @@
 					fixed bottom-0 
 					#}
 					<footer
-					class="w-full bg-gray-700 text-gray-300 text-center text-white text-xs md:text-base py-4
+					class="w-full bg-gray-700 text-gray-300
+					text-center text-white text-xs md:text-base
+					py-2 md:py-4
 					"
 					{{ svelte_component('MwsFooter', {
 						'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
@@ -99,9 +101,11 @@
 						{# // For SEO, will be replaced by js...
 						// TODO : prefill with some pre-rendering of js controller
 						//  at assets 'watch' and/or 'build' phase #}
-						<div class="flex">
+						<div class="flex text-xs md:text-sm max-h-[12dvh]">
 							<div class="w-1/3"></div>
-							<a class="w-1/3" href="https://www.monwoo.com"
+							<a class="w-1/3 no-underline
+  						text-gray-300 hover:text-white "
+							href="https://www.monwoo.com"
 							target="_blank" rel="noopener">
 							{{'mws.copyright'|trans({}, 'mws-moon-manager')}}</a>
 							<div class="w-1/3 text-right px-3 text-gray-400">
