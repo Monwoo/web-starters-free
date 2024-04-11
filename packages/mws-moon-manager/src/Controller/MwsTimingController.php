@@ -4,6 +4,7 @@ namespace MWS\MoonManagerBundle\Controller;
 
 use DateInterval;
 use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -232,9 +233,16 @@ class MwsTimingController extends AbstractController
         //     "3 months"
         // ))->format('c');
         // $new_timestamp = strtotime('-3 months', strtotime($date));
-        $searchStart = $requestData['searchStart'] ?? (new DateTime())->modify(
+        // TODO : new DateTimeZone('Europe/Paris')
+        //       should comme from user preference and
+        //       default to client web browser config
+        //       if not fixed in logged user configs...
+        $searchStart = $requestData['searchStart'] ?? (new DateTime(
+            'now', new DateTimeZone('Europe/Paris')
+        ))->modify(
             "-1 months"
-        )->format('c');
+        )->format('Y-m-d\TH:i');
+        // dd($searchStart);
         // dd($searchStart);
         $searchEnd = $requestData['searchEnd'] ?? null;
 
