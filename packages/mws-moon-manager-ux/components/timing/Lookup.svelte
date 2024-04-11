@@ -207,7 +207,7 @@
         <!-- out:fade={{
         delay: 0, duration: 3000        
         }} -->
-        <header class="bg-gray-700 text-white text-center">
+        <header class="rounded-b-lg bg-gray-700 text-white text-center">
           <Header {locale} />
         </header>
         <div class="p-3 flex flex-wrap">

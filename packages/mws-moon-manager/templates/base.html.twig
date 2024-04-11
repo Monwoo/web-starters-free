@@ -41,7 +41,7 @@
 		  <div class="flex flex-col justify-between items-stretch h-[100dvh] overflow-hidden print:h-auto">
 				{% block header %}
 					{# // TODO : pre-rendering system instead of hard coded UI sync ? #}
-					<header class="bg-gray-700 text-white text-center"
+					<header class="rounded-b-lg bg-gray-700 text-white text-center"
 					{{ svelte_component('MwsHeader', {
 						"locale": app.locale
 					}) }}>

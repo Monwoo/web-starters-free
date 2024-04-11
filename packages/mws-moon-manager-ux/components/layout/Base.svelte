@@ -41,7 +41,7 @@
 <slot name="mws-body">
   <div class="flex flex-col h-[100dvh] overflow-hidden print:h-auto">
     <slot name="mws-header-container">
-      <header class="bg-gray-700 text-white text-center {headerClass}">
+      <header class="rounded-b-lg bg-gray-700 text-white text-center {headerClass}">
         <Header {locale} {viewTemplate}>
           <slot name="mws-header">
               <!-- Sticky Header and Footer with Tailwind 😎 -->
