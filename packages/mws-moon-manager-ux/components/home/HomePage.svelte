@@ -3,7 +3,7 @@
     import Routing from "fos-router";
     // TODO : namespace
     import Base from "../layout/Base.svelte";
-import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
+    import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
     import GitLogsChart from "../layout/widgets/GitLogsChart.svelte";
     import Jumbotron from "../layout/widgets/Jumbotron.svelte";
     import MultiScreen from "../layout/widgets/MultiScreen.svelte";
@@ -37,7 +37,6 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
     //     },
     // ];
     const baseHref = window && window.baseHref;
-
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
@@ -55,12 +54,9 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
                 extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
-                        Routing.generate(
-                            "app_pdf_billings",
-                            {
-                                _locale: locale ?? "fr",
-                            }
-                        )
+                        Routing.generate("app_pdf_billings", {
+                            _locale: locale ?? "fr",
+                        })
                     );
                 }}
                 capture={{
@@ -87,12 +83,9 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
                 extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
-                        Routing.generate(
-                            "mws_timings_report",
-                            {
-                                _locale: locale ?? "fr",
-                            }
-                        )
+                        Routing.generate("mws_timings_report", {
+                            _locale: locale ?? "fr",
+                        })
                     );
                 }}
                 capture={{
@@ -104,12 +97,9 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
                 extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
-                        Routing.generate(
-                            "app_pdf_billings",
-                            {
-                                _locale: locale ?? "fr",
-                            }
-                        )
+                        Routing.generate("app_pdf_billings", {
+                            _locale: locale ?? "fr",
+                        })
                     );
                 }}
                 capture={{
@@ -136,12 +126,9 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
                 extraClass="hover:cursor-pointer hover:shadow-lg  hover:bg-black/50"
                 on:click={() => {
                     goto(
-                        Routing.generate(
-                            "mws_timings_report",
-                            {
-                                _locale: locale ?? "fr",
-                            }
-                        )
+                        Routing.generate("mws_timings_report", {
+                            _locale: locale ?? "fr",
+                        })
                     );
                 }}
                 capture={{
@@ -225,7 +212,7 @@ import DonateFunnel from "../layout/widgets/DonateFunnel.svelte";
                     viewTemplate: viewTemplate ?? "",
                 })}
             >
-                <button>Liste des tags</button>
+                <button>Tags des temps</button>
             </a>
         </div>
         <!-- <Video class="max-w-[80%]" youtubeId="pGW_DdicUW4" /> -->

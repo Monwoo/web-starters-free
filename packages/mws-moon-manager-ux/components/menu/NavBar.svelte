@@ -28,9 +28,11 @@
 </script>
 
 <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"> -->
-<nav class="border-gray-200 dark:border-gray-700 w-full
+<nav
+  class="border-gray-200 dark:border-gray-700 w-full
 rounded-e-lg 
-">
+"
+>
   <div
     class="overflow-scroll max-h-[100vh]
     flex flex-wrap items-center justify-between mx-auto"
@@ -58,8 +60,10 @@ rounded-e-lg
     <!-- focus:ring-2
     focus:ring-gray-200
     dark:focus:ring-gray-600 -->
-    <span class="max-w-full md:hidden px-3 text-sm
-    whitespace-nowrap overflow-hidden text-ellipsis">
+    <span
+      class="max-w-full md:hidden px-3 text-sm
+    whitespace-nowrap overflow-hidden text-ellipsis"
+    >
       {$state.user?.userIdentifier ?? ``}
     </span>
     <button
@@ -197,7 +201,7 @@ rounded-e-lg
             class="flex flex-wrap items-center justify-center
             w-full mt-2 md:mt-0
             {!inlineOpener ? `md:border-0 md:w-auto` : ``}"
-            on:click={async() => {
+            on:click={async () => {
               uniqueKey = {};
               if (!intro) {
                 // await tick();
@@ -220,13 +224,15 @@ rounded-e-lg
               intro.start();
               intro = null; // redo animation on each expand
             }}
+          >
+            Paramètres
+            <span
+              class="max-w-full md:max-w-[7rem] px-1
+              whitespace-nowrap overflow-hidden text-ellipsis"
             >
-              Paramètres
-              <span class="max-w-full md:max-w-[7rem] px-1
-              whitespace-nowrap overflow-hidden text-ellipsis">
-                {$state.user?.userIdentifier ?? ``}
-              </span>
-             <svg
+              {$state.user?.userIdentifier ?? ``}
+            </span>
+            <svg
               class="w-2.5 h-2.5 ml-2.5"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
@@ -245,8 +251,8 @@ rounded-e-lg
         </li>
       </ul>
     </div>
-  <!-- Dropdown menu TODO : inline or scroll bottom if go over end page...-->
-  <!-- {#key uniqueKey}
+    <!-- Dropdown menu TODO : inline or scroll bottom if go over end page...-->
+    <!-- {#key uniqueKey}
       out:slide={{
         delay: 0,
         duration: 3000,
@@ -254,44 +260,44 @@ rounded-e-lg
         axis: "y",
       }}
   -->
-  <div
-    bind:this={dropdown}
-    id="dropdownNavbar"
-    class="z-[100] hidden
+    <div
+      bind:this={dropdown}
+      id="dropdownNavbar"
+      class="z-[100] hidden
               font-normal bg-white divide-y divide-gray-100
               w-full
               !relative
               rounded-lg shadow w-44 dark:bg-gray-700
               dark:divide-gray-600"
-  >
-    <ul
-      class="py-2 text-sm text-gray-700 dark:text-gray-400"
-      aria-labelledby="dropdownLargeButton"
     >
-      <!-- // TODO isAdmin pre=computed field from db ? $state.user?.roles?.includes("ROLE_MWS_ADMIN") + secu server side... -->
-      {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
+      <ul
+        class="py-2 text-sm text-gray-700 dark:text-gray-400"
+        aria-labelledby="dropdownLargeButton"
+      >
+        <!-- // TODO isAdmin pre=computed field from db ? $state.user?.roles?.includes("ROLE_MWS_ADMIN") + secu server side... -->
+        {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
+          <li>
+            <a
+              href={Routing.generate("mws_user_list", {
+                _locale: locale ?? "fr",
+              })}
+              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              Users
+            </a>
+          </li>
+        {/if}
         <li>
           <a
-            href={Routing.generate("mws_user_list", {
+            href={Routing.generate("mws_offer_tags", {
               _locale: locale ?? "fr",
             })}
             class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
           >
-            Users
-          </a>
+            Offers Tags</a
+          >
         </li>
-      {/if}
-      <li>
-        <a
-          href={Routing.generate("mws_offer_tags", {
-            _locale: locale ?? "fr",
-          })}
-          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-        >
-          Offers Tags</a
-        >
-      </li>
-      <!-- <li>
+        <!-- <li>
                   <a
                     href={"#TODO-CalendarEventTags" || Routing.generate("mws_offer_tags")}
                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -299,27 +305,48 @@ rounded-e-lg
                     Calendar Tags</a
                   >
                 </li> -->
-      <li>
-        <a
-          href={Routing.generate("mws_message_list", {
-            _locale: locale ?? "fr",
-          })}
-          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-        >
-          Messages
-        </a>
-      </li>
-      <li>
-        <a
-          href={Routing.generate("mws_message_tchat_upload_list", {
-            _locale: locale ?? "fr",
-          })}
-          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-        >
-          Tchat Medias</a
-        >
-      </li>
-      <!-- <li>
+        <li>
+          <a
+            href={Routing.generate("mws_message_list", {
+              _locale: locale ?? "fr",
+            })}
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            Messages
+          </a>
+        </li>
+        <li>
+          <a
+            href={Routing.generate("mws_message_tchat_upload_list", {
+              _locale: locale ?? "fr",
+            })}
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            Tchat Medias
+          </a>
+        </li>
+        <li>
+          <a
+            href={Routing.generate("mws_timings_qualif", {
+              _locale: locale ?? "fr",
+            })}
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            Qualification des temps
+          </a>
+        </li>
+        <li>
+          <a
+            href={Routing.generate("mws_timing_tag_list", {
+              _locale: locale ?? "fr",
+              viewTemplate: viewTemplate ?? "",
+            })}
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            Tags des temps
+          </a>
+        </li>
+        <!-- <li>
                   <a
                     href="#theming-config"
                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -327,42 +354,41 @@ rounded-e-lg
                     Themings</a
                   >
                 </li> -->
-      {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
-        <li>
+        {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
+          <li>
+            <a
+              href={Routing.generate("mws_config_backup", {
+                _locale: locale ?? "fr",
+              })}
+              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              Backup
+            </a>
+          </li>
+        {/if}
+      </ul>
+      <div class="p-2 text-black">
+        {#if $state.user}
+          <div>
+            <!-- [ { JSON.stringify($state.user?.roles) }] -->
+            {$state.user?.roles?.includes("ROLE_MWS_ADMIN") ? "[ Admin ]" : ""}
+            {$state.user?.userIdentifier}
+          </div>
           <a
-            href={Routing.generate("mws_config_backup", {
+            href={Routing.generate("mws_user_logout", {
               _locale: locale ?? "fr",
             })}
-            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-          >
-            Backup
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+            >Logout out
           </a>
-        </li>
-      {/if}
-    </ul>
-    <div class="p-2 text-black">
-      {#if $state.user}
+        {/if}
         <div>
-          <!-- [ { JSON.stringify($state.user?.roles) }] -->
-          {$state.user?.roles?.includes("ROLE_MWS_ADMIN") ? "[ Admin ]" : ""}
-          {$state.user?.userIdentifier}
+          [ {$state.packageName} v-{$state.packageVersion} ]
         </div>
-        <a
-          href={Routing.generate("mws_user_logout", {
-            _locale: locale ?? "fr",
-          })}
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-          >Logout out</a
-        >
-      {/if}
-      <div>
-        [ {$state.packageName} v-{$state.packageVersion} ]
       </div>
     </div>
+    <!-- {/key} -->
   </div>
-  <!-- {/key} -->
-  </div>
-
 </nav>
 
 <style lang="scss">
