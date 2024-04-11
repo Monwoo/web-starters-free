@@ -84,7 +84,8 @@ security:
             security: false
         # TODO : inject/sync with MoonManager recipe
         mws_secured_area:
-            pattern: ^/mws/
+            pattern: ^/
+            # pattern: ^/mws/
             # encoders:
             #   Symfony\Component\Security\Core\User\User:
             #     algorithm: bcrypt
@@ -105,13 +106,38 @@ security:
                 login_path: mws_login
                 check_path: mws_login
                 enable_csrf: true
-        main:
-        # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
+                # TIPS : provider: mws_user_provide will not transit connected user from one area to another,
+                # user more exposed pattern instead or multiple firewall
+                # main:
+                #     # anonymous: true # The authenticator manager no longer has "anonymous" security. Please remove this option under the "register" firewall.
+                #     # https://symfony.com/doc/3.x/security/entity_provider.html
+                #     # lazy: true
+                #     pattern: ^/
+                #     security: true
+                #     provider: mws_user_provider
+                #     custom_authenticator: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
+                #     entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
+                #     access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
+                #     logout:
+                #         path: mws_user_logout
+                #         # where to redirect after logout
+                #         target: app_home
+                #     form_login:
+                #         login_path: mws_login
+                #         check_path: mws_login
+                #         enable_csrf: true
 
     access_control:
       - {path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY}
       - {path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
       - {path: ^/api, roles: IS_AUTHENTICATED_FULLY,}
+      #   - {path: ^/, roles: IS_AUTHENTICATED_FULLY,}
+      #   - {path: ^/, roles: PUBLIC_ACCESS,}
+      # - {path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY,}
+      # - {path: ^/, roles: [],}
+      # # the 'ips' option supports IP addresses and subnet masks
+      # - { path: '^/internal', roles: PUBLIC_ACCESS, ips: [127.0.0.1, ::1, 192.168.0.1/24] }
+      # - { path: '^/internal', roles: ROLE_NO_ACCESS }
 
 when@test:
     security:
