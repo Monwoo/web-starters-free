@@ -15,16 +15,22 @@
   export let selectionStartIndex;
   export let lastSelectedIndex = 0;
   export let movePageIndex;
-  const startZoom = 5;
-  export let zoomRange = startZoom;
+  export let isMobile;
+  export let zoomStartRange = isMobile ? 37 : 15;
+  export let zoomStartBaseSize = 5;
+  export let zoomSquareRange = 5; // be square if lower than 50px
+  export let listZoomRange = zoomStartRange;
   export let quickQualifTemplates;
   export let htmlRoot;
   // TIPS : opti by not following selection if list is hidden :
   export let followSelection = true;
-  export let isMobile = false;
   export let splitRange;
   export let computedSize;
   export let isFullScreen = false;
+
+  $: zoomStartRange = isMobile ? 37 : 15;
+  $: listZoomRange = zoomStartRange ? zoomStartRange : 5;
+
   // REAL screen width : (bigger than window)
   // let maxScreenW = window.screen.width;
   // https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
@@ -126,12 +132,12 @@
   };
 
   export let thumbSize;
-  $: thumbSize = (50 * (100 / startZoom) * zoomRange) / 100;
+  $: thumbSize = (50 * (100 / zoomStartBaseSize) * listZoomRange) / 100;
   // TODO : opti, only for tooltips reloads...
-  $: zoomRange,
+  $: listZoomRange,
     debounce(async () => {
       // TIPS : tick() to wait for html changes
-      await tick(); // First zoomRange change to bigger size, no update otherwise (if test do Svelte rebuild ?)
+      await tick(); // First listZoomRange change to bigger size, no update otherwise (if test do Svelte rebuild ?)
       await tick();
       // initFlowbite();
       refreshTooltips();
@@ -208,7 +214,7 @@
         {followSelection}
         {timingSlot}
         size={`${thumbSize.toFixed(0)}px`}
-        forceHeight={zoomRange > startZoom ? "auto" : null}
+        forceHeight={listZoomRange > zoomSquareRange ? "auto" : null}
         isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
         on:click={() => {
           lastSelectedIndex = idx;
@@ -228,8 +234,8 @@
   <div class="flex items-start sticky bottom-0 z-30 w-full">
     <div class="fill-white/70 text-white/70 w-full">
       <input
-        value={zoomRange}
-        on:change={debounce((e) => (zoomRange = e.target.value), 400)}
+        value={listZoomRange}
+        on:change={debounce((e) => (listZoomRange = e.target.value), 400)}
         id="list-zoom-range"
         type="range"
         class="w-full h-2 bg-gray-200/50 rounded-lg

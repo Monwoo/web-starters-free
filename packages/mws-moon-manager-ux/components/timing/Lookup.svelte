@@ -32,7 +32,8 @@
   export let viewTemplate;
   export let lookupForm;
   export let isFullScreen = false;
-  export let splitRange = 50;
+  export let splitStartRange = 50;
+  export let splitRange = splitStartRange;
   export let thumbSize;
 
   export let selectionStartIndex;
@@ -46,6 +47,9 @@
   let uniqueKey = {};
 
   let isMobile;
+
+  $: splitStartRange = isMobile ? 30 : 70;
+  $: splitStartRange ? splitRange = splitStartRange : null;
 
   const movePageIndex = (delta) => {
     const newPageNum = parseInt(pageNumber) + delta;
@@ -404,6 +408,7 @@
           bind:timeQualifs
           bind:quickQualifTemplates
           bind:timings
+          {isMobile}
           {moveSelectedIndex}
           {movePageIndex}
           {locale}

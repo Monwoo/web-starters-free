@@ -132,7 +132,7 @@ overflow-visible border-solid border-4"
   class:border-blue-600={isSelected}
   class:border-green-400={!isSelected && timingSlot.tags?.length}
   style:height={forceHeight ? forceHeight : size}
-  style:min-height={forceHeight ? forceHeight : size}
+  style:min-height={forceHeight ? '7rem' : size}
   style:width={size}
   style:min-width={size}
 >
@@ -214,6 +214,7 @@ overflow-visible border-solid border-4"
   <!-- <span>{slotName}</span> -->
   <div class="absolute z-20 bottom-1 right-0 bg-white
   max-w-[2rem] max-h-[2rem] opacity-50 hover:opacity-100"
+  class:opacity-50={!isSelected}
   style={`
     width: ${(computedSize * 0.2).toFixed(0)}px;
     height: ${(computedSize * 0.2).toFixed(0)}px;
@@ -224,17 +225,17 @@ overflow-visible border-solid border-4"
     -->
     {#each (currentTimeSlotQualifs?? []).slice(0,1) as q}
       {#if computedSize > 120}
+        <!-- data-tooltip-target={tooltipIdsByQId[q.id]} -->
         <div class="inline-flex border-b-4 border-t-4 object-contain w-full h-full
         content-center justify-center"
-        data-tooltip-target={tooltipIdsByQId[q.id]}
         style={`
           border-color: ${q.primaryColorHex};
         `}>
           <HtmlIcon qualif={q} height={"h-full"} width={"w-full"}></HtmlIcon>
         </div>
       {:else}
+      <!-- data-tooltip-target={tooltipIdsByQId[q.id]} -->
         <div class="w-full h-full"
-        data-tooltip-target={tooltipIdsByQId[q.id]}
         style={`
           background-color: ${q.primaryColorHex};
         `}></div>

@@ -119,9 +119,14 @@
   export let allTagsList;
   export let slotHeader;
   export let slotView;
-  export let zoomRange = 50;
+  export let isMobile;
+  // export let zoomStartRange = isMobile ? 15 : 70;
+  export let zoomStartRange = isMobile ? 50 : 48;
+  export let zoomRange = zoomStartRange;
   export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
   export let htmlRoot;
+
+  $: zoomStartRange = isMobile ? 50 : 48;
 
   const Default = {
     placement: 'top',
@@ -712,7 +717,7 @@
     }
     console.debug("Drag to", deltaY, "from", slotInitialHeight);
     if (slotResizing) {
-      zoomRange = 50; // Only att range 50 for scrolls
+      zoomRange = zoomStartRange; // Only att range zoomStartRange for scrolls
       slotHeight = Math.max(
         slotMinHeight,
         Math.min(slotMaxHeight, slotInitialHeight + deltaY)
@@ -866,7 +871,7 @@
           Height = null;
           slotHeight = null;
           isHeaderExpanded = !isHeaderExpanded;
-          zoomRange = 50;
+          zoomRange = zoomStartRange;
         }}
       >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
@@ -1122,9 +1127,29 @@
            "
         />
       </div>
+      <!-- {#if !isFullScreen } -->
+      <div class="sticky z-40 bottom-16 pl-1 pr-1
+      inline-flex right-0 bg-white overflow-visible">
+        {#each currentTimeSlotQualifs?? [] as q}
+          {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
+          <div class="inline-flex border-b-4 border-t-4 object-contain"
+          data-tooltip-target={tooltipId}
+          data-tooltip-placement="top"        
+          style={`
+            border-color: ${q.primaryColorHex};
+          `}>
+            <HtmlIcon qualif={q}></HtmlIcon>
+          </div>
+          <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            {q?.label}
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        {/each}
+      </div>
+      <!-- {/if} -->
     </div>
     <!-- class:h-[80dvh]={!slotHeight &&
-      zoomRange == 50 &&
+      zoomRange == zoomStartRange &&
       isFullScreen &&
       !isHeaderExpanded}
     
@@ -1155,7 +1180,7 @@
       type="image/png"
       style={`
       ${
-        slotHeight && zoomRange == 50
+        slotHeight && zoomRange == zoomStartRange
           ? `
           height: ${slotHeight}px;
         `
@@ -1200,46 +1225,8 @@
           />
         </svg>
       </div>
-      {#if !isFullScreen }
-        <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem] right-0 bg-white">
-          {#each currentTimeSlotQualifs?? [] as q}
-            {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
-            <div class="inline-flex border-b-4 border-t-4 object-contain"
-            data-tooltip-target={tooltipId}
-            data-tooltip-placement="top"        
-              style={`
-              border-color: ${q.primaryColorHex};
-            `}>
-              <HtmlIcon qualif={q}></HtmlIcon>
-            </div>
-            <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-              {q?.label}
-              <div class="tooltip-arrow" data-popper-arrow></div>
-            </div>
-          {/each}
-        </div>
-      {/if}
     </div>
-    {#if isFullScreen }
-      <div class="absolute z-40 bottom-16 pl-1 pr-1 min-w-[2rem]
-      right-0 bg-white overflow-visible">
-        {#each currentTimeSlotQualifs?? [] as q}
-          {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
-          <div class="inline-flex border-b-4 border-t-4 object-contain"
-          data-tooltip-target={tooltipId}
-          data-tooltip-placement="top"        
-          style={`
-            border-color: ${q.primaryColorHex};
-          `}>
-            <HtmlIcon qualif={q}></HtmlIcon>
-          </div>
-          <div id={tooltipId} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-            {q?.label}
-            <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-        {/each}
-      </div>
-    {/if}
+
 
     <!-- <div
       class="overflow-visible flex items-end
