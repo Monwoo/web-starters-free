@@ -185,6 +185,11 @@ vendor var .env.local.php \
 # test local prod (if no base href configs ?)
 APP_ENV=prod symfony server:start 2> /dev/null
 
+# Then updates for your own gdpr ready db with your navigator
+# Ensure data ok on next reset (Warn : not a media backup)
+cp var/data.db.sqlite tests/_data/data.gdpr-ok.db.sqlite
+cp tests/_data/data.gdpr-ok.db.sqlite var/data.gdpr-ok.db.sqlite               
+
 # clean for local dev :
 rm .env.local.php
 ```
