@@ -163,6 +163,11 @@
   let sameDirCount = 0;
   let allowPanNavigation = false;
   const imagePanHandler = (e) => {
+    return; // TODO swipeImage with big scroll picture
+    // is strange (will scroll before swipe, then swipe
+    // image will scrolling, and heavier than simple click
+    // since need to CLICK and then move to do the Pan event...
+
     if (!allowPanNavigation) return;
 
     const x = event.detail.x;
