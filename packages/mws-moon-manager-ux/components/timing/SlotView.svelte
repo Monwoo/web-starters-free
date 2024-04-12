@@ -136,7 +136,6 @@
     // is strange (will scroll before swipe, then swipe
     // image will scrolling, and heavier than simple click
     // since need to CLICK and then move to do the Pan event...
-    )
     const direction = e.detail.direction;
     console.debug("Swipe ", direction);
     if ('left' == direction) {
