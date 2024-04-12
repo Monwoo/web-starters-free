@@ -628,12 +628,12 @@
 
   onMount(async () => {
     // Height = slotHeader.offsetHeight; // TIPS : do not setup on mount, will have fixed size otherwise
-    minHeight = 12;
+    minHeight = 42;
     // TIPS : ok to go over screen size since we have multi-scrolls
     maxHeight = Infinity; // window.screen.height;
 
     // slotHeight = slotView.offsetHeight; // TIPS : do not setup on mount, will have fixed size otherwise
-    slotMinHeight = 12;
+    slotMinHeight = 42;
     slotMaxHeight = Infinity; // window.screen.height;
 
     // await new Promise((r) => setTimeout(r, 500));
