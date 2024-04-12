@@ -785,14 +785,14 @@
         </span>
       </span>
       <span
-        class="w-[6em]
+        class="w-[6em] p-1 hover:opacity-100
         rounded z-50 cursor-pointer"
         class:opacity-25={isFullScreen && detailIsHovered}
-        class:right-0={!isFullScreen}
+        class:right-0={true}
         class:absolute={!isFullScreen}
         class:top-0={!isFullScreen}
-        class:top-5={isFullScreen}
-        class:left-0={isFullScreen}
+        class:top-10={isFullScreen}
+        class:left-0={false}
         class:fixed={isFullScreen}
         on:click={() => {
           if (undefined === selectionStartIndex) {
@@ -811,7 +811,9 @@
       </span>
 
       {#if isFullScreen}
-        <span class="right-14 top-0 z-40 fixed flex">
+        <!-- // TIPS : no need, z-index for lookup page more higher
+        text-xs md:text-base float-right -->
+        <!-- <span class="right-14 top-0 z-40 fixed flex">
           {#if moveResp.isFirst && pageNumber > 1}
             <button
               class="float-right m-1"
@@ -843,7 +845,7 @@
             </button>
           {/if}
         </span>
-        <span class="float-right w-[14rem] h-7" />
+        <span class="float-right w-[14rem] h-7" /> -->
       {/if}
       <span
         class="float-right max-w-[70%] md:max-w-[75%]
