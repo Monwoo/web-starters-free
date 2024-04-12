@@ -1268,6 +1268,7 @@ class MwsOfferController extends AbstractController
     public function offerSlugToSourceUrlTransformer($sourceName)
     {
         return [ // TODO : from configs or services ?
+            // Specific url rewriters per source ID :
             'source.test.localhost' => function ($oSlug) {
                 return "http://source.test.localhost/offers/$oSlug";
             },

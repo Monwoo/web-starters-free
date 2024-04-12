@@ -237,9 +237,14 @@ class MwsTimingController extends AbstractController
         //       should comme from user preference and
         //       default to client web browser config
         //       if not fixed in logged user configs...
-        $searchStart = $requestData['searchStart'] ?? (new DateTime(
+        $mostRecentSlot = $mwsTimeSlotRepository->findOneBy(
+            [], [ 'sourceTimeGMT' => 'DESC' ]
+        );
+        $mostRecentDate = $mostRecentSlot?->getsourceTimeGMT()
+        ?? new DateTime(
             'now', new DateTimeZone('Europe/Paris')
-        ))->modify(
+        );
+        $searchStart = $requestData['searchStart'] ?? $mostRecentDate->modify(
             "-1 months"
         )->format('Y-m-d\TH:i');
         // dd($searchStart);

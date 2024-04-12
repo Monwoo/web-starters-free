@@ -153,7 +153,7 @@
         addModal.surveyModel.data = {
           // TODO : not shown in target modal, wrong format or wrong way to set data ? :
           projectId: offer.slug.split("-").slice(-1).join(""),
-          destId: "codeur.com",
+          destId: offer.sourceName,
           isDraft: true,
           // TODO : also link CRM Users ?
           sourceId: "MoonManagerUI-" + new Date().getTime(),
