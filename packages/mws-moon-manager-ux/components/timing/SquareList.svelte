@@ -24,6 +24,7 @@
   export let isMobile = false;
   export let splitRange;
   export let computedSize;
+  export let isFullScreen = false;
   // REAL screen width : (bigger than window)
   // let maxScreenW = window.screen.width;
   // https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
@@ -195,6 +196,7 @@
           //   [timingSlot.sourceStamp]: true,
           // };
         }}
+        on:dblclick={() => isFullScreen = true}
       />
     {/each}
   </div>

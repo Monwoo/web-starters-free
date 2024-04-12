@@ -438,6 +438,7 @@
         bind:lastSelectedIndex
         bind:selectionStartIndex
         bind:thumbSize
+        bind:isFullScreen
         followSelection={!isFullScreen}
         {quickQualifTemplates}
         {timings} {isMobile} {splitRange}

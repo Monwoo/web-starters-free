@@ -123,6 +123,7 @@
 <div
   bind:this={htmlRoot}
   on:click
+  on:dblclick
   class="mws-timing-slot relative
 flex justify-center items-center
 m-1 rounded-md
