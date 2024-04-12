@@ -47,7 +47,7 @@ importers:
         version: file:../mws-demo/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.2.2)(svelte@4.2.13)
       '@symfony/webpack-encore':
         specifier: ^4.0.0
-        version: 4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0)
+        version: 4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(file-loader@6.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0)
       '@tailwindcss/forms':
         specifier: ^0.5.6
         version: 0.5.7(tailwindcss@3.4.3)
@@ -144,7 +144,7 @@ importers:
         version: file:apps/mws-sf-pdf-billings/backend/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.2.2)(svelte@4.2.13)
       '@symfony/webpack-encore':
         specifier: ^4.4.0
-        version: 4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0)
+        version: 4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(file-loader@6.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0)
       '@tailwindcss/forms':
         specifier: ^0.5.6
         version: 0.5.7(tailwindcss@3.4.3)
@@ -166,6 +166,9 @@ importers:
       easy-autocomplete:
         specifier: ^1.3.5
         version: 1.3.5
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.91.0)
       flowbite:
         specifier: ^1.8.1
         version: 1.8.1
@@ -250,6 +253,9 @@ importers:
       svelte-typeahead:
         specifier: ^4.4.1
         version: 4.4.1
+      svgo-loader:
+        specifier: ^4.0.0
+        version: 4.0.0
       tailwindcss:
         specifier: ^3.3.3
         version: 3.4.3
@@ -448,7 +454,7 @@ importers:
         version: file:packages/mws-moon-manager/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.2.2)(svelte@4.2.13)
       '@symfony/webpack-encore':
         specifier: ^4.0.0
-        version: 4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0)
+        version: 4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(file-loader@6.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0)
       core-js:
         specifier: ^3.23.0
         version: 3.36.1
@@ -3014,7 +3020,7 @@ packages:
       schema-utils: 3.3.0
     dev: true
 
-  /@symfony/webpack-encore@4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0):
+  /@symfony/webpack-encore@4.6.1(@babel/core@7.24.4)(@babel/preset-env@7.24.4)(@symfony/stimulus-bridge@3.2.2)(file-loader@6.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.38)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.4.5)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.91.0):
     resolution: {integrity: sha512-JbOjy0P6P9pcbgVE3nceFnCCneRO+tbcLUkQh9rpPj/sHtFl12foSjHz6uY93ZGZGAvTyqEslie+4MlD/rUtnQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
@@ -3117,6 +3123,7 @@ packages:
       css-loader: 6.11.0(webpack@5.91.0)
       css-minimizer-webpack-plugin: 5.0.1(webpack@5.91.0)
       fast-levenshtein: 3.0.0
+      file-loader: 6.2.0(webpack@5.91.0)
       fork-ts-checker-webpack-plugin: 7.3.0(typescript@5.4.5)(webpack@5.91.0)
       mini-css-extract-plugin: 2.8.1(webpack@5.91.0)
       pkg-up: 3.1.0
@@ -6072,6 +6079,17 @@ packages:
     dependencies:
       flat-cache: 4.0.1
     dev: false
+
+  /file-loader@6.2.0(webpack@5.91.0):
+    resolution: {integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      webpack: ^4.0.0 || ^5.0.0
+    dependencies:
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
+      webpack: 5.91.0(webpack-cli@4.10.0)
+    dev: true
 
   /fill-range@7.0.1:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
@@ -10416,6 +10434,12 @@ packages:
     engines: {node: '>= 0.8.0'}
     dependencies:
       svg.js: 2.7.1
+    dev: true
+
+  /svgo-loader@4.0.0:
+    resolution: {integrity: sha512-bdk2H73AHP8Vo9zgMuA8piEzi5pjFzllK4EwfebDF3hDjmHQpmmqXMoDd6abDtVFrlKTJuveepmnc2kuTdt/WA==}
+    dependencies:
+      svgo: 3.2.0
     dev: true
 
   /svgo@3.2.0:

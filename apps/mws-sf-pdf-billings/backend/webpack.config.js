@@ -215,6 +215,47 @@ Encore
             }
         ]
     })
+    // TODO : buggy SVGO or wrong way to import ?
+    .addLoader({
+        test: /\.svg$/,
+        type: 'asset',
+        // loader: 'svgo-loader',
+        // options: {
+        //     configFile: './scripts/svgo.config.js'
+        // }
+        use: [
+            // {
+            //     loader: 'file-loader',
+            //     options: {
+            //         name: 'images/[name].[hash:8].[ext]',
+            //         publicPath: Encore.getWebpackConfig().publicPath,
+            //     }
+            // },
+            {
+                loader: 'svgo-loader',
+                // options: {
+                //     path: Encore.getWebpackConfig().publicPath,
+                //     plugins: [
+                //         {removeTitle: true},
+                //         {convertColors: {shorthex: false}},
+                //         {convertPathData: false},
+                //         {inlineStyles: true}
+                //     ]
+                // }
+            }
+        ]   
+    })
+    //    // TIPS : Svelte quick hack for svg ? but ignored, output path for svg, not component...
+    //    .addLoader({
+    //         resolve: {
+    //             mainFields: ['svelte', 'browser', 'module', 'main'],
+    //             extensions: ['.svg'],
+    //         },
+    //         test: /(assets|mws-moon-manager-ux|node_modules)\/.+\.svg$/,
+    //         loader: 'svelte-loader',
+    //         options: svelteConfig,
+    //     })
+
     // https://symfony.com/doc/current/frontend/encore/typescript.html
     // uncomment if you use TypeScript
     .enableTypeScriptLoader()
@@ -278,7 +319,7 @@ config.resolve.conditionNames = ['svelte', 'browser', 'import'];
 // config.module.rules.unshift(svelte);
 
 // https://www.npmjs.com/package/svelte-loader
-config.resolve.extensions = ['.mjs', '.cjs', '.js', '.ts', '.svelte'];
+config.resolve.extensions = ['.mjs', '.cjs', '.js', '.ts', '.svelte', '.svg'];
 config.resolve.mainFields = ['svelte', 'browser', 'module', 'main'];
 
 config.resolve.alias.svelte = path

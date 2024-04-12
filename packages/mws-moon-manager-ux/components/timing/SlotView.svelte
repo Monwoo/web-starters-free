@@ -23,7 +23,13 @@
   import { draggable } from "svelte-agnostic-draggable";
   // https://svelte.dev/repl/f696ca27e6374f2cab1691727409a31d?version=3.38.2
   import { swipe, pan } from 'svelte-gestures';
+  // import CaretLeft from "mws-moon-manager-ux/medias/flowbite/caret-left.svg"
+  // import CaretLeft from "../../medias/flowbite/caret-left.svelte"
+  import caretLeft from "../../medias/flowbite/caret-left.svg"
+  import caretRight from "../../medias/flowbite/caret-right.svg"
 
+  // console.debug('CaretRight', CaretRight);
+  console.debug('CaretRight', caretRight);
   // import mapTouchToMouseFor from "svelte-touch-to-mouse";
   // TODO : Pull request with fixed code ?
   // => did change Target.matches => Target.closest
@@ -1168,34 +1174,104 @@
       on:swipe={swipeImage}
 
       TIPS : on:dblclick will be useful with pan since click is used by pan too...
+      TIPS :  w-max => width: max-content; will size to fit
+      content and place absolut at end instead of allowed end
     -->
-    <object
-      use:pan="{{delay:imagePanDelayMs}}"
-      on:pan="{imagePanHandler}"  
-      on:click={imageTouchstartHandler}
-      on:mousedown={imageTouchstartHandler}
-      on:touchstart={imageTouchstartHandler}
-      bind:this={slotView}
-      on:dblclick={() => (resizing ? null : (isFullScreen = !isFullScreen))}
-      class="object-contain select-none border-solid border-4 w-full m-auto"
-      draggable="false"
-      class:border-gray-600={!timingSlot?.tags?.length}
-      class:border-green-400={timingSlot?.tags?.length}
-      data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
-      type="image/png"
-      style={`
-      ${
-        slotHeight && zoomRange == zoomStartRange
-          ? `
-          height: ${slotHeight}px;
-        `
-          : ""
-      } /* transform: scale(${(2 * zoomRange) / 100}); */
-      width: ${2 * zoomRange}%;
-      `}
+    <div class="relative flex"
+      style:--tw-shadow-color="#000000"
     >
-      <img class="w-full" loading="eager" src={timingSlot.thumbnailJpeg} />
-    </object>
+      <div
+      class="float-left sticky left-0 h-auto z-50 w-0">
+        <button
+        class="nav-btn float-left min-w-[10dvw] h-full bg-transparent
+        { lastSelectedIndex <= 0
+          ? `opacity-0 hover:opacity-30`
+          : `opacity-10 hover:opacity-80`
+        }
+        flex items-center justify-start"
+          on:click={() => moveSelectedIndex(-1)}
+        >
+          <!-- <CaretLeft></CaretLeft> -->
+          <!-- <img scr={caretLeft} /> -->
+          <!-- <object data={caretLeft}></object> -->
+          <!-- https://dev.to/hasantezcan/how-to-colorize-svg-image-1kc8 -->
+          <div class="svg-icon bg-[var(--tw-shadow-color)]
+          "
+          style={`
+            mask-image: url(${caretLeft});
+            -webkit-mask-image: url(${caretLeft});
+          ` } />
+          <div class="svg-icon bg-white absolute
+          hover:bg-gray-500 !w-[2.8rem]
+          "
+          style={`
+            mask-image: url(${caretLeft});
+            -webkit-mask-image: url(${caretLeft});
+          ` } />
+
+        </button>  
+      </div>
+      <object
+        use:pan="{{delay:imagePanDelayMs}}"
+        on:pan="{imagePanHandler}"  
+        on:click={imageTouchstartHandler}
+        on:mousedown={imageTouchstartHandler}
+        on:touchstart={imageTouchstartHandler}
+        bind:this={slotView}
+        on:dblclick={() => (resizing ? null : (isFullScreen = !isFullScreen))}
+        class="object-contain select-none border-solid border-4 w-full m-auto"
+        draggable="false"
+        class:border-gray-600={!timingSlot?.tags?.length}
+        class:border-green-400={timingSlot?.tags?.length}
+        data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+        type="image/png"
+        style={`
+        ${
+          slotHeight && zoomRange == zoomStartRange
+            ? `
+            height: ${slotHeight}px;
+          `
+            : ""
+        } /* transform: scale(${(2 * zoomRange) / 100}); */
+        width: ${2 * zoomRange}%;
+        `}
+      >
+        <img class="w-full" loading="eager" src={timingSlot.thumbnailJpeg} />
+      </object>
+      <div
+      class="float-right sticky right-0 h-auto z-50 w-0">
+        <button
+        class={`nav-btn float-right h-full bg-transparent
+        ${ moveResp.isLast
+          ? `opacity-0 hover:opacity-30`
+          : `opacity-10 hover:opacity-80`
+        }
+        flex items-center justify-end`}
+        class:min-w-[10dvw]={isMobile}
+        class:min-w-[5dvw]={!isMobile}
+        on:click={() => moveSelectedIndex(1)}
+        >
+          <!--
+            TIPS : 
+              [text-shadow:_1_1px_4_var(--tw-shadow-color)]
+              Ok in tailwind, but mask do not highlight shadow...
+          -->
+          <div class="svg-icon bg-[var(--tw-shadow-color)]
+          "
+          style={`
+            mask-image: url(${caretRight});
+            -webkit-mask-image: url(${caretRight});
+          ` } />
+          <div class="svg-icon bg-white absolute
+           hover:bg-gray-500 !w-[2.8rem]
+          "
+          style={`
+            mask-image: url(${caretRight});
+            -webkit-mask-image: url(${caretRight});
+          ` } />
+      </button>
+      </div>
+    </div>
     <div
       class="overflow-visible sticky top-0 flex items-end h-[0px]
     fill-white/70 text-white/70 bg-black/50 z-40"
@@ -1305,4 +1381,26 @@
     }
 
   }
+
+  // https://www.freecodecamp.org/news/use-svg-images-in-css-html/
+  // https://dev.to/hasantezcan/how-to-colorize-svg-image-1kc8
+  .svg-icon {
+    mask-size: 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    width: 3rem;
+    height: 3rem;
+
+    .nav-btn:hover & {
+      @apply bg-gray-500;
+    }
+  }
+  // .nav-btn {
+  //   &:hover {
+  //     .svg-icon {
+  //       @apply bg-gray-500;
+  //     }
+  //   }
+  // }
 </style>
