@@ -241,11 +241,20 @@ overflow-visible border-solid border-4"
       {/if}
     {/each}
   </div>
+  <!-- 
+  TODO : popover re-instanciation in one to one thumb scrolling
+  is slowing down everything due to some heavy scoll listeners
+  computes => Missing dispose or listeners cleanup for tooltip ?
+  // TODO : code factorisation to Svelte / Flowbite node js will solve this buggy stuff waiting for global structure instead of local components thinks
   {#each (currentTimeSlotQualifs?? []).slice(0,1) as q}
-    <!-- TODO : why HtmlIcon inner tooltip not working? quick hack not working too : -->
-    <div id={tooltipIdsByQId[q.id]} role="tooltip" class="absolute z-50 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+    <! -- // TODO : why HtmlIcon inner tooltip not working? quick hack not working too : -- >
+    <div id={tooltipIdsByQId[q.id]} role="tooltip"
+    class="absolute z-50 invisible inline-block
+    px-3 py-2 text-sm font-medium text-white
+    transition-opacity duration-300 bg-gray-900
+    rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
       {q.label}
       <div class="tooltip-arrow" data-popper-arrow></div>
     </div>
-  {/each}
+  {/each} -->
 </div>

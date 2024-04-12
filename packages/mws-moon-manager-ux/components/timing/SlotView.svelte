@@ -87,6 +87,7 @@
   import Base from "../layout/Base.svelte";
   import { Tooltip } from 'flowbite'
   import HtmlIcon from "./qualifs/HtmlIcon.svelte";
+  import debounce from "lodash/debounce";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -224,12 +225,19 @@
         if ($tooltipEl) {
             var triggerType = $triggerEl.getAttribute('data-tooltip-trigger');
             var placement = $triggerEl.getAttribute('data-tooltip-placement');
-            new Tooltip($tooltipEl, $triggerEl, {
+            let t = $triggerEl.getAttribute('data-tooltip-ref');
+            if (!t) {
+              t = new Tooltip($tooltipEl, $triggerEl, {
                 placement: placement ? placement : Default.placement,
                 triggerType: triggerType
                     ? triggerType
                     : Default.triggerType,
-            });
+              });
+              $triggerEl.setAttribute('data-tooltip-ref', t);
+            }
+            // https://github.com/themesberg/flowbite/issues/121
+            // t.destroy(); ??
+            // t.dispose(); ??
         }
         else {
             console.error("The tooltip element with id \"".concat(tooltipId, "\" does not exist. Please check the data-tooltip-target attribute."));
@@ -250,7 +258,8 @@
     // currentTimeSlotQualifs, isFullScreen, (async () => {
     // isFullScreen, (async () => {
     // TIPS : for mobile, in fullscreen need to reload on each presentations ?
-    lastSelectedIndex, isFullScreen, (async () => {
+    lastSelectedIndex, isFullScreen, 
+    debounce(async () => {
       // if (flowbiteInSync || !isFullScreen) return; // OK for one fullscreen mode only...
       // flowbiteInSync = true;
 
@@ -260,7 +269,7 @@
       // initFlowbite(); // TOO slow
       await refreshTooltips();
       // flowbiteInSync = false; // Infinite loop...
-    })();
+    }, 300)();
   }
   
   // TODO : opti, only for tooltips reloads... 

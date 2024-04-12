@@ -78,6 +78,12 @@
   };
 
   const refreshTooltips = () => {
+    //   TODO : popover re-instanciation in one to one thumb scrolling
+    // is slowing down everything due to some heavy scoll listeners
+    // computes => Missing dispose or listeners cleanup for tooltip ?
+    // For 120 items, will have 120 listeners for tooltip popover...
+    return; // ignore refreshTooltips for square liste
+
     // let myDiv = getElementById("myDiv");
     // myDiv.querySelectorAll(":scope > .foo");
     // const tooltipElements = document.querySelectorAll(`[role="tooltip"]`);
@@ -95,10 +101,19 @@
         if ($tooltipEl) {
           var triggerType = $triggerEl.getAttribute("data-tooltip-trigger");
           var placement = $triggerEl.getAttribute("data-tooltip-placement");
-          new Tooltip($tooltipEl, $triggerEl, {
-            placement: placement ? placement : Default.placement,
-            triggerType: triggerType ? triggerType : Default.triggerType,
-          });
+          let t = $triggerEl.getAttribute('data-tooltip-ref');
+            if (!t) {
+              t = new Tooltip($tooltipEl, $triggerEl, {
+                placement: placement ? placement : Default.placement,
+                triggerType: triggerType
+                    ? triggerType
+                    : Default.triggerType,
+              });
+              $triggerEl.setAttribute('data-tooltip-ref', t);
+              // https://github.com/themesberg/flowbite/issues/121
+              // t.destroy(); ??
+              // t.dispose(); ??
+          }
         } else {
           console.error(
             'The tooltip element with id "'.concat(
@@ -114,13 +129,13 @@
   $: thumbSize = (50 * (100 / startZoom) * zoomRange) / 100;
   // TODO : opti, only for tooltips reloads...
   $: zoomRange,
-    (async () => {
+    debounce(async () => {
       // TIPS : tick() to wait for html changes
       await tick(); // First zoomRange change to bigger size, no update otherwise (if test do Svelte rebuild ?)
       await tick();
       // initFlowbite();
       refreshTooltips();
-    })();
+    }, 300)();
 
   // TIPS : selectedSourceStamps MUST be an argument for
   //        svelte reactive to trigger...
