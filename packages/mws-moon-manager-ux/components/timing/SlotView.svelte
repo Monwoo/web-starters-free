@@ -1186,7 +1186,7 @@
         class="nav-btn float-left min-w-[10dvw] h-full bg-transparent
         { lastSelectedIndex <= 0
           ? `opacity-0 hover:opacity-0`
-          : `opacity-10 hover:opacity-80`
+          : `opacity-10 hover:opacity-20`
         }
         flex items-center justify-start"
           on:click={() => moveSelectedIndex(-1)}
@@ -1244,7 +1244,7 @@
         class={`nav-btn float-right h-full bg-transparent
         ${ moveResp.isLast
           ? `opacity-0 hover:opacity-0`
-          : `opacity-10 hover:opacity-80`
+          : `opacity-10 hover:opacity-20`
         }
         flex items-center justify-end`}
         class:min-w-[10dvw]={isMobile}
