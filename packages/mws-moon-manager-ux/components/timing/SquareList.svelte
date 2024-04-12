@@ -32,11 +32,19 @@
     docElem = doc.documentElement,
     body = doc.getElementsByTagName("body")[0];
   // $: x = window.innerWidth || docElem.clientWidth || body.clientWidth;
-  let x;
-  $: isMobile, x = window.innerWidth || docElem.clientWidth || body.clientWidth;
+  let x, maxScreenW;
   // y = win.innerHeight|| docElem.clientHeight|| body.clientHeight;
   // Is half screen
-  $: maxScreenW = isMobile ? x : (x ?? 0) * (100 - (splitRange ?? 0))/100;
+  // BAD idea, mulit refresh for nothing, debounce :
+  // $: isMobile, x = window.innerWidth || docElem.clientWidth || body.clientWidth;
+  // $: maxScreenW = isMobile ? x : (x ?? 0) * (100 - (splitRange ?? 0))/100;
+  $: {
+    // below is async ? TODO : ok with reactive refresh ?
+    debounce(async () => {
+      x = window.innerWidth || docElem.clientWidth || body.clientWidth;
+      maxScreenW = isMobile ? x : (x ?? 0) * (100 - (splitRange ?? 0))/100;
+    }, 300)();
+  }
 
   $: console.debug("[timing/SquareList] Having timings :", timings);
   $: {
@@ -174,8 +182,8 @@
     class="overflow-x-auto max-w-[100dvw]
   flex flex-wrap content-start
   "
-    class:justify-start={computedSize > maxScreenW}
-    class:justify-center={computedSize <= maxScreenW}
+    class:justify-start={maxScreenW && computedSize > maxScreenW}
+    class:justify-center={!maxScreenW || computedSize <= maxScreenW}
   >
     <!-- {computedSize} - {maxScreenW} - {splitRange} -->
     {#each timings ?? [] as timingSlot, idx}
