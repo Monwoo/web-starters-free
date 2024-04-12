@@ -244,9 +244,20 @@ class MwsTimingController extends AbstractController
         ?? new DateTime(
             'now', new DateTimeZone('Europe/Paris')
         );
-        $searchStart = $requestData['searchStart'] ?? $mostRecentDate->modify(
+        // dd($request->query->count());
+        // Suggest start only for FIRST page load 
+        // (to avoid too much overloads)
+        //     => TODO : also limit in max number of items ?
+        //     => or Limit on max num of items and check right
+        //     date to get it, since num of slot is not end user
+        //     friendly, not meanfull to say 'x slot' for time qualif...
+        $suggestedStart = $request->query->count()
+        ? null
+        : $mostRecentDate->modify(
             "-1 months"
         )->format('Y-m-d\TH:i');
+
+        $searchStart = $requestData['searchStart'] ?? $suggestedStart;
         // dd($searchStart);
         // dd($searchStart);
         $searchEnd = $requestData['searchEnd'] ?? null;
