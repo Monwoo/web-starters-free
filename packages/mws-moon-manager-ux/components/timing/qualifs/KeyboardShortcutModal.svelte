@@ -4,6 +4,8 @@
   import { Modal } from "flowbite";
   import { onMount } from "svelte";
   import AddModal from "../tags/AddModal.svelte";
+  import trashBin from "../../../medias/flowbite/trash-bin.svg";
+import Svg from "../../layout/widgets/Svg.svelte";
 
   const UID = newUniqueId();
   let cssClass;
@@ -62,6 +64,10 @@
 
 <!-- <svelte:window on:keydown|stopPropagation|preventDefault={onKeyDown} /> -->
 
+<!--
+// TODO : use class by tailwind instead of style ?
+style:--tw-shadow-color="#000000"
+-->
 <div
   id={modalId}
   tabindex="-1"
@@ -70,6 +76,7 @@
   class="hidden overflow-y-auto overflow-x-hidden 
   fixed top-0 right-0 left-0 z-50 justify-center items-center
   w-full md:inset-0 h-modal md:h-full {cssClass}"
+  style:--tw-shadow-color="#000000"
 >
   <div class="relative p-3 w-full max-w-md h-full md:h-auto
   bg-gradient-to-r from-indigo-500 from-10%
@@ -178,6 +185,27 @@
             </svg>
             Définir sur "{selectedKey}"
           </button>
+          <button
+            type="submit"
+            class="py-2 px-3 text-sm font-medium text-center 
+            text-white bg-red-600 rounded-lg hover:bg-red-700 
+            focus:ring-4 focus:outline-none focus:ring-red-300
+            dark:bg-red-500 dark:hover:bg-red-600 flex flex-wrap
+            justify-center items-center
+            dark:focus:ring-red-900"
+            style="--mws-primary-rgb: 255, 0, 0"
+            on:click={async () => {
+              eltModal?.hide();
+              await syncQualifWithBackend({
+                ...qualif,
+                shortcut: 0,
+              });
+            }}
+          >
+            <Svg url={trashBin}></Svg>
+            Supprimer
+          </button>
+
         </div>
       </slot>
     </div>

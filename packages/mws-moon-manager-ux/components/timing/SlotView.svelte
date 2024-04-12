@@ -94,6 +94,7 @@
   import { Tooltip } from 'flowbite'
   import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   import debounce from "lodash/debounce";
+import Svg from "../layout/widgets/Svg.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -1195,7 +1196,7 @@
           <!-- <img scr={caretLeft} /> -->
           <!-- <object data={caretLeft}></object> -->
           <!-- https://dev.to/hasantezcan/how-to-colorize-svg-image-1kc8 -->
-          <div class="svg-icon bg-[var(--tw-shadow-color)]
+          <!-- <div class="svg-icon bg-[var(--tw-shadow-color)]
           "
           style={`
             mask-image: url(${caretLeft});
@@ -1207,8 +1208,8 @@
           style={`
             mask-image: url(${caretLeft});
             -webkit-mask-image: url(${caretLeft});
-          ` } />
-
+          ` } /> -->
+          <Svg url={caretLeft}></Svg>
         </button>  
       </div>
       <object
@@ -1251,24 +1252,7 @@
         class:min-w-[5dvw]={!isMobile}
         on:click={() => moveSelectedIndex(1)}
         >
-          <!--
-            TIPS : 
-              [text-shadow:_1_1px_4_var(--tw-shadow-color)]
-              Ok in tailwind, but mask do not highlight shadow...
-          -->
-          <div class="svg-icon bg-[var(--tw-shadow-color)]
-          "
-          style={`
-            mask-image: url(${caretRight});
-            -webkit-mask-image: url(${caretRight});
-          ` } />
-          <div class="svg-icon bg-white absolute
-           hover:bg-gray-500 !w-[2.8rem]
-          "
-          style={`
-            mask-image: url(${caretRight});
-            -webkit-mask-image: url(${caretRight});
-          ` } />
+        <Svg url={caretRight}></Svg>
       </button>
       </div>
     </div>
@@ -1403,4 +1387,9 @@
   //     }
   //   }
   // }
+
+  :global(.nav-btn:hover .svg-icon) {
+    @apply bg-gray-500;
+  }
+
 </style>
