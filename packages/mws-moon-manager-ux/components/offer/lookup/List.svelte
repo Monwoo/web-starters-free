@@ -146,31 +146,33 @@ import FunnelModal from "../tags/FunnelModal.svelte";
 <!-- https://preline.co/docs/scrollspy.html -->
 
 <!-- <div bind:this={htmlTable}> -->
-<!-- TIPS : zoom should be done outside of modal views -->
-<div
-style={`
-  zoom: ${reportScale}%;
-`}>
+
+<!-- TIPS : zoom should be done outside of modal views
+AND outside of sticky elements -->
+<div>
   <table>
     <!-- TODO : sticky top for title to stay on page ? -->
     <!-- <thead class="top-[-24px] sticky z-40"> -->
     <thead class="-top-6 sticky z-40 text-xs md:text-sm">
-        <tr class="users-table-info">
+        <tr class="users-table-info"
+        style={`
+          zoom: ${reportScale}%;
+        `}>
         <th
           scope="col"
-          class="sticky max-w-[20dvw] left-0 w-[3em] z-10 
+          class="max-w-[20dvw] w-[3em]
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isFirstColVisible}>Voir</th
         >
         <th
           scope="col"
-          class="sticky max-w-[20dvw] left-[4em] w-[4em] z-10 
+          class="max-w-[20dvw] w-[4em]
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isSecondColVisible}>[Slug] Status</th
         >
         <th
           scope="col"
-          class="sticky max-w-[20dvw] left-[9em] w-[6em] z-10 
+          class="max-w-[20dvw] w-[6em]
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isThirdColVisible}>Tags</th
         >

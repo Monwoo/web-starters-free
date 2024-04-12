@@ -1,0 +1,33 @@
+{# 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set model = {
+    description: "Backup"|trans,
+    fitToContainer: true,
+    completeText: {
+        en: "Import backup",
+        fr: "Importer le backup"
+    },
+    focusFirstQuestionAutomatic: false,
+    showQuestionNumbers: false,
+    elements: [{
+            "_cmt": "https://surveyjs.io/form-library/documentation/customize-question-types/create-custom-widgets",
+            "type": "file",
+            "title": "Import .zip or .sqlite backup (max 1Go)",
+            "name": "uploadFile",
+            "showCommentArea": false,
+            "storeDataAsText": false,
+            "waitForUpload": true,
+            "allowMultiple": false,
+            "maxSize": 1024000000,
+            "hideNumber": true
+        }
+    ]
+} %}
+{{ model|serialize('json')|raw }}
+
+{# TIPS : esaier to do svelte html instead of surveySJ HTML... avoid 
+{
+    name: "exportBkup",
+    html: "<strong class='text-blue-500'>Exporter le backup</strong>",
+    type: "html",
+    minWidth: "20%",
+}, #}
