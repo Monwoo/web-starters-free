@@ -819,7 +819,7 @@
   -->
   <div
     class="full-screen-container bg-black text-white fill-white
-    rounded-se-lg overflow-scroll z-40
+    rounded-se-lg overflow-scroll z-[51] md:z-40
     {fullscreenClass}"
     class:fixed={isFullScreen}
     class:top-0={isFullScreen}
@@ -886,24 +886,24 @@
         </span>
       </span>
       <span
-        class="w-[6em] p-1 hover:opacity-100
+        class="max-w-[7em] p-1 hover:opacity-100
         rounded z-50 cursor-pointer"
         class:opacity-25={isFullScreen && detailIsHovered}
-        class:right-0={true}
+        class:right-12={true}
         class:absolute={!isFullScreen}
         class:top-0={!isFullScreen}
         class:top-10={isFullScreen}
         class:left-0={false}
         class:fixed={isFullScreen}
-        on:click={() => {
-          if (undefined === selectionStartIndex) {
-            selectionStartIndex = lastSelectedIndex;
-          } else {
-            selectionStartIndex = undefined;
-          }
-        }}
-    >
+      >
         <span class="bg-black"
+          on:click={() => {
+            if (undefined === selectionStartIndex) {
+              selectionStartIndex = lastSelectedIndex;
+            } else {
+              selectionStartIndex = undefined;
+            }
+          }}
         >
           [{pageNumber}-{
             undefined !== selectionStartIndex ?

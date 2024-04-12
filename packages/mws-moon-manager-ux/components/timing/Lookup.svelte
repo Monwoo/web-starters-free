@@ -191,7 +191,7 @@
   <div class="mws-timing-qualif">
     <span
       class="text-xs md:text-base float-right 
-  right-0 top-0 z-50 sticky pr-7"
+  right-0 top-0 z-[100] sticky pr-10"
     >
       <button
         class="float-right m-1 top-0"
@@ -231,7 +231,7 @@
       class="float-right m-1 text-black sticky
       bg-white/70 text-xs md:text-base p-1
       top-1 select-none"
-      class:z-50={!isFullScreen}  
+      class:z-[100]={!isFullScreen}  
       class:z-30={isFullScreen}  
       on:click={() => {
         if (undefined === selectionStartIndex) {
