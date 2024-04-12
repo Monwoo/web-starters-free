@@ -21,7 +21,65 @@
   import Loader from "../layout/widgets/Loader.svelte";
   import QuickList from "./qualifs/QuickList.svelte";
   import { draggable } from "svelte-agnostic-draggable";
-  import mapTouchToMouseFor from "svelte-touch-to-mouse";
+  // import mapTouchToMouseFor from "svelte-touch-to-mouse";
+  // TODO : Pull request with fixed code ?
+  // => did change Target.matches => Target.closest
+  function mapTouchToMouseFor (Selector:string):void {
+    function TouchEventMapper (originalEvent:TouchEvent):void {
+      let Target = originalEvent.target as Element
+      if (! Target.closest(Selector)) { return }
+      console.debug('mapTouchToMouseFor', originalEvent);
+
+      let simulatedEventType
+      switch (originalEvent.type) {
+        case 'touchstart':  simulatedEventType = 'mousedown'; break
+        case 'touchmove':   simulatedEventType = 'mousemove'; break
+        case 'touchend':    simulatedEventType = 'mouseup';   break
+        case 'touchcancel': simulatedEventType = 'mouseup';   break
+        default:            return
+      }
+
+      let firstTouch = originalEvent.changedTouches[0]
+
+      let clientX = firstTouch.clientX, pageX = firstTouch.pageX, PageXOffset = window.pageXOffset
+      let clientY = firstTouch.clientY, pageY = firstTouch.pageY, PageYOffset = window.pageYOffset
+      if (
+        (pageX === 0) && (Math.floor(clientX) > Math.floor(pageX)) ||
+        (pageY === 0) && (Math.floor(clientY) > Math.floor(pageY))
+      ) {
+        clientX -= PageXOffset
+        clientY -= PageYOffset
+      } else if (
+        (clientX < pageX - PageXOffset) || (clientY < pageY - PageYOffset)
+      ) {
+        clientX = pageX - PageXOffset
+        clientY = pageY - PageYOffset
+      }
+
+      let simulatedEvent = new MouseEvent(simulatedEventType, {
+        bubbles:true, cancelable:true,
+        screenX:firstTouch.screenX, screenY:firstTouch.screenY,
+        // @ts-ignore we definitely want "pageX" and "pageY"
+        clientX, clientY, pageX, pageY, buttons:1, button:0,
+        ctrlKey:originalEvent.ctrlKey, shiftKey:originalEvent.shiftKey,
+        altKey:originalEvent.altKey, metaKey:originalEvent.metaKey
+      })
+
+      firstTouch.target.dispatchEvent(simulatedEvent)
+      //    originalEvent.preventDefault()
+    }
+
+    document.addEventListener('touchstart',  TouchEventMapper, true)
+    document.addEventListener('touchmove',   TouchEventMapper, true)
+    document.addEventListener('touchend',    TouchEventMapper, true)
+    document.addEventListener('touchcancel', TouchEventMapper, true)
+    return () => {
+      document.removeEventListener('touchstart',  TouchEventMapper, true)
+      document.removeEventListener('touchmove',   TouchEventMapper, true)
+      document.removeEventListener('touchend',    TouchEventMapper, true)
+      document.removeEventListener('touchcancel', TouchEventMapper, true)
+    }
+  }
   import { onMount, tick } from "svelte";
   import Base from "../layout/Base.svelte";
   import { Tooltip } from 'flowbite'
@@ -582,7 +640,7 @@
 
     // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
     // https://github.com/rozek/svelte-touch-to-mouse
-    mapTouchToMouseFor(".draggable");
+    return mapTouchToMouseFor(".draggable");
     // mapTouchToMouseFor("div"); // TODO : not working on my Android phone, other error ?
 
     // TIPS : for computed height after css transformations :
@@ -601,16 +659,16 @@
 
   let detailIsHovered = false;
 
-  $: {
-    isFullScreen, (async () => {
-      // TODO : For if switch, await tick enough ? 
-      await new Promise((r) => setTimeout(r, 200));
-      // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
-      // https://github.com/rozek/svelte-touch-to-mouse
-      mapTouchToMouseFor(".draggable"); // PB ? can be called only once ?
-      // mapTouchToMouseFor("div"); // TODO : not working on my Android phone, other error ?
-    })();
-  }
+  // $: {
+  //   isFullScreen, (async () => {
+  //     // TODO : For if switch, await tick enough ? 
+  //     await new Promise((r) => setTimeout(r, 200));
+  //     // https://svelte.dev/repl/cfd1b8c9faf94ad5b7ca035a21f4dbd1?version=4.2.12
+  //     // https://github.com/rozek/svelte-touch-to-mouse
+  //     mapTouchToMouseFor(".draggable"); // PB ? can be called only once ?
+  //     // mapTouchToMouseFor("div"); // TODO : not working on my Android phone, other error ?
+  //   })();
+  // }
 
 </script>
 
@@ -879,12 +937,6 @@
     fill-white/70 text-white/70 bg-black/50 z-40"
       class:hidden={resizing}
       on:click|stopPropagation|preventDefault
-      on:mousedown|stopPropagation|preventDefault
-      on:mousemove|stopPropagation|preventDefault
-      on:mouseup|stopPropagation|preventDefault
-      on:touchstart|stopPropagation|preventDefault
-      on:touchmove|stopPropagation|preventDefault
-      on:touchend|stopPropagation|preventDefault
     >
       <div
         class:bg-red-500={resizing}
@@ -986,12 +1038,6 @@
     fill-white/70 text-white/70 bg-black/50 z-40"
       class:hidden={slotResizing}
       on:click|stopPropagation|preventDefault
-      on:mousedown|stopPropagation|preventDefault
-      on:mousemove|stopPropagation|preventDefault
-      on:mouseup|stopPropagation|preventDefault
-      on:touchstart|stopPropagation|preventDefault
-      on:touchmove|stopPropagation|preventDefault
-      on:touchend|stopPropagation|preventDefault
     >
       <div
         class="draggable"
