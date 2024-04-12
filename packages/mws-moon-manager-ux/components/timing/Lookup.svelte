@@ -338,13 +338,6 @@
       class="text-xs md:text-base float-right 
     right-14 top-0 z-50 sticky"
     >
-      <button
-        class="float-right m-1 top-0"
-        style:opacity={!moveResp.isLast ? 1 : 0.7}
-        on:click={() => moveSelectedIndex(1)}
-      >
-        Next.
-      </button>
       {#if moveResp && moveResp.isLast}
         <button
           class="float-right m-1 top-0"
@@ -353,6 +346,13 @@
           Next. Page
         </button>
       {/if}
+      <button
+        class="float-right m-1 top-0"
+        style:opacity={!moveResp.isLast ? 1 : 0.7}
+        on:click={() => moveSelectedIndex(1)}
+      >
+        Next.
+      </button>
       <button
         class="float-right m-1 top-0"
         style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}

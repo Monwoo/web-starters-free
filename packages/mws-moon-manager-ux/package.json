@@ -31,6 +31,7 @@
     "svelte-awesome-color-picker": "^2.4.1",
     "svelte-copy": "^1.4.1",
     "svelte-drag-drop-touch": "^0.1.9",
+    "svelte-gestures": "^4.0.0",
     "svelte-i18n": "^4.0.0",
     "svelte-photoswipe": "^0.0.2",
     "svelte-sortable-items": "^0.0.5",

@@ -21,6 +21,9 @@
   import Loader from "../layout/widgets/Loader.svelte";
   import QuickList from "./qualifs/QuickList.svelte";
   import { draggable } from "svelte-agnostic-draggable";
+  // https://svelte.dev/repl/f696ca27e6374f2cab1691727409a31d?version=3.38.2
+  import { swipe, pan } from 'svelte-gestures';
+
   // import mapTouchToMouseFor from "svelte-touch-to-mouse";
   // TODO : Pull request with fixed code ?
   // => did change Target.matches => Target.closest
@@ -126,6 +129,90 @@
     onHide: function () { },
     onToggle: function () { },
   };
+
+  const swipeImage = (e) => {
+    const direction = e.detail.direction;
+    console.debug("Swipe ", direction);
+    if ('left' == direction) {
+      movePageIndex(-1);
+    }
+    if ('right' == direction) {
+      movePageIndex(1);
+    }
+  }
+
+  let xLast = null;
+  let xDirection = 0;
+  let xDirectionLast = null;
+  const imagePanDelayMs = 0;
+  // const imagePanDelayMs = 200;
+  // 2 sec delay to detect swipe ?
+  // (2 * 1000) / imagePanDelayMs;
+  // => But not ok, so empirique value sound like :
+  const sameDirCountMax = 1;
+  let sameDirCount = 0;
+  let allowPanNavigation = false;
+  const imagePanHandler = (e) => {
+    if (!allowPanNavigation) return;
+
+    const x = event.detail.x;
+    const y = event.detail.y;
+    const target = event.detail.target;
+    // console.debug("Pan ", x, y);
+    if (null === xLast) {
+      xLast = x;
+    }
+    xDirection = xLast - x;
+    xDirection = xDirection
+    ? xDirection / Math.abs(xDirection)
+    : xDirectionLast;
+    // console.debug("Swipe X ", xLast, x, xDirection, sameDirCountMax);
+    console.debug("Swipe X ", xDirection, sameDirCountMax);
+    if (null === xDirectionLast) {
+      xDirectionLast = xDirection;
+    }
+    if (xDirectionLast === xDirection) {
+      sameDirCount++;
+    } else {
+      sameDirCount = 0;
+    }
+    if (sameDirCount > sameDirCountMax) {
+      console.debug("Swipe to ", xDirection);
+      moveSelectedIndex(xDirection);
+      sameDirCount = 0;
+      allowPanNavigation = false;
+    }
+    xLast = x;
+    xDirectionLast = xDirection;
+  }
+  let lastTouchY;
+
+  const imageTouchstartHandler = (event) =>
+  {
+    allowPanNavigation = true;
+    // TODO :improve with :
+    // https://stackoverflow.com/questions/56844807/svelte-long-press
+    // 
+    // console.log('imageTouchstartHandler');
+    // if (event.touches.length === 2)
+    // {
+    //   // on mac, with 2 finger, simulate click :
+    //   console.log('Pan started with 2 finger');
+    //   event.target.click();
+    // }
+  };
+
+  // const imageTouchmoveHandler = (event) =>
+  // {
+  //   if (event.touches.length === 2)
+  //   {
+  //     event.preventDefault();
+  //     const delta = lastTouchY - event.touches[0].clientY;
+  //     lastTouchY = event.touches[0].clientY;
+  //     element.scrollTop += delta;
+  //   }
+  // };
+
 
   const refreshTooltips = ()=> {
     // let myDiv = getElementById("myDiv");
@@ -716,7 +803,6 @@
       class:z-20={!isFullScreen}
       class:z-40={isFullScreen}
       // z-20 TOO low for side list (absolut of it will go over inside modals...)
-
   -->
   <div
     class="full-screen-container bg-black text-white fill-white
@@ -1013,11 +1099,29 @@
     <!-- class:h-[80dvh]={!slotHeight &&
       zoomRange == 50 &&
       isFullScreen &&
-      !isHeaderExpanded} -->
+      !isHeaderExpanded}
+    
+    
+    https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action
+    https://tailwindcss.com/docs/touch-action
+    https://www.npmjs.com/package/svelte-gestures
+      // TODO : swipe stop propagation events or css events none
+      is blocking click ?
+      use:swipe={{ timeframe: 300, minSwipeDistance: 42, touchAction: 'touch-pan-y' }}
+      on:swipe={swipeImage}
+
+      TIPS : on:dblclick will be useful with pan since click is used by pan too...
+    -->
     <object
+      use:pan="{{delay:imagePanDelayMs}}"
+      on:pan="{imagePanHandler}"  
+      on:click={imageTouchstartHandler}
+      on:mousedown={imageTouchstartHandler}
+      on:touchstart={imageTouchstartHandler}
       bind:this={slotView}
-      on:click={() => (resizing ? null : (isFullScreen = !isFullScreen))}
-      class="object-contain border-solid border-4 w-full m-auto"
+      on:dblclick={() => (resizing ? null : (isFullScreen = !isFullScreen))}
+      class="object-contain select-none border-solid border-4 w-full m-auto"
+      draggable="false"
       class:border-gray-600={!timingSlot?.tags?.length}
       class:border-green-400={timingSlot?.tags?.length}
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
