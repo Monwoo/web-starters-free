@@ -234,7 +234,6 @@ Encore
             {
                 loader: 'svgo-loader',
                 // options: {
-                //     path: Encore.getWebpackConfig().publicPath,
                 //     plugins: [
                 //         {removeTitle: true},
                 //         {convertColors: {shorthex: false}},

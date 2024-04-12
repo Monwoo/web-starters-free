@@ -1185,7 +1185,7 @@
         <button
         class="nav-btn float-left min-w-[10dvw] h-full bg-transparent
         { lastSelectedIndex <= 0
-          ? `opacity-0 hover:opacity-30`
+          ? `opacity-0 hover:opacity-0`
           : `opacity-10 hover:opacity-80`
         }
         flex items-center justify-start"
@@ -1243,7 +1243,7 @@
         <button
         class={`nav-btn float-right h-full bg-transparent
         ${ moveResp.isLast
-          ? `opacity-0 hover:opacity-30`
+          ? `opacity-0 hover:opacity-0`
           : `opacity-10 hover:opacity-80`
         }
         flex items-center justify-end`}
