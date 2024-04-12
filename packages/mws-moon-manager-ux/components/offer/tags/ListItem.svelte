@@ -27,7 +27,7 @@
       'slug': tag.slug,
       'categorySlug': tag.categorySlug,
     }) }>
-      <button class="btn btn-outline-primary p-1 m-1">Editer</button>
+      <button class=" m-1">Editer</button>
     </a>
   </td>
   <th scope="row" class="text-left">

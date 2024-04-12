@@ -18,6 +18,7 @@
   export let locale;
   export let viewTemplate;
   export let offer;
+  export let addMessageForm = "";
 
   console.debug(offer);
 
@@ -30,13 +31,16 @@
 
 <Base {copyright} {locale} {viewTemplate}>
   <div>
-    <a href="#back" on:click={() => history.back()}>
-      <button class="btn btn-outline-primary p-1">Revenir à la page précédente</button>
+    <a href={Routing.generate('mws_offer_lookup', {
+      '_locale': locale ?? '',
+      'viewTemplate': viewTemplate ?? null,
+    }) }>
+      <button class="">Liste des offres</button>
     </a>    
   </div>
   <div class="flex flex-wrap flex-col">
     <h1 class="font-bold p-6 text-center">
-      <a href="{ offer.sourceUrl ?? "#not-found"}" target="_blank" rel="noreferrer">
+      <a href={ offer.sourceUrl ?? "#not-found"} target="_blank" rel="noreferrer">
         {offer.title}
       </a>
     </h1>
@@ -59,7 +63,7 @@
       </tbody>
     </table>
     <a href="{ offer.clientUrl ?? "#not-found"}" target="_blank" rel="noreferrer">
-      <button class="btn btn-outline-primary p-1">Publié par : {offer.clientUsername}</button>
+      <button class="">Publié par : {offer.clientUsername}</button>
     </a>    
     
     <div class="detail">
@@ -68,7 +72,7 @@
     <div>
       {#if myOfferId && offer.sourceUrl}
         <a href="{`${offer.sourceUrl}/${myOfferId}`}" target="_blank" rel="noreferrer">
-          <button class="btn btn-outline-primary p-1">Accéder aux messages</button>
+          <button class="">Accéder aux messages</button>
         </a>      
       {/if}
     </div>
@@ -81,10 +85,12 @@
       {/each}
     </div>
   </div>
-  <List {locale} offers={[offer]} {viewTemplate}></List>
+  <div class="mws-offer-detail w-full overflow-auto">
+    <List {locale} offers={[offer]} {viewTemplate} {addMessageForm}></List>
+  </div>
 </Base>
 
-<!-- <style lang="scss">
+<style lang="scss">
   // TODO : post CSS syntax allowed in svelte scss ?
   // Done in packages/mws-moon-manager/assets/styles/app.scss
   // .label {
@@ -93,4 +99,11 @@
   // .detail {
   //   @apply md:1/4 lg:1/4 text-right;
   // }
-</style> -->
+  .mws-offer-detail {
+    // .sticky {
+    :global(.sticky) {
+      // position: inherit !important;
+      position: inherit;
+    }
+  }
+</style>

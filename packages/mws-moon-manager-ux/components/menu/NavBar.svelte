@@ -50,7 +50,7 @@ rounded-e-lg
         <span
           class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
         >
-          <button class="p-1">Rechercher une offre</button>
+          <button class="">Rechercher une offre</button>
         </span>
       </a>
       <span>
@@ -123,7 +123,7 @@ rounded-e-lg
               <span
                 class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
               >
-                <button class="p-1">Rechercher une offre</button>
+                <button class="">Rechercher une offre</button>
               </span>
             </a>
             <span>
@@ -150,7 +150,7 @@ rounded-e-lg
            "
             aria-current="page"
           >
-            <button class="m-auto">Accueil</button>
+            <button class="">Accueil</button>
           </a>
         </li>
         <li>
@@ -199,7 +199,7 @@ rounded-e-lg
             id="dropdownNavbarLink"
             data-dropdown-toggle="dropdownNavbar"
             class="flex flex-wrap items-center justify-center
-            w-full mt-2 md:mt-0
+            w-full mt-2 md:mt-1
             {!inlineOpener ? `md:border-0 md:w-auto` : ``}"
             on:click={async () => {
               uniqueKey = {};

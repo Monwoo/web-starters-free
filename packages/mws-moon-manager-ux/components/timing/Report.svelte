@@ -960,7 +960,7 @@
     <ExportTags {locale} timingLookup={jsonLookup} format="csv" />
     <button
       on:click={deleteAllTimings}
-      class="btn btn-outline-primary p-1 m-1"
+      class=" m-1"
       style="--mws-primary-rgb: 255, 0, 0"
     >
       Supprimer tous les temps

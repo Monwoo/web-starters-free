@@ -27,7 +27,7 @@
     '_locale': locale,
     'filterTags': viewTemplate,
   }) }">
-    <button class="btn btn-outline-secondary p-1">Revenir à la liste</button>
+    <button class="">Revenir à la liste</button>
   </a>
 </Base>
 

@@ -52,7 +52,7 @@ class MwsUserPasswordUpdateType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Mettre à jour le mot de passe',
                 'attr' => [
-                    'class' => 'btn btn-outline-success'
+                    // 'class' => 'btn btn-outline-success'
                 ]
             ])//submit
         ;

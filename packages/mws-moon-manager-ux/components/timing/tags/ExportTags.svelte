@@ -61,7 +61,7 @@
     {/each}
   </select>  
 
-  <button type="submit" class="btn btn-outline-primary p-1 m-1">
+  <button type="submit" class=" m-1">
     Exporter les tags
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->

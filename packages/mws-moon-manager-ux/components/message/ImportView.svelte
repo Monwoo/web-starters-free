@@ -17,7 +17,7 @@
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? '',
     }) }">
-      <button class="btn btn-outline-primary p-1">Liste des messages.</button>
+      <button class="">Liste des messages.</button>
     </a>    
   </div>
   <div class="flex flex-wrap">

@@ -532,6 +532,8 @@ class MwsOfferController extends AbstractController
         $viewTemplate,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
+        MwsMessageRepository $mwsMessageRepository,
+        Request $request,
     ): Response {
         $user = $this->getUser();
 
@@ -546,11 +548,61 @@ class MwsOfferController extends AbstractController
             throw $this->createNotFoundException("Unknow offer slug [$offerSlug]");
         }
 
+        // TODO : factorize with repo and remove code duplication :
+        $availableTQb = $mwsMessageRepository
+        ->createQueryBuilder('m')
+        ->where('m.isTemplate = :isTemplate')
+        ->setParameter('isTemplate', true)
+        ->orderBy('m.templateCategorySlug')
+        ->addOrderBy('m.templateNameSlug')
+        ;
+        $availableTemplates = $availableTQb->getQuery()->execute();
+        $availableTemplateNameSlugs = array_reduce($availableTemplates,
+        function($acc, MwsMessage $o) {
+            $slug = $o->getTemplateNameSlug();
+            if (!in_array($slug, $acc)) {
+                $acc[] = $slug;
+            }
+            return $acc;
+        }, []);
+        $availableTemplateCategorySlugs = array_reduce($availableTemplates,
+        function($acc, MwsMessage $o) {
+            $slug = $o->getTemplateCategorySlug();
+            if (!in_array($slug, $acc)) {
+                $acc[] = $slug;
+            }
+            return $acc;
+        }, []);
+
+
+        $addMessageConfig = [
+            // "jsonResult" => rawurlencode(json_encode([])),
+            "jsonResult" => rawurlencode('{}'),
+            "surveyJsModel" => rawurlencode($this->renderView(
+                "@MoonManager/survey_js_models/MwsMessageType.json.twig",
+                [
+                    "availableTemplates" => $availableTemplates,
+                    "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+                    "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
+                ]
+            )),
+        ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
+        $addMessageForm = $this->createForm(MwsSurveyJsType::class, $addMessageConfig, [
+            // ensure query param 
+            'action' => $this->generateUrl('mws_message_list', [
+                'viewTemplate' => $viewTemplate,
+                'backUrl' => $this->generateUrl('mws_offer_lookup', array_merge($request->query->all(), [
+                    'viewTemplate' => $viewTemplate,
+                ])),
+            ])
+        ]);
+
         $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->getTagsByCategorySlugAndSlug();
         return $this->render('@MoonManager/mws_offer/view.html.twig', [
             'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
             'offer' => $offer,
             'viewTemplate' => $viewTemplate,
+            'addMessageForm' => $addMessageForm,
         ]);
     }
 

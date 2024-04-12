@@ -170,7 +170,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
                     '_locale': locale ?? '',
                     // 'viewTemplate': viewTemplate ?? '',
                   }) }>
-                    <button class="btn btn-outline-primary p-1 m-1">Approfondir le devis</button>
+                    <button class=" m-1">Approfondir le devis</button>
                   </a>
                 <h1>Synchro client</h1>
                 Connect to existing client or add new one from it

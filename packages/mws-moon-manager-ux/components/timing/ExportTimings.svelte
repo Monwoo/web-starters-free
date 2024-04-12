@@ -110,7 +110,7 @@
     <label for="thumbnailsSize">Taille des miniatures</label>
   </span>
 
-  <button type="submit" class="btn btn-outline-primary p-1 m-1">
+  <button type="submit" class=" m-1">
     Exporter les temps
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->

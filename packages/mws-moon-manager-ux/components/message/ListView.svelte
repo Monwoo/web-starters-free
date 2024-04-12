@@ -25,19 +25,19 @@
     '_locale': locale ?? '',
     'viewTemplate': viewTemplate ?? '',
   }) }>
-    <button class="btn btn-outline-primary p-1 m-2">Importer des messages.</button>
+    <button class=" m-2">Importer des messages.</button>
   </a>    
   <a href={ Routing.generate('mws_message_export', {
     '_locale': locale ?? '',
     'viewTemplate': viewTemplate ?? '',
   }) }>
-    <button class="btn btn-outline-primary p-1 m-2">Exporter les messages.</button>
+    <button class=" m-2">Exporter les messages.</button>
   </a>    
   <!-- <a href={ Routing.generate('mws_message_import', {
     '_locale': locale ?? '',
     'viewTemplate': viewTemplate ?? '',
   }) }>
-    <button class="btn btn-outline-primary p-1">Supprimer les messages.</button>
+    <button class="">Supprimer les messages.</button>
   </a>     -->
   <form action="{ Routing.generate('mws_message_delete_all', {
       '_locale': locale ?? '',
@@ -48,12 +48,12 @@
   >
     <input type="hidden" name="_csrf_token" value="{ csrfMessageDelete }" />
     <button 
-    class="btn btn-outline-primary p-1 m-2"
+    class=" m-2"
     type="submit">Supprimer les messages</button>
   </form>
 
   <button
-  class="btn btn-outline-primary p-1"
+  class=""
   on:click={() => {
     addModal.surveyModel.data = null; // Ensure data is empty before show...
     addModal.eltModal.show();

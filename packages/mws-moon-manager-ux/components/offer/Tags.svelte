@@ -45,14 +45,17 @@
 
 <Base {copyright} {locale} {viewTemplate}>
   <div>
-    <a href="#back" on:click={() => history.back()}>
-      <button class="btn btn-outline-primary p-1 m-3">Revenir à la page précédente</button>
+    <a href={Routing.generate('mws_offer_lookup', {
+      '_locale': locale ?? '',
+      'viewTemplate': viewTemplate ?? null,
+    }) }>
+      <button class="">Liste des offres</button>
     </a>    
     <a href={ Routing.generate('mws_offer_tags_reset_to_default', {
       '_locale': locale ?? '',
-      'viewTemplate': viewTemplate ?? '',
+      'viewTemplate': viewTemplate ?? null,
     }) }>
-      <button class="btn btn-outline-primary p-1 m-3">Réinitialiser les tags par défaut</button>
+      <button class="">Réinitialiser les tags par défaut</button>
     </a>    
   </div>
   <div class="flex flex-wrap">

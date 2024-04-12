@@ -147,7 +147,7 @@
   </td>
   <td class="max-w-[30dvw]">
     <button
-      class="btn btn-outline-primary m-3"
+      class="md:m-3"
       on:click={() => {
         // addModal.surveyModel.data = null; // Ensure data is empty before show...
         addModal.surveyModel.data = {
@@ -168,7 +168,7 @@
         <a href="${
           offer.clientUrl ?? "#not-found"
         }" target="_blank" rel="noreferrer">
-          <button class="btn btn-outline-primary p-1">Publié par : ${
+          <button class="">Publié par : ${
             offer.clientUsername
           }</button>
         </a>    
@@ -179,7 +179,7 @@
           <a href="${
             offer.sourceUrl
           }/${myOfferId}" target="_blank" rel="noreferrer">
-            <button class="btn btn-outline-primary p-1">Source des messages</button>
+            <button class="">Source des messages</button>
           </a><br/>
           Proposition : ${offer.sourceDetail.monwooOfferAmount ?? ""}<br/>
           Délais : ${offer.sourceDetail.monwooOfferDelay ?? ""}<br/>
@@ -202,7 +202,7 @@
     <div class="crm-messages">
       {#each messages ?? [] as message}
         <button
-          class="btn btn-secondary m-3"
+          class="md:m-3"
           on:click={() => {
             console.debug("Will edit :", message);
             addModal.surveyModel.data = message;
@@ -216,7 +216,7 @@
           <a href="${
             offer.clientUrl ?? "#not-found"
           }" target="_blank" rel="noreferrer">
-            <button class="btn btn-outline-primary p-1">Publié par : ${
+            <button class="">Publié par : ${
               offer.clientUsername
             }</button>
           </a>    
@@ -227,7 +227,7 @@
             <a href="${
               offer.sourceUrl
             }/${myOfferId}" target="_blank" rel="noreferrer">
-              <button class="btn btn-outline-primary p-1">Source des messages</button>
+              <button class="">Source des messages</button>
             </a><br/>
             Proposition : ${offer.sourceDetail.monwooOfferAmount ?? ""}<br/>
             Délais : ${offer.sourceDetail.monwooOfferDelay ?? ""}<br/>

@@ -59,7 +59,7 @@
     >
       voir
     </a> -->
-    <button class="btn btn-outline-primary p-1" on:click={() => showEditMsg()}
+    <button class="" on:click={() => showEditMsg()}
       >Éditer le message.</button
     >
   </td>

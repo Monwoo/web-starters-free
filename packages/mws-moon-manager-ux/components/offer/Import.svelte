@@ -26,7 +26,7 @@
         viewTemplate: viewTemplate ?? "",
       })}
     >
-      <button class="btn btn-outline-primary p-1">Liste des offres.</button>
+      <button class="">Liste des offres.</button>
     </a>
 
     {#if forceRewrite}
@@ -36,7 +36,7 @@
           viewTemplate: viewTemplate ?? "",
         })}
       >
-        <button class="btn btn-outline-primary p-1">Ne pas surcharger.</button>
+        <button class="">Ne pas surcharger.</button>
       </a>
     {:else}
       <a
@@ -47,8 +47,8 @@
           forceStatusRewrite: true,
         })}
       >
-        <button class="btn btn-outline-primary p-1"
-          >Forcer la surcharger.</button
+        <button class=""
+          >Forcer la surcharge</button
         >
       </a>
     {/if}

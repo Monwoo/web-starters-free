@@ -85,7 +85,7 @@
 
   <button
     on:click={deleteAllTags}
-    class="btn btn-outline-primary p-1 m-1"
+    class=" m-1"
     style="--mws-primary-rgb: 255, 0, 0"
   >
     Supprimer tous les tags
@@ -96,7 +96,7 @@
       addModal.surveyModel.data = null; // Ensure data is empty before show...
       addModal.eltModal.show();
     }}
-    class="btn btn-outline-primary p-1 m-1"
+    class=" m-1"
   >
     Ajouter un tag
   </button>

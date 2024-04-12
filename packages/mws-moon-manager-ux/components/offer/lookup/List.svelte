@@ -15,8 +15,8 @@ import FunnelModal from "../tags/FunnelModal.svelte";
   export let viewTemplate;
   export let yScrollable;
   export let reportScale = 100;
+  export let addModal;
 
-  let addModal;
   let funnelComponent;
 
   // console.debug("messagesByProjectId :", messagesByProjectId);

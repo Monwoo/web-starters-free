@@ -188,17 +188,17 @@
   class:hidden={isHidden}
 >
   <td>
-    <!-- <button class="btn btn-outline-primary p-1 m-1">Editer</button> -->
+    <!-- <button class=" m-1">Editer</button> -->
     <!-- <a href={ Routing.generate('mws_offer_tag_edit', {
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? '',
       'slug': tag.self.slug,
       'categorySlug': tag.self.categorySlug,
     }) }>
-      <button class="btn btn-outline-primary p-1 m-1">Supprimer</button>
+      <button class=" m-1">Supprimer</button>
     </a> -->
     <button
-      class="btn btn-outline-primary p-1 m-1"
+      class=" m-1"
       on:click={() => {
         console.debug("Will show :", tag);
         addModal.surveyModel.data = tag.self;
@@ -208,7 +208,7 @@
       Editer
     </button>
     <button
-      class="btn btn-outline-primary p-1 m-1"
+      class=" m-1"
       on:click={() => {
         console.debug("Will show :", tag);
         // TODO : wan user : NEED to change tags, tag slug already used err...
@@ -222,7 +222,7 @@
       Dupliquer
     </button>
     <button
-      class="btn btn-outline-primary p-1 m-1"
+      class=" m-1"
       style="--mws-primary-rgb: 255, 0, 0"
       on:click={deleteTag}
     >

@@ -35,7 +35,7 @@
     <a href="{ Routing.generate('mws_user_new', {
         'viewTemplate': filterTags
     }) }">
-      <button class="btn btn-outline-success p-1">Nouvel utilisateur</button>
+      <button class="">Nouvel utilisateur</button>
     </a>
   </div>
   <div>{@html filterForm}</div>
@@ -64,13 +64,13 @@
                 'id': u.id,
                 'viewTemplate': filterTags,
               }) }">
-                <button class="btn btn-outline-primary p-1">Voir</button>
+                <button class="">Voir</button>
               </a>
               <a href="{ Routing.generate('mws_user_edit', {
                   'id': u.id,
                   'viewTemplate': filterTags
               }) }">
-                <button class="btn btn-outline-success p-1">Modifier</button>
+                <button class="">Modifier</button>
               </a>
             </td>
             <th scope="row">[{u.id}] {u.roles.join(',')}</th>

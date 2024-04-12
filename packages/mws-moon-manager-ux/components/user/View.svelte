@@ -41,13 +41,13 @@
     'id': user.id,
     'viewTemplate': viewTemplate,
   }) }">
-    <button class="btn btn-outline-primary p-1">Editer</button>
+    <button class="">Editer</button>
   </a>
   <a href="{ Routing.generate('mws_user_list', {
     '_locale': locale,
     'filterTags': viewTemplate,
   }) }">
-    <button class="btn btn-outline-secondary p-1">Revenir à la liste</button>
+    <button class="">Revenir à la liste</button>
   </a>
 </Base>
 

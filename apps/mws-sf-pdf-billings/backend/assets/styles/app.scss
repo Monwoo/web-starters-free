@@ -95,16 +95,42 @@ html {
 // done by '@tailwind base;' to overwrite without '!important' extra rule like :
 // button, [type='button'], [type='reset'], [type='submit'] {
 // button, [type] { // TIPS : will apply to all div etc....
-button, button[type], [type="button"] { // OK, all button and all button with type attributes
-    @apply font-bold py-2 px-4 rounded;
+button,
+button[type],
+[type="button"],
+.mws-btn { // OK, all button and all button with type attributes
+    // @apply font-bold py-2 px-4 rounded;
+    @apply font-bold py-1 px-2 m-1 rounded;
     @apply bg-blue-500 text-white;
-    background-color: RGB(var(--mws-primary-rgb));;
+    @apply no-underline;
+    background-color: RGB(var(--mws-primary-rgb));
+    &:hover {
+        @apply text-gray-300;
+    }
+    // TODO : below will not remove underline if using :
+    //       <a><button></button></a>
+    // a & {
+    //     @apply no-underline;
+    // }
 }
 
+// a:not(button) {
 a {
-    text-decoration: underline;
+    // &:hover {
+    //     @apply text-gray-300;
+    // }
+    // text-decoration: none;
+    // @apply italic;
+    // @apply underline; // TODO : can't be removed for embed btn ?
+    // @apply text-white;
+    &:hover {
+        @apply text-gray-700;
+        button {
+            @apply text-gray-300;
+        }
+        // @apply ;
+    }
 }
-
 .sv-page.sv-body__page {
     @apply flex;
     .sv-row {

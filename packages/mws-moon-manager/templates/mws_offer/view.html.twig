@@ -19,6 +19,10 @@
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
 		'offer': offer|serialize('json')|e('html_attr'),
+		'addMessageForm': (form_start(addMessageForm, { 'attr' : {
+				'class': 'd-flex flex-wrap mws-survey-js-form'
+		} }) ~ form_widget(addMessageForm)
+		~ form_end(addMessageForm))|e('html_attr'),
 		'viewTemplate' : viewTemplate,
 	} ) }}>
 		<div class="flex flex-col justify-end content-end items-stretch h-[100dvh] overflow-hidden print:h-auto">
