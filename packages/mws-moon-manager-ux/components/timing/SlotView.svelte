@@ -439,18 +439,21 @@
       isLoading = false;
       return;
     }
+    const syncTiming = timingSlot;
     if (undefined !== selectionStartIndex) {
+      // avoid bulk process stop on early selectionStartIndex switch...
+      const syncStartIdx = lastSelectedIndex;
       // TODO : factorize Toggle qualif of all previous or next qualifs :
-      let delta = selectionStartIndex - lastSelectedIndex;
+      let delta = selectionStartIndex - syncStartIdx;
       let step = delta > 0 ? -1 : 1;
       while (delta !== 0) {
-        const timingTarget = timings[lastSelectedIndex + delta];
+        const timingTarget = timings[syncStartIdx + delta];
         await removeAllTagsByTiming(timingTarget);
         console.log("Selection side qualif for " + timingTarget.sourceStamp);
         delta += step;
       }
     }
-    await removeAllTagsByTiming(timingSlot);
+    await removeAllTagsByTiming(syncTiming);
     isLoading = false;
   }
 
@@ -512,17 +515,20 @@
     q.toggleQualif = async () => {
       console.log(qIdx + ": Toggle qualif " + q.label, q);
 
+      const syncTiming = timingSlot;
       if (undefined !== selectionStartIndex) {
+        // avoid bulk process stop on early selectionStartIndex switch...
+        const syncStartIdx = lastSelectedIndex;
         // Toggle qualif of all previous or next qualifs :
-        let delta = selectionStartIndex - lastSelectedIndex;
+        let delta = selectionStartIndex - syncStartIdx;
         let step = delta > 0 ? -1 : 1;
         while (delta !== 0) {
-          const timingTarget = timings[lastSelectedIndex + delta];
+          const timingTarget = timings[syncStartIdx + delta];
           await toggleQualif(q, timingTarget);
           console.log("Selection side qualif for " + timingTarget.sourceStamp);
           delta += step;
         }
-        await toggleQualif(q, timingSlot);
+        await toggleQualif(q, syncTiming);
       } else {
         // await q.timeTags?.forEach(async t => {
         //   await addTag(t);
@@ -757,6 +763,13 @@
   //   })();
   // }
 
+  let headerScroll = 0;
+  const headerScrollHandler = (e) => {
+    // console.log(e);
+    // https://css-tricks.com/styling-based-on-scroll-position/
+    headerScroll = e.target.scrollTop;
+  }
+
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -829,6 +842,8 @@
       on:mouseover={() => (detailIsHovered = true)}
       on:mouseleave={() => (detailIsHovered = false)}
       on:mouseout={() => (detailIsHovered = false)}
+      on:scroll={headerScrollHandler}
+      data-scroll={headerScroll}
     >
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
@@ -934,11 +949,10 @@
         <span class="float-right w-[14rem] h-7" /> -->
       {/if}
       <span
-        class="float-right max-w-[70%] md:max-w-[75%]
+        class="tags-details float-right max-w-[70%] md:max-w-[75%]
         rounded-md z-40 inline-flex flex-wrap
         ml-1 mr-1 text-xs md:text-base
-        pointer-events-none md:pointer-events-auto
-        opacity-90 md:opacity-100
+        pointer-events-none md:pointer-events-none
         "
         class:!max-w-[50%]={isFullScreen}
         class:top-0={!isFullScreen}
@@ -1028,7 +1042,7 @@
     >
       <div
         class:bg-red-500={resizing}
-        class="draggable"
+        class="draggable pl-2"
         use:draggable={{
           helper: "clone", // TODO: handler is going faster than mouse on Y...?
 
@@ -1146,7 +1160,7 @@
       on:click|stopPropagation|preventDefault
     >
       <div
-        class="draggable"
+        class="draggable pl-2"
         use:draggable={{
           helper: "clone", // TODO: clone is going faster than mouse on Y...?
           revert: true,
@@ -1270,5 +1284,20 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+
+  .mws-timing-slot-header {
+    .tags-details {
+      @apply opacity-100;
+    }
+    &:hover {
+      &:not([data-scroll='0']) {
+        .tags-details {
+        @apply opacity-0;
+        }
+        
+      }
+    }
+
   }
 </style>

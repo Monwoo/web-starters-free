@@ -2066,7 +2066,14 @@ class MwsTimingController extends AbstractController
             }
         }
 
-        if (!$wasQualified) {
+        // TODO : cleanOnToggle feature is buggy
+        //        behavior on multi-select (re-select self
+        //        and try to merge with other tag will remove
+        //        self config, not what we wanted...)
+        //         + Config from user param if found way to do it
+       $cleanOnToggle = false;
+
+        if (!$cleanOnToggle || !$wasQualified) {
             // Add tag if was not present, keep clean otherwise
             foreach ($qualif->getTimeTags() as $tag) {
                 $timeSlot->addTag($tag);

@@ -33,10 +33,11 @@
       [timingSlot?.sourceStamp]: true,
     };
     if (undefined !== selectionStartIndex) {
-      let delta = selectionStartIndex - lastSelectedIndex;
+      const syncStartIdx = lastSelectedIndex;
+      let delta = selectionStartIndex - syncStartIdx;
       let step = delta > 0 ? -1 : 1;
       while (delta !== 0) {
-        const timingTarget = timings[lastSelectedIndex + delta];
+        const timingTarget = timings[syncStartIdx + delta];
         selectedSourceStamps[timingTarget?.sourceStamp] = true;
         // console.log("Selection ok for " + timingTarget.sourceStamp);
         delta += step;

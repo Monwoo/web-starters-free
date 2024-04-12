@@ -269,18 +269,16 @@
         </button>
         <div class="summary">
           <!-- // TODO : code factorization, indide component ? -->
-          {@html jsonLookup.searchStart &&
-            jsonLookup.searchStart.length
-              ? "<strong>Depuis le : </strong>" +
-                dayjs(jsonLookup.searchStart).format("YYYY/MM/DD HH:mm:ss") +
-                "<br/>"
-              : ""}
-          {@html jsonLookup.searchEnd &&
-            jsonLookup.searchEnd.length
-              ? "<strong>Jusqu'au : </strong>" +
-                dayjs(jsonLookup.searchEnd).format("YYYY/MM/DD HH:mm:ss") +
-                "<br/>"
-              : ""}
+          {@html jsonLookup.searchStart && jsonLookup.searchStart.length
+            ? "<strong>Depuis le : </strong>" +
+              dayjs(jsonLookup.searchStart).format("YYYY/MM/DD HH:mm:ss") +
+              "<br/>"
+            : ""}
+          {@html jsonLookup.searchEnd && jsonLookup.searchEnd.length
+            ? "<strong>Jusqu'au : </strong>" +
+              dayjs(jsonLookup.searchEnd).format("YYYY/MM/DD HH:mm:ss") +
+              "<br/>"
+            : ""}
           {@html jsonLookup.searchTags && jsonLookup.searchTags.length
             ? "<strong>Tags : </strong>" +
               jsonLookup.searchTags.reduce(
@@ -327,12 +325,24 @@
       </div>
     </div>
 
+    <!-- // TODO : stress tests ? switching selectionStartIndex off
+    when bulk tag is processing is stoping bulk tag list -->
     <span
       class="float-right m-1 text-black sticky z-30
     bg-white/70 text-xs md:text-base p-1
-    top-1 pointer-events-none"
+    top-1 select-none"
+      on:click={() => {
+        if (undefined === selectionStartIndex) {
+          selectionStartIndex = lastSelectedIndex;
+        } else {
+          selectionStartIndex = undefined;
+        }
+      }}
     >
-      [{pageNumber}-{lastSelectedIndex}]
+      <!-- // TODO : componentize to remove code duplication with SlotView... -->
+      [{pageNumber}-{undefined !== selectionStartIndex
+        ? `${selectionStartIndex}..`
+        : ""}{lastSelectedIndex}]
     </span>
     <span
       class="text-xs md:text-base float-right 

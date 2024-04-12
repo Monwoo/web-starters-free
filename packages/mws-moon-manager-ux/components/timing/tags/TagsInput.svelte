@@ -50,18 +50,21 @@
   let addedTagKey;
 
   export let removeTag = async (tag, comment = null) => {
+    const syncTiming = timing;
     if (undefined !== selectionStartIndex) {
+      // avoid bulk process stop on early selectionStartIndex switch...
+      const syncStartIdx = lastSelectedIndex;
       // TODO : factorize Toggle qualif of all previous or next qualifs :
-      let delta = selectionStartIndex - lastSelectedIndex;
+      let delta = selectionStartIndex - syncStartIdx;
       let step = delta > 0 ? -1 : 1;
       while (delta !== 0) {
-        const timingTarget = timings[lastSelectedIndex + delta];
+        const timingTarget = timings[syncStartIdx + delta];
         await removeTagExtended(timingTarget, tag, comment);
         console.log("Selection side qualif for " + timingTarget.sourceStamp);
         delta += step;
       }
     }
-    await removeTagExtended(timing, tag, comment);
+    await removeTagExtended(syncTiming, tag, comment);
   };
 
   export let removeTagExtended = async (timingTarget, tag, comment = null) => {
@@ -126,18 +129,21 @@
   };
 
   export let addTag = async (tag, comment = null) => {
+    const syncTiming = timing;
     if (undefined !== selectionStartIndex) {
+      // avoid bulk process stop on early selectionStartIndex switch...
+      const syncStartIdx = lastSelectedIndex;
       // TODO : factorize Toggle qualif of all previous or next qualifs :
-      let delta = selectionStartIndex - lastSelectedIndex;
+      let delta = selectionStartIndex - syncStartIdx;
       let step = delta > 0 ? -1 : 1;
       while (delta !== 0) {
-        const timingTarget = timings[lastSelectedIndex + delta];
+        const timingTarget = timings[syncStartIdx + delta];
         await addTagExtended(timingTarget, tag, comment);
         console.log("Selection side qualif for " + timingTarget.sourceStamp);
         delta += step;
       }
     }
-    await addTagExtended(timing, tag, comment);
+    await addTagExtended(syncTiming, tag, comment);
   };
 
   export let addTagExtended = async (
