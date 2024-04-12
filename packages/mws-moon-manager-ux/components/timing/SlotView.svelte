@@ -1042,7 +1042,7 @@
     >
       <div
         class:bg-red-500={resizing}
-        class="draggable pl-2"
+        class="draggable pl-4"
         use:draggable={{
           helper: "clone", // TODO: handler is going faster than mouse on Y...?
 
@@ -1160,7 +1160,7 @@
       on:click|stopPropagation|preventDefault
     >
       <div
-        class="draggable pl-2"
+        class="draggable pl-4"
         use:draggable={{
           helper: "clone", // TODO: clone is going faster than mouse on Y...?
           revert: true,
