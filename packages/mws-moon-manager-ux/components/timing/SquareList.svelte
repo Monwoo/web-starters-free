@@ -16,7 +16,7 @@
   export let lastSelectedIndex = 0;
   export let movePageIndex;
   export let isMobile;
-  export let zoomStartRange = isMobile ? 37 : 15;
+  export let zoomStartRange = isMobile ? 35 : 15;
   export let zoomStartBaseSize = 5;
   export let zoomSquareRange = 5; // be square if lower than 50px
   export let listZoomRange = zoomStartRange;
@@ -28,7 +28,7 @@
   export let computedSize;
   export let isFullScreen = false;
 
-  $: zoomStartRange = isMobile ? 37 : 15;
+  $: zoomStartRange = isMobile ? 35 : 15;
   $: listZoomRange = zoomStartRange ? zoomStartRange : 5;
 
   // REAL screen width : (bigger than window)

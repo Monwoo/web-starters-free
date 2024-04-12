@@ -40,7 +40,7 @@
         // block: "center", // Small parent hierarchy scroll
         block: "nearest", // No parent hierarchy scroll
         behavior: "smooth",
-        inline: "nearest"
+        inline: "nearest",
       });
       // TIPS : CSS scroll-margin and scroll-padding
       // https://stackoverflow.com/questions/24665602/scrollintoview-scrolls-just-too-far
@@ -53,7 +53,6 @@
       // these properties of the element are taken into account:
       // padding-top border-top scroll-margin-top (and not margin-top)
       // scroll-padding-top (if set)
-
     }
   }
   // onMount(() => { // Only once at load...
@@ -67,22 +66,23 @@
   // TODO : factorize code with SlotView etc...
   let fetchQualifsFor = (timing) => {
     let allQualifsFor = [];
-    console.debug('SlotThumbnail quickQualifTemplates', quickQualifTemplates);
+    console.debug("SlotThumbnail quickQualifTemplates", quickQualifTemplates);
     quickQualifTemplates?.forEach((q) => {
-      const filteredArray = timing.tags?.filter(tt => q.timeTags?.filter(
-        (qt) => tt.slug === qt.slug
-      ).length > 0);
+      const filteredArray = timing.tags?.filter(
+        (tt) => q.timeTags?.filter((qt) => tt.slug === qt.slug).length > 0
+      );
       if (filteredArray.length === q.timeTags?.length) {
         allQualifsFor.push(q);
       }
     });
     return allQualifsFor;
-  }
+  };
 
   let currentTimeSlotQualifs;
   // TIPS, use 'quickQualifTemplates, ' to ensure currentTimeSlotQualifs
   //       also get refreshed if quickQualifTemplates did change ?
-  $: quickQualifTemplates, currentTimeSlotQualifs = fetchQualifsFor(timingSlot);
+  $: quickQualifTemplates,
+    (currentTimeSlotQualifs = fetchQualifsFor(timingSlot));
 
   // $: currentTimeSlotQualifs?.forEach(q => {
   //   q.tooltipId = `slotThumbQualifTooltip-${UID}`;
@@ -91,26 +91,27 @@
   $: tooltipIdsByQId = currentTimeSlotQualifs?.reduce((acc, q) => {
     acc[q.id] = `slotThumbQualifTooltip-${UID}`;
     return acc;
-  }, {})
+  }, {});
 
   export let computedSize;
   $: {
     // TIPS : 'size,' to force refresh from html after size changes :
     // TODO : debounce and wait for call ends ? well, fast to assign only one props...
-    size, (async () => {
-      // TIPS : tick() to wait for html changes
-      await tick();
-      // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
-      if (computedSize !== htmlRoot?.offsetWidth) {
-        // TIPS : check changes before assign to avoid useless refresh
-        computedSize = htmlRoot?.offsetWidth;
-      }
-    })();
+    size,
+      (async () => {
+        // TIPS : tick() to wait for html changes
+        await tick();
+        // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
+        if (computedSize !== htmlRoot?.offsetWidth) {
+          // TIPS : check changes before assign to avoid useless refresh
+          computedSize = htmlRoot?.offsetWidth;
+        }
+      })();
   }
-  onMount(() => { // Only once at load... but NEEDED, for first init other than null
+  onMount(() => {
+    // Only once at load... but NEEDED, for first init other than null
     computedSize = htmlRoot.offsetWidth; // htmlRoot is now != of null...
   });
-
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->
@@ -132,7 +133,11 @@ overflow-visible border-solid border-4"
   class:border-blue-600={isSelected}
   class:border-green-400={!isSelected && timingSlot.tags?.length}
   style:height={forceHeight ? forceHeight : size}
-  style:min-height={forceHeight ? '7rem' : size}
+  style:min-height={forceHeight
+    ? computedSize > 120
+      ? "7rem"
+      : forceHeight
+    : size}
   style:width={size}
   style:min-width={size}
 >
@@ -174,13 +179,15 @@ overflow-visible border-solid border-4"
     </object>
   {/if} -->
 
-  {#if (timingSlot?.thumbnailJpeg ?? false) && (computedSize < 120) }
+  {#if (timingSlot?.thumbnailJpeg ?? false) && computedSize < 120}
     <img
       loading="lazy"
       alt="screenshot"
       arial-label="screenshot"
       class="object-contain w-full h-full"
-      src={ "screenshot" == timingSlot?.source?.type ? timingSlot?.thumbnailJpeg : "" }
+      src={"screenshot" == timingSlot?.source?.type
+        ? timingSlot?.thumbnailJpeg
+        : ""}
     />
   {:else}
     <img
@@ -188,9 +195,7 @@ overflow-visible border-solid border-4"
       alt="screenshot"
       arial-label="screenshot"
       class="object-contain w-full h-full"
-      src={
-        "screenshot" == timingSlot?.source?.type ? slotPath : ""
-      }
+      src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
     />
   {/if}
 
@@ -211,34 +216,43 @@ overflow-visible border-solid border-4"
     });
   }); -->
 
-  <!-- <span>{slotName}</span> -->
-  <div class="absolute z-20 bottom-1 right-0 bg-white
-  max-w-[2rem] max-h-[2rem] opacity-50 hover:opacity-100"
-  class:opacity-50={!isSelected}
+  <!-- <span>{slotName}</span> 
+  
   style={`
     width: ${(computedSize * 0.2).toFixed(0)}px;
     height: ${(computedSize * 0.2).toFixed(0)}px;
   `}
+  
+  -->
+  <div
+    class="absolute z-20 bottom-1 left-0 bg-white
+  flex
+  hover:opacity-100"
+    class:opacity-25={!isSelected}
   >
     <!-- // ONLY first qualif for thumbs... 
     TODO : refactor ? primaryColorRgb is a class or a String, depending of color select picker...
     -->
-    {#each (currentTimeSlotQualifs?? []).slice(0,1) as q}
+    {#each (currentTimeSlotQualifs ?? []).slice(0, computedSize > 120 ? 7 : 2) as q}
       {#if computedSize > 120}
         <!-- data-tooltip-target={tooltipIdsByQId[q.id]} -->
-        <div class="inline-flex border-b-4 border-t-4 object-contain w-full h-full
+        <div
+          class="inline-flex border-b-4 border-t-4 object-contain w-full h-full
         content-center justify-center"
-        style={`
+          style={`
           border-color: ${q.primaryColorHex};
-        `}>
-          <HtmlIcon qualif={q} height={"h-full"} width={"w-full"}></HtmlIcon>
+        `}
+        >
+          <HtmlIcon qualif={q} height={"h-full"} width={"w-full"} />
         </div>
       {:else}
-      <!-- data-tooltip-target={tooltipIdsByQId[q.id]} -->
-        <div class="w-full h-full"
-        style={`
+        <!-- data-tooltip-target={tooltipIdsByQId[q.id]} -->
+        <div
+          class="min-h-3 min-w-3 w-full h-full"
+          style={`
           background-color: ${q.primaryColorHex};
-        `}></div>
+        `}
+        />
       {/if}
     {/each}
   </div>
