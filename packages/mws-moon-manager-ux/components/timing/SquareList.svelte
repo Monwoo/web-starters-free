@@ -21,6 +21,21 @@
   export let htmlRoot;
   // TIPS : opti by not following selection if list is hidden :
   export let followSelection = true;
+  export let isMobile = false;
+  export let splitRange;
+  export let computedSize;
+  // REAL screen width : (bigger than window)
+  // let maxScreenW = window.screen.width;
+  // https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
+  const doc = document,
+    docElem = doc.documentElement,
+    body = doc.getElementsByTagName("body")[0];
+  // $: x = window.innerWidth || docElem.clientWidth || body.clientWidth;
+  let x;
+  $: isMobile, x = window.innerWidth || docElem.clientWidth || body.clientWidth;
+  // y = win.innerHeight|| docElem.clientHeight|| body.clientHeight;
+  // Is half screen
+  $: maxScreenW = isMobile ? x : (x ?? 0) * (100 - (splitRange ?? 0))/100;
 
   $: console.debug("[timing/SquareList] Having timings :", timings);
   $: {
@@ -149,29 +164,40 @@
 
 <div
   bind:this={htmlRoot}
-  class="mws-timing-square-list max-h-[80dvh]
+  class="mws-timing-square-list max-h-[100dvh]
   overflow-y-auto flex flex-wrap content-start justify-center {classNames}"
   {style}
 >
-  {#each timings ?? [] as timingSlot, idx}
-    <SlotThumbnail
-      bind:quickQualifTemplates
-      {followSelection}
-      {timingSlot}
-      size={`${thumbSize.toFixed(0)}px`}
-      forceHeight={zoomRange > startZoom ? "auto" : null}
-      isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
-      on:click={() => {
-        lastSelectedIndex = idx;
-        // TIPS : below not needed, since done with svelte reactive update of lastSelectedIndex
-        // selectedSourceStamps[timingSlot.sourceStamp] =
-        //   !selectedSourceStamps[timingSlot.sourceStamp];
-        // selectedSourceStamps = {
-        //   [timingSlot.sourceStamp]: true,
-        // };
-      }}
-    />
-  {/each}
+  <!-- // TIPS :  justify-center will break image align if over sized -->
+  <div
+    class="overflow-x-auto max-w-[100dvw]
+  flex flex-wrap content-start
+  "
+    class:justify-start={computedSize > maxScreenW}
+    class:justify-center={computedSize <= maxScreenW}
+  >
+    <!-- {computedSize} - {maxScreenW} - {splitRange} -->
+    {#each timings ?? [] as timingSlot, idx}
+      <SlotThumbnail
+        bind:quickQualifTemplates
+        bind:computedSize
+        {followSelection}
+        {timingSlot}
+        size={`${thumbSize.toFixed(0)}px`}
+        forceHeight={zoomRange > startZoom ? "auto" : null}
+        isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
+        on:click={() => {
+          lastSelectedIndex = idx;
+          // TIPS : below not needed, since done with svelte reactive update of lastSelectedIndex
+          // selectedSourceStamps[timingSlot.sourceStamp] =
+          //   !selectedSourceStamps[timingSlot.sourceStamp];
+          // selectedSourceStamps = {
+          //   [timingSlot.sourceStamp]: true,
+          // };
+        }}
+      />
+    {/each}
+  </div>
 
   <!-- TIPS : too slow to load lot of iùg, debounce to make it fluid -->
   <div class="flex items-start sticky bottom-0 z-30 w-full">

@@ -386,11 +386,12 @@
     <!-- // TODO : same height as fixed nav if fixed nav ? -->
     <!-- <span class="h-7 w-full"></span> -->
 
+    <!-- style="
+    {thumbSize > 50 ? `min-width: ${thumbSize}px` : ``}
+  " -->
+
     <div
-      class="flex flex-wrap w-[100dvw] h-[95dvh] md:flex-row"
-      style="
-      {thumbSize > 50 ? `min-width: ${thumbSize}px` : ``}
-    "
+      class="flex flex-wrap w-[100dvw] pb-14 h-[95dvh] md:flex-row"
     >
       <!-- { JSON.stringify(timings) } -->
       {#if timings[lastSelectedIndex] ?? false}
@@ -439,7 +440,7 @@
         bind:thumbSize
         followSelection={!isFullScreen}
         {quickQualifTemplates}
-        {timings}
+        {timings} {isMobile} {splitRange}
         {movePageIndex}
         class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
         ml-0 md:ml-[0.5%] mt-[2%] md:mt-0"

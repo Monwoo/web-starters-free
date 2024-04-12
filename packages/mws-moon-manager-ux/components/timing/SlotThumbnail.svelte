@@ -93,7 +93,7 @@
     return acc;
   }, {})
 
-  let computedSize;
+  export let computedSize;
   $: {
     // TIPS : 'size,' to force refresh from html after size changes :
     // TODO : debounce and wait for call ends ? well, fast to assign only one props...
@@ -101,7 +101,10 @@
       // TIPS : tick() to wait for html changes
       await tick();
       // TODO : ok if out of lifecycle ? async call to wait for UI refresh and new computed size
-      computedSize = htmlRoot?.offsetWidth
+      if (computedSize !== htmlRoot?.offsetWidth) {
+        // TIPS : check changes before assign to avoid useless refresh
+        computedSize = htmlRoot?.offsetWidth;
+      }
     })();
   }
   onMount(() => { // Only once at load... but NEEDED, for first init other than null
@@ -113,6 +116,9 @@
 <!-- {JSON.stringify(timingSlot)} -->
 <!-- https://svelte.dev/repl/cfcb6407b0c44b6298a4fd27f7aec109?version=3.35.0
   event forwarding : use on:click without values ?
+
+  TIPS : use min-width to force width over flex container
+  and trigger scrolls :
 -->
 <div
   bind:this={htmlRoot}
@@ -125,7 +131,9 @@ overflow-visible border-solid border-4"
   class:border-blue-600={isSelected}
   class:border-green-400={!isSelected && timingSlot.tags?.length}
   style:height={forceHeight ? forceHeight : size}
+  style:min-height={forceHeight ? forceHeight : size}
   style:width={size}
+  style:min-width={size}
 >
   <!--
         data="{timingSlot.thumbnailJpeg ?? '#404'}" won't work, will sub load current page
