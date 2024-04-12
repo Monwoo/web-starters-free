@@ -395,7 +395,7 @@
   " -->
 
     <div
-      class="flex flex-wrap w-[100dvw] pb-14 h-[95dvh] md:flex-row"
+      class="flex flex-wrap w-[100dvw] pb-14 h-[92dvh] md:flex-row"
     >
       <!-- { JSON.stringify(timings) } -->
       {#if timings[lastSelectedIndex] ?? false}
