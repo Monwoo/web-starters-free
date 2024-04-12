@@ -189,6 +189,64 @@
 >
   <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
+    <span
+      class="text-xs md:text-base float-right 
+  right-0 top-0 z-50 sticky pr-7"
+    >
+      <button
+        class="float-right m-1 top-0"
+        style:opacity={!moveResp.isLast ? 1 : 0.7}
+        on:click={() => moveSelectedIndex(1)}
+      >
+        Next.
+      </button>
+      <button
+        class="float-right m-1 top-0"
+        style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}
+        on:click={() => moveSelectedIndex(-1)}
+      >
+        Prev.
+      </button>
+      {#if moveResp && moveResp.isLast}
+        <button
+          class="float-right m-1 top-0"
+          on:click|stopPropagation={() => movePageIndex(1)}
+        >
+          Next. Page
+        </button>
+      {/if}
+      {#if moveResp.isFirst && pageNumber > 1}
+        <button
+          class="float-right m-1 top-0"
+          on:click|stopPropagation={() => movePageIndex(-1)}
+        >
+          Prev. Page
+        </button>
+      {/if}
+    </span>
+
+    <!-- // TODO : stress tests ? switching selectionStartIndex off
+    when bulk tag is processing is stoping bulk tag list -->
+    <span
+      class="float-right m-1 text-black sticky
+      bg-white/70 text-xs md:text-base p-1
+      top-1 select-none"
+      class:z-50={!isFullScreen}  
+      class:z-30={isFullScreen}  
+      on:click={() => {
+        if (undefined === selectionStartIndex) {
+          selectionStartIndex = lastSelectedIndex;
+        } else {
+          selectionStartIndex = undefined;
+        }
+      }}
+    >
+      <!-- // TODO : componentize to remove code duplication with SlotView... -->
+      [{pageNumber}-{undefined !== selectionStartIndex
+        ? `${selectionStartIndex}..`
+        : ""}{lastSelectedIndex}]
+    </span>
+
     <!-- <div class="mws-menu-wrapper inline-flex flex-col sticky top-0 z-40 bg-yellow-100"> -->
     <div class="mws-menu-wrapper inline-flex flex-col bg-yellow-100">
       <!-- https://flowbite.com/docs/components/navbar/#example -->
@@ -325,60 +383,6 @@
       </div>
     </div>
 
-    <!-- // TODO : stress tests ? switching selectionStartIndex off
-    when bulk tag is processing is stoping bulk tag list -->
-    <span
-      class="float-right m-1 text-black sticky z-30
-    bg-white/70 text-xs md:text-base p-1
-    top-1 select-none"
-      on:click={() => {
-        if (undefined === selectionStartIndex) {
-          selectionStartIndex = lastSelectedIndex;
-        } else {
-          selectionStartIndex = undefined;
-        }
-      }}
-    >
-      <!-- // TODO : componentize to remove code duplication with SlotView... -->
-      [{pageNumber}-{undefined !== selectionStartIndex
-        ? `${selectionStartIndex}..`
-        : ""}{lastSelectedIndex}]
-    </span>
-    <span
-      class="text-xs md:text-base float-right 
-    right-14 top-0 z-50 sticky"
-    >
-      {#if moveResp && moveResp.isLast}
-        <button
-          class="float-right m-1 top-0"
-          on:click|stopPropagation={() => movePageIndex(1)}
-        >
-          Next. Page
-        </button>
-      {/if}
-      <button
-        class="float-right m-1 top-0"
-        style:opacity={!moveResp.isLast ? 1 : 0.7}
-        on:click={() => moveSelectedIndex(1)}
-      >
-        Next.
-      </button>
-      <button
-        class="float-right m-1 top-0"
-        style:opacity={lastSelectedIndex > 0 ? 1 : 0.7}
-        on:click={() => moveSelectedIndex(-1)}
-      >
-        Prev.
-      </button>
-      {#if moveResp.isFirst && pageNumber > 1}
-        <button
-          class="float-right m-1 top-0"
-          on:click|stopPropagation={() => movePageIndex(-1)}
-        >
-          Prev. Page
-        </button>
-      {/if}
-    </span>
     <!-- // TODO : same height as fixed nav if fixed nav ? -->
     <!-- <span class="h-7 w-full"></span> -->
 
