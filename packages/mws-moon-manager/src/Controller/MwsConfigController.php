@@ -5,6 +5,7 @@ namespace MWS\MoonManagerBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
+use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,7 @@ class MwsConfigController extends AbstractController
     #[Route('/backup', name: 'mws_config_backup')]
     public function backup(
         Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
     ): Response {
         $user = $this->getUser();
         if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
@@ -166,6 +168,15 @@ class MwsConfigController extends AbstractController
                     $this->mwsFileSize($f->getPathname())
                 ) . ']';
         }, iterator_to_array($finder, false));
+
+        $qb = $mwsTimeSlotRepository->createQueryBuilder('s')
+        ->select('count(s.id)')
+        ->where('s.thumbnailJpeg IS NOT NULL');
+
+        $thumbnailsCount = $qb->getQuery()->getSingleScalarResult();
+        // dd($qb->getQuery()->getDQL());
+        // dd($thumbnailsCount);
+
         return $this->render('@MoonManager/mws_config/backup.html.twig', [
             'backupForm' => $backupForm,
             'backups' => $bFiles,
@@ -175,6 +186,7 @@ class MwsConfigController extends AbstractController
                 'databasesTotalSize' => $databasesTotalSize,
                 'backupTotalSize' => $backupTotalSize,
                 'uploadedFiles' => $uploadedFiles,
+                'thumbnailsCount' => $thumbnailsCount,
             ]
         ]);
     }

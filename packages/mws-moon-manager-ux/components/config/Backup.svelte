@@ -20,7 +20,7 @@
   export let csrfBackupDownload;
   export let isLoading = false;
 
-  const base = process.env.BASE_HREF_FULL ?? '';
+  const base = process.env.BASE_HREF_FULL ?? "";
 
   // console.debug(backup);
   let backupName;
@@ -120,15 +120,23 @@
 >
   <!-- <div slot="mws-header-container" />
   -->
-  <div class="mws-config-backup p-3 flex flex-wrap
-  justify-center items-center text-center">
+  <div
+    class="mws-config-backup p-3 flex flex-wrap
+  justify-center items-center text-center"
+  >
     <h1 class="w-full p-4">Importer un backup</h1>
     <div id="config-backup-form" class="detail w-full">
       {@html backupForm}
     </div>
-    <h1 class="w-full p-4">Exporter un backup [Max {$state.config.backupTotalSize ?? '--'}]</h1>
-    <p class="w-full">Taille du dossier upload : [{$state.config.uploadsTotalSize ?? '--'}]</p>
-    <p class="w-full">Taille des données : [{$state.config.databasesTotalSize ?? '--'}]</p>
+    <h1 class="w-full p-4">
+      Exporter un backup [Max {$state.config.backupTotalSize ?? "--"}]
+    </h1>
+    <p class="w-full">
+      Taille du dossier upload : [{$state.config.uploadsTotalSize ?? "--"}]
+    </p>
+    <p class="w-full">
+      Taille des données : [{$state.config.databasesTotalSize ?? "--"}]
+    </p>
 
     <!-- onsubmit="return confirm('Êtes vous sur de vouloir faire et télécharger un backup ?');" -->
     <div class="p-4 w-full flex flex-wrap items-center justify-center">
@@ -149,7 +157,11 @@
             on:input={debounce(async (e) => {
               backupName = slugify(e.target.value);
               e.target.value = backupName;
-              console.debug("Update backup name : ", e.target.value, backupName);
+              console.debug(
+                "Update backup name : ",
+                e.target.value,
+                backupName
+              );
             }, 300)}
             on:keydown={debounce(async (e) => {
               if ("Enter" == e.key) {
@@ -166,16 +178,14 @@
             }, 300)}
           />
         </div>
-  
+
         <div class="p-4 w-full flex items-center justify-center">
           <input type="hidden" name="_csrf_token" value={csrfBackupDownload} />
-          <button class=" m-2"
-          style:--tw-shadow-color="#FF0000"
-          type="submit">
+          <button class=" m-2" style:--tw-shadow-color="#FF0000" type="submit">
             Faire un backup pour
             {dayjs().format("YYYYMMDD_HHmmss")}-{backupName ??
               "MwsCrm"}.zip</button
-          >  
+          >
         </div>
       </form>
 
@@ -216,13 +226,19 @@
         <Loader {isLoading} />
       </form> -->
     </div>
-    <h1 class="w-full p-4">Liste des backups [{$state.config.backupsTotalSize ?? '--'}]</h1>
+    <h1 class="w-full p-4">
+      Liste des backups [{$state.config.backupsTotalSize ?? "--"}]
+    </h1>
     <ul class="w-full">
       {#each backups ?? [] as backupDir}
-        <div class="p-2 w-full
-        flex flex-wrap items-center justify-center">
-          <div class="w-1/2 px-4
-          flex flex-wrap items-start justify-end">
+        <div
+          class="p-2 w-full
+        flex flex-wrap items-center justify-center"
+        >
+          <div
+            class="w-1/2 px-4
+          flex flex-wrap items-start justify-end"
+          >
             <a>
               <button>Télécharger</button>
             </a>
@@ -230,32 +246,54 @@
               <button style="--mws-primary-rgb: 255, 0, 0">Supprimer</button>
             </a>
           </div>
-          <div class="w-1/2
-          flex flex-wrap items-start justify-start">
+          <div
+            class="w-1/2
+          flex flex-wrap items-start justify-start"
+          >
             {backupDir}
           </div>
         </div>
       {/each}
     </ul>
-    <h1 class="w-full p-4">Liste des uploads [{$state.config.uploadsTotalSize ?? '--'}]</h1>
-    <ul class="w-full">
+    <h1 class="w-full p-4">
+      Liste des uploads [{$state.config.uploadsTotalSize ?? "--"}]
+    </h1>
+    <div class="w-full">
       {#each $state.config.uploadedFiles ?? [] as f}
-        <div class="p-2 w-full
-        flex flex-wrap items-center justify-center">
-          <div class="w-full px-4
-          flex flex-wrap items-center justify-center">
-            <a href={ `${base}/uploads/messages/tchats/${
-              f.split(' [')[0] ?? ''
-            }` } target="_blank">
+        <div
+          class="p-2 w-full
+        flex flex-wrap items-center justify-center"
+        >
+          <div
+            class="w-full px-4
+          flex flex-wrap items-center justify-center"
+          >
+            <a
+              href={`${base}/uploads/messages/tchats/${f.split(" [")[0] ?? ""}`}
+              target="_blank"
+            >
               <button>{f}</button>
             </a>
           </div>
-          <div class="w-1/2
-          flex flex-wrap items-start justify-start">
-          </div>
+          <div
+            class="w-1/2
+          flex flex-wrap items-start justify-start"
+          />
         </div>
       {/each}
-    </ul>
+    </div>
+    <h1 class="w-full p-4">Thumbnails</h1>
+    <p class="w-full">
+      Nombre de thumbnails en base : [{$state.config.thumbnailsCount ?? "--"}]
+    </p>
+    <div
+      class="w-full p-2
+        flex flex-wrap items-center justify-center"
+    >
+      <button style="--mws-primary-rgb: 255, 0, 0">
+        Supprimer tous les thumbnails
+      </button>
+    </div>
   </div>
 </Base>
 
