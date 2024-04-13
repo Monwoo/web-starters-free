@@ -5,7 +5,9 @@ twig:
         kernelRootDir: "%kernel.project_dir%"
         # https://ourcodeworld.com/articles/read/1177/how-to-retrieve-env-variables-directly-from-a-twig-view-in-symfony-5
         HAVE_MWS_DEMO: '%env(HAVE_MWS_DEMO)%'
-
+        # TODO : tips : below not needed, all env var injected
+        #               by which other way ?
+        CONFIG_BCKUP_MAX_UPLOAD_SIZE: '%env(CONFIG_BCKUP_MAX_UPLOAD_SIZE)%'
     number_format:
         decimals: 4
     # https://symfony.com/doc/current/the-fast-track/en/22-encore.html#leveraging-bootstrap

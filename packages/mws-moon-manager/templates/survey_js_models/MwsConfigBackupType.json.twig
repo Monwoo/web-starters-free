@@ -11,13 +11,18 @@
     elements: [{
             "_cmt": "https://surveyjs.io/form-library/documentation/customize-question-types/create-custom-widgets",
             "type": "file",
-            "title": "Import .zip or .sqlite backup (max 1Go)",
+            "title": "Import .zip or .sqlite backup (max " ~
+                (CONFIG_BCKUP_MAX_UPLOAD_SIZE
+                ? CONFIG_BCKUP_MAX_UPLOAD_SIZE|bytesSize|humanSize
+                : '20Mo')
+            ~ ")",
             "name": "uploadFile",
             "showCommentArea": false,
             "storeDataAsText": false,
             "waitForUpload": true,
             "allowMultiple": false,
-            "maxSize": 1024000000,
+            "maxSize": (CONFIG_BCKUP_MAX_UPLOAD_SIZE
+            ?? '20Mo')|bytesSize,
             "hideNumber": true
         }
     ]
