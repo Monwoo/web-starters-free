@@ -5,7 +5,7 @@
   import AddModal from "../../message/AddModal.svelte";
   import { onMount } from "svelte";
   import { tick } from "svelte";
-import FunnelModal from "../tags/FunnelModal.svelte";
+  import FunnelModal from "../tags/FunnelModal.svelte";
 
   export let locale;
   export let offers = [];
@@ -196,7 +196,11 @@ AND outside of sticky elements -->
         <th scope="col" class="min-w-[24rem]">Description</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody
+      style={`
+        zoom: ${reportScale}%;
+      `}
+    >
       {#if yScrollable}
       {#each offers as offer}
         <!-- { JSON.stringify(offer) } -->
