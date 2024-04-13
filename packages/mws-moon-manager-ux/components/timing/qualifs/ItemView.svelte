@@ -1,5 +1,25 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+
+  /*
+  // TODO : quality review for icon field :
+  // Below OK, no popup :
+  * < script >
+  *  alert("Hello World!");
+  * < /script>
+  // Below OK, no popup :
+  <img
+    onload="alert(`Hello World!`)"
+    src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png"
+  />
+  <img
+    onload="console.warn(`Hello World!`)"
+    src="https://miguel.monwoo.com/embedded-iframes/prod/embeddable-iframe/favicomatic/favicon-96x96.png"
+  />
+  // TODO : write e2e secu tests + more test cases of injections ?
+  // // TODO : same injection tests to backend Api that must sanitize TOO
+  */
+  import sanitizeHtml from 'sanitize-html';
   import { slide } from "svelte/transition";
   import { quintOut, quintIn } from "svelte/easing";
   import { fly } from "svelte/transition";
@@ -45,6 +65,38 @@
 	let copyBuffer;
   let typeahead;
   let confirmInProgress = false;
+
+  // TODO : centralize sanitizer inside service or lib or...
+  export let sanitizeHtmlImg = (i) => {
+    // https://www.npmjs.com/package/sanitize-html
+    const clean = sanitizeHtml(i, {
+      allowedTags: sanitizeHtml.defaults
+      .allowedTags.concat([ 'img' ])
+      .concat([
+        // SVG
+        'svg', 'g', 'defs', 'linearGradient', 'stop', 'circle',
+        'path'
+      ]),
+      // allowedAttributes: false, // For SVG
+      allowedAttributes: {
+        '*': [
+          'href', 'align', 'alt', 'center', 'bgcolor',
+          'src', 'class', 'role', 'xmlns',
+          'data*', 'aria*',
+          'focusable', 'viewBox', 'd', 'fill',
+        ]
+      },
+      parser: {
+        // SVG elements like linearGradient into your content and 
+        // notice that they're not rendering as expected
+        // due to case sensitivity issues without below option :
+        lowerCaseTags: false,
+        lowerCaseAttributeNames: false
+      }
+    });
+
+    return clean;
+  };
 
   // TIPS : not on data change, only for init
   // $: typeAheadValue = qualif.label;
@@ -614,13 +666,13 @@ text-xs md:text-base">
       </span>
       <textarea
       placeholder="Icon HTML"
-      class=""
-      value={qualif.htmlIcon ?? ''}
+      class="w-full my-3 mx-7"
+      value={sanitizeHtmlImg(qualif.htmlIcon ?? '')}
       on:change={debounce(async (e)=> {
           if (isLoading) return;
           isLoading = true;
           console.debug('Sync new html icon for id : ', qualif.id);
-          qualif.htmlIcon = e.target.value;
+          qualif.htmlIcon = sanitizeHtmlImg(e.target.value);
           qualif = qualif;
           await syncQualifWithBackend(qualif);
           isLoading = false;

@@ -17,6 +17,7 @@
   import TagsInput from "../tags/TagsInput.svelte";
   import { state, offerTagsByKey } from "../../../stores/reduxStorage.mjs";
   import { onMount } from "svelte";
+  import sanitizeHtml from 'sanitize-html';
 
   export let locale;
   export let viewTemplate;
@@ -26,6 +27,47 @@
   export let funnelModal;
   export let yScrollable;
   export let reportScale = 100;
+
+  // TODO : centralize sanitizer inside service or lib or...
+  export let sanitizeClientHtml = (i) => {
+    console.debug(i); // return i;
+    // https://www.npmjs.com/package/sanitize-html
+    const clean = sanitizeHtml(i, {
+      allowedTags: sanitizeHtml.defaults
+      .allowedTags.concat([ 'img' ])
+      .concat([
+        // SVG
+        'svg', 'g', 'defs', 'linearGradient', 'stop', 'circle',
+        'path'
+      ]),
+      // allowedAttributes: false, // For SVG
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        '*': [
+          'href', 'align', 'alt', 'center', 'bgcolor',
+          'src', 'class', 'role', 'xmlns',
+          'data*', 'aria*',
+          'focusable', 'viewBox', 'd', 'fill',
+        ],
+        iframe: [
+          {
+            name: 'sandbox',
+            multiple: true,
+            values: ['allow-popups', 'allow-same-origin', 'allow-scripts']
+          }
+        ],
+      },
+      parser: {
+        // SVG elements like linearGradient into your content and 
+        // notice that they're not rendering as expected
+        // due to case sensitivity issues without below option :
+        lowerCaseTags: false,
+        lowerCaseAttributeNames: false
+      },
+    });
+
+    return clean;
+  };
 
   // TODO : format leadAt date with dayJs ?
   console.debug("LIST ITEM OFFER : ", offer);
@@ -260,15 +302,17 @@
           {@html (offer.sourceDetail?.messages ?? []).reverse().reduce( FAIL
           did change order of reduce function for now
         -->
-        {@html (offer.sourceDetail?.messages ?? []).reduce(
-          (html, msg) =>
-            `` + // TODO : factorise code duplication
-            msg
-              .replaceAll('src="/', `src="https://${offer.sourceName}/`)
-              .replaceAll('href="/', `href="https://${offer.sourceName}/`)
-              .replaceAll(`https://${offer.sourceName}/http`, `http`) +
-            html,
-          ``
+        {@html sanitizeClientHtml(
+          (offer.sourceDetail?.messages ?? []).reduce(
+            (html, msg) =>
+              `` + // TODO : factorise code duplication
+              msg
+                .replaceAll('src="/', `src="https://${offer.sourceName}/`)
+                .replaceAll('href="/', `href="https://${offer.sourceName}/`)
+                .replaceAll(`https://${offer.sourceName}/http`, `http`) +
+              html,
+            ``
+          )
         )}
       </div>
     </div>

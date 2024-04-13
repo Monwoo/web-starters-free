@@ -3,6 +3,7 @@
   // https://www.npmjs.com/package/svelte-time?activeTab=readme#custom-locale
   // import "dayjs/esm/locale/fr";
   // import dayjs from "dayjs/esm";
+  import sanitizeHtml from 'sanitize-html';
   import "dayjs/locale/fr";
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
@@ -19,6 +20,47 @@
   export let viewTemplate;
   export let offer;
   export let addMessageForm = "";
+
+  // TODO : centralize sanitizer inside service or lib or...
+  export let sanitizeClientHtml = (i) => {
+    console.debug(i); // return i;
+    // https://www.npmjs.com/package/sanitize-html
+    const clean = sanitizeHtml(i, {
+      allowedTags: sanitizeHtml.defaults
+      .allowedTags.concat([ 'img' ])
+      .concat([
+        // SVG
+        'svg', 'g', 'defs', 'linearGradient', 'stop', 'circle',
+        'path'
+      ]),
+      // allowedAttributes: false, // For SVG
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        '*': [
+          'href', 'align', 'alt', 'center', 'bgcolor',
+          'src', 'class', 'role', 'xmlns',
+          'data*', 'aria*',
+          'focusable', 'viewBox', 'd', 'fill',
+        ],
+        iframe: [
+          {
+            name: 'sandbox',
+            multiple: true,
+            values: ['allow-popups', 'allow-same-origin', 'allow-scripts']
+          }
+        ],
+      },
+      parser: {
+        // SVG elements like linearGradient into your content and 
+        // notice that they're not rendering as expected
+        // due to case sensitivity issues without below option :
+        lowerCaseTags: false,
+        lowerCaseAttributeNames: false
+      },
+    });
+
+    return clean;
+  };
 
   console.debug(offer);
 
@@ -48,7 +90,7 @@
       </a>
     </h1>
     <div class="w-full overflow-x-auto">
-      <table class="m-3 text-center">
+      <table class="m-3 text-center w-full">
         <thead>
           <tr>
             <th scope="col">Contact 1</th>
@@ -75,7 +117,7 @@
     </a>    
     
     <div class="offer-description w-full">
-      {@html offer.description}
+      {@html sanitizeClientHtml(offer.description)}
     </div>
     <div class="w-full">
       {#if myOfferId && offer.sourceUrl}
@@ -86,9 +128,9 @@
     </div>
     <div class="offer-messages w-full break-words whitespace-break-spaces">
       {#each offer.sourceDetail?.messages ?? [] as msg}
-        {@html msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
+        {@html sanitizeClientHtml(msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
           .replaceAll('href="/', `href="https://${offer.sourceName}/`)
-          .replaceAll(`https://${offer.sourceName}/http`, `http`)
+          .replaceAll(`https://${offer.sourceName}/http`, `http`))
         }
       {/each}
     </div>

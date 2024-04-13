@@ -1,6 +1,7 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import newUniqueId from "locally-unique-id-generator";
+  import sanitizeHtml from 'sanitize-html';
   const UID = newUniqueId();
   export let tooltipId = `htmlIconTooltip-${UID}`;
 
@@ -19,6 +20,49 @@
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m17 21-5-4-5 4V3.889a.92.92 0 0 1 .244-.629.808.808 0 0 1 .59-.26h8.333a.81.81 0 0 1 .589.26.92.92 0 0 1 .244.63V21Z"/>
     </svg>
   `;
+
+  // TODO : centralize sanitizer inside service or lib or...
+  export let sanitizeClientHtml = (i) => {
+    console.debug(i); // return i;
+    // https://www.npmjs.com/package/sanitize-html
+    const clean = sanitizeHtml(i, {
+      allowedTags: sanitizeHtml.defaults
+      .allowedTags.concat([ 'img' ])
+      .concat([
+        // SVG
+        'svg', 'g', 'defs', 'linearGradient', 'stop', 'circle',
+        'path'
+      ]),
+      // allowedAttributes: false, // For SVG
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        '*': [
+          'href', 'align', 'alt', 'center', 'bgcolor',
+          'src', 'class', 'role', 'xmlns',
+          'data*', 'aria*',
+          'focusable', 'viewBox', 'd', 'fill',
+        ],
+        iframe: [
+          {
+            name: 'sandbox',
+            multiple: true,
+            values: ['allow-popups', 'allow-same-origin', 'allow-scripts']
+          }
+        ],
+      },
+      parser: {
+        // SVG elements like linearGradient into your content and 
+        // notice that they're not rendering as expected
+        // due to case sensitivity issues without below option :
+        lowerCaseTags: false,
+        lowerCaseAttributeNames: false
+      },
+    });
+
+    return clean;
+  };
+
+
 </script>
 <!-- class:pointer-events-none={!isMenu} 
  TIPS : tooltip will not show if pointer-events is none...
@@ -30,7 +74,12 @@
   class="inline-flex ml-1 mr-1
   {height} {width} {cssClass ?? ''}"
 >
-  {@html (qualif?.htmlIcon ?? '').trim().length ? qualif.htmlIcon : failbackIcon}
+  <!-- // TODO : check ALL @html and ensure right sanitizer is ok... -->
+  {@html sanitizeClientHtml(
+    (qualif?.htmlIcon ?? '').trim().length
+    ? qualif.htmlIcon
+    : failbackIcon
+  )}
 </div>
 <!-- 
   data-tooltip-target={tooltipId}
