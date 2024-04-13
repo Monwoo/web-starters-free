@@ -22,6 +22,7 @@
   import ExportQualifs from "./ExportQualifs.svelte";
   import debounce from 'lodash/debounce';
   import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
+  import TailwindDefaults from "../../layout/widgets/TailwindDefaults.svelte";
 
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
@@ -34,6 +35,7 @@
   export let isHeaderExpanded = false;
   export let confirmUpdateOrNew;
   export let keyboardShortcutModal;
+  export let showColors = false;
 
   // // TIPS : MUST NOT be setup for top root binds
   // //         to be able to feed with initial values ?
@@ -480,6 +482,7 @@
                 bind:quickQualifTemplates
                 bind:maxItemsLimit={maxLimit}
                 bind:isHeaderExpanded
+                bind:showColors
                 {syncQualifWithBackend}
                 {locale}
                 {confirmUpdateOrNew}
@@ -602,6 +605,14 @@
     // TODO : link user maps to qualif or useless mapping ?
     -->
     <ExportQualifs {locale} />
+    <div class="fixed top-0 bottom-0 left-0 right-0 overflow-auto
+      touch-none text-black z-50
+    "
+    class:hidden={!showColors}
+    on:dblclick|stopPropagation={() => showColors = false}
+    >
+      <TailwindDefaults></TailwindDefaults>
+    </div>
   </div>
 {/key}
 

@@ -37,6 +37,7 @@
   import { get } from "svelte/store";
   import debounce from 'lodash/debounce';
   import HtmlIcon from "./HtmlIcon.svelte";
+  // import TailwindDefaults from '../../layout/widgets/TailwindDefaults.svelte';
   // import { copy } from 'svelte-copy';// TODO : same issue as for svelte-flowbite : fail copy.d.t autoload
   const UID = newUniqueId();
 
@@ -58,6 +59,7 @@
   export let newTagLabel;
   export let rgb;
   export let hex = "#AAAAAA";
+  export let showColors = false;
   export let itemSuggestionTagsId = `ItemViewTags-${UID}`;
   export let quickQualifTemplates;
   export let maxItemsLimit;
@@ -664,6 +666,35 @@ text-xs md:text-base">
           </button>
         {/if}
       </span>
+
+      <button
+      class=""
+      on:click={() => showColors = true}>
+        Couleurs CSS
+      </button>
+      <!-- TODO : if parent is drag&drop, how to remove it by keeping modal here ? -->
+      <!-- <div class="fixed top-0 bottom-0 left-0 right-0 overflow-auto
+        touch-none
+      "
+      class:hidden={!showColors}
+      on:click|stopPropagation
+      on:mousedown|stopPropagation
+      on:mouseenter|stopPropagation
+      on:mouseleave|stopPropagation
+      on:mousemove|stopPropagation
+      on:mouseout|stopPropagation
+      on:mouseover|stopPropagation
+      on:mouseup|stopPropagation
+      on:mousewheel|stopPropagation
+      on:touchstart|stopPropagation
+      on:touchend|stopPropagation
+      on:mousewheel|stopPropagation
+      on:mousedown|stopPropagation
+      on:dblclick|stopPropagation={() => showColors = false}
+      >
+        <TailwindDefaults></TailwindDefaults>
+      </div> -->
+      
       <textarea
       placeholder="Icon HTML"
       class="w-full my-3 mx-7"
@@ -701,7 +732,6 @@ text-xs md:text-base">
     >
       Supprimer '{qualif?.label ?? ""}'
     </button>
-
     </div>
   {/if}
 
