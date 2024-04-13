@@ -19,6 +19,9 @@
   export let isMobile;
 
   // console.debug(backup);
+  let backupName;
+  // TODO : slugger for svelte ? (or keep text lbl, and let backend do the slug ?)
+  $: backupNameSlug = backupName;
 
   const jsonBackup = JSON.parse(decodeURIComponent(backup.jsonResult));
   console.debug("jsonBackup :", jsonBackup);
@@ -45,8 +48,34 @@
       {@html backupForm}
     </div>
     <h1>Exporter un backup</h1>
+    <div class="w-full text-center">
+      <label class="p-2" for="affiliationCode">Nom du backup :</label>
+      <input
+        class="text-black opacity-30 hover:opacity-100 max-w-[12rem] w-4/5"
+        value={backupName ?? ''}
+        type="text"
+        name="affiliationCode"
+        on:input={debounce(async (e) => {
+          backupName = e.target.value;
+        }, 300)}
+        on:keydown={debounce(async (e) => {
+          if ("Enter" == e.key) {
+            if (document.activeElement instanceof HTMLElement)
+              document.activeElement.blur();
+            e.target.blur();
+            // TODO : auto trigger href link
+            // window.location = donateLink;
+            // https://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-and-not-a-new-window
+            // window.open(donateLink, '_blank').focus();
+            // TODO : can't be get, need secure POST...
+            //      fetch...
+          }
+        }, 300)}
+      />
+    </div>
+  
     <a>
-      <button>Faire un backup pour le {dayjs().format("YYYY-MM-DD HH:mm:ss")}</button>
+      <button>Faire un backup pour {dayjs().format("YYYYMMDD_HHmmss")}-{backupNameSlug ?? 'MwsCrm'}.zip</button>
     </a>
     <h1>Liste des backups</h1>
     <ul>
