@@ -863,6 +863,7 @@
       on:click|stopPropagation
       bind:this={slotHeader}
       class="mws-timing-slot-header overflow-scroll relative"
+      class:is-fullscreen={isFullScreen}
       class:h-[7rem]={!isHeaderExpanded}
       style={Height
         ? `
@@ -984,7 +985,8 @@
         ml-1 mr-1 text-xs md:text-base
         pointer-events-none md:pointer-events-none
         "
-        class:!max-w-[50%]={isFullScreen}
+        class:!max-w-[50%]={isFullScreen && !isMobile}
+        class:!max-w-[80%]={isFullScreen && isMobile}
         class:top-0={!isFullScreen}
         class:sticky={!isFullScreen}
         class:fixed={isFullScreen}
@@ -1257,11 +1259,14 @@
       </button>
       </div>
     </div>
-      <!-- // Tips : z-[60] : Need to z on parent too :
-        should go OVER 'previous timing' btn click area... -->
-      <div
+    <!-- // Tips : z-[60] : Need to z on parent too :
+      should go OVER 'previous timing' btn click area...
+      // TIPS : add margin bottom to allow scroll above sticky bottom page elements...
+      // TODO : service or state update of max top footer element, then align with it ?
+    -->
+    <div
       class="overflow-visible sticky top-0 flex items-end h-[0px]
-    fill-white/70 text-white/70 bg-black/50 z-[60]"
+    fill-white/70 text-white/70 bg-black/50 z-[60] mb-12"
       class:hidden={slotResizing}
       on:click|stopPropagation|preventDefault
     >
@@ -1363,9 +1368,9 @@
       @apply opacity-100;
     }
     &:hover {
-      &:not([data-scroll='0']) {
+      &:not(.is-fullscreen):not([data-scroll='0']) {
         .tags-details {
-        @apply opacity-0;
+          @apply opacity-0;
         }
         
       }
