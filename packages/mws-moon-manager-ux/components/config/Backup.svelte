@@ -5,7 +5,7 @@
   import Base from "../layout/Base.svelte";
   import Header from "../layout/Header.svelte";
   import { onMount } from "svelte";
-  import { state, stateGet } from "../../stores/reduxStorage.mjs";
+  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import dayjs from "dayjs";
@@ -17,19 +17,95 @@
   export let backup;
   export let backupForm;
   export let isMobile;
+  export let csrfBackupDownload;
+  export let isLoading = false;
 
   // console.debug(backup);
   let backupName;
-  // TODO : slugger for svelte ? (or keep text lbl, and let backend do the slug ?)
-  $: backupNameSlug = backupName;
 
   const jsonBackup = JSON.parse(decodeURIComponent(backup.jsonResult));
   console.debug("jsonBackup :", jsonBackup);
 
   let csrfBackupDelete = stateGet(get(state), "csrfBackupDelete");
 
-  onMount(async () => {
-  });
+  // TIPS : downloadBackup not used,
+  // forsee Svelte pre-rendering html only available actions...
+  const downloadBackup = async () => {
+    // JS way will need JS to work...
+    // (well, without pre-rendering, svelte also need JS...)
+    if (isLoading) return;
+    // TODO : await confirm and update tags dependencies if so...
+    console.debug("downloadBackup");
+    isLoading = true;
+
+    // TODO : Wait for loading animation to show
+    // Or use HTML modal instead of native blocking UI alert
+    await new Promise((r) => setTimeout(r, 100));
+
+    csrfBackupDelete = stateGet(get(state), "csrfBackupDelete");
+    const data = {
+      _csrf_token: csrfBackupDelete,
+      backupName,
+    };
+    const formData = new FormData();
+    for (const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate("mws_config_backup_download", {
+        _locale: locale,
+      }),
+      {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        redirect: "error",
+      }
+    )
+      .then(async (resp) => {
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
+        if (!resp.ok) {
+          throw new Error("Not 2xx response");
+        } else {
+          const data = await resp.blob();
+          console.debug("Did remove tag, resp :", data);
+
+          // stateUpdate(state, {
+          //   csrfTimingMigrateTo: data.newCsrf,
+          // });
+          // Need self refresh for merged data values :
+          window.location.reload();
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
+    isLoading = false;
+  };
+
+  // TODO : Symfony slugger equivalent ? é to e ? meanfull
+  //        words conversion (ex : chiness char to latin EN...)
+  // Quick algo for now :
+  // TODO : factorize in lib or service or ...
+  // https://svelte.dev/repl/b130be5e485441a1842ae97e4ce4f244?version=4.2.3
+  function slugify(str, keepLowerCase = true) {
+    let resp = String(str)
+      .replace(/\s+/g, "-") // replace spaces with hyphens
+      .replace(/-+/g, "-") // remove consecutive hyphens
+      .trim() // trim leading or trailing whitespace
+      .normalize("NFKD") // split accented characters into their base characters and diacritical marks
+      .replace(/[\u0300-\u036f]/g, "") // remove all the accents, which happen to be all in the \u03xx UNICODE block.
+      // .toLowerCase() // convert to lowercase
+      .replace(/[^A-Za-z0-9 -]/g, ""); // remove non-alphanumeric characters
+    if (!keepLowerCase) {
+      resp = resp.toLowerCase();
+    }
+    return resp;
+  }
+
+  onMount(async () => {});
 </script>
 
 <Base
@@ -42,59 +118,125 @@
 >
   <!-- <div slot="mws-header-container" />
   -->
-  <div class="mws-config-backup p-7">
+  <div class="mws-config-backup p-2">
     <h1>Importer un backup</h1>
     <div id="config-backup-form" class="detail w-full">
       {@html backupForm}
     </div>
     <h1>Exporter un backup</h1>
-    <div class="w-full text-center">
-      <label class="p-2" for="backupName">Nom du backup :</label>
-      <input
-        class="text-black opacity-30 hover:opacity-100 max-w-[12rem] w-4/5"
-        value={backupName ?? ''}
-        type="text"
-        name="backupName"
-        on:input={debounce(async (e) => {
-          backupName = e.target.value;
-        }, 300)}
-        on:keydown={debounce(async (e) => {
-          if ("Enter" == e.key) {
-            if (document.activeElement instanceof HTMLElement)
-              document.activeElement.blur();
-            e.target.blur();
-            // TODO : auto trigger href link
-            // window.location = donateLink;
-            // https://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-and-not-a-new-window
-            // window.open(donateLink, '_blank').focus();
-            // TODO : can't be get, need secure POST...
-            //      fetch...
-          }
-        }, 300)}
-      />
-    </div>
+
+    <!-- onsubmit="return confirm('Êtes vous sur de vouloir faire et télécharger un backup ?');" -->
+    <div class="p-4 w-full flex flex-wrap items-center justify-center">
+      <form
+        action={Routing.generate("mws_config_backup_download", {
+          _locale: locale ?? "",
+          viewTemplate: viewTemplate ?? "",
+        })}
+        method="POST"
+      >
+        <div class="w-full text-center">
+          <label class="p-2" for="backupName">Nom du backup :</label>
+          <input
+            class="text-black opacity-30 hover:opacity-100 max-w-[12rem] w-4/5"
+            value={backupName ?? ""}
+            type="text"
+            name="backupName"
+            on:input={debounce(async (e) => {
+              backupName = slugify(e.target.value);
+              e.target.value = backupName;
+              console.debug("Update backup name : ", e.target.value, backupName);
+            }, 300)}
+            on:keydown={debounce(async (e) => {
+              if ("Enter" == e.key) {
+                if (document.activeElement instanceof HTMLElement)
+                  document.activeElement.blur();
+                e.target.blur();
+                // TODO : auto trigger href link
+                // window.location = donateLink;
+                // https://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-and-not-a-new-window
+                // window.open(donateLink, '_blank').focus();
+                // TODO : can't be get, need secure POST...
+                //      fetch...
+              }
+            }, 300)}
+          />
+        </div>
   
-    <a>
-      <button>Faire un backup pour {dayjs().format("YYYYMMDD_HHmmss")}-{backupNameSlug ?? 'MwsCrm'}.zip</button>
-    </a>
+        <div class="p-4 w-full flex items-center justify-center">
+          <input type="hidden" name="_csrf_token" value={csrfBackupDownload} />
+          <button class=" m-2" style:--tw-shadow-color="#FF0000" type="submit">
+            Faire un backup pour
+            {dayjs().format("YYYYMMDD_HHmmss")}-{backupName ??
+              "MwsCrm"}.zip</button
+          >  
+        </div>
+      </form>
+
+      <!-- <form on:submit|preventDefault={submit} class="mws-import-tags-form">
+        <input type="file" name="importFile" accept={formatToMime[format]} />
+        <br />
+        <select
+          bind:value={format}
+          name="format"
+          class="opacity-30 hover:opacity-100 
+        bg-gray-50 border border-gray-300 text-gray-900 
+        text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+        inline-flex w-[10rem] p-1 m-2 dark:bg-gray-700 dark:border-gray-600 
+        dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+        dark:focus:border-blue-500"
+        >
+          <option value="null" selected>Format d'import</option>
+          {#each availableFormat as fmt}
+            <option value={`${fmt.format}`}>{fmt.label}</option>
+          {/each}
+        </select>
+        <!-- <input type="checkbox" name="shouldOverwrite" checked /> -- >
+        <span class="inline-flex flex-col">
+          <span>
+            <input type="checkbox" name="shouldOverwrite" />
+            <label for="shouldOverwrite">Forcer la surcharge</label>
+          </span>
+          <span>
+            <input type="checkbox" name="shouldRecomputeAllOtherTags" />
+            <label for="shouldOverwrite">Mettre à jour les tags des temps</label>
+          </span>
+        </span>
+      
+        <button type="submit" class=" m-1">
+          Importer les tags
+        </button>
+        <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -- >
+        <Loader {isLoading} />
+      </form> -->
+    </div>
     <h1>Liste des backups</h1>
     <ul>
       {#each backups ?? [] as backupDir}
-        <li>
-          {backupDir}
-          <a>
-            <button>Télécharger</button>
-          </a>
-          <a>
-            <button
-            style="--mws-primary-rgb: 255, 0, 0"
-            >Supprimer</button>
-          </a>      
-        </li>
+        <div class="p-2 w-full
+        flex flex-wrap items-center justify-center">
+          <div class="w-1/2 px-4
+          flex flex-wrap items-start justify-end">
+            <a>
+              <button>Télécharger</button>
+            </a>
+            <a>
+              <button style="--mws-primary-rgb: 255, 0, 0">Supprimer</button>
+            </a>
+          </div>
+          <div class="w-1/2
+          flex flex-wrap items-start justify-start">
+            {backupDir}
+          </div>
+        </div>
       {/each}
     </ul>
   </div>
 </Base>
 
 <style lang="scss">
+  h1 {
+    @apply text-2xl;
+    @apply font-extrabold;
+    @apply p-2;
+  }
 </style>

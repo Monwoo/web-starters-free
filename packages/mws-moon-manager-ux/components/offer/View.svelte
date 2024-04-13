@@ -30,7 +30,9 @@
 </script>
 
 <Base {copyright} {locale} {viewTemplate}>
-  <div>
+  <div class="w-full flex flex-wrap
+  items-center justify-center p-2">
+    <div>
     <a href={Routing.generate('mws_offer_lookup', {
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? null,

@@ -49,6 +49,7 @@
     <input type="hidden" name="_csrf_token" value="{ csrfMessageDelete }" />
     <button 
     class=" m-2"
+    style:--tw-shadow-color="#FF0000"
     type="submit">Supprimer les messages</button>
   </form>
 
