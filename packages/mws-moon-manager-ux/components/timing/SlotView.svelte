@@ -820,7 +820,7 @@ import Svg from "../layout/widgets/Svg.svelte";
   <div class="pr-2 sticky top-0 left-0 bg-white/95 z-20">
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
-      .format("YYYY/MM/DD HH:mm:ss")}
+      .format("YYYY-MM-DD HH:mm:ss")}
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     <!-- // TODO : strange : tags are reactive, but not the maxPath etc ? -->
     <!-- {#if timingSlot?.tags?.length} -->
@@ -911,7 +911,7 @@ import Svg from "../layout/widgets/Svg.svelte";
         >
           {dayjs(timingSlot?.sourceTimeGMT)
             .tz("Europe/Paris")
-            .format("YYYY/MM/DD HH:mm:ss")}
+            .format("YYYY-MM-DD HH:mm:ss")}
           [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
         </span>
       </span>

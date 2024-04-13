@@ -1,14 +1,39 @@
-{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{# 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends '@MoonManager/base.html.twig' %}
 
-{% block content %}
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{% block title %}Timings qualification
+{% endblock %}
+{# // TODO : by project ? by tag or group of tags ?
+// (having project category tags,custom tag per projects ?) #}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/miguel/goinfre/web-starters-free/packages/mws-moon-manager/src/Controller/MwsConfigController.php'|file_link(0) }}">src/Controller/MwsConfigController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/miguel/goinfre/web-starters-free/packages/mws-moon-manager/templates/mws_config/index.html.twig'|file_link(0) }}">templates/mws_config/index.html.twig</a></code></li>
-    </ul>
-</div>
+{# // TODO refactor duplication timingAvailableTags vs allTagsList ? #}
+{% block storesInit %}
+	{{ parent() }}
+	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
+		'csrfConfigBackup': csrf_token('mws-csrf-config-backup'),
+	} |serialize('json')|e('html_attr'), }) }}></div>
+{% endblock %}
+
+{% block body %}
+	{# TODO : subpath controller give hard debug time since components have same
+		name as the moon-manager-ux package one, all debug link go to wrong file... #}
+	<div class="mws-config-backup" {{ svelte_component('MwsConfigBackup', {
+		'locale': app.locale,
+		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
+		'backups': []|serialize('json')|e('html_attr'),
+		'backup' : backupForm.vars.value|serialize('json')|e('html_attr'),
+		'backupForm' : (form_start(backupForm, {
+			'attr' : { 'class': 'd-flex flex-wrap mws-survey-js-form' }
+		}) ~ form_widget(backupForm) ~ form_end(backupForm))|e('html_attr'),
+		'viewTemplate' : null,
+	} ) }}>
+		<div class="flex flex-col justify-end content-end items-stretch h-[100dvh] overflow-hidden print:h-auto">
+			{{ block('header') }}
+			<div
+			class="flex-1 overflow-y-auto">
+				{{ block('content') }}
+			</div>
+			{{ block('footer') }}
+		</div>
+	</div>
 {% endblock %}
