@@ -7,7 +7,8 @@
 </script>
 <div
 style:--tw-drop-shadow="drop-shadow(0 25px 25px rgb(0 0 0 / 1))"
-class="bg-white font-sans font-normal text-sm container mx-auto">
+class="bg-white font-sans font-normal text-sm 
+container mx-auto">
   <div
     class=" w-1/2 mx-auto text-center font-semibold text-xl m-3 p-3 rounded text-light-blue-50 bg-light-blue-50 shadow-md"
   >

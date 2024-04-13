@@ -605,8 +605,9 @@
     // TODO : link user maps to qualif or useless mapping ?
     -->
     <ExportQualifs {locale} />
-    <div class="fixed top-0 bottom-0 left-0 right-0 overflow-auto
-      touch-none text-black z-50
+    <div class="fixed top-0 bottom-0 left-0 right-0
+      overflow-auto
+      touch-auto text-black z-[99]
     "
     class:hidden={!showColors}
     on:dblclick|stopPropagation={() => showColors = false}
