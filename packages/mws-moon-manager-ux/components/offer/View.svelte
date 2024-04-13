@@ -31,8 +31,8 @@
 
 <Base {copyright} {locale} {viewTemplate}>
   <div class="w-full flex flex-wrap
-  items-center justify-center p-2">
-    <div>
+  items-center justify-start p-2">
+  <div class="w-full">
     <a href={Routing.generate('mws_offer_lookup', {
       '_locale': locale ?? '',
       'viewTemplate': viewTemplate ?? null,
@@ -40,45 +40,51 @@
       <button class="">Liste des offres</button>
     </a>    
   </div>
-  <div class="flex flex-wrap flex-col">
+  <div class="flex flex-wrap flex-col w-full
+  break-words whitespace-break-spaces">
     <h1 class="font-bold p-6 text-center">
       <a href={ offer.sourceUrl ?? "#not-found"} target="_blank" rel="noreferrer">
         {offer.title}
       </a>
     </h1>
-    <table class="m-3 text-center">
-      <thead>
-        <tr>
-          <th scope="col">Contact 1</th>
-          <th scope="col">Contact 2</th>
-          <th scope="col">Budget</th>
-          <th scope="col">Depuis le</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{offer.contact1 ?? ''}</td>
-          <td>{offer.contact2 ?? ''}</td>      
-          <td>{offer.budget ?? ''}</td>      
-          <td>{dayjs(offer.leadStart).format('YYYY/MM/DD HH:mm')}</td>      
-        </tr>  
-      </tbody>
-    </table>
-    <a href="{ offer.clientUrl ?? "#not-found"}" target="_blank" rel="noreferrer">
+    <div class="w-full overflow-x-auto">
+      <table class="m-3 text-center">
+        <thead>
+          <tr>
+            <th scope="col">Contact 1</th>
+            <th scope="col">Contact 2</th>
+            <th scope="col">Budget</th>
+            <th scope="col">Depuis le</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{offer.contact1 ?? ''}</td>
+            <td>{offer.contact2 ?? ''}</td>      
+            <td>{offer.budget ?? ''}</td>      
+            <td>{dayjs(offer.leadStart).format('YYYY/MM/DD HH:mm')}</td>      
+          </tr>  
+        </tbody>
+      </table>
+    </div>
+
+    <a href="{ offer.clientUrl ?? "#not-found"}"
+    class="w-full"
+    target="_blank" rel="noreferrer">
       <button class="">Publié par : {offer.clientUsername}</button>
     </a>    
     
-    <div class="detail">
+    <div class="offer-description w-full">
       {@html offer.description}
     </div>
-    <div>
+    <div class="w-full">
       {#if myOfferId && offer.sourceUrl}
         <a href="{`${offer.sourceUrl}/${myOfferId}`}" target="_blank" rel="noreferrer">
           <button class="">Accéder aux messages</button>
         </a>      
       {/if}
     </div>
-    <div>
+    <div class="offer-messages w-full break-words whitespace-break-spaces">
       {#each offer.sourceDetail?.messages ?? [] as msg}
         {@html msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
           .replaceAll('href="/', `href="https://${offer.sourceName}/`)
@@ -103,9 +109,19 @@
   // }
   .mws-offer-detail {
     // .sticky {
+    // TIPS : removing sticky feature of list view :
     :global(.sticky) {
       // position: inherit !important;
       position: inherit;
+    }
+  }
+  .offer-description,
+  .offer-messages {
+    :global(*) {
+      // @apply break-all;
+      @apply break-words; // NOT same as  word-break: break-word;...
+      word-break: break-word;
+      @apply whitespace-break-spaces;
     }
   }
 </style>
