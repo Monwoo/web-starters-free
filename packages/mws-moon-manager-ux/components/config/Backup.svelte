@@ -118,12 +118,15 @@
 >
   <!-- <div slot="mws-header-container" />
   -->
-  <div class="mws-config-backup p-2">
-    <h1>Importer un backup</h1>
+  <div class="mws-config-backup p-3 flex flex-wrap
+  justify-center items-center text-center">
+    <h1 class="w-full">Importer un backup</h1>
     <div id="config-backup-form" class="detail w-full">
       {@html backupForm}
     </div>
-    <h1>Exporter un backup</h1>
+    <h1 class="w-full">Exporter un backup [Max {$state.config.backupTotalSize ?? '--'}]</h1>
+    <p class="w-full">Taille du dossier upload : [{$state.config.uploadsTotalSize ?? '--'}]</p>
+    <p class="w-full">Taille des données : [{$state.config.databasesTotalSize ?? '--'}]</p>
 
     <!-- onsubmit="return confirm('Êtes vous sur de vouloir faire et télécharger un backup ?');" -->
     <div class="p-4 w-full flex flex-wrap items-center justify-center">
@@ -164,7 +167,9 @@
   
         <div class="p-4 w-full flex items-center justify-center">
           <input type="hidden" name="_csrf_token" value={csrfBackupDownload} />
-          <button class=" m-2" style:--tw-shadow-color="#FF0000" type="submit">
+          <button class=" m-2"
+          style:--tw-shadow-color="#FF0000"
+          type="submit">
             Faire un backup pour
             {dayjs().format("YYYYMMDD_HHmmss")}-{backupName ??
               "MwsCrm"}.zip</button
@@ -209,8 +214,8 @@
         <Loader {isLoading} />
       </form> -->
     </div>
-    <h1>Liste des backups</h1>
-    <ul>
+    <h1 class="w-full">Liste des backups [{$state.config.backupsTotalSize ?? '--'}]</h1>
+    <ul class="w-full">
       {#each backups ?? [] as backupDir}
         <div class="p-2 w-full
         flex flex-wrap items-center justify-center">

@@ -101,9 +101,9 @@ class MwsConfigController extends AbstractController
         $backupsDir = "$projectDir/bckup";
         $finder = new Finder();
         $finder->directories()->in($backupsDir)
-        ->ignoreDotFiles(true)
-        ->ignoreUnreadableDirs()
-        ->depth(0);
+            ->ignoreDotFiles(true)
+            ->ignoreUnreadableDirs()
+            ->depth(0);
         // ->exclude( $exclude )
         // ->notPath('#(^|/)_.+(/|$)#') // Ignore path start with underscore (_).
         // ->notPath( '/.*\/node_modules\/.*/' );
@@ -124,21 +124,77 @@ class MwsConfigController extends AbstractController
         // $nbFiles = iterator_count($finder);
         // $maxFileIndex = iterator_count($finder) - 1;
         // dd(iterator_to_array($finder, false));
-        $bFiles = array_map(function(SplFileInfo $f) {
-            return $f->getRelativePathname();
+        $bFiles = array_map(function (SplFileInfo $f) {
+            return $f->getRelativePathname() . ' ['
+                . $this->humanSize(
+                    $this->mwsFileSize($f->getPathname())
+                ) . ']';
         }, iterator_to_array($finder, false));
         // dd($bFiles);
 
+        $backupsTotalSize = $this->humanSize(
+            $this->mwsFileSize($backupsDir)
+        );
+
+        $uploadSrc = "$projectDir/public/uploads/messages/tchats";
+        $uploadsTotalSize = $this->humanSize(
+            $uSize = $this->mwsFileSize($uploadSrc)
+        );
+        $dbSrc = "$projectDir/var/data.db.sqlite";
+        $databasesTotalSize = $this->humanSize(
+            $dSize = $this->mwsFileSize($dbSrc)
+        );
+        $backupTotalSize = $this->humanSize($uSize + $dSize);
         return $this->render('@MoonManager/mws_config/backup.html.twig', [
             'backupForm' => $backupForm,
             'backups' => $bFiles,
+            'configState' => [
+                'backupsTotalSize' => $backupsTotalSize,
+                'uploadsTotalSize' => $uploadsTotalSize,    
+                'databasesTotalSize' => $databasesTotalSize,
+                'backupTotalSize' => $backupTotalSize,
+            ]
         ]);
     }
 
+    // In Bytes
+    protected function mwsFileSize($path)
+    {
+        // https://gist.github.com/eusonlito/5099936
+        $size = 0;
+        if (is_file($path)) {
+            return filesize($path);
+        }
+
+        foreach (glob(rtrim($path, '/') . '/*', GLOB_NOSORT) as $each) {
+            $size += is_file($each) ? filesize($each) : $this->mwsFileSize($each);
+        }
+
+        return $size;
+    }
+
+    protected function humanSize($size)
+    {
+        // Then, humanize :
+        if ($size < 1024) {
+            $size = $size . " Bytes";
+        } elseif (($size < 1048576) && ($size > 1023)) {
+            $size = round($size / 1024, 1) . " KB";
+        } elseif (($size < 1073741824) && ($size > 1048575)) {
+            $size = round($size / 1048576, 1) . " MB";
+        } else {
+            $size = round($size / 1073741824, 1) . " GB";
+        }
+        return $size;
+    }
+
+
     public const defaultThumbSize = 100;
-    #[Route('/backup/download',
-    methods: ['POST'],
-    name: 'mws_config_backup_download')]
+    #[Route(
+        '/backup/download',
+        methods: ['POST'],
+        name: 'mws_config_backup_download'
+    )]
     public function fetchRootUrl(
         Request $request,
     ): Response {

@@ -84,7 +84,7 @@
         '*': [
           'href', 'align', 'alt', 'center', 'bgcolor',
           'src', 'class', 'role', 'xmlns',
-          'data*', 'aria*',
+          'data*', 'aria*', 'stroke*',
           'focusable', 'viewBox', 'd', 'fill',
         ]
       },

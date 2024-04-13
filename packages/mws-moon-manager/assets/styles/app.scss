@@ -179,3 +179,8 @@ a {
         text-decoration: none;
     }
 }
+
+// SurveyJS custom red colors for error messages :
+[data-bind*='question.cssClasses.error.item'] {
+    color: red;
+}

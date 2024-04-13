@@ -11,6 +11,7 @@
 	{{ parent() }}
 	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
 		'csrfConfigBackup': csrf_token('mws-csrf-config-backup'),
+		'config': configState,
 	} |serialize('json')|e('html_attr'), }) }}></div>
 {% endblock %}
 
