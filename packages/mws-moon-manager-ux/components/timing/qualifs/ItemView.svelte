@@ -691,6 +691,8 @@ text-xs md:text-base">
       on:mousewheel|stopPropagation
       on:mousedown|stopPropagation
       on:dblclick|stopPropagation={() => showColors = false}
+              draggable="false"
+
       >
         <TailwindDefaults></TailwindDefaults>
       </div> -->

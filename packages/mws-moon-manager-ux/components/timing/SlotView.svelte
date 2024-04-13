@@ -94,7 +94,7 @@
   import { Tooltip } from 'flowbite'
   import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   import debounce from "lodash/debounce";
-import Svg from "../layout/widgets/Svg.svelte";
+  import Svg from "../layout/widgets/Svg.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -1071,7 +1071,7 @@ import Svg from "../layout/widgets/Svg.svelte";
       on:click|stopPropagation|preventDefault
     >
       <div
-        class:bg-red-500={resizing}
+        class:bg-red-500={false}
         class="draggable pl-4"
         use:draggable={{
           helper: "clone", // TODO: handler is going faster than mouse on Y...?
@@ -1257,16 +1257,22 @@ import Svg from "../layout/widgets/Svg.svelte";
       </button>
       </div>
     </div>
-    <div
+      <!-- // Tips : z-[60] : Need to z on parent too :
+        should go OVER 'previous timing' btn click area... -->
+      <div
       class="overflow-visible sticky top-0 flex items-end h-[0px]
-    fill-white/70 text-white/70 bg-black/50 z-40"
+    fill-white/70 text-white/70 bg-black/50 z-[60]"
       class:hidden={slotResizing}
       on:click|stopPropagation|preventDefault
     >
+      <!-- // Tips : z-[60] : should go OVER 'previous timing' btn click area... -->
       <div
-        class="draggable pl-4"
+        class="draggable pl-4
+        z-[60]
+        "
         use:draggable={{
           helper: "clone", // TODO: clone is going faster than mouse on Y...?
+          cursor: "grabbing",
           revert: true,
         }}
         on:drag:move={onSlotDragMove}
