@@ -1,5 +1,8 @@
 parameters:
     app.supported_locales: 'fr|en'
+    # https://symfony.com/blog/new-in-symfony-4-3-default-and-trim-env-var-processors
+    # https://stackoverflow.com/questions/50326366/set-a-default-environment-variable-in-symfony
+    env(CONFIG_BCKUP_MAX_UPLOAD_SIZE): '21 Mo'
 
 # https://stackoverflow.com/questions/61059875/controller-has-no-container-set-did-you-forget-to-define-it-as-a-service-subscr
 # calls:
