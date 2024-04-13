@@ -53,7 +53,7 @@ class MwsConfigController extends AbstractController
         //     throw $this->createAccessDeniedException('CSRF Expired');
         // } // Classic SF form already have CSRF Validations....
 
-        $lastSearch = [
+        $lastBackup = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
                 // Survey Js Data init
@@ -65,7 +65,7 @@ class MwsConfigController extends AbstractController
                 ]
             )),
         ];
-        $backupForm = $this->createForm(MwsSurveyJsType::class, $lastSearch);
+        $backupForm = $this->createForm(MwsSurveyJsType::class, $lastBackup);
         $backupForm->handleRequest($request);
 
         if ($backupForm->isSubmitted()) {
@@ -118,7 +118,8 @@ class MwsConfigController extends AbstractController
         // });
 
         $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
-            return strcmp($a->getRealPath(), $b->getRealPath());
+            // return strcmp($a->getRealPath(), $b->getRealPath());
+            return strcmp($b->getRealPath(), $a->getRealPath());
         });
         // $nbFiles = iterator_count($finder);
         // $maxFileIndex = iterator_count($finder) - 1;
