@@ -99,28 +99,31 @@ class MwsConfigController extends AbstractController
 
         $projectDir = $this->params->get('kernel.project_dir');
         $backupsDir = "$projectDir/bckup";
-        $finder = new Finder();
-        $finder->directories()->in($backupsDir)
-            ->ignoreDotFiles(true)
-            ->ignoreUnreadableDirs()
-            ->depth(0);
-        // ->exclude( $exclude )
-        // ->notPath('#(^|/)_.+(/|$)#') // Ignore path start with underscore (_).
-        // ->notPath( '/.*\/node_modules\/.*/' );
-        // $finder->copy("$projectDir/");
-        // $uploadSrc = $this->params->get('vich_uploader.mappings.message_tchats_upload.upload_destination');
-        // $uploadSrc = $this->params->get('vich_uploader');
-        // ->sort(function ($a, $b) {
-        //     $aNumber = intval(explode(".", self::end(explode('-', $a->getRealpath())))[0]);
-        //     $bNumber = intval(explode(".", self::end(explode('-', $b->getRealpath())))[0]);
-        //     return $aNumber - $bNumber;
-        //     // return strcmp($b->getRealpath(), $a->getRealpath());
-        // });
+        $finder = [];
+        if (!empty(glob($backupsDir))) {
+            $finder = new Finder();
+            $finder->directories()->in($backupsDir)
+                ->ignoreDotFiles(true)
+                ->ignoreUnreadableDirs()
+                ->depth(0);
+            // ->exclude( $exclude )
+            // ->notPath('#(^|/)_.+(/|$)#') // Ignore path start with underscore (_).
+            // ->notPath( '/.*\/node_modules\/.*/' );
+            // $finder->copy("$projectDir/");
+            // $uploadSrc = $this->params->get('vich_uploader.mappings.message_tchats_upload.upload_destination');
+            // $uploadSrc = $this->params->get('vich_uploader');
+            // ->sort(function ($a, $b) {
+            //     $aNumber = intval(explode(".", self::end(explode('-', $a->getRealpath())))[0]);
+            //     $bNumber = intval(explode(".", self::end(explode('-', $b->getRealpath())))[0]);
+            //     return $aNumber - $bNumber;
+            //     // return strcmp($b->getRealpath(), $a->getRealpath());
+            // });
 
-        $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
-            // return strcmp($a->getRealPath(), $b->getRealPath());
-            return strcmp($b->getRealPath(), $a->getRealPath());
-        });
+            $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
+                // return strcmp($a->getRealPath(), $b->getRealPath());
+                return strcmp($b->getRealPath(), $a->getRealPath());
+            });
+        }
         // $nbFiles = iterator_count($finder);
         // $maxFileIndex = iterator_count($finder) - 1;
         // dd(iterator_to_array($finder, false));
@@ -146,13 +149,16 @@ class MwsConfigController extends AbstractController
         );
         $backupTotalSize = $this->humanSize($uSize + $dSize);
 
-        $finder = new Finder();
-        $finder->files()->in($uploadSrc)
-            ->ignoreDotFiles(true)
-            ->ignoreUnreadableDirs();
-        $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
-            return strcmp($b->getRealPath(), $a->getRealPath());
-        });
+        $finder = [];
+        if (!empty(glob($uploadSrc))) {
+            $finder = new Finder();
+            $finder->files()->in($uploadSrc)
+                ->ignoreDotFiles(true)
+                ->ignoreUnreadableDirs();
+            $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
+                return strcmp($b->getRealPath(), $a->getRealPath());
+            });    
+        }
 
         $uploadedFiles = array_map(function (SplFileInfo $f) {
             return $f->getRelativePathname() . ' ['
