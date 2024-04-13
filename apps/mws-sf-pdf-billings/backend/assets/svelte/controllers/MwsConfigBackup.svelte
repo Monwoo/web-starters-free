@@ -24,9 +24,9 @@
     return txt.value;
   }
   
-  backups = JSON.parse(decodeHtml(backups));
+  backups = JSON.parse(decodeHtml(backups ?? '[]'));
   backupForm = decodeHtml(backupForm);
-  backup = JSON.parse(decodeHtml(backup));
+  backup = JSON.parse(decodeHtml(backup ?? null));
 
 </script>
 

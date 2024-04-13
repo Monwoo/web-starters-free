@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Route(
@@ -30,6 +33,7 @@ class MwsConfigController extends AbstractController
         protected Security $security,
         protected LoggerInterface $logger,
         protected EntityManagerInterface $em,
+        protected ParameterBagInterface $params,
         // protected SluggerInterface $slugger,
     ) {
     }
@@ -37,8 +41,7 @@ class MwsConfigController extends AbstractController
     #[Route('/backup', name: 'mws_config_backup')]
     public function backup(
         Request $request,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
@@ -77,6 +80,10 @@ class MwsConfigController extends AbstractController
                     urldecode($backupForm->get('jsonResult')->getData()),
                     true
                 );
+                // TODO : allow bckup comment => will be 'SLUG' add
+                //        to end of backup folder, allowing to add
+                //        text info about timed backup
+                //        (zip name will use folder name...)
                 if ($surveyAnswers['MwsConfigBackupType'] ?? false) {
                     // $keyword = $surveyAnswers['searchKeyword'] ?? null;
                     return $this->redirectToRoute(
@@ -89,8 +96,41 @@ class MwsConfigController extends AbstractController
                 }
             }
         }
+
+        $projectDir = $this->params->get('kernel.project_dir');
+        $backupsDir = "$projectDir/bckup";
+        $finder = new Finder();
+        $finder->directories()->in($backupsDir)
+        ->ignoreDotFiles(true)
+        ->ignoreUnreadableDirs()
+        ->depth(0);
+        // ->exclude( $exclude )
+        // ->notPath('#(^|/)_.+(/|$)#') // Ignore path start with underscore (_).
+        // ->notPath( '/.*\/node_modules\/.*/' );
+        // $finder->copy("$projectDir/");
+        // $uploadSrc = $this->params->get('vich_uploader.mappings.message_tchats_upload.upload_destination');
+        // $uploadSrc = $this->params->get('vich_uploader');
+        // ->sort(function ($a, $b) {
+        //     $aNumber = intval(explode(".", self::end(explode('-', $a->getRealpath())))[0]);
+        //     $bNumber = intval(explode(".", self::end(explode('-', $b->getRealpath())))[0]);
+        //     return $aNumber - $bNumber;
+        //     // return strcmp($b->getRealpath(), $a->getRealpath());
+        // });
+
+        $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
+            return strcmp($a->getRealPath(), $b->getRealPath());
+        });
+        // $nbFiles = iterator_count($finder);
+        // $maxFileIndex = iterator_count($finder) - 1;
+        // dd(iterator_to_array($finder, false));
+        $bFiles = array_map(function(SplFileInfo $f) {
+            return $f->getRelativePathname();
+        }, iterator_to_array($finder, false));
+        // dd($bFiles);
+
         return $this->render('@MoonManager/mws_config/backup.html.twig', [
             'backupForm' => $backupForm,
+            'backups' => $bFiles,
         ]);
     }
 }

@@ -39,7 +39,7 @@
 >
   <!-- <div slot="mws-header-container" />
   -->
-  <div class="mws-config-backup">
+  <div class="mws-config-backup p-7">
     <h1>Importer un backup</h1>
     <div id="config-backup-form" class="detail w-full">
       {@html backupForm}
@@ -49,6 +49,21 @@
       <button>Faire un backup pour le {dayjs().format("YYYY-MM-DD HH:mm:ss")}</button>
     </a>
     <h1>Liste des backups</h1>
+    <ul>
+      {#each backups ?? [] as backupDir}
+        <li>
+          {backupDir}
+          <a>
+            <button>Télécharger</button>
+          </a>
+          <a>
+            <button
+            style="--mws-primary-rgb: 255, 0, 0"
+            >Supprimer</button>
+          </a>      
+        </li>
+      {/each}
+    </ul>
   </div>
 </Base>
 

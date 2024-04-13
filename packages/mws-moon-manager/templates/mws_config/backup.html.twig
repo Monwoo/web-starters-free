@@ -20,7 +20,7 @@
 	<div class="mws-config-backup" {{ svelte_component('MwsConfigBackup', {
 		'locale': app.locale,
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
-		'backups': []|serialize('json')|e('html_attr'),
+		'backups': backups|serialize('json')|e('html_attr'),
 		'backup' : backupForm.vars.value|serialize('json')|e('html_attr'),
 		'backupForm' : (form_start(backupForm, {
 			'attr' : { 'class': 'd-flex flex-wrap mws-survey-js-form' }
