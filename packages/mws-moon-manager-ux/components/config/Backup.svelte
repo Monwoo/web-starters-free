@@ -49,12 +49,12 @@
     </div>
     <h1>Exporter un backup</h1>
     <div class="w-full text-center">
-      <label class="p-2" for="affiliationCode">Nom du backup :</label>
+      <label class="p-2" for="backupName">Nom du backup :</label>
       <input
         class="text-black opacity-30 hover:opacity-100 max-w-[12rem] w-4/5"
         value={backupName ?? ''}
         type="text"
-        name="affiliationCode"
+        name="backupName"
         on:input={debounce(async (e) => {
           backupName = e.target.value;
         }, 300)}
