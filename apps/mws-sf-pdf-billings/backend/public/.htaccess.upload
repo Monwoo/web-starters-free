@@ -1,0 +1,5 @@
+# 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo
+# service@monwoo.com
+
+# AddType application/octet-stream .avi .mpg .mov .pdf .xls .mp4
+AddType application/octet-stream .*

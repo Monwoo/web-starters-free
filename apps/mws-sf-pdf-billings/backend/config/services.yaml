@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.supported_locales: 'fr|en|'
+    env.base_href: "%env(BASE_HREF_FULL)%"
 
 services:
     # default configuration for services in *this* file

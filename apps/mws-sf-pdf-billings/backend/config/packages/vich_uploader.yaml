@@ -12,7 +12,12 @@ vich_uploader:
         type: attribute
     mappings:
         message_tchats_upload:
-            uri_prefix: '/uploads/messages/tchats'
+            # TODO : PHP Firewall instead of .htaccess rules ?
+            #        => server without .htaccess will 
+            #           load .php files etc instead of download....
+            # uri_prefix: '/mws/uploads/messages/tchats'
+            # uri_prefix: '%env(BASE_HREF_FULL)%/uploads/messages/tchats'
+            uri_prefix: '%env.base_href%/uploads/messages/tchats'
             upload_destination: '%kernel.project_dir%/public/uploads/messages/tchats'
             # namer: MWS\MoonManagerBundle\Naming\OrignalNameNamer
             namer: mws_message_tchat_upload_namer

@@ -20,6 +20,8 @@
   export let csrfBackupDownload;
   export let isLoading = false;
 
+  const base = process.env.BASE_HREF_FULL ?? '';
+
   // console.debug(backup);
   let backupName;
 
@@ -120,11 +122,11 @@
   -->
   <div class="mws-config-backup p-3 flex flex-wrap
   justify-center items-center text-center">
-    <h1 class="w-full">Importer un backup</h1>
+    <h1 class="w-full p-4">Importer un backup</h1>
     <div id="config-backup-form" class="detail w-full">
       {@html backupForm}
     </div>
-    <h1 class="w-full">Exporter un backup [Max {$state.config.backupTotalSize ?? '--'}]</h1>
+    <h1 class="w-full p-4">Exporter un backup [Max {$state.config.backupTotalSize ?? '--'}]</h1>
     <p class="w-full">Taille du dossier upload : [{$state.config.uploadsTotalSize ?? '--'}]</p>
     <p class="w-full">Taille des données : [{$state.config.databasesTotalSize ?? '--'}]</p>
 
@@ -214,7 +216,7 @@
         <Loader {isLoading} />
       </form> -->
     </div>
-    <h1 class="w-full">Liste des backups [{$state.config.backupsTotalSize ?? '--'}]</h1>
+    <h1 class="w-full p-4">Liste des backups [{$state.config.backupsTotalSize ?? '--'}]</h1>
     <ul class="w-full">
       {#each backups ?? [] as backupDir}
         <div class="p-2 w-full
@@ -231,6 +233,25 @@
           <div class="w-1/2
           flex flex-wrap items-start justify-start">
             {backupDir}
+          </div>
+        </div>
+      {/each}
+    </ul>
+    <h1 class="w-full p-4">Liste des uploads [{$state.config.uploadsTotalSize ?? '--'}]</h1>
+    <ul class="w-full">
+      {#each $state.config.uploadedFiles ?? [] as f}
+        <div class="p-2 w-full
+        flex flex-wrap items-center justify-center">
+          <div class="w-full px-4
+          flex flex-wrap items-center justify-center">
+            <a href={ `${base}/uploads/messages/tchats/${
+              f.split(' [')[0] ?? ''
+            }` } target="_blank">
+              <button>{f}</button>
+            </a>
+          </div>
+          <div class="w-1/2
+          flex flex-wrap items-start justify-start">
           </div>
         </div>
       {/each}

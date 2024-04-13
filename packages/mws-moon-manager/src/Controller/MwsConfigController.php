@@ -145,6 +145,21 @@ class MwsConfigController extends AbstractController
             $dSize = $this->mwsFileSize($dbSrc)
         );
         $backupTotalSize = $this->humanSize($uSize + $dSize);
+
+        $finder = new Finder();
+        $finder->files()->in($uploadSrc)
+            ->ignoreDotFiles(true)
+            ->ignoreUnreadableDirs();
+        $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
+            return strcmp($b->getRealPath(), $a->getRealPath());
+        });
+
+        $uploadedFiles = array_map(function (SplFileInfo $f) {
+            return $f->getRelativePathname() . ' ['
+                . $this->humanSize(
+                    $this->mwsFileSize($f->getPathname())
+                ) . ']';
+        }, iterator_to_array($finder, false));
         return $this->render('@MoonManager/mws_config/backup.html.twig', [
             'backupForm' => $backupForm,
             'backups' => $bFiles,
@@ -153,6 +168,7 @@ class MwsConfigController extends AbstractController
                 'uploadsTotalSize' => $uploadsTotalSize,    
                 'databasesTotalSize' => $databasesTotalSize,
                 'backupTotalSize' => $backupTotalSize,
+                'uploadedFiles' => $uploadedFiles,
             ]
         ]);
     }
@@ -173,6 +189,7 @@ class MwsConfigController extends AbstractController
         return $size;
     }
 
+    // TODO : remove code factorization with twig filters...
     protected function humanSize($size)
     {
         // Then, humanize :
