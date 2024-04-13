@@ -1144,7 +1144,8 @@ import Svg from "../layout/widgets/Svg.svelte";
       inline-flex right-0 bg-white overflow-visible">
         {#each currentTimeSlotQualifs?? [] as q}
           {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
-          <div class="inline-flex border-b-4 border-t-4 object-contain"
+          <div class="inline-flex justify-center items-center
+          border-b-4 border-t-4 object-contain"
           data-tooltip-target={tooltipId}
           data-tooltip-placement="top"        
           style={`

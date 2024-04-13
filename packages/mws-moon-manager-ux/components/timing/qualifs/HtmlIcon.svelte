@@ -5,7 +5,7 @@
   const UID = newUniqueId();
   export let tooltipId = `htmlIconTooltip-${UID}`;
 
-  let cssClass;
+  let cssClass = "text-black";
   export { cssClass as class };
   // export let height = 'max-h-[1.5rem]';
   // export let width = 'max-w-[1.5rem]';
@@ -72,6 +72,9 @@
 
 <div
   class="inline-flex ml-1 mr-1
+  justify-center items-center
+  align-center text-center
+  overflow-hidden
   {height} {width} {cssClass ?? ''}"
 >
   <!-- // TODO : check ALL @html and ensure right sanitizer is ok... -->

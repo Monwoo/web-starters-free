@@ -237,8 +237,9 @@ overflow-visible border-solid border-4"
       {#if computedSize > 120}
         <!-- data-tooltip-target={tooltipIdsByQId[q.id]} -->
         <div
-          class="inline-flex border-b-4 border-t-4 object-contain w-full h-full
-        content-center justify-center"
+          class="inline-flex
+          border-b-4 border-t-4 object-contain w-full h-full
+          justify-center items-center"
           style={`
           border-color: ${q.primaryColorHex};
         `}
