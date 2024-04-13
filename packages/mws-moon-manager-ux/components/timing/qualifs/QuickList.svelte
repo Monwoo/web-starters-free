@@ -603,10 +603,13 @@
     Ok for now, sqlite DB backup or easy to redo with full qualif bckup...
     
     // TODO : link user maps to qualif or useless mapping ?
+    // TODO : modal should be loaded by services and transfered by redux store..
+    this z-index will not go over parent(s) z-index...
     -->
     <ExportQualifs {locale} />
     <div class="fixed top-0 bottom-0 left-0 right-0
       overflow-auto
+      flex flex-wrap justify-center items-center
       touch-auto text-black z-[99]
     "
     class:hidden={!showColors}
