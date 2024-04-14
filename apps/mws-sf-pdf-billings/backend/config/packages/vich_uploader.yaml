@@ -25,7 +25,7 @@ vich_uploader:
             # Change local destination upload folder :
             # apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder
 
-            upload_destination: '%kernel.project_dir%/public/uploads/messages/tchats'
+            upload_destination: '%kernel.project_dir%/%mws_moon_manager.uploadSubFolder%/messages/tchats'
             # namer: MWS\MoonManagerBundle\Naming\OrignalNameNamer
             namer: mws_message_tchat_upload_namer
             # directory_namer:

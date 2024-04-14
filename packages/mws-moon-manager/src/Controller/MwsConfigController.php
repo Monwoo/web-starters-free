@@ -141,7 +141,7 @@ class MwsConfigController extends AbstractController
             $this->mwsFileSize($backupsDir)
         );
 
-        $subFolder = $this->getParameter('mws_moon_manager')['uploadSubFolder'] ?? '';
+        $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
         $uploadSrc = "$projectDir/$subFolder/messages/tchats";
         $uploadsTotalSize = $this->humanSize(
             $uSize = $this->mwsFileSize($uploadSrc)
@@ -274,20 +274,20 @@ class MwsConfigController extends AbstractController
         $projectDir = $this->getParameter('kernel.project_dir');
         // TODO : no property accessors ?? mws_moon_manager.uploadSubFolder
         // $projectDir = $this->getParameter('mws_moon_manager.uploadSubFolder');
-        $subFolder = $this->getParameter('mws_moon_manager')['uploadSubFolder'] ?? '';
+        $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
         $pathRaw = "$projectDir/$subFolder/$mediaPath";
         // dump($pathRaw);
         $path = realpath($pathRaw);
         // dd($path);
         if (!$path || !file_exists($path)) {
             // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
-            throw $this->createNotFoundException("Media path $pathRaw not allowed");
+            throw $this->createNotFoundException("Media path $pathRaw not found");
         }
         $projPath = realpath($projectDir);
         if (!starts_with($path, $projPath)) {
             // dd('// TODO TESTs : Do not allow other folders like "../../" ? Browser check it, testable ?');
             // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
-            throw $this->createNotFoundException("Media path $pathRaw not allowed");
+            throw $this->createNotFoundException("Media path $pathRaw not found");
         }
         // dd('ok');
         $respData = file_get_contents($path);

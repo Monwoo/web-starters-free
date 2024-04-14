@@ -102,7 +102,7 @@ class BackupCommand extends Command
         // $finder->copy("$projectDir/");
         // $uploadSrc = $this->params->get('vich_uploader.mappings.message_tchats_upload.upload_destination');
         // $uploadSrc = $this->params->get('vich_uploader');
-        $subFolder = $this->params->get('mws_moon_manager')['uploadSubFolder'] ?? '';
+        $subFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
         $uploadSrc = "$projectDir/$subFolder/messages/tchats";
         // dd($uploadSrc);
 
