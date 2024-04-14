@@ -265,6 +265,7 @@
     </h1>
     <div class="w-full">
       {#each $state.config.uploadedFiles ?? [] as f}
+        {@const upUrl = `${f.split(" [")[0] ?? ""}`}
         <div
           class="p-2 w-full
         flex flex-wrap items-center justify-center"
@@ -274,10 +275,10 @@
           flex flex-wrap items-center justify-center"
           >
             <a
-              href={`${base}/uploads/messages/tchats/${f.split(" [")[0] ?? ""}`}
+              href={upUrl}
               target="_blank"
             >
-              <button>{f}</button>
+              <button>{upUrl.split("/").slice(-1)[0] ?? ""}</button>
             </a>
           </div>
           <div

@@ -5,6 +5,12 @@ parameters:
     env(CONFIG_BCKUP_MAX_UPLOAD_SIZE): '21 Mo'
     # Number of backup history default to NO limits (-1)
     env(CONFIG_BCKUP_MAX_STACK): -1
+    # TIPS : use '%env(bool:HAVE_MWS_DEMO)%' for access to avoid error 
+    #        on 'must be string' from env...
+    env(HAVE_MWS_DEMO): false
+    # TODO : why NO error on below param ? must be string or null ?
+    # /apps/mws-sf-pdf-billings/backend/vendor/symfony/dependency-injection/ParameterBag/EnvPlaceholderParameterBag.php:154
+    env(MWS_APPS): ['plugin', 'test']
 
 # https://stackoverflow.com/questions/61059875/controller-has-no-container-set-did-you-forget-to-define-it-as-a-service-subscr
 # calls:

@@ -3,8 +3,10 @@
 namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use MWS\MoonManagerBundle\Entity\MwsMessageTchatUpload;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
+use MWS\MoonManagerBundle\Repository\MwsMessageTchatUploadRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
@@ -13,10 +15,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
+use Vich\UploaderBundle\Metadata\MetadataReader;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[Route(
     '/{_locale<%app.supported_locales%>}/mws-config',
@@ -43,11 +48,44 @@ class MwsConfigController extends AbstractController
     public function backup(
         Request $request,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
+        // PropertyMappingFactory $factory,
+        // MetadataReader $uploaderMetadata,
+        // ContainerConfigurator $containerConfigurator, // NOP, not from controller...
+        // ParameterBagInterface $params,
+        UploaderHelper $uploadHelper,
+        MwsMessageTchatUploadRepository $mwsMessageTchatUploadRepository,
     ): Response {
         $user = $this->getUser();
         if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
             throw $this->createAccessDeniedException('Only for admins');
         }
+
+        // https://symfony.com/doc/current/service_container.html#remove-services
+        // $services = $containerConfigurator->services();
+        // // $services->remove(RemovedService::class);
+        // dd($services->get('vich_uploader.metadata_reader'));
+        // dd($this->getSubscribedServices());
+        // dd($params->get('vich_uploader'));
+        // TIPS : php bin/console debug:container
+        // dd($this->container->get('vich_uploader.metadata_reader'));
+        // dd($this->container->get('vich_uploader.metadata_reader'));
+        // https://github.com/dustin10/VichUploaderBundle/issues/1075
+
+        // $image = $mwsMessageTchatUploadRepository->findOneBy([]);
+        // // dd($image);
+        // dd($uploadHelper->asset($image , 'mediaFile', MwsMessageTchatUpload::class));
+        // https://github.com/dustin10/VichUploaderBundle/issues/1075
+        // $urlPrefix = uri_prefix
+        $uploadUriPrefix = $uploadHelper->asset([
+            'mediaName' => ' ',
+            'mediaFile' => [
+                'filename' => ' ',
+                'basename' => ' ',
+            ]
+        ], 'mediaFile', MwsMessageTchatUpload::class);
+        // $uploadUriPrefix = str_replace('/ ', '', $uploadUriPrefix);
+        $uploadUriPrefix = str_replace(' ', '', $uploadUriPrefix);
+        // dd($uploadUriPrefix);
 
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-config-backup', $csrf)) {
@@ -163,8 +201,8 @@ class MwsConfigController extends AbstractController
             });    
         }
 
-        $uploadedFiles = array_map(function (SplFileInfo $f) {
-            return $f->getRelativePathname() . ' ['
+        $uploadedFiles = array_map(function (SplFileInfo $f) use ($uploadUriPrefix) {
+            return $uploadUriPrefix . $f->getRelativePathname() . ' ['
                 . $this->humanSize(
                     $this->mwsFileSize($f->getPathname())
                 ) . ']';
