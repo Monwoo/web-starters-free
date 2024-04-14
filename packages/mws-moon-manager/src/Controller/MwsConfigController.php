@@ -149,6 +149,9 @@ class MwsConfigController extends AbstractController
                 if ($uploadFiles && count($uploadFiles)) {
                     $filesystem = new Filesystem();
                     $bckupFile = $uploadFiles[0];
+                    $bckupName = implode('.', array_slice(explode(
+                        '.', $bckupFile['name']
+                    ),0,-1));
                     $bckupPath = "$uploadSrc/{$bckupFile['name']}";
                     // TODO : config behavior ? alway bckup for now
                     $this->backupInternalSave();
@@ -177,7 +180,42 @@ class MwsConfigController extends AbstractController
                             ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
                             ->deleteFromRegex('~\.\.~') // delete all relatives path
                             ;
+                            $dbTestPath = "$bckupName/data.db.sqlite";
+                            // var_dump($dbTestPath);
+                            $files = $zipFile->getListFiles();
+                            if (!count(array_filter($files, function ($f)
+                            use ($dbTestPath) {
+                                return $f === $dbTestPath;
+                            }))) {
+                                throw new ZipException('"/data.db.sqlite" is mandatory inside .zip');
+                            }
+                            // var_dump($files);exit();
+                            if(!count(array_filter($files, function ($f)
+                            use ($dbTestPath, $bckupName) {
+                                return $f === $dbTestPath
+                                || starts_with($f, "$bckupName/messages/tchats/");
+                            }))) {
+                                throw new ZipException('Only "/messages/tchats/" extra folder is allowed');
+                            }
 
+                            // If zip have /messages/tchats, cleanup before extract
+                            if($zipFile->count() > 1 ) {
+                                // TODO : configurable option for it ?
+                                $filesystem->remove($uploadSrc);
+                                $backupForm->addError(new FormError(
+                                    "Backup Zip Did cleanup old uploads."
+                                ));
+                                }
+                            $extractDest = "$projectDir/$uploadSubFolder";
+                            $zipFile->extractTo($extractDest); // extract files to the specified directory
+                            $filesystem->rename(
+                                "$projectDir/$uploadSubFolder/$bckupName/data.db.sqlite",
+                                $dbSrc,
+                                true
+                            );
+
+                            // Clean up extracted folder :
+                            $filesystem->remove($extractDest);
                             $backupForm->addError(new FormError(
                                 "Backup Zip OK, recharger la page pour vérifier les backups automatiques."
                             ));
@@ -193,6 +231,7 @@ class MwsConfigController extends AbstractController
                             $zipFile->close();
                         }
                     }
+                    $filesystem->remove($bckupPath);
                 }
                 // $this->backupImport($blob, $type);
 
