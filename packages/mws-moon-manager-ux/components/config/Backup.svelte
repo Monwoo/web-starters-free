@@ -189,13 +189,17 @@
         inline-flex w-[10rem] p-1 m-2 dark:bg-gray-700 dark:border-gray-600 
         dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
         dark:focus:border-blue-500">
-          <option value="null" selected>Type de backup</option>
+          <!-- <option value="null" selected>Type de backup</option> -->
           {#each [
-            {format:'db', label:'Données'},
+            {format:'db', label:'Données', selected: 'on'},
             {format:'light', label:'Données et uploads'},
-            {format:'full', label:'Tout le CRM'},
+            // {format:'full', label:'Tout le CRM'},
           ] as fmt}
-            <option value={`${fmt.format}`}>{fmt.label}</option>
+            <option
+            value={`${fmt.format}`}
+            selected={fmt.selected}>
+              {fmt.label}
+            </option>
           {/each}
         </select>  
         <div class="p-4 w-full flex items-center justify-center">

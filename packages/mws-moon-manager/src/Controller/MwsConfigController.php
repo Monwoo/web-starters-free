@@ -301,13 +301,15 @@ class MwsConfigController extends AbstractController
         $respData = null;
         $contentType = 'application/vnd.sqlite3';
 
-        $shouldZip = true; // TODO ? : $request->get('shouldZip', true);
+        $shouldZip = false; // TODO ? : $request->get('shouldZip', true);
         // db|light|full
         $backupType = $request->get('backupType', null);
         // TIPS : no If case for 'db' or any other type => do lowest if unknow type
         $isLightOrFull = false !== array_search($backupType, [
             'light', 'full'
         ]);
+        // TODO ? Full is may be too much since will send private keys etc...
+        //       => bette use ftp and keep this feature outside of common usage ?
         $isFull = 'full' === $backupType;
 
         $projectDir = $this->params->get('kernel.project_dir');
