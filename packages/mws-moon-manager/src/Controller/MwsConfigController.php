@@ -230,115 +230,24 @@ class MwsConfigController extends AbstractController
         methods: ['POST'],
         name: 'mws_config_backup_download'
     )]
-    public function fetchRootUrl(
+    public function backupDownload(
         Request $request,
     ): Response {
         $user = $this->getUser();
 
-        if (!$user) {
-            throw $this->createAccessDeniedException('Only for logged users');
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
         }
 
-        $url = $request->query->get('url', null);
-        $keepOriginalSize = $request->query->get('keepOriginalSize', null);
-        $thumbnailSize = intval($request->query->get('thumbnailSize', 0));
-        if (!$thumbnailSize) {
-            // TODO : default from session or db config params ?
-            $thumbnailSize = self::defaultThumbSize;
-        }
-        // dd($thumbnailSize);
-        $this->logger->debug("Will fetch url : $url");
+        $backupName = $request->get('backupName', null);
 
-        if (str_starts_with($url, "file://")) {
-            $inputPath = explode("file://", $url)[1] ?? null;
-            $path = realpath($inputPath);
-            if (!$path) {
-                $projectDir = $this->getParameter('kernel.project_dir');
-                $path = realpath("$projectDir/$inputPath");
-                $this->logger->debug("Fixed root url", [$inputPath, $path]);
-            }
-            // TODO : secu : filter real path to 
-            //        allowed screenshot folders from .env only ?
-            // dd($path);
-            $this->logger->debug("Root file", [$inputPath, $path]);
-            if (!$path || !file_exists($path)) {
-                // throw $this->createAccessDeniedException('Media path not allowed');
-                throw $this->createNotFoundException('Media path not allowed');
-            }
-            $url = $path;
-        }
+        $this->logger->debug("Will backup $backupName");
+        $respData = null;
 
-        // Or use : https://symfony.com/doc/current/http_client.html
-        // $respData = file_get_contents($url);
-
-        // TODO : for efficiency, resize image before usage :
-        // https://www.php.net/manual/en/imagick.resizeimage.php
-        // or :
-        // https://stackoverflow.com/questions/14649645/resize-image-in-php
-        // https://www.php.net/manual/en/function.imagecopyresized.php (GD)
-        // 
-        // and/or js size ? : 
-        // https://github.com/fabricjs/fabric.js
-        // https://imagekit.io/blog/how-to-resize-image-in-javascript/
-        // https://stackoverflow.com/questions/39762102/resizing-image-while-printing-html
-        // $imagick = new \Imagick(realpath($url));
-        try {
-            if ($keepOriginalSize) {
-                // TODO : filter url outside of allowed server folders ?
-                $respData = file_get_contents($url);
-            } else {
-                $imagick = new \Imagick($url);
-                $targetW = $thumbnailSize; // px,
-                $factor = $targetW / $imagick->getImageWidth();
-                $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
-                    $imagick->getImageWidth() * $factor,
-                    $imagick->getImageHeight() * $factor,
-                    // https://urmaul.com/blog/imagick-filters-comparison/
-                    \Imagick::FILTER_CATROM,
-                    0
-                );
-                $imagick->setImageCompressionQuality(0);
-                // https://www.php.net/manual/fr/imagick.resizeimage.php#94493
-                // FILTER_POINT is 4 times faster
-                // $imagick->scaleimage(
-                //     $imagick->getImageWidth() * 4,
-                //     $imagick->getImageHeight() * 4
-                // );
-                $respData = $imagick->getImageBlob();
-            }
-        } catch (\Exception $e) {
-            $this->logger->warning($e);
-            // dd($e);
-            throw $this->createNotFoundException('Fail for url ' . $url);
-            // return new Response('', 415);
-            // return new Response('');
-        }
+        // TODO : light db backup vs zip full backup
 
         $response = new Response($respData);
-        $response->headers->set('Content-Type', 'image/jpg');
-        // https://symfony.com/doc/6.2/the-fast-track/en/21-cache.html
-        $maxAge = 3600 * 5;
-        $response->setSharedMaxAge($maxAge);
-        // max-age=604800, must-revalidate
-        $response->headers->set('Cache-Control', "max-age=$maxAge");
-        $response->headers->set('Expires', "$maxAge");
-        // For legacy browsers (no cache):
-        // $response->headers->set('Pragma', 'no-chache');
-
-        // $response->headers->set('Content-Type', 'application/pdf');
-        // $mime = [
-        //     'json' => 'application/json',
-        //     'csv' => 'text/comma-separated-values',
-        //     'xml' => 'application/xml',
-        //     'yaml' => 'application/yaml',
-        // ][$format] ?? 'text/plain';
-        // if ($mime) {
-        //     $response->headers->set('Content-Type', $mime);
-        // }
-
-        // $response->headers->set('Cache-Control', 'no-cache');
-        // $response->headers->set('Pragma', 'no-chache');
-        // $response->headers->set('Expires', '0');
+        // $response->headers->set('Content-Type', 'image/jpg');
         return $response;
     }
 }

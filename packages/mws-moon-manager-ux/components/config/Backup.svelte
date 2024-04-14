@@ -243,6 +243,11 @@
               <button>Télécharger</button>
             </a>
             <a>
+              <!-- Confirm : Importer le backup à la place des données en cours ? -->
+              <button>Importer</button>
+            </a>
+            <a>
+              <!-- Confirm : Supprimer le backup xxx ? -->
               <button style="--mws-primary-rgb: 255, 0, 0">Supprimer</button>
             </a>
           </div>

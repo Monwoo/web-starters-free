@@ -40,7 +40,8 @@
         "symfony/validator": "6.3.*",
         "vich/uploader-bundle": "^2.3",
         "beberlei/doctrineextensions": "^1.4",
-        "calcinai/php-imagick": "^0.1.2"
+        "calcinai/php-imagick": "^0.1.2",
+        "nelexa/zip": "^4.0"
     },
     "autoload": {
         "psr-4": {
