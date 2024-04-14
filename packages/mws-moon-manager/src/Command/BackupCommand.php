@@ -109,7 +109,8 @@ class BackupCommand extends Command
         }
         $currentBackupDir = "$backupsDir/$backupFolderName";
 
-        $backupDatabaseFile = "$currentBackupDir/data.$timestamp.sqlite";
+        // $backupDatabaseFile = "$currentBackupDir/data.$timestamp.sqlite";
+        $backupDatabaseFile = "$currentBackupDir/data.db.sqlite"; // Need to keep name for backup reload easiest reloads
         // TODO : use kernel.cache_dir instead of presuming of 'var' folder ?
         $databaseFile = "$projectDir/var/data.db.sqlite"; // TODO : dynamic App db name ? Clustering DB by domains ?
 

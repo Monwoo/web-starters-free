@@ -10,7 +10,7 @@
 {% block storesInit %}
 	{{ parent() }}
 	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
-		'csrfConfigBackup': csrf_token('mws-csrf-config-backup'),
+		'csrfConfigBackupInternalDownload': csrf_token('mws-csrf-config-backup-internal-download'),
 		'config': configState,
 	} |serialize('json')|e('html_attr'), }) }}></div>
 {% endblock %}

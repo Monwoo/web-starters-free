@@ -30,6 +30,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Vich\UploaderBundle\Metadata\MetadataReader;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -144,12 +145,17 @@ class MwsConfigController extends AbstractController
                 if ($uploadFiles && count($uploadFiles)) {
                     $filesystem = new Filesystem();
                     $bckupFile = $uploadFiles[0];
-                    $bckupName = implode('.', array_slice(explode(
+                    $bckupNameFromFile = implode('.', array_slice(explode(
                         '.', $bckupFile['name']
                     ),0,-1));
                     $bckupPath = "$uploadSrc/{$bckupFile['name']}";
+                    // Keep it OUTSIDE of next backup call :
+                    $filesystem->rename($bckupPath, "$projectDir/var/cache/tmp.zip", true);
                     // TODO : config behavior ? alway bckup for now
                     $this->backupInternalSave();
+                    // TODO : better configure zip to another upload folder than same
+                    // as the backuped ones ?
+                    $filesystem->rename("$projectDir/var/cache/tmp.zip", $bckupPath, true);
                     // dd($bckupPath);
                     $isSqlite = ends_with($bckupPath, '.sqlite');
                     if ($isSqlite) {
@@ -175,9 +181,11 @@ class MwsConfigController extends AbstractController
                             ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
                             ->deleteFromRegex('~\.\.~') // delete all relatives path
                             ;
-                            $dbTestPath = "$bckupName/data.db.sqlite";
                             // var_dump($dbTestPath);
                             $files = $zipFile->getListFiles();
+                            $zipBckupName = explode(DIRECTORY_SEPARATOR, $files[0])[0] ?? '';
+                            $dbTestPath = "$zipBckupName/data.db.sqlite";
+                            // var_dump($zipBckupName); var_dump($files); exit();
                             if (!count(array_filter($files, function ($f)
                             use ($dbTestPath) {
                                 return $f === $dbTestPath;
@@ -186,9 +194,9 @@ class MwsConfigController extends AbstractController
                             }
                             // var_dump($files);exit();
                             if(!count(array_filter($files, function ($f)
-                            use ($dbTestPath, $bckupName) {
+                            use ($dbTestPath, $zipBckupName) {
                                 return $f === $dbTestPath
-                                || starts_with($f, "$bckupName/messages/tchats/");
+                                || starts_with($f, "$zipBckupName/messages/tchats/");
                             }))) {
                                 throw new ZipException('Only "/messages/tchats/" extra folder is allowed');
                             }
@@ -222,13 +230,13 @@ class MwsConfigController extends AbstractController
                             // TODO : RESET EntityManager connection,
                             //        persist and flush are broken after db rename...
                             $filesystem->rename(
-                                "$extractDest/$bckupName/data.db.sqlite",
+                                "$extractDest/$zipBckupName/data.db.sqlite",
                                 $dbSrc,
                                 true
                             );
                             if($haveMediaFiles) {
                                 $filesystem->rename(
-                                    "$extractDest/$bckupName/messages/tchats",
+                                    "$extractDest/$zipBckupName/messages/tchats",
                                     "$extractDest/messages/tchats",
                                     true
                                 );
@@ -236,7 +244,7 @@ class MwsConfigController extends AbstractController
                             // $bulkload_connection = new SQLite3("$dbSrc");
 
                             // Clean up extracted folder :
-                            $filesystem->remove("$extractDest/$bckupName");
+                            $filesystem->remove("$extractDest/$zipBckupName");
                             $backupForm->addError(new FormError(
                                 "Backup Zip OK, recharger la page pour vérifier les backups automatiques."
                             ));
@@ -487,7 +495,7 @@ class MwsConfigController extends AbstractController
                 // ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
                 // ->setPassword('password') // set password for all entries
                 foreach ($zipDirSources as $dirSrc => $dirDst) {
-                    $zipFile->addDir($dirSrc, $dirDst);
+                    $zipFile->addDirRecursive($dirSrc, $dirDst);
                 }
                 foreach ($zipSources as $fileSrc => $fileDst) {
                     $zipFile->addFile($fileSrc, $fileDst);
@@ -514,6 +522,169 @@ class MwsConfigController extends AbstractController
         $response->headers->set('Expires', '0');
         $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
         return $response;
+    }
+
+    #[Route(
+        '/backup-internal/download',
+        // methods: ['POST', 'GET'],
+        methods: ['POST'], // TODO : why need to have GET method ? Navigator force get sometime ?
+        name: 'mws_config_backup_internal_download'
+    )]
+    public function backupInternalDownload(
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        // dd($mediaPath);
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+
+        $csrf = $request->get('_csrf_token', []);
+        $csrf = array_shift($csrf);
+        // var_dump($csrf); exit();
+        if (!$this->isCsrfTokenValid('mws-csrf-config-backup-internal-download', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        // $internalName = $this->slugger->slug(
+        //     $request->get('internalName'),
+        //     '-',
+        // );
+        // https://symfony.com/doc/7.1/string.html#slugger
+        //             ['en' => ['_' => '_']]
+        // $slugger = new AsciiSlugger('en', ['en' => ['_' => '_']]); // NOP, replace is exclusive... not num or letter....
+        // $internalName = $slugger->slug($request->get('internalName'), '-', 'en');
+
+        $rawName = $request->get('internalName', []);
+        $rawName = array_shift($rawName);
+        // var_dump($rawName); exit();
+        $internalName = implode('_', array_map(
+            [$this->slugger, 'slug'], explode('_', $rawName))
+        );
+
+        // dd($internalName);
+        if (!$internalName) {
+            throw $this->createNotFoundException("Wrong internalName parameter.");
+        }
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $pathRaw = "$projectDir/bckup/$internalName";
+        $filesystem = new Filesystem();
+
+        $path = realpath($pathRaw);
+        // var_dump($path); exit();
+        // dd($path);
+        if (!$path || !file_exists($path)) {
+            // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
+            throw $this->createNotFoundException("Internal backup $internalName not found");
+        }
+        $projPath = realpath($projectDir);
+        if (!starts_with($path, $projPath)) {
+            // dd('// TODO TESTs : Do not allow other folders like "../../" ? Browser check it, testable ?');
+            // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
+            throw $this->createNotFoundException("Internal backup $internalName not found");
+        }
+        // dd($path);
+        // dd($internalName);
+        $zipFile = new ZipFile();
+        $tmp = "$projectDir/var/cache/tmp.zip";
+        try {
+            // dd($path);
+            $zipFile->addDirRecursive($path, "/$internalName");
+            // $zipFile->close();
+            // var_dump($zipFile->count()); exit;
+            // var_dump("Fail to build zip backup"); exit();
+            // $zipFile->outputAsAttachment("$internalName.zip");
+            // TODO : why outputAsAttachment buggy for 2nd bckup export ? save sound better
+            // $zipFile->outputAsAttachment("$internalName.zip", null, false);
+            // // TIPS : noting will run after exit of previous call...
+            // dd('Strange, this code should not run...');
+
+            // Hacky save and download... (TODO : always 1 junk file ?)
+            $zipFile->saveAsFile($tmp);
+        } catch (ZipException $e) {
+            // handle exception
+            $this->logger->error(
+                "Backup Zip error " . $e->getMessage()
+            );
+        } finally {
+            $zipFile->close();
+        }
+        // var_dump("Fail to build zip backup"); exit();
+        // throw $this->createNotFoundException("Fail to build zip backup.");
+        $response = new Response(file_get_contents($tmp));
+        $filesystem->remove($tmp);
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$internalName.'.zip"');
+
+        return $response;
+    }
+
+
+    #[Route(
+        '/backup-internal/import',
+        // methods: ['POST', 'GET'],
+        methods: ['POST'], // TODO : why need to have GET method ? Navigator force get sometime ?
+        name: 'mws_config_backup_internal_import'
+    )]
+    public function backupInternalImport(
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        // dd($mediaPath);
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+
+        $csrf = $request->get('_csrf_token', []);
+        $csrf = array_shift($csrf);
+        // var_dump($csrf); exit();
+        if (!$this->isCsrfTokenValid('mws-csrf-config-backup-internal-download', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        // TODO : import from zip instead of open folder ? Backup as ZIP instead of simple copy ?
+        $rawName = $request->get('internalName', []);
+        $rawName = array_shift($rawName);
+        // var_dump($rawName); exit();
+        $internalName = implode('_', array_map(
+            [$this->slugger, 'slug'], explode('_', $rawName))
+        );
+
+        // dd($internalName);
+        if (!$internalName) {
+            throw $this->createNotFoundException("Wrong internalName parameter.");
+        }
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $pathRaw = "$projectDir/bckup/$internalName";
+        $filesystem = new Filesystem();
+
+        $path = realpath($pathRaw);
+        // var_dump($path); exit();
+        // dd($path);
+        if (!$path || !file_exists($path)) {
+            // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
+            throw $this->createNotFoundException("Internal backup $internalName not found");
+        }
+        $projPath = realpath($projectDir);
+        if (!starts_with($path, $projPath)) {
+            // dd('// TODO TESTs : Do not allow other folders like "../../" ? Browser check it, testable ?');
+            // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
+            throw $this->createNotFoundException("Internal backup $internalName not found");
+        }
+
+        try {
+            dd('TODO : import');
+        } catch (Exception $e) {
+            // handle exception
+            $this->logger->error(
+                "Import internal backup error " . $e->getMessage()
+            );
+        } finally {
+
+        }
+
+        return $this->redirectToRoute('mws_config_backup');
     }
 
     #[Route(

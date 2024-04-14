@@ -1287,7 +1287,7 @@ class PdfBillingsController extends AbstractController
 
         //set headers
         $response->headers->set('Content-Type', 'mime/type');
-        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename.'"');
 
         $response->setContent($content);
         return $response;

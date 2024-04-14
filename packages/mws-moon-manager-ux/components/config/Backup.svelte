@@ -148,6 +148,7 @@
           _locale: locale ?? "",
           viewTemplate: viewTemplate ?? "",
         })}
+        name="mainBackup"
         method="POST"
       >
         <div class="w-full text-center">
@@ -257,7 +258,7 @@
       Liste des backups<br/> [{$state.config.backupsTotalSize ?? "--"}]
     </h1>
     <ul class="w-full">
-      {#each backups ?? [] as backupDir}
+      {#each backups ?? [] as backupDir, idx}
         <div
           class="p-2 w-full
         flex flex-wrap items-center justify-center"
@@ -266,9 +267,21 @@
             class="w-1/2 px-4
           flex flex-wrap items-start justify-end"
           >
-            <a>
-              <button>Télécharger</button>
-            </a>
+            <form
+              method="post"
+              action={Routing.generate("mws_config_backup_internal_download", {
+                // _locale: locale ?? "",
+                // viewTemplate: viewTemplate ?? "",
+                // csrf: $state.csrfConfigBackupInternalDownload,
+                // internalName: [ backupDir.split(' [')[0] ]
+              })}
+            >
+              <input type="hidden" name="_csrf_token[{idx}]" value={$state.csrfConfigBackupInternalDownload} />
+              <input type="hidden" name="internalName[{idx}]" value={backupDir.split(' [')[0]} />
+              <button name="submit_ib_{idx}" class=" m-2" type="submit">
+                Télécharger
+              </button>
+            </form>
             <a>
               <!-- Confirm : Importer le backup à la place des données en cours ? -->
               <button>Importer</button>
