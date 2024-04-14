@@ -33,6 +33,7 @@
         "lexik/jwt-authentication-bundle": "*",
         "monwoo/mws-moon-manager-bundle": "^2.0",
         "monwoo/mws-sf-pdf-billings-lvl1-bundle": "^0.0",
+        "nelexa/zip": "^4.0",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.23",
         "qipsius/tcpdf-bundle": "^2.0",

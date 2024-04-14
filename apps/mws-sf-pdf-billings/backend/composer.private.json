@@ -48,6 +48,7 @@
         "monwoo/mws-sf-pdf-billings-lvl1-bundle": "^0.0",
         "monwoo/mws-sf-pdf-billings-lvl2-bundle": "^0.0.1",
         "monwoo/mws-sf-pdf-billings-monwoo-bundle": "^0.0.1",
+        "nelexa/zip": "^4.0",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.23",
         "qipsius/tcpdf-bundle": "^2.0",

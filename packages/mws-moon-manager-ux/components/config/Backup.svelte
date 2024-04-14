@@ -101,6 +101,9 @@
       .replace(/[\u0300-\u036f]/g, "") // remove all the accents, which happen to be all in the \u03xx UNICODE block.
       // .toLowerCase() // convert to lowercase
       .replace(/[^A-Za-z0-9 -]/g, ""); // remove non-alphanumeric characters
+      // TIPS : below ok to trim end, but will remove last space
+      //        too, and usability to transform space to '-' get off...
+      // .replace(/(^-)|(-$)/g, ""); // remove start '-' and end '-'
     if (!keepLowerCase) {
       resp = resp.toLowerCase();
     }
@@ -178,13 +181,32 @@
             }, 300)}
           />
         </div>
-
+        <select
+        name="backupType"
+        class="opacity-30 hover:opacity-100 
+        bg-gray-50 border border-gray-300 text-gray-900 
+        text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+        inline-flex w-[10rem] p-1 m-2 dark:bg-gray-700 dark:border-gray-600 
+        dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+        dark:focus:border-blue-500">
+          <option value="null" selected>Type de backup</option>
+          {#each [
+            {format:'db', label:'Données'},
+            {format:'light', label:'Données et uploads'},
+            {format:'full', label:'Tout le CRM'},
+          ] as fmt}
+            <option value={`${fmt.format}`}>{fmt.label}</option>
+          {/each}
+        </select>  
         <div class="p-4 w-full flex items-center justify-center">
           <input type="hidden" name="_csrf_token" value={csrfBackupDownload} />
           <button class=" m-2" style:--tw-shadow-color="#FF0000" type="submit">
-            Faire un backup pour
-            {dayjs().format("YYYYMMDD_HHmmss")}-{backupName ??
-              "MwsCrm"}.zip</button
+            Télécharger un backup
+            {
+              (backupName && ' pour ') ?? ''
+            }{
+              backupName ?? ''
+            }</button
           >
         </div>
       </form>

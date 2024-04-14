@@ -9,17 +9,24 @@ use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Repository\MwsMessageTchatUploadRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
+use PhpZip\Exception\ZipException;
+use PhpZip\ZipFile;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Vich\UploaderBundle\Metadata\MetadataReader;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -37,10 +44,11 @@ class MwsConfigController extends AbstractController
 {
     public function __construct(
         protected Security $security,
+        protected KernelInterface $kernel,
         protected LoggerInterface $logger,
         protected EntityManagerInterface $em,
         protected ParameterBagInterface $params,
-        // protected SluggerInterface $slugger,
+        protected SluggerInterface $slugger,
     ) {
     }
 
@@ -278,15 +286,104 @@ class MwsConfigController extends AbstractController
             throw $this->createAccessDeniedException('Only for admins');
         }
 
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+
         $backupName = $request->get('backupName', null);
+        // $backupName = trim($this->slugger->slug($backupName, '-'));
+        $backupName = $this->slugger->slug($backupName, '-');
+        $backupName = strlen($backupName) ? "-$backupName" : '';
 
         $this->logger->debug("Will backup $backupName");
-        $respData = null;
+        $shouldBackup = $request->get('shouldBackup', true);
+        $shouldBackup && $this->doBackup();
 
-        // TODO : light db backup vs zip full backup
+        $respData = null;
+        $contentType = 'application/vnd.sqlite3';
+
+        $shouldZip = true; // TODO ? : $request->get('shouldZip', true);
+        // db|light|full
+        $backupType = $request->get('backupType', null);
+        // TIPS : no If case for 'db' or any other type => do lowest if unknow type
+        $isLightOrFull = false !== array_search($backupType, [
+            'light', 'full'
+        ]);
+        $isFull = 'full' === $backupType;
+
+        $projectDir = $this->params->get('kernel.project_dir');
+        $dbSrc = "$projectDir/var/data.db.sqlite";
+
+        $filename = "data$backupName.$packageVersion." . time() . ".sqlite";
+        $zipName = "backup$backupName.$packageVersion." . time();
+        $zipFilename = "$zipName.zip";
+
+        $respData = file_get_contents($dbSrc);
+
+        $zipSources = [
+            $dbSrc => "$zipName/" . basename($dbSrc),
+        ];
+        if ($isLightOrFull) {
+            $shouldZip = true;
+        }
+
+        if ($isFull) {
+
+        }
+
+        if ($shouldZip) {
+            // https://packagist.org/packages/nelexa/zip
+            // $zipFile = new \PhpZip\ZipFile();
+            // $zipFile
+            // ->addFromString('zip/entry/filename', 'Is file content') // add an entry from the string
+            // ->addFile('/path/to/file', 'data/tofile') // add an entry from the file
+            // ->addDir(__DIR__, 'to/path/') // add files from the directory
+            // ->saveAsFile($outputFilename) // save the archive to a file
+            // ->close(); // close archive                
+            // // open archive, extract, add files, set password and output to browser.
+            // $zipFile
+            // ->openFile($outputFilename) // open archive from file
+            // ->extractTo($outputDirExtract) // extract files to the specified directory
+            // ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
+            // ->addFromString('dir/file.txt', 'Test file') // add a new entry from the string
+            // ->setPassword('password') // set password for all entries
+            // ->outputAsAttachment('library.jar'); // output to the browser without saving to a file
+
+            // TODO : secu test case : unzip archive with forced '../../' path ?
+
+            $zipFile = new ZipFile();
+            try{
+                // var_dump($zipSources);exit();
+                // $zipFile
+                // ->addFile('/path/to/file', 'data/tofile') // add an entry from the file
+                // ->addDir(__DIR__, 'to/path/') // add files from the directory
+                // ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
+                // ->setPassword('password') // set password for all entries
+                foreach ($zipSources as $fileSrc => $fileDst) {
+                    $zipFile->addFile($fileSrc, $fileDst);
+                }
+
+                $zipFile
+                ->outputAsAttachment($zipFilename); // output to the browser without saving to a file
+                // TIPS : noting will run after exit of previous call...
+                dd('Strange, this code should not run...');
+            }
+            catch(ZipException $e){
+                // handle exception
+                $this->logger->error(
+                    "Backup Zip error " . $e->getMessage()
+                );
+            }
+            finally{
+                $zipFile->close();
+            }            
+        }
 
         $response = new Response($respData);
-        // $response->headers->set('Content-Type', 'image/jpg');
+        $response->headers->set('Content-Type', $contentType);
+        $response->headers->set('Cache-Control', 'no-cache');
+        $response->headers->set('Pragma', 'no-chache');
+        $response->headers->set('Expires', '0');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
         return $response;
     }
 
@@ -348,4 +445,16 @@ class MwsConfigController extends AbstractController
 
         return $response;
     }
+
+    protected function doBackup()
+    {
+        $application = new Application($this->kernel);
+        $application->setAutoExit(false);
+        $input = new ArrayInput([
+            'command' => 'mws:backup',
+        ]);
+        $output = new NullOutput();
+        $application->run($input, $output);
+    }
+
 }
