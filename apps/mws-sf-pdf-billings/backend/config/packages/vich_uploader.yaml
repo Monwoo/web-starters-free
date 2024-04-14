@@ -12,12 +12,19 @@ vich_uploader:
         type: attribute
     mappings:
         message_tchats_upload:
-            # TODO : PHP Firewall instead of .htaccess rules ?
-            #        => server without .htaccess will 
-            #           load .php files etc instead of download....
             # uri_prefix: '/mws/uploads/messages/tchats'
             # uri_prefix: '%env(BASE_HREF_FULL)%/uploads/messages/tchats'
-            uri_prefix: '%env.base_href%/uploads/messages/tchats'
+            # # Public folder with .htaccess way : (WARNING : Security...), cf :
+            # # apps/mws-sf-pdf-billings/backend/public/.htaccess.upload
+            # # + Will not check logged user status if no firewall rules for public folder
+            # # cf : apps/mws-sf-pdf-billings/backend/config/packages/security.yaml
+            # uri_prefix: '%env.base_href%/uploads/messages/tchats'
+            # # PHP Secure proxy, cf : 
+            # # packages/mws-moon-manager/src/Controller/MwsConfigController.php:uploadProxy
+            uri_prefix: '%env.base_href%/mws/%kernel.default_locale%/mws-config/uploads/messages/tchats'
+            # Change local destination upload folder :
+            # apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder
+
             upload_destination: '%kernel.project_dir%/public/uploads/messages/tchats'
             # namer: MWS\MoonManagerBundle\Naming\OrignalNameNamer
             namer: mws_message_tchat_upload_namer

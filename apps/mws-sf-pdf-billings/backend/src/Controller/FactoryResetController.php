@@ -67,7 +67,8 @@ class FactoryResetController extends AbstractController
             }
             $filesystem = new Filesystem();
             $projectDir = $this->params->get('kernel.project_dir');
-            $uploadSrc = "$projectDir/public/uploads/messages/tchats";
+            $subFolder = $this->getParameter('mws_moon_manager')['uploadSubFolder'] ?? '';
+            $uploadSrc = "$projectDir/$subFolder/messages/tchats";
             // unlink($database);
             $filesystem->remove([
                 $database,

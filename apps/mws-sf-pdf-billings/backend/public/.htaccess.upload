@@ -1,5 +1,27 @@
 # 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo
 # service@monwoo.com
 
+# In case you want to put your upload folder inside public directory,
+# Please ensure security rules, script files should not run from it...
+# cp .htaccess.upload upload/.htaccess
+
+# If you want to use the secure php proxy, update configs in :
+# apps/mws-sf-pdf-billings/backend/config/packages/vich_uploader.yaml
+
+# TESTS :
+# curl -I http://localhost:8888/mws-free/public/uploads/messages/tchats/Readme.pdf
+# curl -I http://localhost:8888/mws-free/public/uploads/messages/tchats/MoonManagerLogo.png
+
+# Below OK, but what if new runnable extensions like .pl, etc... ?
 # AddType application/octet-stream .avi .mpg .mov .pdf .xls .mp4
-AddType application/octet-stream .*
+# AddType application/octet-stream .php
+
+# https://stackoverflow.com/questions/20480088/change-content-type-via-htaccess-with-addtype-for-an-url
+RewriteEngine On
+
+# Add conditions to bring back regular headers for specific extensions
+RewriteCond %{REQUEST_FILENAME} !\.(pdf|txt|png|jpg|jpeg|svg)$
+RewriteRule ^(.*) - [T=application/octet-stream]
+# # Read all as text :
+# RewriteRule ^(.*) - [T=text/plain]
+

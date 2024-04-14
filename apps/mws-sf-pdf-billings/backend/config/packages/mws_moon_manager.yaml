@@ -1,6 +1,9 @@
 # TODO : auto gen from recipe...
 parameters:
     mws_moon_manager:
+        # uploadSubFolder: var/uploads
+        # # WARNING : using public path need strong security review... :
+        uploadSubFolder: public/uploads
         offer:
             defaultTags:
               - label: Prospection

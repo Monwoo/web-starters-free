@@ -141,7 +141,8 @@ class MwsConfigController extends AbstractController
             $this->mwsFileSize($backupsDir)
         );
 
-        $uploadSrc = "$projectDir/public/uploads/messages/tchats";
+        $subFolder = $this->getParameter('mws_moon_manager')['uploadSubFolder'] ?? '';
+        $uploadSrc = "$projectDir/$subFolder/messages/tchats";
         $uploadsTotalSize = $this->humanSize(
             $uSize = $this->mwsFileSize($uploadSrc)
         );
@@ -248,6 +249,65 @@ class MwsConfigController extends AbstractController
 
         $response = new Response($respData);
         // $response->headers->set('Content-Type', 'image/jpg');
+        return $response;
+    }
+
+    #[Route(
+        '/uploads/{mediaPath<.*$>?}',
+        methods: ['GET'],
+        name: 'mws_config_upload_proxy'
+    )]
+    public function uploadProxy(
+        $mediaPath,
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        // dd($mediaPath);
+        // if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+        //     throw $this->createAccessDeniedException('Only for admins');
+        // }
+        if (!$user) {
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $format = strtolower(array_slice(explode('.', $mediaPath), -1)[0] ?? '');
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        // TODO : no property accessors ?? mws_moon_manager.uploadSubFolder
+        // $projectDir = $this->getParameter('mws_moon_manager.uploadSubFolder');
+        $subFolder = $this->getParameter('mws_moon_manager')['uploadSubFolder'] ?? '';
+        $pathRaw = "$projectDir/$subFolder/$mediaPath";
+        // dump($pathRaw);
+        $path = realpath($pathRaw);
+        // dd($path);
+        if (!$path || !file_exists($path)) {
+            // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
+            throw $this->createNotFoundException("Media path $pathRaw not allowed");
+        }
+        $projPath = realpath($projectDir);
+        if (!starts_with($path, $projPath)) {
+            // dd('// TODO TESTs : Do not allow other folders like "../../" ? Browser check it, testable ?');
+            // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
+            throw $this->createNotFoundException("Media path $pathRaw not allowed");
+        }
+        // dd('ok');
+        $respData = file_get_contents($path);
+        $response = new Response($respData);
+        // https://developer.mozilla.org/fr/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+        $mime = [
+            'pdf' => 'application/pdf',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpge' => 'image/jpeg',
+            'svg' => 'image/svg+xml',
+            'csv' => 'text/comma-separated-values',
+            'xml' => 'application/xml',
+            'yaml' => 'application/yaml',
+        ][$format] ?? 'text/plain';
+        if ($mime) {
+            $response->headers->set('Content-Type', $mime);
+            // dd($mime);
+        }
+
         return $response;
     }
 }
