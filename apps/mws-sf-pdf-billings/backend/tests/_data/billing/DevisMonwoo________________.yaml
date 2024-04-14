@@ -1,5 +1,5 @@
 appInfos:
-    packageVersion: 2.0.10
+    packageVersion: 2.0.11
     packageName: mws-sf-pdf-billings
     isDev: true
 clientSlug: '--'
@@ -31,7 +31,7 @@ marginBeforeEndItem: null
 marginAfterEndItem: null
 pageBreakAfterEndItem: null
 hideDefaultOutlaysOnEmptyOutlays: null
-outlays: {  }
-transactions: {  }
-products: {  }
+outlays: {}
+transactions: {}
+products: {}
 marginBeforeTotal: null
