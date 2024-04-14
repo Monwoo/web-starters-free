@@ -296,7 +296,7 @@ class MwsConfigController extends AbstractController
 
         $this->logger->debug("Will backup $backupName");
         $shouldBackup = $request->get('shouldBackup', true);
-        $shouldBackup && $this->doBackup();
+        $shouldBackup && $this->doBackup($backupName);
 
         $respData = null;
         $contentType = 'application/vnd.sqlite3';
@@ -455,13 +455,17 @@ class MwsConfigController extends AbstractController
         return $response;
     }
 
-    protected function doBackup()
+    protected function doBackup($backupName)
     {
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
-        $input = new ArrayInput([
+        $args = [
             'command' => 'mws:backup',
-        ]);
+        ];
+        if ($backupName && strlen($backupName)) {
+            $args['backupName'] = $backupName;
+        }
+        $input = new ArrayInput($args);
         $output = new NullOutput();
         $application->run($input, $output);
     }

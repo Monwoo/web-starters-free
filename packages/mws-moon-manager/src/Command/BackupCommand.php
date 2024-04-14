@@ -6,12 +6,14 @@ namespace MWS\MoonManagerBundle\Command;
 use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[AsCommand(
     name: 'mws:backup',
@@ -25,6 +27,12 @@ class BackupCommand extends Command
 
     public function __construct(
         protected ParameterBagInterface $params,
+        protected SluggerInterface $slugger,
+        // TIPS : must be end of params to avoid error
+        // Cannot autowire service "MWS\MoonManagerBundle\Command\BackupCommand": arg  
+        // ument "$backupName" of method "__construct()" is type-hinted "string", you  
+        // should configure its value explicitly. 
+        protected ?String $backupName = null,
     ) {
         parent::__construct();
         $this->filesystem = new Filesystem();
@@ -34,15 +42,26 @@ class BackupCommand extends Command
     {
         // TODO : load backup from 'Folder' or 'Multi-file form folder input' or 'zip'
         // $this->addOption(
-        //     'userLogin', '-l', InputArgument::OPTIONAL,
-        //     "Login de l'utilisateur", $this->userLogin
+        //     'backupName', '-b', InputArgument::OPTIONAL,
+        //     "Nom du backup", $this->backupName
         // );
+        $this->addArgument(
+            'backupName',
+            InputArgument::OPTIONAL,
+            "Nom du backup",
+            $this->backupName
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // $this->backupName = $input->getOption("backupName");
+        $this->backupName = $input->getArgument("backupName");
+        $this->backupName = $this->slugger->slug(
+            $this->backupName ?? ''
+        );
+
         $cmdStatus = Command::SUCCESS;
-        // $backupStack = $this->params->get('mws.config.bckup.maxStack');
         $backupStack = json_decode($_SERVER['CONFIG_BCKUP_MAX_STACK'] ?? -1);
         if ($backupStack < 0) {
             $backupStack = PHP_INT_MAX;
@@ -61,7 +80,6 @@ class BackupCommand extends Command
         //     $lastBackupTimestamp = intval(file_get_contents($lastTimestampFile));
         // }
 
-        // $this->userLogin = $input->getOption("userLogin");
         // $minBackupDelay = 24 * 60 * 60; // attente minimum de 24 heures entre chaque backups...
         // $minBackupDelay = 5; // attente minimum de 5 secondes
         // $minBackupDelay = 60; // attente minimum de 1 minute
@@ -85,7 +103,10 @@ class BackupCommand extends Command
         //     return $cmdStatus;
         // }
         $backupFolderName = (new DateTime())
-        ->setTimestamp($timestamp)->format('Ymd_His');
+            ->setTimestamp($timestamp)->format('Ymd_His');
+        if ($this->backupName && strlen($this->backupName)) {
+            $backupFolderName .= "-" . $this->backupName;
+        }
         $currentBackupDir = "$backupsDir/$backupFolderName";
 
         $backupDatabaseFile = "$currentBackupDir/data.$timestamp.sqlite";
@@ -144,24 +165,23 @@ class BackupCommand extends Command
         return $cmdStatus;
     }
 
-    function recursive_copy($src,$dst) {
+    function recursive_copy($src, $dst)
+    {
         // https://gist.github.com/gserrano/4c9648ec9eb293b9377b
         if (!file_exists($src)) {
             return;
         }
         $dir = opendir($src);
         @mkdir($dst, 0777, true);
-        while(( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
-                    $this->recursive_copy($src .'/'. $file, $dst .'/'. $file);
-                }
-                else {
-                    copy($src .'/'. $file,$dst .'/'. $file);
+        while (($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                if (is_dir($src . '/' . $file)) {
+                    $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                } else {
+                    copy($src . '/' . $file, $dst . '/' . $file);
                 }
             }
         }
         closedir($dir);
     }
-    
 }
