@@ -301,9 +301,9 @@ class MwsConfigController extends AbstractController
         $respData = null;
         $contentType = 'application/vnd.sqlite3';
 
-        $shouldZip = false; // TODO ? : $request->get('shouldZip', true);
-        // db|light|full
+        // db|db-zip|light (|full not decided yet...)
         $backupType = $request->get('backupType', null);
+        $shouldZip = "db-zip" === $backupType; // TODO ? : $request->get('shouldZip', true);
         // TIPS : no If case for 'db' or any other type => do lowest if unknow type
         $isLightOrFull = false !== array_search($backupType, [
             'light', 'full'
@@ -321,11 +321,15 @@ class MwsConfigController extends AbstractController
 
         $respData = file_get_contents($dbSrc);
 
+        $zipDirSources = [];
         $zipSources = [
             $dbSrc => "$zipName/" . basename($dbSrc),
         ];
         if ($isLightOrFull) {
             $shouldZip = true;
+            $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
+            $uploadSrc = "$projectDir/$subFolder/messages/tchats";
+            $zipDirSources[$uploadSrc] = "$zipName/messages/tchats";
         }
 
         if ($isFull) {
@@ -360,6 +364,9 @@ class MwsConfigController extends AbstractController
                 // ->addDir(__DIR__, 'to/path/') // add files from the directory
                 // ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
                 // ->setPassword('password') // set password for all entries
+                foreach ($zipDirSources as $dirSrc => $dirDst) {
+                    $zipFile->addDir($dirSrc, $dirDst);
+                }
                 foreach ($zipSources as $fileSrc => $fileDst) {
                     $zipFile->addFile($fileSrc, $fileDst);
                 }

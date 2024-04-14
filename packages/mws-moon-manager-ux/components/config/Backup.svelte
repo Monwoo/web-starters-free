@@ -191,7 +191,8 @@
         dark:focus:border-blue-500">
           <!-- <option value="null" selected>Type de backup</option> -->
           {#each [
-            {format:'db', label:'Données', selected: 'on'},
+            {format:'db', label:'Données'},
+            {format:'db-zip', label:'Données compressés', selected: 'on'},
             {format:'light', label:'Données et uploads'},
             // {format:'full', label:'Tout le CRM'},
           ] as fmt}
