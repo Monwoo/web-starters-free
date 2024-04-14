@@ -359,9 +359,15 @@
       class="w-full p-2
         flex flex-wrap items-center justify-center"
     >
-      <button style="--mws-primary-rgb: 255, 0, 0">
-        Supprimer tous les thumbnails
-      </button>
+      <form
+        method="post"
+        onsubmit="return confirm('Êtes vous sur de vouloir supprimer toutes les miniatures de la base de données ?');"
+        action={Routing.generate("mws_config_backup_thumbnails_remove", {
+        })}
+      >
+        <input type="hidden" name="_csrf_token" value={$state.csrfConfigBackupThumbnailsRemove} />
+        <button style="--mws-primary-rgb: 255, 0, 0">Supprimer tous les thumbnails</button>
+      </form>
     </div>
   </div>
 </Base>

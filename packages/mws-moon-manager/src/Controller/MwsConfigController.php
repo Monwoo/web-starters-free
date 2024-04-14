@@ -781,6 +781,36 @@ class MwsConfigController extends AbstractController
     }
 
     #[Route(
+        '/backup-thumbnails/remove',
+        methods: ['POST'],
+        name: 'mws_config_backup_thumbnails_remove'
+    )]
+    public function backupThumbnailsRemove(
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+        $csrf = $request->get('_csrf_token', []);
+        if (!$this->isCsrfTokenValid('mws-csrf-config-backup-thumbnails-remove', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        $application = new Application($this->kernel);
+        $application->setAutoExit(false);
+        $args = [
+            'command' => 'mws:clean-thumbnails',
+        ];
+        $input = new ArrayInput($args);
+        $output = new NullOutput();
+        $application->run($input, $output);
+
+        return $this->redirectToRoute('mws_config_backup');
+    }
+
+    #[Route(
         '/uploads/{mediaPath<.*$>?}',
         methods: ['GET'],
         name: 'mws_config_upload_proxy'
