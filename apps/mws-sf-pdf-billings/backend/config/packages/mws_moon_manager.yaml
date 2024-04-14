@@ -7,9 +7,8 @@ parameters:
     # # WARNING : using public path need strong security review... :
     # mws_moon_manager.uploadSubFolder: public/uploads
     mws_moon_manager:
-        # uploadSubFolder: var/uploads
-        # # # WARNING : using public path need strong security review... :
-        # # uploadSubFolder: public/uploads
+        # tips : mws_moon_manager will be array, not 'mws_moon_manager.uploadSubFolder'
+        # uploadSubFolder: xxx
         offer:
             defaultTags:
               - label: Prospection
