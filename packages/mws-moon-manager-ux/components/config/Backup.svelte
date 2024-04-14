@@ -129,7 +129,7 @@
       {@html backupForm}
     </div>
     <h1 class="w-full p-4">
-      Exporter un backup [Max {$state.config.backupTotalSize ?? "--"}]
+      Exporter un backup<br/> [Max {$state.config.backupTotalSize ?? "--"}]
     </h1>
     <p class="w-full">
       Taille du dossier upload : [{$state.config.uploadsTotalSize ?? "--"}]
@@ -227,7 +227,7 @@
       </form> -->
     </div>
     <h1 class="w-full p-4">
-      Liste des backups [{$state.config.backupsTotalSize ?? "--"}]
+      Liste des backups<br/> [{$state.config.backupsTotalSize ?? "--"}]
     </h1>
     <ul class="w-full">
       {#each backups ?? [] as backupDir}
@@ -261,7 +261,7 @@
       {/each}
     </ul>
     <h1 class="w-full p-4">
-      Liste des uploads [{$state.config.uploadsTotalSize ?? "--"}]
+      Liste des uploads<br/> [{$state.config.uploadsTotalSize ?? "--"}]
     </h1>
     <div class="w-full">
       {#each $state.config.uploadedFiles ?? [] as f}
