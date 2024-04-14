@@ -317,10 +317,13 @@ class MwsConfigController extends AbstractController
         // $maxFileIndex = iterator_count($finder) - 1;
         // dd(iterator_to_array($finder, false));
         $bFiles = array_map(function (SplFileInfo $f) {
+            $finder = new Finder();
+            $finder->files()->in($f);
+            $nbFiles = $finder->count();
             return $f->getRelativePathname() . ' [Max '
                 . $this->humanSize(
                     $this->mwsFileSize($f->getPathname())
-                ) . ']';
+                ) . " / $nbFiles]";
         }, iterator_to_array($finder, false));
         // dd($bFiles);
 
@@ -494,11 +497,16 @@ class MwsConfigController extends AbstractController
                 // ->addDir(__DIR__, 'to/path/') // add files from the directory
                 // ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
                 // ->setPassword('password') // set password for all entries
+                $filesystem = new Filesystem();
                 foreach ($zipDirSources as $dirSrc => $dirDst) {
-                    $zipFile->addDirRecursive($dirSrc, $dirDst);
+                    if ($filesystem->exists($dirSrc)) {
+                        $zipFile->addDirRecursive($dirSrc, $dirDst);
+                    }
                 }
                 foreach ($zipSources as $fileSrc => $fileDst) {
-                    $zipFile->addFile($fileSrc, $fileDst);
+                    if ($filesystem->exists($fileSrc)) {
+                        $zipFile->addFile($fileSrc, $fileDst);
+                    }
                 }
 
                 $zipFile
@@ -674,7 +682,36 @@ class MwsConfigController extends AbstractController
         }
 
         try {
-            dd('TODO : import');
+            // clean
+            $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
+            $uploadSrc = "$projectDir/$uploadSubFolder/messages/tchats";
+
+            // $filesystem->remove($uploadSrc); // TIPS : mirror option instead of remove
+            // counter TIPS : if no src directory, target directory will keep data, so remove :
+            $filesystem->exists($uploadSrc)
+            && $filesystem->remove($uploadSrc); 
+
+            // $backupForm->addError(new FormError(
+            //     "Backup Zip Did cleanup old uploads."
+            // ));
+
+            // load assets
+            $bckupUploadSrc = "$path/messages/tchats";
+            // dd($bckupUploadSrc);
+            // dd($uploadSrc);
+            $filesystem->exists($bckupUploadSrc)
+            && $filesystem->mirror($bckupUploadSrc, $uploadSrc, null, [
+                'override' => true, 'delete' => true,
+                'copy_on_windows' => true,
+            ]);
+            // dd($uploadSrc);
+
+            // dd($path);
+            // update db
+            // TIPS : load assets before db that will throw if missing db in backup...
+            $backupDbSrc = "$path/data.db.sqlite";
+            $filesystem->exists($backupDbSrc)
+            && $filesystem->copy($backupDbSrc, "$projectDir/var/data.db.sqlite", true);
         } catch (Exception $e) {
             // handle exception
             $this->logger->error(

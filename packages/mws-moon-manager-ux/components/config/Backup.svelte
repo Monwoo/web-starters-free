@@ -282,10 +282,25 @@
                 Télécharger
               </button>
             </form>
-            <a>
-              <!-- Confirm : Importer le backup à la place des données en cours ? -->
-              <button>Importer</button>
-            </a>
+            <form
+              method="post"
+              action={Routing.generate("mws_config_backup_internal_import", {
+                // _locale: locale ?? "",
+                // viewTemplate: viewTemplate ?? "",
+                // csrf: $state.csrfConfigBackupInternalDownload,
+                // internalName: [ backupDir.split(' [')[0] ]
+              })}
+            >
+            <!-- // TODO  : name do not need to be unique, right ? remove [{idx}] ?
+            Bug was about upload / die without end lifecycle of returned resp,
+             no name clash issues ?
+            -->
+              <input type="hidden" name="_csrf_token[{idx}]" value={$state.csrfConfigBackupInternalImport} />
+              <input type="hidden" name="internalName[{idx}]" value={backupDir.split(' [')[0]} />
+              <button name="submit_ib_{idx}" class=" m-2" type="submit">
+                Importer
+              </button>
+            </form>
             <a>
               <!-- Confirm : Supprimer le backup xxx ? -->
               <button style="--mws-primary-rgb: 255, 0, 0">Supprimer</button>
