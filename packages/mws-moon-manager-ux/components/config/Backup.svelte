@@ -259,6 +259,7 @@
     </h1>
     <ul class="w-full">
       {#each backups ?? [] as backupDir, idx}
+        {@const internalName = backupDir.split(' [')[0]}
         <div
           class="p-2 w-full
         flex flex-wrap items-center justify-center"
@@ -284,6 +285,7 @@
             </form>
             <form
               method="post"
+              onsubmit="return confirm('Êtes vous sur de vouloir remplacer les données et/ou uploads avec le backup {internalName} ?');"
               action={Routing.generate("mws_config_backup_internal_import", {
                 // _locale: locale ?? "",
                 // viewTemplate: viewTemplate ?? "",
@@ -296,7 +298,7 @@
              no name clash issues ?
             -->
               <input type="hidden" name="_csrf_token[{idx}]" value={$state.csrfConfigBackupInternalImport} />
-              <input type="hidden" name="internalName[{idx}]" value={backupDir.split(' [')[0]} />
+              <input type="hidden" name="internalName[{idx}]" value={internalName} />
               <button name="submit_ib_{idx}" class=" m-2" type="submit">
                 Importer
               </button>
