@@ -193,8 +193,8 @@
           <!-- <option value="null" selected>Type de backup</option> -->
           {#each [
             {format:'db', label:'Données'},
-            {format:'db-zip', label:'Données compressés', selected: 'on'},
-            {format:'light', label:'Données et uploads'},
+            {format:'db-zip', label:'Données compressés'},
+            {format:'light', label:'Données et uploads', selected: 'on'},
             // {format:'full', label:'Tout le CRM'},
           ] as fmt}
             <option
@@ -255,7 +255,7 @@
       </form> -->
     </div>
     <h1 class="w-full p-4">
-      Liste des backups<br/> [{$state.config.backupsTotalSize ?? "--"}]
+      Liste des backups<br/> [Max {$state.config.backupsTotalSize ?? "--"}]
     </h1>
     <ul class="w-full">
       {#each backups ?? [] as backupDir, idx}

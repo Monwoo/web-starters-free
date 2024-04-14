@@ -317,7 +317,7 @@ class MwsConfigController extends AbstractController
         // $maxFileIndex = iterator_count($finder) - 1;
         // dd(iterator_to_array($finder, false));
         $bFiles = array_map(function (SplFileInfo $f) {
-            return $f->getRelativePathname() . ' ['
+            return $f->getRelativePathname() . ' [Max '
                 . $this->humanSize(
                     $this->mwsFileSize($f->getPathname())
                 ) . ']';
