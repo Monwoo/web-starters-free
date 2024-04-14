@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
+use SQLite3;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -100,15 +101,9 @@ class MwsConfigController extends AbstractController
         $projectDir = $this->params->get('kernel.project_dir');
         $backupsDir = "$projectDir/bckup";
         $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
-        $uploadSrc = "$projectDir/$uploadSubFolder/messages/tchats";
-        $uploadsTotalSize = $this->humanSize(
-            $uSize = $this->mwsFileSize($uploadSrc)
-        );
+        $extractDest = "$projectDir/$uploadSubFolder";
+        $uploadSrc = "$extractDest/messages/tchats";
         $dbSrc = "$projectDir/var/data.db.sqlite";
-        $databasesTotalSize = $this->humanSize(
-            $dSize = $this->mwsFileSize($dbSrc)
-        );
-        $backupTotalSize = $this->humanSize($uSize + $dSize);
 
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-config-backup', $csrf)) {
@@ -198,24 +193,50 @@ class MwsConfigController extends AbstractController
                                 throw new ZipException('Only "/messages/tchats/" extra folder is allowed');
                             }
 
+                            $zipFile->extractTo($extractDest); // extract files to the specified directory
+
                             // If zip have /messages/tchats, cleanup before extract
-                            if($zipFile->count() > 1 ) {
+                            $haveMediaFiles = $zipFile->count() > 1;
+                            if($haveMediaFiles) {
                                 // TODO : configurable option for it ?
                                 $filesystem->remove($uploadSrc);
                                 $backupForm->addError(new FormError(
                                     "Backup Zip Did cleanup old uploads."
                                 ));
-                                }
-                            $extractDest = "$projectDir/$uploadSubFolder";
-                            $zipFile->extractTo($extractDest); // extract files to the specified directory
+                            }
+
+                            // Next db rewrite will trigger error :
+                            // sqlite General error: 8 attempt to write a readonly database when replacing db
+                            // https://stackoverflow.com/questions/3319112/sqlite-error-attempt-to-write-a-readonly-database-during-insert
+                            // // TIPS : flush before rename :
+                            // $this->em->flush();
+                            // // var_dump(scandir("$projectDir/var/")); exit();
+                            // // $this->em->close(); // TIPS, can't close, will break next calls
+                            // // But still error, keep the old db ref running :
+                            // $filesystem->remove("$dbSrc.bckup");
+                            // $filesystem->rename(
+                            //     $dbSrc,
+                            //     "$dbSrc.bckup",
+                            //     true
+                            // );
+                            // TODO : RESET EntityManager connection,
+                            //        persist and flush are broken after db rename...
                             $filesystem->rename(
-                                "$projectDir/$uploadSubFolder/$bckupName/data.db.sqlite",
+                                "$extractDest/$bckupName/data.db.sqlite",
                                 $dbSrc,
                                 true
                             );
+                            if($haveMediaFiles) {
+                                $filesystem->rename(
+                                    "$extractDest/$bckupName/messages/tchats",
+                                    "$extractDest/messages/tchats",
+                                    true
+                                );
+                            }
+                            // $bulkload_connection = new SQLite3("$dbSrc");
 
                             // Clean up extracted folder :
-                            $filesystem->remove($extractDest);
+                            $filesystem->remove("$extractDest/$bckupName");
                             $backupForm->addError(new FormError(
                                 "Backup Zip OK, recharger la page pour vérifier les backups automatiques."
                             ));
@@ -231,6 +252,7 @@ class MwsConfigController extends AbstractController
                             $zipFile->close();
                         }
                     }
+                    // TODO : option to keep history or not of uploaded bckup ?
                     $filesystem->remove($bckupPath);
                 }
                 // $this->backupImport($blob, $type);
@@ -247,6 +269,16 @@ class MwsConfigController extends AbstractController
                 }
             }
         }
+
+        // TIPS : compute size AFTER bck up operation to get right last size.
+        $uploadsTotalSize = $this->humanSize(
+            $uSize = $this->mwsFileSize($uploadSrc)
+        );
+        $databasesTotalSize = $this->humanSize(
+            $dSize = $this->mwsFileSize($dbSrc)
+        );
+        $backupTotalSize = $this->humanSize($uSize + $dSize);
+
 
         $finder = [];
         if (!empty(glob($backupsDir))) {
