@@ -12,6 +12,7 @@
 	<div class="hidden" {{ svelte_component('MwsReduxSync', { 'stateUpdate': {
 		'csrfConfigBackupInternalDownload': csrf_token('mws-csrf-config-backup-internal-download'),
 		'csrfConfigBackupInternalImport': csrf_token('mws-csrf-config-backup-internal-download'),
+		'csrfConfigBackupInternalRemove': csrf_token('mws-csrf-config-backup-internal-remove'),
 		'config': configState,
 	} |serialize('json')|e('html_attr'), }) }}></div>
 {% endblock %}

@@ -303,10 +303,16 @@
                 Importer
               </button>
             </form>
-            <a>
-              <!-- Confirm : Supprimer le backup xxx ? -->
+            <form
+              method="post"
+              onsubmit="return confirm('Êtes vous sur de vouloir supprimer le backup interne {internalName} ?');"
+              action={Routing.generate("mws_config_backup_internal_remove", {
+              })}
+            >
+              <input type="hidden" name="_csrf_token" value={$state.csrfConfigBackupInternalRemove} />
+              <input type="hidden" name="internalName" value={internalName} />
               <button style="--mws-primary-rgb: 255, 0, 0">Supprimer</button>
-            </a>
+            </form>
           </div>
           <div
             class="w-1/2

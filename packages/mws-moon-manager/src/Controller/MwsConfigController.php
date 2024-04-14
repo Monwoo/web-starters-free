@@ -725,6 +725,62 @@ class MwsConfigController extends AbstractController
     }
 
     #[Route(
+        '/backup-internal/remove',
+        // methods: ['POST', 'GET'],
+        methods: ['POST'], // TODO : why need to have GET method ? Navigator force get sometime ?
+        name: 'mws_config_backup_internal_remove'
+    )]
+    public function backupInternalRemove(
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        // dd($mediaPath);
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+
+        $csrf = $request->get('_csrf_token', []);
+        if (!$this->isCsrfTokenValid('mws-csrf-config-backup-internal-remove', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $rawName = $request->get('internalName', []);
+        $internalName = implode('_', array_map(
+            [$this->slugger, 'slug'], explode('_', $rawName))
+        );
+        if (!$internalName) {
+            throw $this->createNotFoundException("Wrong internalName parameter.");
+        }
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $pathRaw = "$projectDir/bckup/$internalName";
+        $filesystem = new Filesystem();
+
+        $path = realpath($pathRaw);
+        if (!$path || !file_exists($path)) {
+            throw $this->createNotFoundException("Internal backup $internalName not found");
+        }
+        $projPath = realpath($projectDir);
+        if (!starts_with($path, $projPath)) {
+            throw $this->createNotFoundException("Internal backup $internalName not found");
+        }
+
+        try {
+            // clean
+            $filesystem->exists($path)
+            && $filesystem->remove($path); 
+        } catch (Exception $e) {
+            // handle exception
+            $this->logger->error(
+                "Import internal backup error " . $e->getMessage()
+            );
+        } finally {
+
+        }
+
+        return $this->redirectToRoute('mws_config_backup');
+    }
+
+    #[Route(
         '/uploads/{mediaPath<.*$>?}',
         methods: ['GET'],
         name: 'mws_config_upload_proxy'
