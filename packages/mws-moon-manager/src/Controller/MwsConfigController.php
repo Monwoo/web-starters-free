@@ -3,6 +3,7 @@
 namespace MWS\MoonManagerBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use MWS\MoonManagerBundle\Entity\MwsMessageTchatUpload;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
@@ -22,8 +23,10 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -94,6 +97,18 @@ class MwsConfigController extends AbstractController
         // $uploadUriPrefix = str_replace('/ ', '', $uploadUriPrefix);
         $uploadUriPrefix = str_replace(' ', '', $uploadUriPrefix);
         // dd($uploadUriPrefix);
+        $projectDir = $this->params->get('kernel.project_dir');
+        $backupsDir = "$projectDir/bckup";
+        $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
+        $uploadSrc = "$projectDir/$uploadSubFolder/messages/tchats";
+        $uploadsTotalSize = $this->humanSize(
+            $uSize = $this->mwsFileSize($uploadSrc)
+        );
+        $dbSrc = "$projectDir/var/data.db.sqlite";
+        $databasesTotalSize = $this->humanSize(
+            $dSize = $this->mwsFileSize($dbSrc)
+        );
+        $backupTotalSize = $this->humanSize($uSize + $dSize);
 
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-config-backup', $csrf)) {
@@ -128,10 +143,59 @@ class MwsConfigController extends AbstractController
                     urldecode($backupForm->get('jsonResult')->getData()),
                     true
                 );
-                // TODO : allow bckup comment => will be 'SLUG' add
-                //        to end of backup folder, allowing to add
-                //        text info about timed backup
-                //        (zip name will use folder name...)
+                // dd($surveyAnswers);
+                // TODO : custom other path than tchat message upload folder ?
+                $uploadFiles = $surveyAnswers['uploadFile'] ?? null; // TODO : refactor for multiples files ?
+                if ($uploadFiles && count($uploadFiles)) {
+                    $filesystem = new Filesystem();
+                    $bckupFile = $uploadFiles[0];
+                    $bckupPath = "$uploadSrc/{$bckupFile['name']}";
+                    // TODO : config behavior ? alway bckup for now
+                    $this->backupInternalSave();
+                    // dd($bckupPath);
+                    $isSqlite = ends_with($bckupPath, '.sqlite');
+                    if ($isSqlite) {
+                        try {
+                            $filesystem->copy($bckupPath, $dbSrc, true);
+                            $backupForm->addError(new FormError(
+                                "Backup SQLITE OK, recharger la page pour vérifier les backups automatiques."
+                            ));
+                        } catch (Exception $e) {
+                            // handle exception
+                            $this->logger->error(
+                                "DB error " . $e->getMessage()
+                            );
+                            $backupForm->addError(new FormError(
+                                "DB error " . $e->getMessage()
+                            ));
+                        }
+                    } else {
+                        $zipFile = new ZipFile();
+                        try {
+                            // ->extractTo($outputDirExtract) // extract files to the specified directory
+                            $zipFile->openFile($bckupPath)
+                            ->deleteFromRegex('~^\.~') // delete all hidden (Unix) files
+                            ->deleteFromRegex('~\.\.~') // delete all relatives path
+                            ;
+
+                            $backupForm->addError(new FormError(
+                                "Backup Zip OK, recharger la page pour vérifier les backups automatiques."
+                            ));
+                        } catch (ZipException $e) {
+                            // handle exception
+                            $this->logger->error(
+                                "Backup Zip error " . $e->getMessage()
+                            );
+                            $backupForm->addError(new FormError(
+                                "Backup Zip error " . $e->getMessage()
+                            ));
+                        } finally {
+                            $zipFile->close();
+                        }
+                    }
+                }
+                // $this->backupImport($blob, $type);
+
                 if ($surveyAnswers['MwsConfigBackupType'] ?? false) {
                     // $keyword = $surveyAnswers['searchKeyword'] ?? null;
                     return $this->redirectToRoute(
@@ -145,8 +209,6 @@ class MwsConfigController extends AbstractController
             }
         }
 
-        $projectDir = $this->params->get('kernel.project_dir');
-        $backupsDir = "$projectDir/bckup";
         $finder = [];
         if (!empty(glob($backupsDir))) {
             $finder = new Finder();
@@ -187,17 +249,6 @@ class MwsConfigController extends AbstractController
             $this->mwsFileSize($backupsDir)
         );
 
-        $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
-        $uploadSrc = "$projectDir/$subFolder/messages/tchats";
-        $uploadsTotalSize = $this->humanSize(
-            $uSize = $this->mwsFileSize($uploadSrc)
-        );
-        $dbSrc = "$projectDir/var/data.db.sqlite";
-        $databasesTotalSize = $this->humanSize(
-            $dSize = $this->mwsFileSize($dbSrc)
-        );
-        $backupTotalSize = $this->humanSize($uSize + $dSize);
-
         $finder = [];
         if (!empty(glob($uploadSrc))) {
             $finder = new Finder();
@@ -206,7 +257,7 @@ class MwsConfigController extends AbstractController
                 ->ignoreUnreadableDirs();
             $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
                 return strcmp($b->getRealPath(), $a->getRealPath());
-            });    
+            });
         }
 
         $uploadedFiles = array_map(function (SplFileInfo $f) use ($uploadUriPrefix) {
@@ -217,8 +268,8 @@ class MwsConfigController extends AbstractController
         }, iterator_to_array($finder, false));
 
         $qb = $mwsTimeSlotRepository->createQueryBuilder('s')
-        ->select('count(s.id)')
-        ->where('s.thumbnailJpeg IS NOT NULL');
+            ->select('count(s.id)')
+            ->where('s.thumbnailJpeg IS NOT NULL');
 
         $thumbnailsCount = $qb->getQuery()->getSingleScalarResult();
         // dd($qb->getQuery()->getDQL());
@@ -229,7 +280,7 @@ class MwsConfigController extends AbstractController
             'backups' => $bFiles,
             'configState' => [
                 'backupsTotalSize' => $backupsTotalSize,
-                'uploadsTotalSize' => $uploadsTotalSize,    
+                'uploadsTotalSize' => $uploadsTotalSize,
                 'databasesTotalSize' => $databasesTotalSize,
                 'backupTotalSize' => $backupTotalSize,
                 'uploadedFiles' => $uploadedFiles,
@@ -296,11 +347,12 @@ class MwsConfigController extends AbstractController
 
         $this->logger->debug("Will backup $backupName");
         $shouldBackup = $request->get('shouldBackup', true);
-        $shouldBackup && $this->doBackup($backupName);
+        $shouldBackup && $this->backupInternalSave($backupName);
 
         $respData = null;
         $contentType = 'application/vnd.sqlite3';
 
+        // TODO : phar : extract all site to one php phar for efficiency ?
         // db|db-zip|light (|full not decided yet...)
         $backupType = $request->get('backupType', null);
         $shouldZip = "db-zip" === $backupType; // TODO ? : $request->get('shouldZip', true);
@@ -327,13 +379,12 @@ class MwsConfigController extends AbstractController
         ];
         if ($isLightOrFull) {
             $shouldZip = true;
-            $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
-            $uploadSrc = "$projectDir/$subFolder/messages/tchats";
+            $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
+            $uploadSrc = "$projectDir/$uploadSubFolder/messages/tchats";
             $zipDirSources[$uploadSrc] = "$zipName/messages/tchats";
         }
 
         if ($isFull) {
-
         }
 
         if ($shouldZip) {
@@ -357,7 +408,7 @@ class MwsConfigController extends AbstractController
             // TODO : secu test case : unzip archive with forced '../../' path ?
 
             $zipFile = new ZipFile();
-            try{
+            try {
                 // var_dump($zipSources);exit();
                 // $zipFile
                 // ->addFile('/path/to/file', 'data/tofile') // add an entry from the file
@@ -372,19 +423,17 @@ class MwsConfigController extends AbstractController
                 }
 
                 $zipFile
-                ->outputAsAttachment($zipFilename); // output to the browser without saving to a file
+                    ->outputAsAttachment($zipFilename); // output to the browser without saving to a file
                 // TIPS : noting will run after exit of previous call...
                 dd('Strange, this code should not run...');
-            }
-            catch(ZipException $e){
+            } catch (ZipException $e) {
                 // handle exception
                 $this->logger->error(
                     "Backup Zip error " . $e->getMessage()
                 );
-            }
-            finally{
+            } finally {
                 $zipFile->close();
-            }            
+            }
         }
 
         $response = new Response($respData);
@@ -418,8 +467,8 @@ class MwsConfigController extends AbstractController
         $projectDir = $this->getParameter('kernel.project_dir');
         // TODO : no property accessors ?? mws_moon_manager.uploadSubFolder
         // $projectDir = $this->getParameter('mws_moon_manager.uploadSubFolder');
-        $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
-        $pathRaw = "$projectDir/$subFolder/$mediaPath";
+        $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
+        $pathRaw = "$projectDir/$uploadSubFolder/$mediaPath";
         // dump($pathRaw);
         $path = realpath($pathRaw);
         // dd($path);
@@ -455,7 +504,7 @@ class MwsConfigController extends AbstractController
         return $response;
     }
 
-    protected function doBackup($backupName)
+    protected function backupInternalSave($backupName = null)
     {
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
@@ -469,5 +518,4 @@ class MwsConfigController extends AbstractController
         $output = new NullOutput();
         $application->run($input, $output);
     }
-
 }

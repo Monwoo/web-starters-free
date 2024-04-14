@@ -44,13 +44,14 @@ class FactoryResetController extends AbstractController
         $dbBackup = $projectDir . '/var/data.db.' . date('Ymd_His') . '.bckup.sqlite';
 
         // TODO : factorize with backup commande
+        $filesystem = new Filesystem();
 
-        if (!file_exists($database)) {
+        if (!$filesystem->exists($database)) {
             $logger->error(
                 "FactoryResetController missing database path at : " . $database
             );
             $msg .= 'ERROR : Missing datababse file. ';
-            copy($safeGdprDatabase, $database);
+            $filesystem->copy($safeGdprDatabase, $database);
             $msg .= 'Resolution in progress : Did create database. ';
         }
 
@@ -58,6 +59,7 @@ class FactoryResetController extends AbstractController
             $msg,
             $database,
             $safeGdprDatabase,
+            $filesystem,
             $dbBackup
         ) {
             // Backup if configured to backup on each factory reset (for possible important data to keep even if should not be public for GDPR purpose)
@@ -65,7 +67,6 @@ class FactoryResetController extends AbstractController
                 // copy($database, $dbBackup);
                 $this->doBackup();
             }
-            $filesystem = new Filesystem();
             $projectDir = $this->params->get('kernel.project_dir');
             $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
             $uploadSrc = "$projectDir/$subFolder/messages/tchats";
