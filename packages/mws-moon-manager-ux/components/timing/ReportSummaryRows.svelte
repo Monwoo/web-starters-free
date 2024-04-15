@@ -24,6 +24,7 @@
   const slotPath = (timingSlot) => Routing.generate("mws_timing_fetchMediatUrl", {
     // encodeURI('file://' + timingSlot.source.path)
     url: "file://" + timingSlot.sourceStamp,
+    timingId: timingSlot.id,
   });
 
   // Number.prototype.toPrettyNum = (length: number) => {
@@ -169,6 +170,18 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     {/if}
     {summary.rangeDayIdxBy10Min ?? ''}
     {#if showPictures && summary.sourceStamp }
+    <!--
+      TIPS : too huge to import thumbnailJpeg for all summary, will count on server side...
+      <object
+      data={ summary?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%" }
+      type="image/png"
+      alt="screenshot"
+      arial-label="screenshot"
+      title="screenshot"
+      class="object-contain border-solid border-4 max-w-[100px]"
+      class:border-gray-600={!tagSlugs.length}
+      class:border-green-400={tagSlugs.length}
+    > -->
       <img
         class="object-contain border-solid border-4 max-w-[100px]"
         class:border-gray-600={!tagSlugs.length}

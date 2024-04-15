@@ -513,6 +513,7 @@ class MwsTimingController extends AbstractController
     public const defaultThumbSize = 100;
     #[Route('/fetch-media-url', name: 'mws_timing_fetchMediatUrl')]
     public function fetchRootUrl(
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
         Request $request,
     ): Response {
         $user = $this->getUser();
@@ -521,7 +522,7 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('Only for logged users');
         }
 
-        $url = $request->query->get('url', null);
+        $url = $request->get('url', null);
         $keepOriginalSize = $request->query->get('keepOriginalSize', null);
         $thumbnailSize = intval($request->query->get('thumbnailSize', 0));
         if (!$thumbnailSize) {
@@ -530,6 +531,7 @@ class MwsTimingController extends AbstractController
         }
         // dd($thumbnailSize);
         $this->logger->debug("Will fetch url : $url");
+        $timingId = $request->get('timingId', null);
 
         if (str_starts_with($url, "file://")) {
             $inputPath = explode("file://", $url)[1] ?? null;
@@ -545,7 +547,8 @@ class MwsTimingController extends AbstractController
             $this->logger->debug("Root file", [$inputPath, $path]);
             if (!$path || !file_exists($path)) {
                 // throw $this->createAccessDeniedException('Media path not allowed');
-                throw $this->createNotFoundException('Media path not allowed');
+                // throw $this->createNotFoundException('Media path not allowed');
+                $path = null; // Next try catch will take care, to failback on timing id thumb if fail
             }
             $url = $path;
         }
@@ -591,8 +594,18 @@ class MwsTimingController extends AbstractController
             }
         } catch (\Exception $e) {
             $this->logger->warning($e);
+            // Try to failback with thumbnail :
+            if ($timingId) {
+                $s = $mwsTimeSlotRepository->findOneBy([
+                    'id' => $timingId
+                ]);
+                $b64Parts = explode(';base64,', $s?->getThumbnailJpeg() ?? '');
+                $respData = base64_decode($b64Parts[1]) ?? null;
+            }
             // dd($e);
-            throw $this->createNotFoundException('Fail for url ' . $url);
+            if (!$respData) {
+                throw $this->createNotFoundException('Fail for url ' . $url);
+            }
             // return new Response('', 415);
             // return new Response('');
         }

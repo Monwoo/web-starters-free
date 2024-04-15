@@ -12,7 +12,7 @@
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let headerClass = ""; // "md:py-5";
   export let mainClass = "p-5";
-  export let footerClass = "py-2 md:py-4 wide:py-0";
+  export let footerClass = "py-2 md:py-3 wide:py-0";
    
   export let locale;
   export let viewTemplate;

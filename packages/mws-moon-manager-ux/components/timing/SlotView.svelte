@@ -132,6 +132,9 @@
   export let zoomRange = zoomStartRange;
   export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
   export let htmlRoot;
+  export let viewWrapper;
+
+  $: vWidth = viewWrapper?.offsetWidth ?? 0;
 
   $: zoomStartRange = isMobile ? 50 : 48;
 
@@ -1182,6 +1185,7 @@
       content and place absolut at end instead of allowed end
     -->
     <div class="relative flex"
+      bind:this={viewWrapper}
       style:--tw-shadow-color="#000000"
     >
       <div
@@ -1236,11 +1240,15 @@
             height: ${slotHeight}px;
           `
             : ""
-        } /* transform: scale(${(2 * zoomRange) / 100}); */
-        width: ${2 * zoomRange}%;
+        } /* transform: scale(${(2 * zoomRange) / 100});
+        width: ${2 * zoomRange}%; */
+        min-width: ${(2 * vWidth * zoomRange / 100).toFixed(0)}px;
+        max-width: ${(2 * vWidth * zoomRange / 100).toFixed(0)}px;
         `}
       >
-        <img class="w-full" loading="eager" src={timingSlot.thumbnailJpeg} />
+        <img class="w-full object-contain select-none m-auto" loading="eager"
+        src={timingSlot.thumbnailJpeg}
+        />
       </object>
       <div
       class="float-right sticky right-0 h-auto z-50 w-0">
