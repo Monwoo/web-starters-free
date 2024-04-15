@@ -10,7 +10,7 @@ monolog:
             # log to var/log/(environment).log
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             # log *all* messages (debug is lowest level)
-            level: error
+            level: warning
 when@dev:
     monolog:
         handlers:
