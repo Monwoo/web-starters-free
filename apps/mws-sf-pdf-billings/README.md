@@ -169,6 +169,12 @@ APP_ENV=prod composer install --no-ansi --no-dev \
 --no-interaction --no-scripts --no-progress \
 --optimize-autoloader
 
+# For private composer build :
+COMPOSER=composer.private.json APP_ENV=prod \
+composer install --no-ansi --no-dev \
+--no-interaction --no-scripts --no-progress \
+--optimize-autoloader
+
 # generate .env.local.php
 APP_ENV=prod composer dump-env prod
 
@@ -214,12 +220,14 @@ templates translations \
 vendor var .env.local.php \
 -x '**/node_modules/**' 
 
+du -sh mws-sf-pdf-billings.zip
+
 # test local prod (if no base href configs ?)
 APP_ENV=prod symfony server:start \
---no-tls --port=8000 --no-humanize 2> /dev/null &
+--no-tls --port=8007 --no-humanize 2> /dev/null &
 
 # then, navigate to '/factory/reset' to rest all CRM data
-curl http://localhost:8001/factory/reset
+curl http://localhost:8007/factory/reset
 kill %1
 
 

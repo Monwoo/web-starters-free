@@ -190,13 +190,21 @@ overflow-visible border-solid border-4"
         : ""}
     />
   {:else}
+  <object
+    class="object-contain w-full h-full"
+    data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+    type="image/png"
+    role="presentation"
+    title={timingSlot?.sourceStamp}
+  >
     <img
-      loading="lazy"
-      alt="screenshot"
-      arial-label="screenshot"
-      class="object-contain w-full h-full"
-      src={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
-    />
+        loading="lazy"
+        alt="screenshot"
+        arial-label="screenshot"
+        class="object-contain w-full h-full"
+        src={timingSlot.thumbnailJpeg}
+      />
+  </object>
   {/if}
 
   <!-- <img
