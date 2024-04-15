@@ -720,6 +720,21 @@ class MwsTimingController extends AbstractController
         $em = $this->em;
         $self = $this;
 
+        // TODO : bulk process instead of quick hack :
+        $nbRefreshPerBulks = 5;
+        $flushTriggerMaxCount = count($tSlots) / $nbRefreshPerBulks;
+        $flushForseen = $flushTriggerMaxCount;
+        $tryFlush = function() use (
+            &$flushForseen, $flushTriggerMaxCount, $em
+        ) {
+            if ($flushForseen <= 1) {
+                $flushForseen = $flushTriggerMaxCount;
+                $em->flush();
+                // dump($flushForseen);
+            }
+            $flushForseen--;
+        };
+
         $tagsSerialized = $this->serializer->serialize(
             $tSlots,
             $format,
@@ -731,13 +746,29 @@ class MwsTimingController extends AbstractController
                 ],
                 // ObjectNormalizer::IGNORED_ATTRIBUTES => ['tags']
                 AbstractNormalizer::CALLBACKS => [
+                    'sourceStamp' => function (
+                        $innerObject,
+                        $outerObject,
+                        string $attributeName,
+                        string $format = null,
+                        array $context = []
+                    ) use ($tryFlush) {
+                        // dd('ok'); 
+                        // TIPS : use some attributes that will never be null
+                        //        otherwise, the hacky callback will not trigger...
+                        $tryFlush();
+                    },
                     'thumbnailJpeg' => function (
                         $innerObject,
                         $outerObject,
                         string $attributeName,
                         string $format = null,
                         array $context = []
-                    ) use ($attachThumbnails, $thumbnailsSize, $em, $self, $request) {
+                    ) use ($attachThumbnails,
+                    $tryFlush,
+                    $thumbnailsSize, $self, $request) {
+                        // dd('ok');
+                        $tryFlush();
                         // dump($innerObject);
                         // var_dump($attachThumbnails); exit;
                         // dd($outerObject);
@@ -877,7 +908,7 @@ class MwsTimingController extends AbstractController
                 ]
             ],
         );
-
+        // dd('ok');
         $em->flush();
 
         $rootPackage = \Composer\InstalledVersions::getRootPackage();
