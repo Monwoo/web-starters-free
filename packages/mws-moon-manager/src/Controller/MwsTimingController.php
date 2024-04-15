@@ -765,7 +765,7 @@ class MwsTimingController extends AbstractController
                         string $format = null,
                         array $context = []
                     ) use ($attachThumbnails,
-                    $tryFlush,
+                    $tryFlush, $em,
                     $thumbnailsSize, $self, $request) {
                         // dd('ok');
                         $tryFlush();
