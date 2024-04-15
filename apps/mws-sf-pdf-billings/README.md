@@ -98,21 +98,45 @@ open http://localhost:8000
 # Clean all un-wanted files for production :
 rm -rf **/node_modules
 
-# re-install for production only :
-pnpm install --prod
+# re-install for production only (Angular, etc...) :
+# pnpm install --prod
 
 # TIPS : if you use optional features in packages.json :
-rm -rf **/node_modules
-pnpm install --prod --no-optional
+# rm -rf **/node_modules
+# pnpm install --prod --no-optional
 
-# tested under php 8.1.2
-# Other php versions might work, but it's not tested yet.
-php -v
-alias composer="php '$PWD/composer.phar'"                      
-cd apps/mws-sf-pdf-billings/backend
+# If you do not have mws-demo private license :
+mkdir ../mws-demo
+
+cat > ../mws-demo/package.json <<CMT
+{
+    "name": "mws-demo",
+    "version": "0.0.0",
+    "description": "Demo widget for Monwoo frontends",
+    "license": "UNLICENSED",
+    "private": true
+}
+CMT
+
+mkdir -p ../mws-demo/assets/svelte/controllers
+cat > ../mws-demo/assets/svelte/controllers/MwsDemoWidget.svelte <<CMT
+  <p>No Mws demo Yet</p>
+CMT
+cat > ../mws-demo/assets/app.js <<CMT
+  // nothing yet
+CMT
 
 # CLEAN DEV ENV (will lose your dev, be sure of it :)
 rm -rf mws-sf-pdf-billings.zip var vendor config/jwt .env.local.php
+
+# Install symfony first since js might depends of it
+# tested under php 8.1.2
+# Other php versions might work, but it's not tested yet.
+php -v
+wget https://getcomposer.org/composer.phar
+alias composer="php '$PWD/composer.phar'"                      
+cd apps/mws-sf-pdf-billings/backend
+
 
 # Clean possible dev configs (if no previous prod builds...)
 # mkdir -p config-disabled/packages config-disabled/routes
@@ -133,12 +157,14 @@ openssl genrsa -out config/jwt/private.pem -aes256 4096
 openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 
 # Same for packages first : 
+rm ../../../packages/mws-moon-manager/composer.lock
 (cd ../../../packages/mws-moon-manager && composer install \
  --no-ansi --no-dev \
 --no-interaction --no-scripts --no-progress \
 --optimize-autoloader)
 
 # APP_ENV=prod composer install --no-dev 
+rm composer.lock
 APP_ENV=prod composer install --no-ansi --no-dev \
 --no-interaction --no-scripts --no-progress \
 --optimize-autoloader
@@ -152,18 +178,24 @@ php bin/console --env=prod assets:install --symlink public
 # php bin/console assets:install --symlink public
 bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
 
+pnpm install
+
 # bootstrap database
 rm var/data.db.sqlite # clean old one
-php bin/console doctrine:migrations:migrate -n
+  php bin/console doctrine:migrations:migrate -n
 
-# bootstrap one user ONLY to let it be change and do wiziwig updates :
-php bin/console mws:add-user -c 1
+  # bootstrap one user ONLY, remove others :
+  php bin/console mws:add-user -c 1
 
-cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
-# OR : if you prefer to have some test data loaded :
+  cp var/data.db.sqlite var/data.gdpr-ok.db.sqlite
+  # OR : if you prefer to have some test data loaded :
 cp tests/_data/data.gdpr-ok.db.sqlite var/data.gdpr-ok.db.sqlite
-# then, navigate to '/factory/reset' to rest all CRM data
-curl http://localhost:8001/factory/reset
+
+git log --pretty=$'x\tx\t%ai' --numstat \
+-i --grep='\[mws-pdf-billings\]' \
+--grep='\[mws-moon-manager\]' \
+--branches --tags --remotes --full-history \
+--date-order --date=iso-local > git-logs.tsv
 
 # rebuild assets for production :
 pnpm run build
@@ -183,7 +215,13 @@ vendor var .env.local.php \
 -x '**/node_modules/**' 
 
 # test local prod (if no base href configs ?)
-APP_ENV=prod symfony server:start 2> /dev/null
+APP_ENV=prod symfony server:start \
+--no-tls --port=8000 --no-humanize 2> /dev/null &
+
+# then, navigate to '/factory/reset' to rest all CRM data
+curl http://localhost:8001/factory/reset
+kill %1
+
 
 # Then updates for your own gdpr ready db with your navigator
 # Ensure data ok on next reset (Warn : not a media backup)

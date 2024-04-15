@@ -31,7 +31,16 @@ const HAVE_MWS_DEMO = JSON.parse(
     env.parsed?.HAVE_MWS_DEMO ?? 'false'
 );
 
-console.warn("env from webpack.config.js : ", env);
+console.warn("env from webpack.config.js : ", {
+    parsed: {
+        ...env.parsed, ...{ // TIPS : avoid to display sensitive info
+            APP_SECRET: '--',
+            JWT_SECRET_KEY: '--',
+            JWT_PUBLIC_KEY: '--',
+            JWT_PASSPHRASE: '--'
+        }
+    }
+});
 
 console.warn("Base href : ", baseHrefFull);
 console.warn("Base port : ", baseHrefPort);
