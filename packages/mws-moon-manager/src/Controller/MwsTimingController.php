@@ -586,6 +586,7 @@ class MwsTimingController extends AbstractController
                 //     $imagick->getImageHeight() * 4
                 // );
                 $respData = $imagick->getImageBlob();
+                $imagick->clear();
             }
         } catch (\Exception $e) {
             $this->logger->warning($e);
@@ -703,8 +704,9 @@ class MwsTimingController extends AbstractController
         $format = $request->get('format') ?? 'yaml';
         $timingLookup = $request->get('timingLookup');
         $attachThumbnails = $request->get('attachThumbnails');
-        $thumbnailsSize = intval($request->get('thumbnailsSize', 0));
-
+        $thumbnailsSize = intval($request->get('thumbnailsSize', self::defaultThumbSize));
+        // Avoid 0 size case :
+        $thumbnailsSize = $thumbnailsSize ? $thumbnailsSize : self::defaultThumbSize;
         // var_dump($attachThumbnails); exit;
 
         // $tSlots = $mwsTimeSlotRepository->findAll() ?? [];
@@ -787,8 +789,25 @@ class MwsTimingController extends AbstractController
                         if ($attachThumbnails) { // already ignored, juste in case
                             // dump($innerObject);
                             // dd($outerObject);
-                            // if ($innerObject) {
-                            {
+                            $thumbAlreadyOk = false;
+                            /** @var MwsTimeSlot $outerObject */
+                            if ($outerObject->getThumbnailJpeg()) {
+                                try {
+                                    $b64Parts = explode(';base64,', $outerObject->getThumbnailJpeg());
+                                    $imagick = new \Imagick();
+                                    $imagick->readImageBlob(base64_decode($b64Parts[1] ?? null));
+                                    $thumbAlreadyOk = $imagick->getImageWidth() === $thumbnailsSize;
+                                    // dump($imagick->getImageWidth());
+                                    // dump($thumbnailsSize);    
+                                    $imagick->clear();
+                                } catch (Exception $e) {
+                                    $this->logger->debug(
+                                        "Will rebuild Thumb, contain wrong img data : " . $e->getMessage()
+                                    );
+                                }
+                                // dd($thumbAlreadyOk);
+                            }
+                            if (!$thumbAlreadyOk) {
                                 // Routing.generate("mws_timing_fetchMediatUrl", {
                                 //     url: "file://" + timingSlot.source.path,
                                 //     keepOriginalSize: 1,
@@ -831,7 +850,7 @@ class MwsTimingController extends AbstractController
                                 ];
                                 $params = [
                                     'url' => "file://" . $outerObject->getSource()['path'],
-                                    'thumbnailSize' => $thumbnailsSize ? $thumbnailsSize : null,
+                                    'thumbnailSize' => $thumbnailsSize ? $thumbnailsSize : self::defaultThumbSize,
                                 ];
                                 $subRequest = $request->duplicate($params, null, $attr);
                                 // if ($isPost) {
@@ -868,6 +887,7 @@ class MwsTimingController extends AbstractController
                                         );
                                         $imagick->setImageCompressionQuality(0);
                                         $data = $imagick->getImageBlob();
+                                        $imagick->clear();
                                     }
                                 } else {
                                     $data = $resp->getContent();

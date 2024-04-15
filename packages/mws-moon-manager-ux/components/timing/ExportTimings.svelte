@@ -79,7 +79,6 @@
                 console.error(e);
                 // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
                 const shouldWait = confirm("Echec de l'enregistrement.");
-                addedTagKey = "null";
             });
             isLoading = false;
 }
