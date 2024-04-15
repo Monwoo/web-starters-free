@@ -722,11 +722,23 @@ class MwsTimingController extends AbstractController
 
         // TODO : bulk process instead of quick hack :
         $nbRefreshPerBulks = 5;
-        $flushTriggerMaxCount = count($tSlots) / $nbRefreshPerBulks;
+        $slotsCount = count($tSlots);
+        $flushTriggerMaxCount =$slotsCount / $nbRefreshPerBulks;
         $flushForseen = $flushTriggerMaxCount;
+        $progressLogMax = 500;
+        $progressCount = 0;
+        
         $tryFlush = function() use (
-            &$flushForseen, $flushTriggerMaxCount, $em
+            &$flushForseen, $flushTriggerMaxCount, $em,
+            &$progressCount, $progressLogMax, $self,
+            $slotsCount,
         ) {
+            $progressCount++;
+            if (0 === ($progressCount % $progressLogMax)) {
+                $self->logger->warning(
+                    "MwsTimingController did process "
+                    . "$progressCount slots /  $slotsCount");
+            }
             if ($flushForseen <= 1) {
                 $flushForseen = $flushTriggerMaxCount;
                 $em->flush();
