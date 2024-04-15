@@ -12,16 +12,22 @@
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let headerClass = ""; // "md:py-5";
   export let mainClass = "p-5";
-  export let footerClass = "py-2 md:py-4";
+  export let footerClass = "py-2 md:py-4 wide:py-0";
    
   export let locale;
   export let viewTemplate;
 
   export let userDelay = 300;
-  export let isMobile = window.matchMedia("(max-width: 768px)")?.matches;
+  const isMobileRule = "(max-width: 768px) and (min-height: 480px)";
+  export let isMobile = window.matchMedia(isMobileRule)?.matches;
 
   const onResize = async (e) => {
-    isMobile = window.matchMedia("(max-width: 768px)")?.matches;
+    // isMobile = window.matchMedia("(max-width: 768px)")?.matches;
+    // isMobile = window.matchMedia("(max-width: 768px) and (orientation: landscape)")?.matches;
+    // isMobile = window.matchMedia("((max-width: 768px) and (min-height: 480px))"
+    // + " and not (only screen and (max-height: 480px) and (max-width: 960px))")?.matches;
+    isMobile = window.matchMedia(isMobileRule)?.matches;
+
   }
 
   // TODO : scroll top on page load to avoid auto scroll

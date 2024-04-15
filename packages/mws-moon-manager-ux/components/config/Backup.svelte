@@ -119,7 +119,7 @@
   {locale}
   {viewTemplate}
   mainClass=""
-  footerClass="py-2"
+  footerClass="py-2 wide:py-0"
 >
   <!-- <div slot="mws-header-container" />
   -->

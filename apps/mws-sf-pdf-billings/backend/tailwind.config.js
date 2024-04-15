@@ -42,6 +42,34 @@ module.exports = {
           800: '#CC4522',
           900: '#A5371B'
         }
+      },
+      screens: {
+        // https://github.com/tailwindlabs/tailwindcss/discussions/2397
+        'tall': {
+          'raw': `only screen and (max-height: 960px) and (max-width: 480px)`
+        },
+        'wide': {
+          'raw': `only screen and (max-height: 480px) and (max-width: 960px)`
+        },
+        'portrait': {
+          'raw': '(orientation: portrait)'
+        },
+        'landscape': {
+          'raw': '(orientation: landscape)'
+        },
+        // TIPS : rewrite md behavior instead of using code refactoring 
+        // to have wide layout on landscape :
+        // (if you prefer refactor), use regex : /md:([^ ]+)/
+        // and replacement pattern : 'md:$1 landscape:$1'
+
+        // TIPS : not so good, will have to resize small 
+        //        for wide screens (+ break original md logic to big spaces...)
+        // 'md': {
+        //   // https://tailwindcss.com/docs/responsive-design
+        //   // 'raw': '(min-width: 768px)',
+        //   // 'raw': '(min-width: 768px) or (orientation: landscape)'
+        //   'raw': '(min-width: 768px) or (max-height: 480px)'
+        // }
       }
     }
   },
@@ -51,7 +79,7 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('flowbite/plugin')({
       charts: true,
-  }),
+    }),
     // require('../../../packages/mws-moon-manager/node_modules/@preline/plugin')
     // TODO : ReferenceError: self is not defined @preline/scrollspy/index.js:1:299 :
     //        Why post css going up to this file ? tailwind check ? but ok on svelte file ?

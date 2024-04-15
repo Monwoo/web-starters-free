@@ -17,16 +17,19 @@
   class="sticky {bottom} {right} w-full select-none
   inline-flex pointer-events-none justify-end content-end
   print:fixed print:bottom-0 print:right-0 z-50
+  !wide:sticky
   {cssClass}
   "
   class:sticky={!fixedBottom}
   class:fixed={fixedBottom}
 >
   <span
-    class="p-1 max-w-[100%] md:max-w-[50%]}
+    class="px-1 md:py-1 max-w-[100%] md:max-w-[50%]}
   rounded-ss-md font-xs md:font-normal
-  text-xs md:text-base  pointer-events-none
-  bg-gray-100/90 md:bg-gray-100 text-gray-700"
+  text-[0.66rem] md:text-base pointer-events-none
+  bg-gray-100/90 md:bg-gray-100 text-gray-700
+  wide:text-[0.66rem] wide:font-xs
+  "
   >
     Données confidentielles. Merci de conserver le secret professionnel et
     privé.

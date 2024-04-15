@@ -91,7 +91,7 @@
 					<footer
 					class="w-full bg-gray-700 text-gray-300
 					text-center text-white text-xs md:text-base
-					py-2 md:py-4
+					py-2 wide:py-0 md:py-4
 					"
 					{{ svelte_component('MwsFooter', {
 						'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
@@ -101,10 +101,13 @@
 						{# // For SEO, will be replaced by js...
 						// TODO : prefill with some pre-rendering of js controller
 						//  at assets 'watch' and/or 'build' phase #}
-						<div class="flex text-xs md:text-sm max-h-[12dvh]">
-							<div class="w-1/3"></div>
-							<a class="w-1/3 no-underline
-  						text-gray-300 hover:text-white "
+						<div class="flex text-[0.51rem] md:text-sm wide:text-[0.51rem] max-h-[12dvh]">
+							<div class="w-1/3 px-3 text-left text-gray-300 flex flex-wrap">
+								<div class="px-1">Reset :</div>
+							</div>
+							<a class="w-1/3 text-[0.42rem]
+							md:text-sm wide:text-[0.42rem] no-underline
+							text-gray-300 hover:text-white "
 							href="https://www.monwoo.com"
 							target="_blank" rel="noopener">
 							{{'mws.copyright'|trans({}, 'mws-moon-manager')}}</a>

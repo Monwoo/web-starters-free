@@ -189,7 +189,7 @@
   {locale}
   {viewTemplate}
   mainClass=""
-  footerClass="py-2"
+  footerClass="py-2 wide:py-0"
 >
   <div slot="mws-header-container" />
   <div class="mws-timing-qualif">
@@ -413,8 +413,10 @@
           {movePageIndex}
           {locale}
           bind:timingSlot={timings[lastSelectedIndex]}
-          class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
-          mr-0 md:mr-[0.5%] mb-[2%] md:mb-0"
+          class="h-[50%] w-[100%] mr-0 mb-[2%]
+          md:w-[50%] md:h-[100%] md:mr-[0.5%] md:mb-0
+          wide:w-[50%] wide:h-[100%] wide:mr-[0.5%] wide:mb-0
+          "
           sizeStyle={`
             ${
               isMobile
@@ -448,8 +450,10 @@
         {quickQualifTemplates}
         {timings} {isMobile} {splitRange}
         {movePageIndex}
-        class="h-[50%] w-[100%] md:w-[50%] md:h-[100%]
-        ml-0 md:ml-[0.5%] mt-[2%] md:mt-0"
+        class="h-[50%] w-[100%] ml-0 mt-[2%]
+        md:w-[50%] md:h-[100%] md:ml-[0.5%] md:mt-0
+        wide:w-[50%] wide:h-[100%] wide:ml-[0.5%] wide:mt-0
+        "
         style={`
           ${
             isMobile
