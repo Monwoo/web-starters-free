@@ -130,7 +130,7 @@
   export let isMobile;
   // TIPS : For reactiv, MUST pass ref in params to trigger Svelte reactivity
   // const computeStartRange = () => isWide ? 27 : isMobile ? 30 : 70; // WRONG
-  const computeStartRange = (isWide, isMobile) => isWide ? 15 : isMobile ? 69 : 48;
+  const computeStartRange = (isWide, isMobile) => isWide ? 15 : isMobile ? 100 : 48;
   export let zoomStartRange = computeStartRange(isWide, isMobile); // SSR size no items change
   export let zoomRange = zoomStartRange;
   export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
