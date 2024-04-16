@@ -872,6 +872,7 @@
       class="mws-timing-slot-header overflow-scroll relative"
       class:is-fullscreen={isFullScreen}
       class:h-[7rem]={!isHeaderExpanded}
+      class:wide:h-[3rem]={!isHeaderExpanded}
       style={Height
         ? `
         height: ${Height}px;
@@ -987,7 +988,7 @@
         <span class="float-right w-[14rem] h-7" /> -->
       {/if}
       <span
-        class="tags-details float-right max-w-[70%] md:max-w-[75%]
+        class="tags-details float-left max-w-[70%] md:max-w-[75%]
         rounded-md z-40 inline-flex flex-wrap
         ml-1 mr-1 text-xs md:text-base
         pointer-events-none md:pointer-events-none
@@ -1149,11 +1150,12 @@
         />
       </div>
       <!-- {#if !isFullScreen } -->
-      <div class="sticky z-40 bottom-16 pl-1 pr-1
-      inline-flex right-0 bg-white overflow-visible">
+      <div class="sticky z-40 bottom-16
+      inline-flex right-0 bg-white overflow-visible h-[1.5rem]">
         {#each currentTimeSlotQualifs?? [] as q}
           {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
           <div class="inline-flex justify-center items-center
+          ml-1 mr-1
           border-b-4 border-t-4 object-contain"
           data-tooltip-target={tooltipId}
           data-tooltip-placement="top"        
