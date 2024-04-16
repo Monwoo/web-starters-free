@@ -262,7 +262,7 @@ class MwsUserController extends AbstractController
         $formPwd->handleRequest($request);
         if($formPwd->isSubmitted() && $formPwd->isValid()){
             $pwd = $formPwd->get('newPassword')->getData();
-            dd($pwd);            
+            // dd($pwd);            
             if($pwd && strlen($pwd)){
                 $password = $hasher->hashPassword($mwsTargetUser, $pwd);
                 $mwsTargetUser->setPassword($password);

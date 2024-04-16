@@ -604,7 +604,9 @@ class MwsTimingController extends AbstractController
             }
             // dd($e);
             if (!$respData) {
-                throw $this->createNotFoundException('Fail for url ' . $url);
+                // TIPS : avoid throw if don't want to fill up error logs :
+                // throw $this->createNotFoundException('Fail for url ' . $url);
+                return new Response('Fail for url ' . $url, 404);
             }
             // return new Response('', 415);
             // return new Response('');
