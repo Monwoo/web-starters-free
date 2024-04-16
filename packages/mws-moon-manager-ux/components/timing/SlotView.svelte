@@ -550,11 +550,13 @@
           const data = await resp.json();
           timingTarget?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           // // TODO : better sync all in-coming props from 'needSync' attr ?
-          // timingTarget?.maxPath = data.sync.maxPath;
-          // timingTarget?.maxPriceTag = data.sync.maxPriceTag;
-          hackyRefresh(data);
+          timingTarget?.maxPath = data.sync.maxPath;
+          timingTarget?.maxPriceTag = data.sync.maxPriceTag;
+          // hackyRefresh(data);
 
-          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
+          // timingTarget = timingTarget; // NICE try, but won't work...
+          timingSlot = timingSlot; // TIPS +++++ : ok, refresh current slot view UI and deps
+          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads (only one well placed is enough ;)
           console.debug("Did sync tags", timingTarget?.tags);
           stateUpdate(state, {
             csrfTimingTagRemoveAll: data.newCsrf,
