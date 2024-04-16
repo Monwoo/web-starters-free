@@ -32,7 +32,12 @@
   export let viewTemplate;
   export let lookupForm;
   export let isFullScreen = false;
-  export let splitStartRange = 50;
+  export let isMobile;
+  export let isWide;
+  // TIPS : For reactiv, MUST pass ref in params to trigger Svelte reactivity
+  // const computeStartRange = () => isWide ? 27 : isMobile ? 30 : 70; // WRONG
+  const computeStartRange = (isWide, isMobile) => isWide ? 32 : isMobile ? 72 : 70; 
+  export let splitStartRange = computeStartRange(isWide, isMobile);
   export let splitRange = splitStartRange;
   export let thumbSize;
 
@@ -46,9 +51,7 @@
   // every {} is unique, {} === {} evaluates to false
   let uniqueKey = {};
 
-  let isMobile;
-
-  $: splitStartRange = isMobile ? 30 : 70;
+  $: splitStartRange = computeStartRange(isWide, isMobile); // Need one change to update...
   $: splitStartRange ? splitRange = splitStartRange : null;
 
   const movePageIndex = (delta) => {
@@ -185,6 +188,7 @@
 
 <Base
   bind:isMobile
+  bind:isWide
   {copyright}
   {locale}
   {viewTemplate}
@@ -407,7 +411,7 @@
           bind:timeQualifs
           bind:quickQualifTemplates
           bind:timings
-          {isMobile}
+          {isMobile} {isWide}
           {moveSelectedIndex}
           {movePageIndex}
           {locale}
@@ -447,7 +451,7 @@
         bind:isFullScreen
         followSelection={!isFullScreen}
         {quickQualifTemplates}
-        {timings} {isMobile} {splitRange}
+        {timings} {isMobile} {isWide} {splitRange}
         {movePageIndex}
         class="h-[50%] w-[100%] ml-0 mt-[2%]
         md:w-[50%] md:h-[100%] md:ml-[0.5%] md:mt-0

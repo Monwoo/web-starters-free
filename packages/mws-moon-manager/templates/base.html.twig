@@ -10,6 +10,9 @@
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Expires" content="0">
+		<link rel="manifest" crossorigin="use-credentials" href="{{
+			path('mws_config_json_manifest')
+		}}" />
 		<title>
       {% block title %}
         {{ title ?? "" }}
@@ -23,6 +26,8 @@
 	</head>
 
 	<body>
+	{# {{ app.request.attributes.get('_route') }}
+	{{ app.request._route }} #}
 		{% block storesInit %}
 			<div
 			class="hidden"

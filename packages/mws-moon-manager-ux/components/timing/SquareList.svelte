@@ -16,7 +16,11 @@
   export let lastSelectedIndex = 0;
   export let movePageIndex;
   export let isMobile;
-  export let zoomStartRange = isMobile ? 35 : 15;
+  export let isWide;
+  // TIPS : For reactiv, MUST pass ref in params to trigger Svelte reactivity
+  // const computeStartRange = () => isWide ? 27 : isMobile ? 30 : 70; // WRONG
+  const computeStartRange = (isWide, isMobile) => isWide ? 48 : isMobile ? 17 : 15;
+  export let zoomStartRange = computeStartRange(isWide, isMobile); // SSR size no items change
   export let zoomStartBaseSize = 5;
   export let zoomSquareRange = 5; // be square if lower than 50px
   export let listZoomRange = zoomStartRange;
@@ -28,8 +32,9 @@
   export let computedSize;
   export let isFullScreen = false;
 
-  $: zoomStartRange = isMobile ? 35 : 15;
-  $: listZoomRange = zoomStartRange ? zoomStartRange : 5;
+  $: zoomStartRange = computeStartRange(isWide, isMobile); // Need one change to update...
+  // $: listZoomRange = listZoomRange ? zoomStartRange : 5;
+  $: listZoomRange = zoomStartRange; // Ok due to Svelte reactivity : only update if zoomStartRange change...
 
   // REAL screen width : (bigger than window)
   // let maxScreenW = window.screen.width;

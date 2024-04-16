@@ -1,0 +1,50 @@
+{
+  "short_name": "{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}",
+  "name": "{{ app.request.baseUrl|slug }}_{{ app.request.getHttpHost() }}_{{ packageName }}-v{{ packageVersion }}",
+  "start_url": "{{ app.request.baseUrl }}/",
+  "icons": [{
+    "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo.png') }}",
+    "type": "image/png",
+    "sizes": "512x512"
+  }],
+  "background_color": "#11589A",
+  "display": "fullscreen",
+  "scope": "{{ app.request.baseUrl }}/",
+  "theme_color": "#11589A",
+  "shortcuts": [{
+      "name": "Fr",
+      "short_name": "fr",
+      "description": "French version",
+      "url": "{{ app.request.baseUrl }}/fr?source=pwa",
+      "icons": [{
+        "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo-196x196.png') }}",
+        "sizes": "196x196"
+      }]
+    },
+    {
+      "name": "En",
+      "short_name": "en",
+      "description": "English version",
+      "url": "{{ app.request.baseUrl }}/en?source=pwa",
+      "icons": [{
+        "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo-196x196.png') }}",
+        "sizes": "196x196"
+      }]
+    }
+  ],
+  "description": "Monwoo PDF Billings for {{ app.request.baseUrl ? app.request.baseUrl : '--' }}",
+  "screenshots": [{
+      "src": "{{ asset('bundles/moonmanager/medias/screenshot-01.png') }}",
+      "sizes": "760x1400",
+      "type": "image/gif",
+      "label": "Monwoo Pdf billing"
+    },
+    {
+      "src": "{{ asset('bundles/moonmanager/medias/screenshot-02.png') }}",
+      "sizes": "1400x760",
+      "type": "image/gif",
+      "form_factor": "wide",
+      "label": "Monwoo Pdf billing"
+    }
+  ]
+}

@@ -20,6 +20,8 @@
   export let userDelay = 300;
   const isMobileRule = "(max-width: 768px) and (min-height: 480px)";
   export let isMobile = window.matchMedia(isMobileRule)?.matches;
+  const isWideRule = "only screen and (max-height: 480px) and (max-width: 960px)";
+  export let isWide = window.matchMedia(isWideRule)?.matches;
 
   const onResize = async (e) => {
     // isMobile = window.matchMedia("(max-width: 768px)")?.matches;
@@ -27,7 +29,7 @@
     // isMobile = window.matchMedia("((max-width: 768px) and (min-height: 480px))"
     // + " and not (only screen and (max-height: 480px) and (max-width: 960px))")?.matches;
     isMobile = window.matchMedia(isMobileRule)?.matches;
-
+    isWide = window.matchMedia(isWideRule)?.matches;
   }
 
   // TODO : scroll top on page load to avoid auto scroll

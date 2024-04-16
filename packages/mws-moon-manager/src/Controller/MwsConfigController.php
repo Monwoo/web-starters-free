@@ -11,6 +11,7 @@ use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Repository\MwsMessageTchatUploadRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
+use PHPUnit\Util\Json;
 use PhpZip\Exception\ZipException;
 use PhpZip\ZipFile;
 use Psr\Log\LoggerInterface;
@@ -40,12 +41,13 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
     '/{_locale<%app.supported_locales%>}/mws-config',
     options: ['expose' => true],
 )]
-#[SecuAttr(
-    "is_granted('" . MwsUser::ROLE_ADMIN . "')",
-    // MwsUser::IS_GRANTED_ROLE_ADMIN.'',
-    statusCode: 401,
-    message: MwsLoginFormAuthenticator::t_failToGrantAccess
-)]
+// #[SecuAttr(
+//     "false",
+//     // "is_granted('" . MwsUser::ROLE_ADMIN . "') and app.request.attributes.get('_route')",
+//     // MwsUser::IS_GRANTED_ROLE_ADMIN.'',
+//     statusCode: 401,
+//     message: MwsLoginFormAuthenticator::t_failToGrantAccess
+// )]
 class MwsConfigController extends AbstractController
 {
     public function __construct(
@@ -59,6 +61,11 @@ class MwsConfigController extends AbstractController
     }
 
     #[Route('/backup', name: 'mws_config_backup')]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_ADMIN . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    )]
     public function backup(
         Request $request,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
@@ -411,6 +418,11 @@ class MwsConfigController extends AbstractController
         methods: ['POST'],
         name: 'mws_config_backup_download'
     )]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_ADMIN . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    )]
     public function backupDownload(
         Request $request,
     ): Response {
@@ -539,6 +551,11 @@ class MwsConfigController extends AbstractController
         methods: ['POST'], // TODO : why need to have GET method ? Navigator force get sometime ?
         name: 'mws_config_backup_internal_download'
     )]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_ADMIN . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    )]
     public function backupInternalDownload(
         Request $request,
     ): Response {
@@ -636,6 +653,11 @@ class MwsConfigController extends AbstractController
         methods: ['POST'], // TODO : why need to have GET method ? Navigator force get sometime ?
         name: 'mws_config_backup_internal_import'
     )]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_ADMIN . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    )]
     public function backupInternalImport(
         Request $request,
     ): Response {
@@ -731,6 +753,11 @@ class MwsConfigController extends AbstractController
         methods: ['POST'], // TODO : why need to have GET method ? Navigator force get sometime ?
         name: 'mws_config_backup_internal_remove'
     )]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_ADMIN . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    )]
     public function backupInternalRemove(
         Request $request,
     ): Response {
@@ -786,6 +813,11 @@ class MwsConfigController extends AbstractController
         methods: ['POST'],
         name: 'mws_config_backup_thumbnails_remove'
     )]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_ADMIN . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    )]
     public function backupThumbnailsRemove(
         Request $request,
     ): Response {
@@ -815,6 +847,11 @@ class MwsConfigController extends AbstractController
         '/uploads/{mediaPath<.*$>?}',
         methods: ['GET'],
         name: 'mws_config_upload_proxy'
+    )]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_USER . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
     )]
     public function uploadProxy(
         $mediaPath,
@@ -883,5 +920,35 @@ class MwsConfigController extends AbstractController
         $input = new ArrayInput($args);
         $output = new NullOutput();
         $application->run($input, $output);
+    }
+
+    #[Route(
+        '/json/manifest',
+        methods: ['GET'],
+        name: 'mws_config_json_manifest'
+    )]
+    // #[SecuAttr( // TIPS or TODO : IS_ANONYMOUS can't reset parent firewall ?
+    // TODO : refactor : send to Public controller ? do not mix public/private ? (hard to fine check secu per route ?)
+    //     "is_granted('" . MwsUser::IS_ANONYMOUS . "')",
+    //     // MwsUser::IS_GRANTED_ROLE_ADMIN.'',
+    //     statusCode: 401,
+    //     message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    // )]
+    public function jsonManifest(
+        Request $request,
+    ): Response {
+        // https://www.jsdiaries.com/how-to-hide-address-bar-in-a-progressive-web-application/
+        $manifest = json_decode($this->renderView(
+            "@MoonManager/manifest.json",
+        ));
+
+        $response = $this->json($manifest);
+        // https://symfony.com/doc/6.2/the-fast-track/en/21-cache.html
+        $maxAge = 3600 * 5;
+        $response->setSharedMaxAge($maxAge);
+        // max-age=604800, must-revalidate
+        $response->headers->set('Cache-Control', "max-age=$maxAge");
+        $response->headers->set('Expires', "$maxAge");
+        return $response;
     }
 }
