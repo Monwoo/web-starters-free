@@ -35,8 +35,8 @@ console.warn("env from webpack.config.js : ", {
     parsed: {
         ...env.parsed, ...{ // TIPS : avoid to display sensitive info
             APP_SECRET: '--',
-            JWT_SECRET_KEY: '--',
-            JWT_PUBLIC_KEY: '--',
+            // JWT_SECRET_KEY: '--', // Ok, only path to file
+            // JWT_PUBLIC_KEY: '--',
             JWT_PASSPHRASE: '--'
         }
     }
