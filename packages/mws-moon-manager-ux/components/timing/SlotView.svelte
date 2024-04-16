@@ -1138,9 +1138,16 @@
     >
       <div class="fill-white/70 text-white/70 bg-black/50 w-full">
         <input
-          bind:value={zoomRange}
+          value={zoomStartRange}
           on:change={(e) => {
             slotHeight = null;
+            let newRange = e.target.value;
+            if (newRange > 80) {
+              // Higher bigger zoom
+              const deltaMax = newRange - 80;
+              newRange = 80 + deltaMax * 10;
+            }
+            zoomRange = newRange;
           }}
           id="zoom-range"
           type="range"

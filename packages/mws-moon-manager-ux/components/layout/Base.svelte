@@ -47,7 +47,18 @@
 <svelte:window on:resize={debounce(onResize, userDelay)} />
 
 <slot name="mws-body">
-  <div class="flex flex-col h-[100dvh] overflow-hidden print:h-auto">
+  <!-- // TODO : on mobile 'rotation', sound like  "wide:h-[100dvw]" 
+  will ajust the fixed bottom component, 
+  but will messup if refresh as wide screen.... -->
+
+  <!-- // TIPS : add big magin bottom in wide screen
+  to allow scroll down to hide the url navigation bar ?
+    => not enough, desactivate sticky bottom instead,
+    scrolling MAIN BODY only sound ok 
+    to remove mobile nav on scroll down...
+  -->
+
+  <div class="flex flex-col h-[100dvh] overflow-hidden print:h-auto wide:h-auto">
     <slot name="mws-header-container">
       <header class="rounded-b-lg bg-gray-700 text-white text-center {headerClass}">
         <Header {locale} {viewTemplate}>

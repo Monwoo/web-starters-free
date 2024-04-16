@@ -236,7 +236,7 @@ overflow-visible border-solid border-4"
     class="absolute z-20 bottom-1 left-0 bg-white
   flex
   hover:opacity-100"
-    class:opacity-25={!isSelected}
+    class:opacity-80={!isSelected}
   >
     <!-- // ONLY first qualif for thumbs... 
     TODO : refactor ? primaryColorRgb is a class or a String, depending of color select picker...

@@ -34,7 +34,7 @@ rounded-e-lg
 "
 >
   <div
-    class="overflow-scroll max-h-[100dvh]
+    class="overflow-scroll max-h-[70dvh]
     flex flex-wrap items-center justify-between mx-auto"
     class:md:p-2={!inlineOpener}
   >

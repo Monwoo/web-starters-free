@@ -406,7 +406,9 @@
   " -->
 
     <div
-      class="flex flex-wrap w-[100dvw] pb-14 h-[92dvh] md:flex-row"
+      class="flex flex-wrap w-[100dvw] pb-14 h-[92dvh] md:flex-row
+      wide:h-[100dvh]
+      "
     >
       <!-- { JSON.stringify(timings) } -->
       {#if timings[lastSelectedIndex] ?? false}
