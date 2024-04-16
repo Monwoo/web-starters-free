@@ -41,8 +41,13 @@
   export let splitRange = splitStartRange;
   export let thumbSize;
 
-  export let selectionStartIndex;
   const urlParams = new URLSearchParams(window.location.search);
+  export let selectionStartIndex =
+  urlParams.get("selectionStartIndex") === null
+  ? undefined
+  : parseInt(
+    urlParams.get("selectionStartIndex")
+  );
   export let lastSelectedIndex = parseInt(
     urlParams.get("lastSelectedIndex") ?? "0"
   );
@@ -76,13 +81,22 @@
     if (
       lastSelectedIndex != parseInt(urlParams.get("lastSelectedIndex") ?? "0")
     ) {
-      urlParams.set("lastSelectedIndex", lastSelectedIndex);
-      // window.location.search = urlParams; // Force page reload
-      // https://stackoverflow.com/questions/824349/how-do-i-modify-the-url-without-reloading-the-page
-      const newUrl =
-        window.location.origin + window.location.pathname + "?" + urlParams;
-      history.pushState({}, null, newUrl);
+      urlParams.set("lastSelectedIndex", '' + lastSelectedIndex);
     }
+    if (
+      undefined !== selectionStartIndex &&
+      selectionStartIndex != parseInt(urlParams.get("selectionStartIndex") ?? "-1")
+    ) {
+      urlParams.set("selectionStartIndex", '' + selectionStartIndex);
+    }
+    if (undefined === selectionStartIndex) {
+      urlParams.delete("selectionStartIndex");
+    }
+    // window.location.search = urlParams; // Force page reload
+    // https://stackoverflow.com/questions/824349/how-do-i-modify-the-url-without-reloading-the-page
+    const newUrl =
+    window.location.origin + window.location.pathname + "?" + urlParams;
+    history.pushState({}, null, newUrl);
   }
 
   const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
@@ -406,7 +420,7 @@
   " -->
 
     <div
-      class="flex flex-wrap w-[100dvw] pb-14 h-[92dvh] md:flex-row
+      class="flex flex-wrap w-[100dvw] pb-1 h-[92dvh] md:flex-row
       wide:h-[100dvh]
       "
     >
@@ -475,24 +489,24 @@
           }
         `}
       />
-      <div class="flex items-start w-full pt-3 pb-4 z-30">
-        <div class="fill-white/70 text-white/70 w-full">
-          <!-- // TODO : userDelay instead of 400 ? not same for all situation,
-          //         might need bigDelay or short or medium ?
-          //         or too specific, keep number easyer than multiples var or const ? -->
-          <input
-            value={splitRange}
-            on:change={debounce((e) => (splitRange = e.target.value), 400)}
-            id="split-range"
-            type="range"
-            class="w-full h-2 bg-gray-200/50 rounded-lg
-              appearance-none cursor-pointer outline-none
-              "
-          />
-        </div>
-      </div>
-      <div>{@html timingsPaginator}</div>
     </div>
+    <div class="flex items-start w-full pt-3 pb-4 z-30">
+      <div class="fill-white/70 text-white/70 w-full">
+        <!-- // TODO : userDelay instead of 400 ? not same for all situation,
+        //         might need bigDelay or short or medium ?
+        //         or too specific, keep number easyer than multiples var or const ? -->
+        <input
+          value={splitRange}
+          on:change={debounce((e) => (splitRange = e.target.value), 400)}
+          id="split-range"
+          type="range"
+          class="w-full h-2 bg-gray-200/50 rounded-lg
+            appearance-none cursor-pointer outline-none
+            "
+        />
+      </div>
+    </div>
+    <div>{@html timingsPaginator}</div>
   </div>
   <ConfidentialityStamp
     class={isFullScreen ? "opacity-90 !fixed" : ""}

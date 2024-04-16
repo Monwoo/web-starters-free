@@ -130,9 +130,19 @@
   export let isMobile;
   // TIPS : For reactiv, MUST pass ref in params to trigger Svelte reactivity
   // const computeStartRange = () => isWide ? 27 : isMobile ? 30 : 70; // WRONG
-  const computeStartRange = (isWide, isMobile) => isWide ? 15 : isMobile ? 100 : 48;
+  const computeStartRange = (isWide, isMobile) => isWide ? 21 : isMobile ? 82 : 48;
   export let zoomStartRange = computeStartRange(isWide, isMobile); // SSR size no items change
-  export let zoomRange = zoomStartRange;
+  const computeZoomRange = (initialZoom) => {
+    let newRange = initialZoom;
+    if (newRange > 80) {
+      // Higher bigger zoom
+      const deltaMax = newRange - 80;
+      newRange = 80 + deltaMax * 10;
+    }
+    return newRange;
+  };
+  export let zoomRangeUI = zoomStartRange;
+  export let zoomRange = computeZoomRange(zoomRangeUI);
   export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
   export let htmlRoot;
   export let viewWrapper;
@@ -140,7 +150,8 @@
   $: vWidth = viewWrapper?.offsetWidth ?? 0;
 
   $: zoomStartRange = computeStartRange(isWide, isMobile); // Need one change to update...
-  $: zoomRange = zoomStartRange; // Ok due to Svelte reactivity : only update if zoomStartRange change...
+  $: zoomRangeUI = zoomStartRange; // Ok due to Svelte reactivity : only update if zoomStartRange change...
+  $: zoomRange = computeZoomRange(zoomRangeUI); // Ok due to Svelte reactivity : only update if zoomStartRange change...
 
   const Default = {
     placement: 'top',
@@ -366,50 +377,58 @@
     toPrettyNum(length: number): string;
   }
 
-  const hackyRefresh = (data) => {
-    // TODO : better sync all in-coming props from 'needSync' attr ?
-    // TODO : + why not working simpliy with :
-    // timingSlot?.maxPath = data.sync.maxPath;
-    // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
-    // => might be related to bind:timeQualifs ? bind for update
-    //    from view is wrong way ? always need to update :
-    //      - self for self view
-    //      - parent list to propagate outside (parent + children + etc...)
-
-    // Hacky or regular solution ? :
-    // TIPS : USING _.merge keep existing references and avoid
-    // messing up Svelte reactivity like above ? (BUT OK for TagsInput component, why ?)
-    if (timingSlot?.maxPath) {
-      // Clean initial values 'inPlace' :
-      // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
-      // timingSlot?.maxPath.length = 0;
-      // https://stackoverflow.com/questions/19316857/removing-all-properties-from-a-object
-      Object.keys(timingSlot?.maxPath).forEach(
-        (key) => delete timingSlot.maxPath[key]
-      );
-
-      //   timingSlot?.maxPath = _.merge(timingSlot?.maxPath, data.sync.maxPath);
-      //   timingSlot?.maxPriceTag = _.merge(
-      //     timingSlot?.maxPriceTag,
-      //     data.sync.maxPriceTag
-      //   );
-      //   // if (data.sync.maxPath) {
-      //   //   _.merge(timingSlot?.maxPath, data.sync.maxPath);
-      //   //   _.merge(timingSlot?.maxPriceTag, data.sync.maxPriceTag);
-      //   // } else {
-      //   //   timingSlot?.maxPath = {};
-      //   //   timingSlot?.maxPriceTag = data.sync.maxPriceTag;
-      //   // }
-      // } else {
-      //   timingSlot?.maxPath = data.sync.maxPath;
-      //   timingSlot?.maxPriceTag = data.sync.maxPriceTag;
-    }
-    timingSlot?.maxPath = _.merge(timingSlot?.maxPath, data.sync.maxPath);
-    timingSlot?.maxPriceTag = _.merge(
-      timingSlot?.maxPriceTag,
-      data.sync.maxPriceTag
-    );
-  };
+  // const hackyRefresh = (data) => {
+  //   // TODO : better sync all in-coming props from 'needSync' attr ?
+  //   // TODO : + why not working simpliy with :
+  //   // timingSlot?.maxPath = data.sync.maxPath;
+  //   // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+  //   // => might be related to bind:timeQualifs ? bind for update
+  //   //    from view is wrong way ? always need to update :
+  //   //      - self for self view
+  //   //      - parent list to propagate outside (parent + children + etc...)
+  //   // Hacky or regular solution ? :
+  //   // TIPS : USING _.merge keep existing references and avoid
+  //   // messing up Svelte reactivity like above ? (BUT OK for TagsInput component, why ?)
+  //   if (timingSlot?.maxPath) {
+  //     // Clean initial values 'inPlace' :
+  //     // https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+  //     // timingSlot?.maxPath.length = 0;
+  //     // https://stackoverflow.com/questions/19316857/removing-all-properties-from-a-object
+  //     Object.keys(timingSlot?.maxPath).forEach(
+  //       (key) => delete timingSlot.maxPath[key]
+  //     );
+  //     //   timingSlot?.maxPath = _.merge(timingSlot?.maxPath, data.sync.maxPath);
+  //     //   timingSlot?.maxPriceTag = _.merge(
+  //     //     timingSlot?.maxPriceTag,
+  //     //     data.sync.maxPriceTag
+  //     //   );
+  //     //   // if (data.sync.maxPath) {
+  //     //   //   _.merge(timingSlot?.maxPath, data.sync.maxPath);
+  //     //   //   _.merge(timingSlot?.maxPriceTag, data.sync.maxPriceTag);
+  //     //   // } else {
+  //     //   //   timingSlot?.maxPath = {};
+  //     //   //   timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+  //     //   // }
+  //     // } else {
+  //     //   timingSlot?.maxPath = data.sync.maxPath;
+  //     //   timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+  //   }
+  //   timingSlot?.maxPath = _.merge(
+  //     {}, // Create new instance OBJECT, otherwise 
+  //     // will share max between multiple time slots...
+  //     timingSlot?.maxPath, data.sync.maxPath
+  //   );
+  //   // timingSlot?.maxPath = data.sync.maxPath;
+  //   timingSlot?.maxPriceTag = _.merge(
+  //     {}, // Create new instance OBJECT, otherwise 
+  //     // will share max between multiple time slots...
+  //     timingSlot?.maxPriceTag,
+  //     data.sync.maxPriceTag
+  //   );
+  //   // timingSlot?.maxPriceTag = data.sync.maxPriceTag;
+  //   // assign self to trigger reactive refresh :
+  //   // timingSlot = timingSlot;
+  // };
 
   export let toggleQualif = async (qualif, targetSlot) => {
     isLoading = true;
@@ -441,11 +460,20 @@
           const data = await resp.json();
           // const data = await resp.text();
           // console.debug("resp", data);
-          targetSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          // // TODO : better sync all in-coming props from 'needSync' attr ?
+          // targetSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // // // TODO : better sync all in-coming props from 'needSync' attr ?
           // targetSlot?.maxPath = data.sync.maxPath;
           // targetSlot?.maxPriceTag = data.sync.maxPriceTag;
-          hackyRefresh(data);
+
+          targetSlot = {
+            ...targetSlot,
+            tags: Object.values(data.newTags),
+            maxPath: data.sync.maxPath,
+            maxPriceTag: data.sync.maxPriceTag,
+          };
+
+          timings[lastSelectedIndex] = targetSlot;
+          // hackyRefresh(data);
 
           // TODO : NO reactivity for targetSlot?.maxPath ?
           //        => missing live price lookup update at top of SlotView when changing tags,
@@ -618,7 +646,8 @@
   // TODO : config backend for backup upload /download + save connected user shortcuts...
 
   const haveNoExtraKey = (k) => 
-    !(k.shiftKey || k.altKey || k.metaKey || k.altKey);
+  // Tips : testing 'k.shiftKey ||' will break '>' since need shift to do this one
+    !(k.altKey || k.metaKey || k.altKey);
 
   const isKey = {
     space: (k) => haveNoExtraKey(k) && k.keyCode == 32,
@@ -639,12 +668,12 @@
     }
     const zoomStep = 5;
     if (isKey.zoomLower(e)) {
-      zoomRange = zoomRange >= zoomStep ? zoomRange - zoomStep : zoomRange;
+      zoomRangeUI = zoomRangeUI >= zoomStep ? zoomRangeUI - zoomStep : zoomRangeUI;
       e.preventDefault();
     }
     if (isKey.zoomHigher(e)) {
-      zoomRange =
-        zoomRange <= 100 - zoomStep ? zoomRange + zoomStep : zoomRange;
+      zoomRangeUI =
+      (zoomRangeUI <= 100 - zoomStep) ? zoomRangeUI + zoomStep : zoomRangeUI;
       e.preventDefault();
     }
     if (isKey.return(e)) {
@@ -830,20 +859,20 @@
       .format("YYYY-MM-DD HH:mm:ss")}
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
     <!-- // TODO : strange : tags are reactive, but not the maxPath etc ? -->
-    <!-- {#if timingSlot?.tags?.length} -->
-    <span
-      class="border"
-      class:border-gray-600={!timingSlot?.tags?.length}
-      class:border-green-400={timingSlot?.tags?.length}
-    >
-      {timingSlot.maxPath?.maxValue ?? 0}/hr [{(timingSlot.maxPath &&
-        (timingSlot.maxPath?.maxValue
-          ? (timingSlot.maxPath.maxValue * 10) / 60
-          : null
-        )?.toPrettyNum(2)) ??
-        "--"} €]
-    </span>
-    <!-- {/if} -->
+    {#if timingSlot}
+      <span
+        class="border"
+        class:border-gray-600={!timingSlot?.tags?.length}
+        class:border-green-400={timingSlot?.tags?.length}
+      >
+        {timingSlot.maxPath?.maxValue ?? 0}/hr [{(timingSlot.maxPath &&
+          (timingSlot.maxPath?.maxValue
+            ? (timingSlot.maxPath.maxValue * 10) / 60
+            : null
+          )?.toPrettyNum(2)) ??
+          "--"} €]
+      </span>
+    {/if}
   </div>
   <div class="sticky top-0 left-0 bg-white/95 z-20">
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
@@ -872,7 +901,7 @@
       class="mws-timing-slot-header overflow-scroll relative"
       class:is-fullscreen={isFullScreen}
       class:h-[7rem]={!isHeaderExpanded}
-      class:wide:h-[3rem]={!isHeaderExpanded}
+      class:wide:h-[6rem]={!isHeaderExpanded}
       style={Height
         ? `
         height: ${Height}px;
@@ -884,6 +913,41 @@
       on:scroll={headerScrollHandler}
       data-scroll={headerScroll}
     >
+      <span
+        class="tags-details float-left max-w-[70%] md:max-w-[75%]
+        rounded-md z-40 inline-flex flex-wrap
+        ml-1 mr-1 text-xs md:text-base
+        pointer-events-none md:pointer-events-none
+        "
+        class:!max-w-[50%]={isFullScreen && !isMobile}
+        class:!max-w-[80%]={isFullScreen && isMobile}
+        class:top-0={!isFullScreen}
+        class:sticky={!isFullScreen}
+        class:fixed={isFullScreen}
+        class:bottom-0={isFullScreen}
+        class:left-0={isFullScreen}
+      >
+        <span
+          class="border mt-1 p-0 bg-black"
+          class:border-gray-600={!timingSlot?.tags?.length}
+          class:border-green-400={timingSlot?.tags?.length}
+        >
+          {timingSlot?.maxPath?.maxValue ?? 0}/hr [{(timingSlot?.maxPath &&
+            (timingSlot?.maxPath?.maxValue
+              ? (timingSlot?.maxPath?.maxValue * 10) / 60
+              : null
+            )?.toPrettyNum(2)) ??
+            "--"} €]
+        </span>
+        {#each timingSlot?.tags ?? [] as tag}
+          <span
+            class="ml-1 mr-1 mt-1 text-white bg-black
+          border-blue-600 border rounded-sm p-0"
+          >
+            {tag.label}
+          </span>
+        {/each}
+      </span>
       <!-- <span class="float-right right-0 top-0 m-1 sticky
     pointer-events-none opacity-75 hover:opacity-100"> -->
       <span
@@ -987,41 +1051,6 @@
         </span>
         <span class="float-right w-[14rem] h-7" /> -->
       {/if}
-      <span
-        class="tags-details float-left max-w-[70%] md:max-w-[75%]
-        rounded-md z-40 inline-flex flex-wrap
-        ml-1 mr-1 text-xs md:text-base
-        pointer-events-none md:pointer-events-none
-        "
-        class:!max-w-[50%]={isFullScreen && !isMobile}
-        class:!max-w-[80%]={isFullScreen && isMobile}
-        class:top-0={!isFullScreen}
-        class:sticky={!isFullScreen}
-        class:fixed={isFullScreen}
-        class:bottom-0={isFullScreen}
-        class:left-0={isFullScreen}
-      >
-        <span
-          class="border mt-1 p-0 bg-black"
-          class:border-gray-600={!timingSlot?.tags?.length}
-          class:border-green-400={timingSlot?.tags?.length}
-        >
-          {timingSlot.maxPath?.maxValue ?? 0}/hr [{(timingSlot.maxPath &&
-            (timingSlot.maxPath?.maxValue
-              ? (timingSlot.maxPath.maxValue * 10) / 60
-              : null
-            )?.toPrettyNum(2)) ??
-            "--"} €]
-        </span>
-        {#each timingSlot?.tags ?? [] as tag}
-          <span
-            class="ml-1 mr-1 mt-1 text-white bg-black
-          border-blue-600 border rounded-sm p-0"
-          >
-            {tag.label}
-          </span>
-        {/each}
-      </span>
       <span class="float-right flex flex-wrap justify-end items-start p-2">
         <TagsInput 
         bind:timings
@@ -1138,16 +1167,11 @@
     >
       <div class="fill-white/70 text-white/70 bg-black/50 w-full">
         <input
-          value={zoomStartRange}
+          bind:value={zoomRangeUI}
           on:change={(e) => {
             slotHeight = null;
-            let newRange = e.target.value;
-            if (newRange > 80) {
-              // Higher bigger zoom
-              const deltaMax = newRange - 80;
-              newRange = 80 + deltaMax * 10;
-            }
-            zoomRange = newRange;
+            // Below no need, will be done by svelte reactive call, cf $:
+            // zoomRange = computeZoomRange(e.target.value);
           }}
           id="zoom-range"
           type="range"
@@ -1158,12 +1182,13 @@
       </div>
       <!-- {#if !isFullScreen } -->
       <div class="sticky z-40 bottom-16
-      inline-flex right-0 bg-white overflow-visible h-[1.5rem]">
+      inline-flex right-0 bg-white overflow-visible h-[2.4rem]"
+      class:p-1={currentTimeSlotQualifs?.length}
+      >
         {#each currentTimeSlotQualifs?? [] as q}
           {@const tooltipId = `htmlIconTooltip-${newUniqueId()}`}
           <div class="inline-flex justify-center items-center
-          ml-1 mr-1
-          border-b-4 border-t-4 object-contain"
+          border-b-4 border-t-4 object-contain overflow-hidden"
           data-tooltip-target={tooltipId}
           data-tooltip-placement="top"        
           style={`

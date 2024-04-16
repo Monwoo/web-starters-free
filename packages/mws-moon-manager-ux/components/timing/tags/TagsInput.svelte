@@ -20,8 +20,8 @@
   export let timing;
   export let allTagsList;
   export let tags;
-  export let maxPath;
-  export let maxPriceTag;
+  // export let maxPath;
+  // export let maxPriceTag;
   export let modalId;
 
   // TODO : refactor : should not be Done by TagsInput
@@ -36,16 +36,16 @@
   // Tips : sync inner data on component changes :
   // BUT might leave old instance obj asyn,
   //   better use bind: to avoid async behavior
-  $: timing?.tags = tags;
+  // $: timing?.tags = tags;
   // TODO : better sync all in-coming props from 'needSync' attr ?
-  $: timing?.maxPath = maxPath;
-  $: timing?.maxPriceTag = maxPriceTag;
-  if (!maxPath) {
-    maxPath = timing?.maxPath;
-  }
-  if (!maxPriceTag) {
-    maxPriceTag = timing?.maxPriceTag;
-  }
+  // $: timing?.maxPath = maxPath;
+  // $: timing?.maxPriceTag = maxPriceTag;
+  // if (!maxPath) {
+  //   maxPath = timing?.maxPath;
+  // }
+  // if (!maxPriceTag) {
+  //   maxPriceTag = timing?.maxPriceTag;
+  // }
 
   let addedTagKey;
 
@@ -65,6 +65,7 @@
       }
     }
     await removeTagExtended(syncTiming, tag, comment);
+    // timing = syncTiming; // trigger svelte reactivity
   };
 
   export let removeTagExtended = async (timingTarget, tag, comment = null) => {
@@ -112,8 +113,8 @@
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           timingTarget.tags = tags;
           // TODO : better sync all in-coming props from 'needSync' attr ?
-          maxPath = data.sync.maxPath;
-          maxPriceTag = data.sync.maxPriceTag;
+          timingTarget.maxPath = data.sync.maxPath;
+          timingTarget.maxPriceTag = data.sync.maxPriceTag;
 
           // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
           stateUpdate(state, {
@@ -144,6 +145,7 @@
       }
     }
     await addTagExtended(syncTiming, tag, comment);
+    // timing = syncTiming; // trigger svelte reactivity
   };
 
   export let addTagExtended = async (
@@ -190,8 +192,8 @@
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...
           timingTarget.tags = tags;
           // TODO : better sync all in-coming props from 'needSync' attr ?
-          maxPath = data.sync.maxPath;
-          maxPriceTag = data.sync.maxPriceTag;
+          timingTarget.maxPath = data.sync.maxPath;
+          timingTarget.maxPriceTag = data.sync.maxPriceTag;
 
           console.debug("Did add tag", tags);
           stateUpdate(state, {

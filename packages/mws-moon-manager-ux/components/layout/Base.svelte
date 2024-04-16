@@ -56,9 +56,14 @@
     => not enough, desactivate sticky bottom instead,
     scrolling MAIN BODY only sound ok 
     to remove mobile nav on scroll down...
+
+    so even for mobile landscape, do not keep sticky bottom footer...
+
+    add pb-21 for mobile screen forseen h100%, to get enough space to trigger scroll down...
   -->
 
-  <div class="flex flex-col h-[100dvh] overflow-hidden print:h-auto wide:h-auto">
+  <div class="flex flex-col md:overflow-hidden
+    h-max md:h-[100dvh] print:h-auto wide:h-auto">
     <slot name="mws-header-container">
       <header class="rounded-b-lg bg-gray-700 text-white text-center {headerClass}">
         <Header {locale} {viewTemplate}>
@@ -68,7 +73,7 @@
         </Header>
       </header>
     </slot>
-    <main class="flex-1 overflow-y-auto header {mainClass}">
+    <main class="flex-1 md:overflow-y-auto header {mainClass}">
       <slot />
     </main>
     <slot name="mws-footer-container">

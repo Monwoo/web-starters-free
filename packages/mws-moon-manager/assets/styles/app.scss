@@ -50,8 +50,13 @@ body {
 html,
 body,
 footer {
-    overflow: hidden;
     overflow-clip-margin: unset;
+    // TIPS : NEED body scroll for mobile to hide top nav bar on inner scroll...
+    overflow: auto;
+    @media (min-width: $mws-media-phone-w) {
+        // TIPS : NEED body scroll for mobile to hide top nav bar on inner scroll...
+        overflow: hidden;
+    }
 
     @media print {
         overflow: auto;

@@ -177,7 +177,7 @@
       // qualif = qualif; // for self reactivity
       // qualif = qualifParam; // for self reactivity (up to quickQualifTemplates)
       // _.merge(qualif, qualifParam); // for self DEEP reactivity (up to qualifTemplates ok but need ui refresh ?)
-      qualif = _.merge(qualif, qualifParam); // OK : ui refresh + DEEP reactivity (up to qualifTemplates items REFS OK
+      qualif = _.merge({}, qualif, qualifParam); // OK : ui refresh + DEEP reactivity (up to qualifTemplates items REFS OK
       // bring back to normal : or, keep refresh on all changes ?...
       // => strange behavior if commented : will delete previously updated qualif... ok with below :
       keyboardShortcutModal.syncQualifWithBackend = originalSync;

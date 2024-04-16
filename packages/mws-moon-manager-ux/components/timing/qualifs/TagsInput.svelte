@@ -63,7 +63,7 @@
           // WARN : below merge will not RESET fields
           //        BUT : will add to existing list...
           qualif.timeTags = []; // Reset list to ensure clean merge
-          _.merge(qualif, data.sync);
+          qualif = _.merge({}, qualif, data.sync);
           timeTags = qualif.timeTags;
           stateUpdate(state, {
             csrfTimingQualifSync: data.newCsrf,

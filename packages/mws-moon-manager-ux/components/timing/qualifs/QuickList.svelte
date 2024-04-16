@@ -363,7 +363,7 @@
           // WARN : below merge will not RESET fields
           //        BUT : will add to existing list...
           qualif.timeTags = []; // Reset list to ensure clean merge // TODO : review is _.merge is ok or use way to reset lists ?
-          _.merge(qualif, data.sync);
+          qualif = _.merge({}, qualif, data.sync);
           // _.merge(qualif, data.sync);
 
           if (data.didDelete) {

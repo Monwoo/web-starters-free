@@ -6,10 +6,10 @@
 {# {% set queryParams = queryParams|merge({queryKey: newQueryValue}) %} #}
 
 {% set pageNumber = queryParams['page'] ?? 1 %}
-{% set selectionStartIndex = queryParams['selectionStartIndex'] ?? 1 %}
+{% set selectionStartIndex = queryParams['selectionStartIndex'] ?? null %}
 {% set lastSelectedIndex = queryParams['lastSelectedIndex'] ?? 1 %}
 
-{% block title %}Timings qualif [{{pageNumber}}-{{selectionStartIndex
+{% block title %}Timings Qualif [{{pageNumber}}-{{selectionStartIndex != null
       ? (selectionStartIndex ~ '..')
       : ''}}{{lastSelectedIndex}}]
 {% endblock %}
@@ -66,7 +66,7 @@
 		<div class="flex flex-col justify-end content-end items-stretch h-[100dvh] overflow-hidden print:h-auto">
 			{{ block('header') }}
 			<div
-			class="flex-1 overflow-y-auto">
+			class="flex-1 md:overflow-y-auto">
 				{{ block('content') }}
 			</div>
 			{{ block('footer') }}
