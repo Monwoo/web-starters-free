@@ -43,7 +43,7 @@
 		{% endblock %}
 
 		{% block body %}
-		  <div class="flex flex-col justify-between items-stretch h-[100dvh] overflow-hidden print:h-auto">
+		  <div class="flex flex-col justify-between items-stretch min-h-[100dvh] md:h-[100dvh] overflow-hidden print:h-auto">
 				{% block header %}
 					{# // TODO : pre-rendering system instead of hard coded UI sync ? #}
 					<header class="rounded-b-lg bg-gray-700 text-white text-center"
