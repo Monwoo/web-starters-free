@@ -52,7 +52,7 @@ class MwsUserAdminType extends MwsUserBaseType
             $builder->add('newPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Le mot de passe et la confirmation doivent être identique.',
-                'constraints' => [new Length(['min' => 6, 'max' => 30])],
+                'constraints' => [new Length(['min' => 4, 'max' => 30])],
                 'label' => false,
                 'mapped' => false,
                 'required' => $shouldAddNew, // Always needed for NEW form 
