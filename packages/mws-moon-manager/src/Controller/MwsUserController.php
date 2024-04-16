@@ -319,10 +319,12 @@ class MwsUserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $pwd = $form->get('newPassword')->getData();
             // $user = $form->getData(); dd($user);
-            // dd($_POST);
-            $user->setUsername(ucfirst($user->getUserIdentifier()));
+            // dd($pwd);
+            $user->setUsername($user->getUserIdentifier());
+            // $user->setUsername(ucfirst($user->getUserIdentifier()));
             $password = $hasher->hashPassword($user, $pwd);
             $user->setPassword($password);
+            // dd($password);
             foreach ($user->getTeamOwners() as $key => $owner) {
                 // https://www.doctrine-project.org/projects/doctrine-orm/en/2.16/reference/unitofwork-associations.html#important-concepts
                 $entityManager->persist($owner);
