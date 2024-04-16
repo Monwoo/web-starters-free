@@ -1,7 +1,17 @@
 {# 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% extends '@MoonManager/base.html.twig' %}
 
-{% block title %}Timings qualification
+{# https://stackoverflow.com/questions/15606332/symfony2-twig-dealing-with-getting-url-query-string-values #}
+{% set queryParams = app.request.query.all %}
+{# {% set queryParams = queryParams|merge({queryKey: newQueryValue}) %} #}
+
+{% set pageNumber = queryParams['page'] ?? 1 %}
+{% set selectionStartIndex = queryParams['selectionStartIndex'] ?? 1 %}
+{% set lastSelectedIndex = queryParams['lastSelectedIndex'] ?? 1 %}
+
+{% block title %}Timings qualif [{{pageNumber}}-{{selectionStartIndex
+      ? (selectionStartIndex ~ '..')
+      : ''}}{{lastSelectedIndex}}]
 {% endblock %}
 {# // TODO : by project ? by tag or group of tags ?
 // (having project category tags,custom tag per projects ?) #}

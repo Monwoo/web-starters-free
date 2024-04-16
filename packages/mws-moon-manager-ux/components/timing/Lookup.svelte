@@ -186,6 +186,14 @@
   }
 </script>
 
+<svelte:head>
+  <title>
+    Timings Qualif [{pageNumber}-{undefined !== selectionStartIndex
+      ? `${selectionStartIndex}..`
+      : ""}{lastSelectedIndex}]
+  </title>
+</svelte:head>
+
 <Base
   bind:isMobile
   bind:isWide
