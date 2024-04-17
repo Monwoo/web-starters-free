@@ -429,8 +429,35 @@
   //   // assign self to trigger reactive refresh :
   //   // timingSlot = timingSlot;
   // };
+  export let toggleQualif = async (q, targetSlot) => {
+    // const syncTiming = targetSlot; // TIPS : to avoid async change of targetSlot
+    const syncStartIdx = lastSelectedIndex;
+    if (undefined !== selectionStartIndex) {
+      // avoid bulk process stop on early selectionStartIndex switch...
+      // Toggle qualif of all previous or next qualifs :
+      let delta = selectionStartIndex - syncStartIdx;
+      let step = delta > 0 ? -1 : 1;
+      while (delta !== 0) {
+        const timingTarget = timings[syncStartIdx + delta];
+        const newT = await toggleQualifByTiming(q, timingTarget);
+        newT && (timings[syncStartIdx + delta] = newT);
+        console.log("Selection side qualif for " + timingTarget.sourceStamp);
+        delta += step;
+      }
+    }
 
-  export let toggleQualif = async (qualif, targetSlot) => {
+    // TIPS : targetSlot could have change due to reactivity on lastSelectedIndex
+    // // targetSlot = toggleQualifByTiming(q, syncTiming);
+    // syncStartIdx is a const on original index, it's our target even if
+    // lastSelectedIndex did change
+    // TODO : ok only if timings do not change for x reason, and index mismatch... (not our use case for now...)
+    const newT = await toggleQualifByTiming(q, timings[syncStartIdx]);
+    newT && (timings[syncStartIdx] = newT);
+    // TODO : Refactor all to this way, + improve to fix if timings change
+    //  (map filter new list on existing ids in current qualif list...)
+  }
+
+  export let toggleQualifByTiming = async (qualif, targetSlot) => {
     isLoading = true;
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingToggleQualif"),
@@ -465,14 +492,16 @@
           // targetSlot?.maxPath = data.sync.maxPath;
           // targetSlot?.maxPriceTag = data.sync.maxPriceTag;
 
-          targetSlot = {
+          // targetSlot = {
+          const newSlot = {
             ...targetSlot,
             tags: Object.values(data.newTags),
             maxPath: data.sync.maxPath,
             maxPriceTag: data.sync.maxPriceTag,
           };
 
-          timings[lastSelectedIndex] = targetSlot;
+          // targetSlot = newSlot; // Will only change local param ref, not parent caller reactivity...
+          // timings[lastSelectedIndex] = newSlot;
           // hackyRefresh(data);
 
           // TODO : NO reactivity for targetSlot?.maxPath ?
@@ -484,6 +513,8 @@
           stateUpdate(state, {
             csrfTimingToggleQualif: data.newCsrf,
           });
+
+          return newSlot;
         }
       })
       .catch((e) => {
@@ -491,7 +522,9 @@
         // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
         const shouldWait = confirm("Echec de l'enregistrement.");
       });
-    isLoading = false;
+      isLoading = false;
+
+      return resp;
   };
   export let removeAllTags = async () => {
     isLoading = true;
@@ -504,10 +537,10 @@
       isLoading = false;
       return;
     }
-    const syncTiming = timingSlot;
+    // const syncTiming = timingSlot;
+    const syncStartIdx = lastSelectedIndex;
     if (undefined !== selectionStartIndex) {
       // avoid bulk process stop on early selectionStartIndex switch...
-      const syncStartIdx = lastSelectedIndex;
       // TODO : factorize Toggle qualif of all previous or next qualifs :
       let delta = selectionStartIndex - syncStartIdx;
       let step = delta > 0 ? -1 : 1;
@@ -518,7 +551,7 @@
         delta += step;
       }
     }
-    await removeAllTagsByTiming(syncTiming);
+    await removeAllTagsByTiming(timings[syncStartIdx]);
     isLoading = false;
   }
 
@@ -581,27 +614,7 @@
   let qualifTemplates = timeQualifs.map((q, qIdx) => {
     q.toggleQualif = async () => {
       console.log(qIdx + ": Toggle qualif " + q.label, q);
-
-      const syncTiming = timingSlot;
-      if (undefined !== selectionStartIndex) {
-        // avoid bulk process stop on early selectionStartIndex switch...
-        const syncStartIdx = lastSelectedIndex;
-        // Toggle qualif of all previous or next qualifs :
-        let delta = selectionStartIndex - syncStartIdx;
-        let step = delta > 0 ? -1 : 1;
-        while (delta !== 0) {
-          const timingTarget = timings[syncStartIdx + delta];
-          await toggleQualif(q, timingTarget);
-          console.log("Selection side qualif for " + timingTarget.sourceStamp);
-          delta += step;
-        }
-        await toggleQualif(q, syncTiming);
-      } else {
-        // await q.timeTags?.forEach(async t => {
-        //   await addTag(t);
-        // });
-        await toggleQualif(q, timingSlot);
-      }
+      await toggleQualif(q, timingSlot);
     };
     return q;
   });

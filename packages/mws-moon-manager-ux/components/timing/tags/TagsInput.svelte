@@ -50,10 +50,10 @@
   let addedTagKey;
 
   export let removeTag = async (tag, comment = null) => {
-    const syncTiming = timing;
+    // const syncTiming = timing;
+    const syncStartIdx = lastSelectedIndex;
     if (undefined !== selectionStartIndex) {
       // avoid bulk process stop on early selectionStartIndex switch...
-      const syncStartIdx = lastSelectedIndex;
       // TODO : factorize Toggle qualif of all previous or next qualifs :
       let delta = selectionStartIndex - syncStartIdx;
       let step = delta > 0 ? -1 : 1;
@@ -64,7 +64,7 @@
         delta += step;
       }
     }
-    await removeTagExtended(syncTiming, tag, comment);
+    await removeTagExtended(timings[syncStartIdx], tag, comment);
     // timing = syncTiming; // trigger svelte reactivity
   };
 
@@ -130,10 +130,10 @@
   };
 
   export let addTag = async (tag, comment = null) => {
-    const syncTiming = timing;
+    // const syncTiming = timing;
+    const syncStartIdx = lastSelectedIndex;
     if (undefined !== selectionStartIndex) {
       // avoid bulk process stop on early selectionStartIndex switch...
-      const syncStartIdx = lastSelectedIndex;
       // TODO : factorize Toggle qualif of all previous or next qualifs :
       let delta = selectionStartIndex - syncStartIdx;
       let step = delta > 0 ? -1 : 1;
@@ -144,7 +144,7 @@
         delta += step;
       }
     }
-    await addTagExtended(syncTiming, tag, comment);
+    await addTagExtended(timings[syncStartIdx], tag, comment);
     // timing = syncTiming; // trigger svelte reactivity
   };
 
