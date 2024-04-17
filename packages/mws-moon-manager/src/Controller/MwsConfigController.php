@@ -113,6 +113,7 @@ class MwsConfigController extends AbstractController
         $extractDest = "$projectDir/$uploadSubFolder";
         $uploadSrc = "$extractDest/messages/tchats";
         $dbSrc = "$projectDir/var/data.db.sqlite";
+        $gdprSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
 
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-config-backup', $csrf)) {
@@ -293,6 +294,13 @@ class MwsConfigController extends AbstractController
         $databasesTotalSize = $this->humanSize(
             $dSize = $this->mwsFileSize($dbSrc)
         );
+        $gdprBackupSize = $this->humanSize(
+            $gSize = $this->mwsFileSize($gdprSrc)
+        );
+        // Tips : not counting  + $gSize in total since
+        //        is more like an idea of the Max download size
+        // => might not be wize to zip etc on each reset
+        //  if ressource consuming and done every minutes of days ?
         $backupTotalSize = $this->humanSize($uSize + $dSize);
 
 
@@ -372,6 +380,7 @@ class MwsConfigController extends AbstractController
                 'backupsTotalSize' => $backupsTotalSize,
                 'uploadsTotalSize' => $uploadsTotalSize,
                 'databasesTotalSize' => $databasesTotalSize,
+                'gdprBackupSize' => $gdprBackupSize,
                 'backupTotalSize' => $backupTotalSize,
                 'uploadedFiles' => $uploadedFiles,
                 'thumbnailsCount' => $thumbnailsCount,
@@ -860,9 +869,9 @@ class MwsConfigController extends AbstractController
             }
 
             try {
-                $dbSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
                 $backupDbSrc = "$path/data.db.sqlite";
-                $filesystem->copy($backupDbSrc, $dbSrc, true);
+                $gdprSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
+                $filesystem->copy($backupDbSrc, $gdprSrc, true);
             } catch (Exception $e) {
                 $this->logger->error(
                     "Use as GDPR reset internal backup error : " . $e->getMessage()

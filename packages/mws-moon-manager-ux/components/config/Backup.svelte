@@ -143,12 +143,17 @@
     <h1 class="w-full p-4">
       Exporter un backup<br/> [Max {$state.config.backupTotalSize ?? "--"}]
     </h1>
-    <p class="w-full">
-      Taille du dossier upload : [{$state.config.uploadsTotalSize ?? "--"}]
-    </p>
-    <p class="w-full">
-      Taille des données : [{$state.config.databasesTotalSize ?? "--"}]
-    </p>
+    <div class="w-full text-lg">
+      <p class="w-full">
+        Taille du dossier <strong>upload</strong> : [{$state.config.uploadsTotalSize ?? "--"}]
+      </p>
+      <p class="w-full">
+        Taille des <strong>données</strong> : [{$state.config.databasesTotalSize ?? "--"}]
+      </p>
+      <p class="w-full">
+        Taille du reset <strong>GDPR</strong> : [{$state.config.gdprBackupSize ?? "--"}]
+      </p>  
+    </div>
 
     <!-- onsubmit="return confirm('Êtes vous sur de vouloir faire et télécharger un backup ?');" -->
     <div class="p-4 w-full flex flex-wrap items-center justify-center">
