@@ -323,7 +323,7 @@
   let needRefresh;
   export const syncQualifWithBackend = async (qualif) => {
     if (qualif?.useForQualifAdd) {
-      return; // Ignore sync for useForQualifAdd, will only ADD...
+      return qualif; // Ignore sync for useForQualifAdd, will only ADD...
     }
     const data = {
       _csrf_token: stateGet(get(state), "csrfTimingQualifSync"),
@@ -362,10 +362,19 @@
 
           // WARN : below merge will not RESET fields
           //        BUT : will add to existing list...
-          qualif.timeTags = []; // Reset list to ensure clean merge // TODO : review is _.merge is ok or use way to reset lists ?
-          qualif = _.merge({}, qualif, data.sync);
+          // qualif.timeTags = []; // Reset list to ensure clean merge // TODO : review is _.merge is ok or use way to reset lists ?
+          // qualif = _.merge({}, qualif, data.sync);
           // _.merge(qualif, data.sync);
-
+          const newQualif = {
+            ...qualif,
+            ...data.sync,
+          }
+          
+          // TODO : more sync ? other side effect updates ? 
+          // Refacor all call to update from resonse instead of inside custom stuff ??
+          // ++ USE Redux EFFECTs etc, will remove all those 
+          //    kind of side effects hacky codes :
+          qualif.timeTags = data.sync.timeTags;
           if (data.didDelete) {
             quickQualifTemplates = quickQualifTemplates.filter(
               (q) => q.id !== qualif.id
@@ -376,14 +385,16 @@
           stateUpdate(state, {
             csrfTimingQualifSync: data.newCsrf,
           });
+          return newQualif;
         }
       })
       .catch((e) => {
         console.error(e);
         // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
         const shouldWait = confirm("Echec de l'enregistrement.");
+        return null
       });
-    return qualif;
+    return resp;
   };
 
   export const syncQualifConfigWithBackend = async () => {
