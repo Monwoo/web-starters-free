@@ -149,11 +149,16 @@
 
 <!-- TIPS : zoom should be done outside of modal views
 AND outside of sticky elements -->
-<div>
-  <table>
+<div class="block w-full">
+  <table
+  class="items-center w-full bg-transparent border-collapse"
+  >
     <!-- TODO : sticky top for title to stay on page ? -->
-    <!-- <thead class="top-[-24px] sticky z-40"> -->
-    <thead class="-top-6 sticky z-40 text-xs md:text-sm">
+    <!-- <thead class="top-[-1px] md:top-[-24px] sticky z-40"> 
+    top-[-1px] -md:top-6 sticky z-40 text-xs md:text-sm  
+    -->
+      
+    <thead class="sticky top-[-1px] -md:top-6 z-40 text-xs md:text-sm">
         <tr class="users-table-info"
         style={`
           zoom: ${reportScale}%;

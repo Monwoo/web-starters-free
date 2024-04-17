@@ -102,7 +102,7 @@
   </button>
 
   <table>
-    <thead class="top-[-21px] sticky z-40">
+    <thead class="top-[-1px] md:top-[-21px] sticky z-40">
       <tr class="users-table-info">
         <th scope="col">Actions</th>
         <th scope="col">

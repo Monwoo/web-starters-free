@@ -36,7 +36,7 @@
   export let isWide;
   // TIPS : For reactiv, MUST pass ref in params to trigger Svelte reactivity
   // const computeStartRange = () => isWide ? 27 : isMobile ? 30 : 70; // WRONG
-  const computeStartRange = (isWide, isMobile) => isWide ? 32 : isMobile ? 72 : 70; 
+  const computeStartRange = (isWide, isMobile) => isWide ? 32 : isMobile ? 30 : 70; 
   export let splitStartRange = computeStartRange(isWide, isMobile);
   export let splitRange = splitStartRange;
   export let thumbSize;

@@ -33,8 +33,10 @@
 rounded-e-lg 
 "
 >
+  <!-- // TIPS : max-h-[70dvh] have some meanings for md screen only since needed only if 
+  // inside content size down instead of filling bottom ... -->
   <div
-    class="overflow-scroll max-h-[70dvh]
+    class="overflow-scroll md:max-h-[80dvh]
     flex flex-wrap items-center justify-between mx-auto"
     class:md:p-2={!inlineOpener}
   >

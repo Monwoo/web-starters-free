@@ -64,7 +64,7 @@
 
 <div>{@html offersPaginator}</div>
 <table>
-  <thead class="sticky -top-6 z-40 text-xs md:text-sm">
+  <thead class="sticky top-[-1px] -md:top-6 z-40 text-xs md:text-sm">
     <tr class="users-table-info">
       <th scope="col">Actions</th>
       <th scope="col">

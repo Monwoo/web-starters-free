@@ -230,10 +230,10 @@ overflow-visible border-solid border-4"
     width: ${(computedSize * 0.2).toFixed(0)}px;
     height: ${(computedSize * 0.2).toFixed(0)}px;
   `}
-  
+  // TIPS : m-auto to center absolut item at bottom of container ;)
   -->
   <div
-    class="absolute z-20 bottom-1 left-0 bg-white
+    class="absolute z-20 bottom-1 m-auto bg-white
   flex
   hover:opacity-100"
     class:opacity-90={!isSelected}

@@ -60,10 +60,14 @@
     so even for mobile landscape, do not keep sticky bottom footer...
 
     add pb-21 for mobile screen forseen h100%, to get enough space to trigger scroll down...
+
+  flex flex-col md:overflow-hidden
+    h-max md:h-[100dvh] print:h-auto wide:h-auto">
   -->
 
-  <div class="flex flex-col md:overflow-hidden
-    h-max md:h-[100dvh] print:h-auto wide:h-auto">
+  <div class="
+  flex flex-col justify-between items-stretch
+  min-h-[100dvh] md:h-[100dvh] md:overflow-hidden print:h-auto wide:h-auto">
     <slot name="mws-header-container">
       <header class="rounded-b-lg bg-gray-700 text-white text-center {headerClass}">
         <Header {locale} {viewTemplate}>
