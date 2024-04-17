@@ -1,7 +1,7 @@
 {
   "short_name": "{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}",
   "name": "{{ app.request.baseUrl|slug }}_{{ app.request.getHttpHost() }}_{{ packageName }}-v{{ packageVersion }}",
-  "start_url": "{{ app.request.baseUrl }}/",
+  "start_url": "{{ app.request.baseUrl }}/fr/?source=pwa",
   "icons": [{
     "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo.png') }}",
     "type": "image/png",
@@ -15,7 +15,7 @@
       "name": "Fr",
       "short_name": "fr",
       "description": "French version",
-      "url": "{{ app.request.baseUrl }}/fr?source=pwa",
+      "url": "{{ app.request.baseUrl }}/fr/?source=pwa",
       "icons": [{
         "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo-196x196.png') }}",
         "sizes": "196x196"
@@ -25,7 +25,7 @@
       "name": "En",
       "short_name": "en",
       "description": "English version",
-      "url": "{{ app.request.baseUrl }}/en?source=pwa",
+      "url": "{{ app.request.baseUrl }}/en/?source=pwa",
       "icons": [{
         "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo-196x196.png') }}",
         "sizes": "196x196"
