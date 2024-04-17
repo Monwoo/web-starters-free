@@ -579,6 +579,11 @@ class MwsTimingController extends AbstractController
             }
             $url = $path;
         }
+        if (!$url) {
+            // TIPS : avoid throw if don't want to fill up error logs :
+            // throw $this->createNotFoundException('Fail for url ' . $url);
+            return new Response('Fail for url ' . $url, 404);
+        }
 
         // Or use : https://symfony.com/doc/current/http_client.html
         // $respData = file_get_contents($url);
