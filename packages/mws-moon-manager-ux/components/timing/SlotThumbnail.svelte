@@ -243,9 +243,11 @@ overflow-visible border-solid border-4"
     -->
     {#each (currentTimeSlotQualifs ?? []).slice(0, computedSize > 120 ? 7 : 2) as q}
       {#if computedSize > 120}
-        <!-- data-tooltip-target={tooltipIdsByQId[q.id]} -->
-        <div
-          class="inline-flex
+        <!-- data-tooltip-target={tooltipIdsByQId[q.id]}
+        m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis flex justify-center items-center pl-1 pr-1 
+        -->
+        <div        
+          class="inline-flex  min-h-[2.4rem] min-w-[2.4rem]
           border-b-4 border-t-4 object-contain w-full h-full
           justify-center items-center"
           style={`

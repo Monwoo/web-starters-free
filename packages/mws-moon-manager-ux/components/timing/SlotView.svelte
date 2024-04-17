@@ -1197,7 +1197,7 @@
       </div>
       <!-- {#if !isFullScreen } -->
       <div class="sticky z-40 bottom-16
-      inline-flex right-0 bg-white overflow-visible h-[2.4rem]"
+      inline-flex right-0 bg-white overflow-visible min-h-[2.4rem]"
       class:p-1={currentTimeSlotQualifs?.length}
       >
         {#each currentTimeSlotQualifs?? [] as q}
