@@ -411,8 +411,11 @@ class MwsConfigController extends AbstractController
         return $size;
     }
 
-
-    public const defaultThumbSize = 100;
+    // TIPS : 6 month of Miguel Monwoo workload
+    //       is around 500Mo with thumb 100
+    // public const defaultThumbSize = 100;
+    // With half size, it will be ~300Mo
+    public const defaultThumbSize = 42;
     #[Route(
         '/backup/download',
         methods: ['POST'],
