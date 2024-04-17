@@ -26,9 +26,9 @@
   <span
     class="px-1 md:py-1 max-w-[100%] md:max-w-[50%]}
   rounded-ss-md font-xs md:font-normal
-  text-[0.66rem] md:text-base pointer-events-none
+  text-[0.60rem] md:text-base pointer-events-none
   bg-gray-100/90 md:bg-gray-100 text-gray-700
-  wide:text-[0.66rem] wide:font-xs
+  wide:text-[0.60rem] wide:font-xs
   "
   >
     Données confidentielles. Merci de conserver le secret professionnel et

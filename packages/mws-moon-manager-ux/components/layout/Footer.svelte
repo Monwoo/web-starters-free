@@ -39,7 +39,7 @@
   [ {$state.packageName} v-{$state.packageVersion} ]
 </p> -->
 
-<div class="flex text-[0.51rem] md:text-sm wide:text-[0.51rem] max-h-[12dvh]">
+<div class="flex text-[0.51rem] md:text-sm wide:text-[0.50rem] max-h-[12dvh]">
   <div class="w-1/3 px-3 text-left text-gray-300 flex flex-wrap">
     {#if $state.gdprLastCleanDate && $state.gdprNextCleanDate}
       <div class="px-1">
@@ -60,7 +60,7 @@
       Données confidentiels
     {/if}
   </div>
-  <a class="w-1/3 text-[0.42rem] md:text-sm wide:text-[0.42rem]
+  <a class="w-1/3 text-[0.50rem] md:text-sm wide:text-[0.50rem]
   no-underline
   text-gray-300 hover:text-white "
   href="https://www.monwoo.com" target="_blank" rel="noopener">
