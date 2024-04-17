@@ -13,6 +13,7 @@
 		'csrfConfigBackupInternalDownload': csrf_token('mws-csrf-config-backup-internal-download'),
 		'csrfConfigBackupInternalImport': csrf_token('mws-csrf-config-backup-internal-download'),
 		'csrfConfigBackupInternalRemove': csrf_token('mws-csrf-config-backup-internal-remove'),
+		'csrfConfigBackupInternalUseAsGdprReset': csrf_token('mws-csrf-config-backup-internal-use-as-gdpr-reset'),
 		'csrfConfigBackupThumbnailsRemove': csrf_token('mws-csrf-config-backup-thumbnails-remove'),
 		'config': configState,
 	} |serialize('json')|e('html_attr'), }) }}></div>

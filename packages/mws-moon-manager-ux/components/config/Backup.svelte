@@ -9,7 +9,6 @@
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import dayjs from "dayjs";
-
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let backups = [];
@@ -21,6 +20,17 @@
   export let isLoading = false;
 
   const base = process.env.BASE_HREF_FULL ?? "";
+  const urlParams = new URLSearchParams(window.location.search);
+  const useAsGdprResetOk = urlParams.has('useAsGdprResetOk') ? 
+  JSON.parse(urlParams.get('useAsGdprResetOk')) : null;
+  if (useAsGdprResetOk !== null) {
+    // Cleanup to ensure no multiple alerts...
+    urlParams.delete('useAsGdprResetOk');
+    const newUrl =
+    window.location.origin + window.location.pathname + "?" + urlParams;
+    history.pushState({}, null, newUrl);
+    alert(useAsGdprResetOk ? 'Choix du nouveau reset OK.' : 'Echec du reset, re-essayez ou choisisez en un autre.')
+  }
 
   // console.debug(backup);
   let backupName;
@@ -311,6 +321,16 @@
               <input type="hidden" name="_csrf_token" value={$state.csrfConfigBackupInternalRemove} />
               <input type="hidden" name="internalName" value={internalName} />
               <button style="--mws-primary-rgb: 255, 0, 0">Supprimer</button>
+            </form>
+            <form
+              method="post"
+              onsubmit="return confirm('Êtes vous sur de vouloir definir le backup interne {internalName} comme base de reset GDPR ?');"
+              action={Routing.generate("mws_config_backup_internal_use_as_gdpr_reset", {
+              })}
+            >
+              <input type="hidden" name="_csrf_token" value={$state.csrfConfigBackupInternalUseAsGdprReset} />
+              <input type="hidden" name="internalName" value={internalName} />
+              <button style="--mws-primary-rgb: 255, 0, 0">Pour reset GDPR</button>
             </form>
           </div>
           <div

@@ -770,16 +770,16 @@ class MwsConfigController extends AbstractController
             throw $this->createAccessDeniedException('Only for admins');
         }
 
-        $csrf = $request->get('_csrf_token', []);
+        $csrf = $request->get('_csrf_token', null);
         if (!$this->isCsrfTokenValid('mws-csrf-config-backup-internal-remove', $csrf)) {
             $this->logger->debug("Fail csrf with", [$csrf, $request]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
-        $rawName = $request->get('internalName', []);
+        $rawName = $request->get('internalName', '');
         $internalName = implode('_', array_map(
             [$this->slugger, 'slug'], explode('_', $rawName))
         );
-        if (!$internalName) {
+        if (!$internalName || !strlen($internalName)) {
             throw $this->createNotFoundException("Wrong internalName parameter.");
         }
         $projectDir = $this->getParameter('kernel.project_dir');
@@ -802,13 +802,81 @@ class MwsConfigController extends AbstractController
         } catch (Exception $e) {
             // handle exception
             $this->logger->error(
-                "Import internal backup error " . $e->getMessage()
+                "Remove internal backup error " . $e->getMessage()
             );
         } finally {
 
         }
 
         return $this->redirectToRoute('mws_config_backup');
+    }
+
+    #[Route(
+        '/backup-internal/use-as-gdpr-reset',
+        // methods: ['POST', 'GET'],
+        methods: ['POST'], // TODO : why need to have GET method ? Navigator force get sometime ?
+        name: 'mws_config_backup_internal_use_as_gdpr_reset'
+    )]
+    #[SecuAttr(
+        "is_granted('" . MwsUser::ROLE_ADMIN . "')",
+        statusCode: 401,
+        message: MwsLoginFormAuthenticator::t_failToGrantAccess
+    )]
+    public function backupInternalUseAsGdprReset(
+        Request $request,
+    ): Response {
+        $success = false;
+        try {
+            $user = $this->getUser();
+            if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+                throw $this->createAccessDeniedException('Only for admins');
+            }
+            // dd($user);
+            $csrf = $request->get('_csrf_token', null);
+            if (!$this->isCsrfTokenValid('mws-csrf-config-backup-internal-use-as-gdpr-reset', $csrf)) {
+                // dd($csrf);
+                $this->logger->debug("Fail csrf with", [$csrf, $request]);
+                throw $this->createAccessDeniedException('CSRF Expired');
+            }
+            $rawName = $request->get('internalName', '');
+            $internalName = implode('_', array_map(
+                [$this->slugger, 'slug'], explode('_', $rawName))
+            );
+            // dd($internalName);
+            if (!$internalName || !strlen($internalName)) {
+                throw $this->createNotFoundException("Wrong internalName parameter for $internalName.");
+            }
+            $projectDir = $this->getParameter('kernel.project_dir');
+            $pathRaw = "$projectDir/bckup/$internalName";
+            $filesystem = new Filesystem();
+
+            $path = realpath($pathRaw);
+            if (!$path || !file_exists($path)) {
+                throw $this->createNotFoundException("Internal backup $internalName not found");
+            }
+            $projPath = realpath($projectDir);
+            if (!starts_with($path, $projPath)) {
+                throw $this->createNotFoundException("Internal backup $internalName not found");
+            }
+
+            try {
+                $dbSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
+                $backupDbSrc = "$path/data.db.sqlite";
+                $filesystem->copy($backupDbSrc, $dbSrc, true);
+            } catch (Exception $e) {
+                $this->logger->error(
+                    "Use as GDPR reset internal backup error : " . $e->getMessage()
+                );
+                throw $this->createNotFoundException("Internal backup error");
+            }
+            $success = true;
+        } catch (Exception $e) {
+            // TIPS : already false, assert ? but only warn ? SF Debugger or will need custom stuff ?
+            // $success = false;
+        }
+        return $this->redirectToRoute('mws_config_backup', [
+            'useAsGdprResetOk' => $success,
+        ]);
     }
 
     #[Route(
