@@ -1274,6 +1274,7 @@
         </button>  
       </div>
       <object
+        loading="lazy"
         use:pan="{{delay:imagePanDelayMs}}"
         on:pan="{imagePanHandler}"  
         on:click={imageTouchstartHandler}

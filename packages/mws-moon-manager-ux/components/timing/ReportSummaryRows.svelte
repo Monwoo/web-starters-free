@@ -183,6 +183,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
       class:border-green-400={tagSlugs.length}
     > -->
       <img
+        loading="lazy"
         class="object-contain border-solid border-4 max-w-[100px]"
         class:border-gray-600={!tagSlugs.length}
         class:border-green-400={tagSlugs.length}

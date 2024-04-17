@@ -191,6 +191,7 @@ overflow-visible border-solid border-4"
     />
   {:else}
   <object
+    loading="lazy"
     class="object-contain w-full h-full"
     data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
     type="image/png"
