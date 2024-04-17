@@ -130,7 +130,7 @@
   export let isMobile;
   // TIPS : For reactiv, MUST pass ref in params to trigger Svelte reactivity
   // const computeStartRange = () => isWide ? 27 : isMobile ? 30 : 70; // WRONG
-  const computeStartRange = (isWide, isMobile) => isWide ? 21 : isMobile ? 48 : 72;
+  const computeStartRange = (isWide, isMobile) => isWide ? 21 : isMobile ? 48 : 90;
   export let zoomStartRange = computeStartRange(isWide, isMobile); // SSR size no items change
   const computeZoomRange = (initialZoom) => {
     let newRange = initialZoom;
