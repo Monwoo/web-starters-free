@@ -22,26 +22,28 @@
 				content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 			/>
 		{% endif %}
-    <link rel="icon" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon.ico') }}" />
-		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-57x57.png' )}}" />
-		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-114x114.png' )}}" />
-		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-72x72.png' )}}" />
-		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-144x144.png' )}}" />
-		<link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-60x60.png' )}}" />
-		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-120x120.png' )}}" />
-		<link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-76x76.png' )}}" />
-		<link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-152x152.png' )}}" />
-		<link rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-196x196.png' )}}" sizes="196x196" />
-		<link rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-96x96.png' )}}" sizes="96x96" />
-		<link rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-32x32.png' )}}" sizes="32x32" />
-		<link rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-16x16.png' )}}" sizes="16x16" />
-		<link rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-128.png' )}}" sizes="128x128" />
-		<meta name="msapplication-TileColor" content="#11589A" />
-		<meta name="msapplication-TileImage" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-144x144.png' )}}" />
-		<meta name="msapplication-square70x70logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-70x70.png' )}}" />
-		<meta name="msapplication-square150x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-150x150.png' )}}" />
-		<meta name="msapplication-wide310x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x150.png' )}}" />
-		<meta name="msapplication-square310x310logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x310.png' )}}" />
+		{# // TIPS : no need of SF auth credential for asset images, but if you use basic auth to protect the whole crm,
+		 you will have to pass basic auth headers... #}
+    <link crossorigin="use-credentials" rel="icon" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon.ico') }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-57x57.png' )}}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-114x114.png' )}}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-72x72.png' )}}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-144x144.png' )}}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-60x60.png' )}}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-120x120.png' )}}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-76x76.png' )}}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-152x152.png' )}}" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-196x196.png' )}}" sizes="196x196" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-96x96.png' )}}" sizes="96x96" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-32x32.png' )}}" sizes="32x32" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-16x16.png' )}}" sizes="16x16" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-128.png' )}}" sizes="128x128" />
+		<meta crossorigin="use-credentials" name="msapplication-TileColor" content="#11589A" />
+		<meta crossorigin="use-credentials" name="msapplication-TileImage" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-144x144.png' )}}" />
+		<meta crossorigin="use-credentials" name="msapplication-square70x70logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-70x70.png' )}}" />
+		<meta crossorigin="use-credentials" name="msapplication-square150x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-150x150.png' )}}" />
+		<meta crossorigin="use-credentials" name="msapplication-wide310x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x150.png' )}}" />
+		<meta crossorigin="use-credentials" name="msapplication-square310x310logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x310.png' )}}" />
 
 		<meta name="application-name"
 		content="{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}"/>
