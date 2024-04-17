@@ -916,6 +916,7 @@
       class="mws-timing-slot-header overflow-scroll relative"
       class:is-fullscreen={isFullScreen}
       class:h-[7rem]={!isHeaderExpanded}
+      class:md:h-[15rem]={!isHeaderExpanded}
       class:wide:h-[6rem]={!isHeaderExpanded}
       style={Height
         ? `

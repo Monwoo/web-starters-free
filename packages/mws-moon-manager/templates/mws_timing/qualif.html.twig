@@ -7,11 +7,12 @@
 
 {% set pageNumber = queryParams['page'] ?? 1 %}
 {% set selectionStartIndex = queryParams['selectionStartIndex'] ?? null %}
+{% set pageLimit = queryParams['pageLimit'] ?? null %}
 {% set lastSelectedIndex = queryParams['lastSelectedIndex'] ?? 1 %}
 
 {% block title %}Timings Qualif [{{pageNumber}}-{{selectionStartIndex != null
       ? (selectionStartIndex ~ '..')
-      : ''}}{{lastSelectedIndex}}]
+      : ''}}{{lastSelectedIndex}}]|{{pageLimit}}
 {% endblock %}
 {# // TODO : by project ? by tag or group of tags ?
 // (having project category tags,custom tag per projects ?) #}

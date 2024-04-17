@@ -52,6 +52,9 @@
     urlParams.get("lastSelectedIndex") ?? "0"
   );
   const pageNumber = urlParams.get("page") ?? "1";
+  let pageLimit = urlParams.get("pageLimit") ?? "1";
+  export let pageLimitForm;
+
   // https://stackoverflow.com/questions/59062025/is-there-a-way-to-perform-svelte-transition-without-a-if-block
   // every {} is unique, {} === {} evaluates to false
   let uniqueKey = {};
@@ -204,7 +207,7 @@
   <title>
     Timings Qualif [{pageNumber}-{undefined !== selectionStartIndex
       ? `${selectionStartIndex}..`
-      : ""}{lastSelectedIndex}]
+      : ""}{lastSelectedIndex}]|{pageLimit}
   </title>
 </svelte:head>
 
@@ -273,7 +276,7 @@
       <!-- // TODO : componentize to remove code duplication with SlotView... -->
       [{pageNumber}-{undefined !== selectionStartIndex
         ? `${selectionStartIndex}..`
-        : ""}{lastSelectedIndex}]
+        : ""}{lastSelectedIndex}]|{pageLimit}
     </span>
 
     <!-- <div class="mws-menu-wrapper inline-flex flex-col sticky top-0 z-40 bg-yellow-100"> -->
@@ -298,6 +301,30 @@
           <Header {locale} />
         </header>
         <div class="p-3 flex flex-wrap">
+          <form class="mws-update-page-limit-form w-full"
+            action={Routing.generate("mws_timings_qualif", {
+              _locale: locale ?? "",
+              viewTemplate: viewTemplate ?? "",
+              pageLimit,
+            })}
+            bind:this={pageLimitForm}
+            name="pageLimitForm"
+            method="GET"
+          >
+            <span>
+              <input type="number" name="pageLimit"
+                bind:value={pageLimit}
+                on:keydown|stopPropagation={(e) => {
+                  if ('Enter' == e.key) {
+                    pageLimitForm.submit();
+                  }
+                }}
+              />
+              <button type="submit" class="m-1">
+                Définir la limite de pages
+              </button>
+            </span>
+          </form>
           <a
             href={Routing.generate("mws_timing_tag_list", {
               _locale: locale ?? "fr",

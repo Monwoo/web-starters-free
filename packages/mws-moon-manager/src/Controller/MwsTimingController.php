@@ -168,12 +168,35 @@ class MwsTimingController extends AbstractController
         $qb->orderBy("s.sourceTimeGMT", "ASC");
 
         $query = $qb->getQuery();
-        // dd($query->getResult());    
+        // dd($query->getResult());
+        // $pageLimit = $request->query->getInt('pageLimit', 124);
+        $pageLimit = $request->query->getInt('pageLimit', 0);
+        /*page limit */
+        // dd($pageLimit);
+        // Below will setup for inside php
+        // $request->query->set('pageLimit', $pageLimit);
+        // Redirect for update :
+        $uConfig = $user->getConfig();
+        if ($pageLimit <= 0) {
+            $defaultPLimit = $uConfig['pageLimit'] ?? 124; // TODO : from logged user configs first
+            return $this->redirectToRoute(
+                'mws_timings_qualif',
+                array_merge($request->query->all(), [
+                    "pageLimit" => $defaultPLimit,
+                    // "sourceRootLookupUrl" => $sourceRootLookupUrl,
+                ]),
+                Response::HTTP_SEE_OTHER
+            );
+        } else {
+            $uConfig['pageLimit'] = $pageLimit;
+            $user->setConfig($uConfig);
+        }
+
         $timings = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             // $request->query->getInt('pageLimit', 448), /*page limit, 28*16 */
-            $request->query->getInt('pageLimit', 124), /*page limit */
+            $pageLimit,
         );
 
         $this->logger->debug("Succeed to list timings");
