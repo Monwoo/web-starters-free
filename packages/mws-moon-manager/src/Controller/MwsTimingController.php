@@ -791,6 +791,8 @@ class MwsTimingController extends AbstractController
                         // TIPS : use some attributes that will never be null
                         //        otherwise, the hacky callback will not trigger...
                         $tryFlush();
+                        /** @var MwsTimeSlot $outerObject */
+                        return $outerObject->getSourceStamp();
                     },
                     'thumbnailJpeg' => function (
                         $innerObject,
