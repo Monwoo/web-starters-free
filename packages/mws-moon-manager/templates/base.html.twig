@@ -23,27 +23,29 @@
 			/>
 		{% endif %}
 		{# // TIPS : no need of SF auth credential for asset images, but if you use basic auth to protect the whole crm,
-		 you will have to pass basic auth headers... #}
-    <link crossorigin="use-credentials" rel="icon" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon.ico') }}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-57x57.png' )}}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-114x114.png' )}}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-72x72.png' )}}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-144x144.png' )}}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-60x60.png' )}}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-120x120.png' )}}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-76x76.png' )}}" />
-		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-152x152.png' )}}" />
-		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-196x196.png' )}}" sizes="196x196" />
-		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-96x96.png' )}}" sizes="96x96" />
-		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-32x32.png' )}}" sizes="32x32" />
-		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-16x16.png' )}}" sizes="16x16" />
-		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-128.png' )}}" sizes="128x128" />
+		 you will have to pass basic auth headers... 
+		 TODO : config assets to use version instead of hard coded refresh
+		 #}
+    <link crossorigin="use-credentials" rel="icon" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon.ico') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-57x57.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-114x114.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-72x72.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-144x144.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-60x60.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-120x120.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-76x76.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('bundles/moonmanager/medias/favicomatic/apple-touch-icon-152x152.png') ~ '?v=' ~ packageVersion }}" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-196x196.png') ~ '?v=' ~ packageVersion }}" sizes="196x196" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-96x96.png') ~ '?v=' ~ packageVersion }}" sizes="96x96" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-32x32.png') ~ '?v=' ~ packageVersion }}" sizes="32x32" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-16x16.png') ~ '?v=' ~ packageVersion }}" sizes="16x16" />
+		<link crossorigin="use-credentials" rel="icon" type="image/png" href="{{ asset('bundles/moonmanager/medias/favicomatic/favicon-128.png') ~ '?v=' ~ packageVersion }}" sizes="128x128" />
 		<meta crossorigin="use-credentials" name="msapplication-TileColor" content="#11589A" />
-		<meta crossorigin="use-credentials" name="msapplication-TileImage" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-144x144.png' )}}" />
-		<meta crossorigin="use-credentials" name="msapplication-square70x70logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-70x70.png' )}}" />
-		<meta crossorigin="use-credentials" name="msapplication-square150x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-150x150.png' )}}" />
-		<meta crossorigin="use-credentials" name="msapplication-wide310x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x150.png' )}}" />
-		<meta crossorigin="use-credentials" name="msapplication-square310x310logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x310.png' )}}" />
+		<meta crossorigin="use-credentials" name="msapplication-TileImage" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-144x144.png') ~ '?v=' ~ packageVersion }}" />
+		<meta crossorigin="use-credentials" name="msapplication-square70x70logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-70x70.png') ~ '?v=' ~ packageVersion }}" />
+		<meta crossorigin="use-credentials" name="msapplication-square150x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-150x150.png') ~ '?v=' ~ packageVersion }}" />
+		<meta crossorigin="use-credentials" name="msapplication-wide310x150logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x150.png') ~ '?v=' ~ packageVersion }}" />
+		<meta crossorigin="use-credentials" name="msapplication-square310x310logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x310.png') ~ '?v=' ~ packageVersion }}" />
 
 		<meta name="application-name"
 		content="{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}"/>
@@ -66,14 +68,16 @@
 		packageName }} {{ packageVersion }} - {{ block('title')|spaceless }}" />
 		<meta property="og:url" content="{{ app.request.uri }}" />
 		<meta property="og:site_name" content="{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}" />
-		<meta property="og:image" content="{{ absolute_url(asset('bundles/moonmanager/medias/LogoMonwooDemo.png')) }}" />
+		<meta property="og:image" content="{{ absolute_url(asset('bundles/moonmanager/medias/LogoMonwooDemo.png')) ~ '?v=' ~ packageVersion }}" />
 		<meta property="og:image:type" content="image/png" />
 		<meta name="twitter:card" content="summary_large_image" />
 
 		{# // TIPS : using 'crossorigin="use-credentials"', allow twig pre-rendering
 		//       to ajust on connected user preference for his own app per account system... #}
 		<link rel="manifest" crossorigin="use-credentials" href="{{
-			path('mws_config_json_manifest')
+			path('mws_config_json_manifest', {
+				v: packageVersion
+			})
 		}}" />
 
 		{# https://stackoverflow.com/questions/38607327/how-to-delete-white-spaces-of-a-text-in-twig #}
