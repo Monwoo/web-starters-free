@@ -32,7 +32,7 @@
       }]
     }
   ],
-  "description": "Monwoo PDF Billings for {{ app.request.baseUrl ? app.request.baseUrl : '--' }}",
+  "description": "PDF Billings for {{ app.request.baseUrl ? app.request.baseUrl : '--' }}",
   "screenshots": [{
       "src": "{{ asset('bundles/moonmanager/medias/screenshot-01.png') }}",
       "sizes": "760x1400",

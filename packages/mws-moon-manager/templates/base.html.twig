@@ -7,17 +7,78 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- plz dont cache this page -->
-		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-		<meta http-equiv="Pragma" content="no-cache">
-		<meta http-equiv="Expires" content="0">
+		{# <!-- TIPS : Meta Svelte side will have NO effect for robots, do it server side : #}
+		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+			<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+			<meta http-equiv="Pragma" content="no-cache">
+			<meta http-equiv="Expires" content="0">
+			<meta
+				name="robots"
+				content="noindex, nofollow, max-image-preview:none, max-snippet:0, max-video-preview:0"
+			/>
+		{% else %}
+			<meta
+				name="robots"
+				content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+			/>
+		{% endif %}
+    <link rel="icon" href="{{ asset('/bundles/moonmanager/medias/favicomatic/favicon.ico' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-57x57.png' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-114x114.png' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-72x72.png' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-144x144.png' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-60x60.png' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-120x120.png' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-76x76.png' )}}" />
+		<link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('/bundles/moonmanager/medias/favicomatic/apple-touch-icon-152x152.png' )}}" />
+		<link rel="icon" type="image/png" href="{{ asset('/bundles/moonmanager/medias/favicomatic/favicon-196x196.png' )}}" sizes="196x196" />
+		<link rel="icon" type="image/png" href="{{ asset('/bundles/moonmanager/medias/favicomatic/favicon-96x96.png' )}}" sizes="96x96" />
+		<link rel="icon" type="image/png" href="{{ asset('/bundles/moonmanager/medias/favicomatic/favicon-32x32.png' )}}" sizes="32x32" />
+		<link rel="icon" type="image/png" href="{{ asset('/bundles/moonmanager/medias/favicomatic/favicon-16x16.png' )}}" sizes="16x16" />
+		<link rel="icon" type="image/png" href="{{ asset('/bundles/moonmanager/medias/favicomatic/favicon-128.png' )}}" sizes="128x128" />
+		<meta name="msapplication-TileColor" content="#11589A" />
+		<meta name="msapplication-TileImage" content="{{ asset('/bundles/moonmanager/medias/favicomatic/mstile-144x144.png' )}}" />
+		<meta name="msapplication-square70x70logo" content="{{ asset('/bundles/moonmanager/medias/favicomatic/mstile-70x70.png' )}}" />
+		<meta name="msapplication-square150x150logo" content="{{ asset('/bundles/moonmanager/medias/favicomatic/mstile-150x150.png' )}}" />
+		<meta name="msapplication-wide310x150logo" content="{{ asset('/bundles/moonmanager/medias/favicomatic/mstile-310x150.png' )}}" />
+		<meta name="msapplication-square310x310logo" content="{{ asset('/bundles/moonmanager/medias/favicomatic/mstile-310x310.png' )}}" />
+
+		<meta name="application-name"
+		content="{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}"/>
+		<meta
+			name="description"
+			content="PDF Billings for {{
+				app.request.baseUrl|slug
+			}} {{ app.request.getHttpHost() }} {{
+				packageName }} {{ packageVersion }} - {{
+				block('title')|spaceless
+			}}"
+		/>
+		<!-- <link rel="canonical" href={ `${base}` }> -->
+		<meta property="og:locale" content="{{ app.locale }}" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="{{ block('title') }}" />
+		<meta property="og:description" content="PDF Billings for {{
+			app.request.baseUrl|slug
+		}} {{ app.request.getHttpHost() }} {{
+		packageName }} {{ packageVersion }} - {{ block('title')|spaceless }}" />
+		<meta property="og:url" content="{{ app.request.uri }}" />
+		<meta property="og:site_name" content="{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}" />
+		<meta property="og:image" content="{{ asset('/bundles/moonmanager/medias/LogoMonwooDemo.jpg' ) }}" />
+		<meta property="og:image:type" content="image/png" />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		{# // TIPS : using 'crossorigin="use-credentials"', allow twig pre-rendering
+		//       to ajust on connected user preference for his own app per account system... #}
 		<link rel="manifest" crossorigin="use-credentials" href="{{
 			path('mws_config_json_manifest')
 		}}" />
-		<title>
-      {% block title %}
-        {{ title ?? "" }}
-      {% endblock %}
-		</title>
+
+		{# https://stackoverflow.com/questions/38607327/how-to-delete-white-spaces-of-a-text-in-twig #}
+		{% apply spaceless %}
+				<title>{% block title %}{{ (title ?? "")|spaceless }}{% endblock %}</title>
+		{% endapply %}
+
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('mwsMoonManager') }}
 			{{ encore_entry_link_tags('app') }}
@@ -132,7 +193,7 @@
 				window.mwsTchatUpTok = "{{ csrf_token('mws-csrf-message-tchat-upload') }}";
 			</script>
 			{# TOO early for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}
-			{# WARNING : order counts for routes loads, manually done inside mwsMoonManager for now #}
+			{# WARNING : order counts for routes loads, manually done inside moonmanager for now #}
 
 			{# TODO : inject inside app.js... instead of html loads... # }
 			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
