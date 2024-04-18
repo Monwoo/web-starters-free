@@ -1,6 +1,6 @@
 {
-  "short_name": "{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}",
-  "name": "{{ app.request.baseUrl|slug }}_{{ app.request.getHttpHost() }}_{{ packageName }}-v{{ packageVersion }}",
+  "short_name": "{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}",
+  "name": "{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}_{{ packageName }}-v{{ packageVersion }}",
   "start_url": "{{ app.request.baseUrl }}/fr/?source=pwa&v={{ packageVersion }}",
   "icons": [{
     "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo.png') ~ '?v=' ~ packageVersion }}",
@@ -32,7 +32,7 @@
       }]
     }
   ],
-  "description": "PDF Billings for {{ app.request.baseUrl ? app.request.baseUrl : '--' }}",
+  "description": "PDF Billings for {{ app.request.baseUrl ? app.request.baseUrl|capitalize : '--' }}",
   "screenshots": [{
       "src": "{{ asset('bundles/moonmanager/medias/screenshot-01.png') ~ '?v=' ~ packageVersion }}",
       "sizes": "760x1400",

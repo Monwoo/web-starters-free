@@ -52,7 +52,17 @@ rounded-e-lg
         <span
           class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
         >
-          <button class="">Rechercher une offre</button>
+          <button class="inline-flex flex-wrap justify-center items-center">
+            <span class="w-full text-sm">
+              Rechercher une offre
+            </span>
+            <span class="w-full text-[0.69rem] leading-[0.69rem] text-gray-300">
+              sur : 
+              <span class="capitalize">
+                { window.baseHref } { window.location.hostname }
+              </span>
+            </span>
+          </button>
         </span>
       </a>
       <span>
@@ -63,9 +73,13 @@ rounded-e-lg
     focus:ring-gray-200
     dark:focus:ring-gray-600 -->
     <span
-      class="max-w-full md:hidden px-3 text-sm
+      class="max-w-full md:hidden px-3 text-xs
     whitespace-nowrap overflow-hidden text-ellipsis"
     >
+      <span class="capitalize">
+        { window.baseHref } { window.location.hostname }
+      </span>
+      {$state.user?.userIdentifier ? ` | ` : ``}
       {$state.user?.userIdentifier ?? ``}
     </span>
     <button

@@ -25,10 +25,15 @@
 			<div class="col-lg-4 col-md-3">
 				<a href={{ path("app_home", {
 							'_locale': locale ?? 'fr',
-						}) }} aria-current="page" class="inline-flex hover:cursor-pointer hover:opacity-80">
+						}) }} aria-current="page"
+						class="flex flex-wrap w-full hover:cursor-pointer hover:opacity-80">
 					<img
 					src="{{ absolute_url(asset('bundles/moonmanager/medias/MoonManagerLogo.png')) }}"
-					class="mx-auto d-block hover:cursor-pointer max-h-[20dvh]" style="height:200px; " alt="" />
+					class="mx-auto hover:cursor-pointer max-h-[15dvh] max-w-full" style="height:200px; " alt="" />
+					<span class="w-full text-gray-700 p-2">
+              {{ app.request.baseUrl|slug|capitalize }}
+							{{ app.request.getHttpHost()|capitalize }}
+					</span>
 				</a>
 				<div class="card" style="margin-top:2rem; border:none;">
 

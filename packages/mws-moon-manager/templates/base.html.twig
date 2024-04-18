@@ -48,12 +48,12 @@
 		<meta crossorigin="use-credentials" name="msapplication-square310x310logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x310.png') ~ '?v=' ~ packageVersion }}" />
 
 		<meta name="application-name"
-		content="{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}"/>
+		content="{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}"/>
 		<meta
 			name="description"
 			content="PDF Billings for {{
-				app.request.baseUrl|slug
-			}} {{ app.request.getHttpHost() }} {{
+				app.request.baseUrl|slug|capitalize
+			}} {{ app.request.getHttpHost()|capitalize }} {{
 				packageName }} {{ packageVersion }} - {{
 				block('title')|spaceless
 			}}"
@@ -63,11 +63,11 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="{{ block('title') }}" />
 		<meta property="og:description" content="PDF Billings for {{
-			app.request.baseUrl|slug
-		}} {{ app.request.getHttpHost() }} {{
+			app.request.baseUrl|slug|capitalize
+		}} {{ app.request.getHttpHost()|capitalize }} {{
 		packageName }} {{ packageVersion }} - {{ block('title')|spaceless }}" />
 		<meta property="og:url" content="{{ app.request.uri }}" />
-		<meta property="og:site_name" content="{{ app.request.baseUrl|slug }}_{{ app.request.httpHost }}" />
+		<meta property="og:site_name" content="{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}" />
 		<meta property="og:image" content="{{ absolute_url(asset('bundles/moonmanager/medias/LogoMonwooDemo.png')) ~ '?v=' ~ packageVersion }}" />
 		<meta property="og:image:type" content="image/png" />
 		<meta name="twitter:card" content="summary_large_image" />
@@ -196,6 +196,7 @@
 		{% block javascript %}
 			<script>
 				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
+				// TODO : refactor, using reduxStore instead... :
 				window.mwsTchatUpTok = "{{ csrf_token('mws-csrf-message-tchat-upload') }}";
 			</script>
 			{# TOO early for stimulus controler ? <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script> #}
