@@ -59,7 +59,7 @@ rounded-e-lg
             <span class="w-full text-[0.69rem] leading-[0.69rem] text-gray-300">
               sur : 
               <span class="capitalize">
-                { window.baseHref?.replace('/', ' ') } { window.location.hostname }
+                { window.baseHref?.replaceAll('/', ' ') } { window.location.hostname }
               </span>
             </span>
           </button>
@@ -77,7 +77,7 @@ rounded-e-lg
     whitespace-nowrap overflow-hidden text-ellipsis"
     >
       <span class="capitalize">
-        { window.baseHref.replace('/', ' ') } { window.location.hostname }
+        { window.baseHref.replaceAll('/', ' ') } { window.location.hostname }
       </span>
       {$state.user?.userIdentifier ? ` | ` : ``}
       {$state.user?.userIdentifier ?? ``}
