@@ -1,6 +1,10 @@
+{# // TODO : twig common constant sharing file def ? cf base.html.twig, same computed var... #}
+{% set appName = app.request.baseUrl|split('/')|filter(v => not v is empty)|first|slug|capitalize %}
+{% set hostSplit = app.request.httpHost|split('.') %}
+{% set appHost = (hostSplit|length > 1 ? hostSplit|slice(0, -1) : hostSplit)|join(' ') %}
 {
-  "short_name": "{{ app.request.baseUrl|slug|capitalize }}_{{ appHost }}",
-  "name": "{{ app.request.baseUrl|slug|capitalize }}_{{ appHost }}_{{ packageName }}-v{{ packageVersion }}",
+  "short_name": "{{ appName }}_{{ appHost }}",
+  "name": "{{ appName }}_{{ appHost }}_{{ packageName }}-v{{ packageVersion }}",
   "start_url": "{{ app.request.baseUrl }}/fr/?source=pwa&v={{ packageVersion }}",
   "icons": [{
     "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo.png') ~ '?v=' ~ packageVersion }}",
