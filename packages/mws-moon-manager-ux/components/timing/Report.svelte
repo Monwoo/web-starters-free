@@ -308,7 +308,7 @@
         // let lvlStack = [];
         // [1, 2, 3, 4, 5].forEach((level) => {
         //   lvlStack = lvlStack.concat([]);
-        //   jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
+        //   jsonReport[`lvl${level}Tags`]?.forEach((tag, tagIdx) => {
         //     if (tag in t.tags) {
         //       ensurePath(currentSubTags, [tagIdx], {});
         //       const subTag = currentSubTags[tagIdx];
@@ -351,7 +351,7 @@
           // TODO : why not simply reuse with extra params ? :
           // loadLevel(level + 1, notClassifiedTag.subTags);
 
-          jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
+          jsonReport[`lvl${level}Tags`]?.forEach((tag, tagIdx) => {
             if (tag in t.tags) {
               ensurePath(currentSubTags, [tagIdx], {
                 deepLvl: level,
@@ -393,8 +393,8 @@
 
         const loadLevel = (level, currentSubTags) => {
           // console.debug("Load lvl",level, jsonReport);
-          let subLevelOk = !jsonReport[`lvl${level}Tags`].length;
-          jsonReport[`lvl${level}Tags`].forEach((tag, tagIdx) => {
+          let subLevelOk = !jsonReport[`lvl${level}Tags`]?.length;
+          jsonReport[`lvl${level}Tags`]?.forEach((tag, tagIdx) => {
             if (tag in t.tags) {
               ensurePath(currentSubTags, [tagIdx], {
                 deepLvl: level,
@@ -1007,9 +1007,9 @@
   <div class="w-full">
     {#each [1, 2, 3, 4, 5] as lvl}
       {@html (jsonReport[`lvl${lvl}Tags`] ?? false) &&
-      jsonReport[`lvl${lvl}Tags`].length
+      jsonReport[`lvl${lvl}Tags`]?.length
         ? `<strong>Tags du rapport de niveau ${lvl} : </strong>` +
-          jsonReport[`lvl${lvl}Tags`].reduce(
+          jsonReport[`lvl${lvl}Tags`]?.reduce(
             (acc, f) => `
             ${acc} [${f}]
           `,
