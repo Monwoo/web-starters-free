@@ -36,7 +36,7 @@
       }]
     }
   ],
-  "description": "PDF Billings for {{ app.request.baseUrl ? app.request.baseUrl|capitalize : '--' }}",
+  "description": "PDF Billings for {{ appName }}",
   "screenshots": [{
       "src": "{{ asset('bundles/moonmanager/medias/screenshot-01.png') ~ '?v=' ~ packageVersion }}",
       "sizes": "760x1400",
