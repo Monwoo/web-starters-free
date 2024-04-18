@@ -8,6 +8,7 @@
   import Header from "./Header.svelte";
   // import TemplateChoiceItem from '../message/TemplateChoiceItem.svelte';
   import debounce from 'lodash/debounce';
+import { onMount } from "svelte";
 
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let headerClass = ""; // "md:py-5";
@@ -23,13 +24,27 @@
   const isWideRule = "only screen and (max-height: 480px) and (max-width: 960px)";
   export let isWide = window.matchMedia(isWideRule)?.matches;
 
-  const onResize = async (e) => {
+  // const onResize = async (e) => {
+  const onResize = (e) => {
     // isMobile = window.matchMedia("(max-width: 768px)")?.matches;
     // isMobile = window.matchMedia("(max-width: 768px) and (orientation: landscape)")?.matches;
     // isMobile = window.matchMedia("((max-width: 768px) and (min-height: 480px))"
     // + " and not (only screen and (max-height: 480px) and (max-width: 960px))")?.matches;
-    isMobile = window.matchMedia(isMobileRule)?.matches;
-    isWide = window.matchMedia(isWideRule)?.matches;
+    try {
+          isMobile = window.matchMedia(isMobileRule)?.matches;
+        } catch (e) {
+          console.warn(e);
+        }
+        try {
+          // TODO : matchMedia throw like die without error
+          isWide = window.matchMedia(isWideRule)?.matches;
+        } catch (e) {
+          console.warn(e);
+        }
+        console.log('[MoonManager UX] resize detected :', {
+          isMobile, isWide
+        });
+    // TODO : Logger.debug => send log to remote logger to test on multi devices...
   }
 
   // TODO : scroll top on page load to avoid auto scroll
@@ -42,9 +57,66 @@
   // // customElements.define('mws-msg-template-choice-item', TemplateChoiceItem.element);
   // // customElements.define('mws-msg-template-choice-item', () => (new TemplateChoiceItem({})).element);
   // window.customElements.define('mws-msg-template-choice-item',  TemplateChoiceItem);
-</script>
 
-<svelte:window on:resize={debounce(onResize, userDelay)} />
+  onMount(() => {
+    // https://stackoverflow.com/questions/5498934/detect-change-in-orientation-using-javascript
+    // NOTE: orientationChange is deprecated
+    // on:orientationchange={debounce(onResize, userDelay)}
+    // Instead use screen.orientation using the screenOrientation interface
+    // which is triggered by the screenorientation.onchange event
+
+    const contentLoadListener = () => {
+      console.log('Mobile resize');
+      // debounce(() => console.log('Ok did resize'), userDelay)();
+      debounce(async () => {
+        console.log('Ok, debounce resize');
+        try {
+          isMobile = window.matchMedia(isMobileRule)?.matches;
+        } catch (e) {
+          console.warn(e);
+        }
+        try {
+          // TODO : matchMedia throw like die without error
+          isWide = window.matchMedia(isWideRule)?.matches;
+        } catch (e) {
+          console.warn(e);
+        }
+        console.log('[MoonManager UX] Hacky resize detected :', {
+          isMobile, isWide
+        });
+      }, userDelay)();
+
+      // debounce(onResize, userDelay)();
+      // debounce(() => onResize(null), userDelay)();
+    };
+    // const contentLoadListener = () => console.log('Ok will resize');
+    // window.addEventListener("DOMContentLoaded", contentLoadListener);
+    // TIPS : Svelte 'on:orientationchange' not always triggering..., use :
+    // (on mobile rotate, below OK) :
+
+    // window.addEventListener("orientationchange", contentLoadListener);
+
+    window.addEventListener("DOMContentLoaded", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => {
+      window.removeEventListener("DOMContentLoaded", onResize);
+      window.removeEventListener("orientationchange", onResize);
+    };
+  });
+</script>
+<!-- 
+  on:orientationchangeend={debounce(onResize, userDelay)}
+  on:resize={debounce(onResize, userDelay)}
+
+  // TODO : buggy svelte ?
+    on:orientationchange={debounce(onResize, userDelay)} not working...
+
+-->
+
+<svelte:window
+  on:resize={debounce(onResize, userDelay)}
+  on:orientationchange={debounce(onResize, userDelay)}
+/>
 
 <slot name="mws-body">
   <!-- // TODO : on mobile 'rotation', sound like  "wide:h-[100dvw]" 
