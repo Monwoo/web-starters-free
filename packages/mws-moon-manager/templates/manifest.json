@@ -5,6 +5,7 @@
 {
   "short_name": "{{ appName }}{{ appName ? ' ' : '' }}{{ appHost }}",
   "name": "{{ appName }}{{ appName ? ' ' : '' }}{{ appHost }} {{ packageName }}-v{{ packageVersion }}",
+  "version": "v{{ packageVersion }}",
   "description": "PDF Billings for {{ appName }}{{ appName ? ' ' : '' }}{{ appHost }}",
   "start_url": "{{ app.request.baseUrl }}/fr/?source=pwa&v={{ packageVersion }}",
   "icons": [{
