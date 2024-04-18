@@ -24,6 +24,16 @@
   const crmLogo = `${baseHref}/bundles/moonmanager/medias/MoonManagerLogo.png`;
   console.debug("inlineOpener", inlineOpener);
 
+  const capitalize = (s) => (s?.charAt(0).toUpperCase() ?? '') + (s?.slice(1) ?? '');
+
+  const appName = capitalize(window?.baseHref?.split('/').filter(s => s?.length)[0] ?? null);
+  const hostSplit = window?.location.hostname.split('.');
+  const appHost = (
+    hostSplit?.length > 1
+    ? hostSplit.slice(0, -1) ?? null
+    : hostSplit
+  ).join(' ');
+
   let uniqueKey = {};
 </script>
 
@@ -58,8 +68,8 @@ rounded-e-lg
             </span>
             <span class="w-full text-[0.69rem] leading-[0.69rem] text-gray-300">
               sur : 
-              <span class="capitalize">
-                { window.baseHref?.replaceAll('/', ' ') } { window.location.hostname }
+              <span class="">
+                { appName } { appHost }
               </span>
             </span>
           </button>
@@ -76,8 +86,8 @@ rounded-e-lg
       class="max-w-full md:hidden px-3 text-xs
     whitespace-nowrap overflow-hidden text-ellipsis"
     >
-      <span class="capitalize">
-        { window.baseHref.replaceAll('/', ' ') } { window.location.hostname }
+      <span class="">
+        { appName } { appHost }
       </span>
       {$state.user?.userIdentifier ? ` | ` : ``}
       {$state.user?.userIdentifier ?? ``}

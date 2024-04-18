@@ -1,5 +1,9 @@
 {# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
 {% set route = app.request.attributes.get('_route') %}
+{# app.request.baseUrl app.request.httpHost #}
+{% set appName = app.request.baseUrl|split('/')|filter(v => not v is empty)|first|slug|capitalize %}
+{% set hostSplit = app.request.httpHost|split('.') %}
+{% set appHost = (hostSplit|length > 1 ? hostSplit|slice(0, -1) : hostSplit)|join(' ') %}
 <!DOCTYPE html>
 <html lang="fr">
 	<head>
@@ -48,12 +52,12 @@
 		<meta crossorigin="use-credentials" name="msapplication-square310x310logo" content="{{ asset('bundles/moonmanager/medias/favicomatic/mstile-310x310.png') ~ '?v=' ~ packageVersion }}" />
 
 		<meta name="application-name"
-		content="{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}"/>
+		content="{{ appName }}_{{ appHost }}"/>
 		<meta
 			name="description"
 			content="PDF Billings for {{
-				app.request.baseUrl|slug|capitalize
-			}} {{ app.request.getHttpHost()|capitalize }} {{
+				appName
+			}} {{ appHost }} {{
 				packageName }} {{ packageVersion }} - {{
 				block('title')|spaceless
 			}}"
@@ -63,11 +67,11 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="{{ block('title') }}" />
 		<meta property="og:description" content="PDF Billings for {{
-			app.request.baseUrl|slug|capitalize
-		}} {{ app.request.getHttpHost()|capitalize }} {{
+			appName
+		}} {{ appHost }} {{
 		packageName }} {{ packageVersion }} - {{ block('title')|spaceless }}" />
 		<meta property="og:url" content="{{ app.request.uri }}" />
-		<meta property="og:site_name" content="{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}" />
+		<meta property="og:site_name" content="{{ appName }}_{{ appHost }}" />
 		<meta property="og:image" content="{{ absolute_url(asset('bundles/moonmanager/medias/LogoMonwooDemo.png')) ~ '?v=' ~ packageVersion }}" />
 		<meta property="og:image:type" content="image/png" />
 		<meta name="twitter:card" content="summary_large_image" />
@@ -93,6 +97,7 @@
 	</head>
 
 	<body>
+	{# {{ appName }} {{ appHost }} #}
 	{# {{ app.request.attributes.get('_route') }}
 	{{ app.request._route }} #}
 		{% block storesInit %}

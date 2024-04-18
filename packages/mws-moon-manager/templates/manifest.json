@@ -1,6 +1,6 @@
 {
-  "short_name": "{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}",
-  "name": "{{ app.request.baseUrl|slug|capitalize }}_{{ app.request.httpHost|capitalize }}_{{ packageName }}-v{{ packageVersion }}",
+  "short_name": "{{ app.request.baseUrl|slug|capitalize }}_{{ appHost }}",
+  "name": "{{ app.request.baseUrl|slug|capitalize }}_{{ appHost }}_{{ packageName }}-v{{ packageVersion }}",
   "start_url": "{{ app.request.baseUrl }}/fr/?source=pwa&v={{ packageVersion }}",
   "icons": [{
     "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo.png') ~ '?v=' ~ packageVersion }}",
