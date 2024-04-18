@@ -3,8 +3,9 @@
 {% set hostSplit = app.request.httpHost|split('.') %}
 {% set appHost = (hostSplit|length > 1 ? hostSplit|slice(0, -1) : hostSplit)|join(' ') %}
 {
-  "short_name": "{{ appName }} {{ appHost }}",
-  "name": "{{ appName }} {{ appHost }} {{ packageName }}-v{{ packageVersion }}",
+  "short_name": "{{ appName }}{{ appName ? ' ' : '' }}{{ appHost }}",
+  "name": "{{ appName }}{{ appName ? ' ' : '' }}{{ appHost }} {{ packageName }}-v{{ packageVersion }}",
+  "description": "PDF Billings for {{ appName }}{{ appName ? ' ' : '' }}{{ appHost }}",
   "start_url": "{{ app.request.baseUrl }}/fr/?source=pwa&v={{ packageVersion }}",
   "icons": [{
     "src": "{{ asset('bundles/moonmanager/medias/MoonManagerLogo.png') ~ '?v=' ~ packageVersion }}",
@@ -36,7 +37,6 @@
       }]
     }
   ],
-  "description": "PDF Billings for {{ appName }}",
   "screenshots": [{
       "src": "{{ asset('bundles/moonmanager/medias/screenshot-01.png') ~ '?v=' ~ packageVersion }}",
       "sizes": "760x1400",
