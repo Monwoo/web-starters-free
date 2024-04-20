@@ -95,6 +95,7 @@
   import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   import debounce from "lodash/debounce";
   import Svg from "../layout/widgets/Svg.svelte";
+import { randomEmptyPicture } from "./SlotThumbnail.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -1302,7 +1303,7 @@
         `}
       >
         <img class="w-full object-contain select-none m-auto" loading="eager"
-        src={timingSlot.thumbnailJpeg}
+        src={timingSlot.thumbnailJpeg ?? randomEmptyPicture()}
         />
       </object>
       <div

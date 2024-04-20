@@ -1,3 +1,27 @@
+<script context="module" lang="ts">
+  // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+  // TODO : media credit in credits page :
+  // 
+  const baseHref = window && window.baseHref;
+
+  export let randomEmptyPicture = () => {
+    // TODO : CRM configured default user empty pict
+    //        then default CRM empty pict from .env if none
+    const rands = [
+      // baseHref + `/bundles/moonmanager/medias/pixabay/ai-generated-8702813_1280-BandWCenter.jpg`,
+      baseHref + `/bundles/moonmanager/medias/pixabay/ibiza-2954994_1280-BandWSky.jpg`,
+    ];
+    // https://futurestud.io/tutorials/generate-a-random-number-in-range-with-javascript-node-js
+    function between(min, max) {  
+      return  Math.round( // Math.floor(
+        Math.random() * (max - min) + min
+      )
+    }
+
+    const r = between(0, rands.length - 1);
+    return rands[r];
+  };
+</script>
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -112,6 +136,7 @@
     // Only once at load... but NEEDED, for first init other than null
     computedSize = htmlRoot.offsetWidth; // htmlRoot is now != of null...
   });
+
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->
@@ -203,7 +228,7 @@ overflow-visible border-solid border-4"
         alt="screenshot"
         arial-label="screenshot"
         class="object-contain w-full h-full"
-        src={timingSlot.thumbnailJpeg}
+        src={timingSlot.thumbnailJpeg ?? randomEmptyPicture()}
       />
   </object>
   {/if}
