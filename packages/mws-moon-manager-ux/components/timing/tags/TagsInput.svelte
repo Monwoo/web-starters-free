@@ -8,6 +8,7 @@
   } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
+import { addHistory, History } from "../qualifs/QuickList.svelte";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
 
@@ -50,6 +51,13 @@
   let addedTagKey;
 
   export let removeTag = async (tag, comment = null) => {
+    addHistory(new History(
+      `rm T: ${tag}`,
+      [ // TODO : is loading indicator...
+        (t) => removeTagExtended(t, tag, comment)
+      ]
+    ));
+
     // const syncTiming = timing;
     const syncStartIdx = lastSelectedIndex;
     if (undefined !== selectionStartIndex) {
@@ -130,6 +138,13 @@
   };
 
   export let addTag = async (tag, comment = null) => {
+    addHistory(new History(
+      `T: ${tag}`,
+      [ // TODO : is loading indicator...
+        (t) => addTagExtended(t, tag, comment)
+      ]
+    ));
+
     // const syncTiming = timing;
     const syncStartIdx = lastSelectedIndex;
     if (undefined !== selectionStartIndex) {

@@ -431,6 +431,21 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
   //   // timingSlot = timingSlot;
   // };
   export let toggleQualif = async (q, targetSlot) => {
+    addHistory(new History(
+      `Q: ${q.label}`,
+      [
+        async (t) => {
+          const newT = await toggleQualifByTiming(q, t);
+          // https://stackoverflow.com/questions/7364150/find-object-by-id-in-an-array-of-javascript-objects
+          // myArray.find(x => x.id === '45').foo;
+          // myArray.findIndex(x => x.id === '45');
+          const syncStartIdx = timings
+          .findIndex(s => s.id === newT.id);
+          newT && (timings[syncStartIdx] = newT);
+        }
+      ]
+    ));
+
     // const syncTiming = targetSlot; // TIPS : to avoid async change of targetSlot
     const syncStartIdx = lastSelectedIndex;
     if (undefined !== selectionStartIndex) {
@@ -456,13 +471,6 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
     newT && (timings[syncStartIdx] = newT);
     // TODO : Refactor all to this way, + improve to fix if timings change
     //  (map filter new list on existing ids in current qualif list...)
-
-    addHistory(new History(
-      q.label,
-      [
-        (t) => toggleQualif(q, t)
-      ]
-    ));
   }
 
   export let toggleQualifByTiming = async (qualif, targetSlot) => {
@@ -545,6 +553,25 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
       isLoading = false;
       return;
     }
+    addHistory(new History(
+      `rm All tags`,
+      [
+        async (t) => {
+          isLoading = true;
+          if (
+            !confirm(
+              "Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?"
+            )
+          ) {
+            isLoading = false;
+            return;
+          }
+          await removeAllTagsByTiming(t);
+          isLoading = false;
+        }
+      ]
+    ));
+
     // const syncTiming = timingSlot;
     const syncStartIdx = lastSelectedIndex;
     if (undefined !== selectionStartIndex) {
@@ -1091,6 +1118,7 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
         </button>
       {/each} -->
       <QuickList
+        {timingSlot}
         {allTagsList}
         bind:isHeaderExpanded
         bind:qualifTemplates

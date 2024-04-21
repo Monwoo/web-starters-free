@@ -54,7 +54,7 @@
 
   export const qualifHistories = writable({
     indexByLabel : {} as any,
-    maxSize: 3,
+    maxSize: 7,
     stack: [
       // new History("Test", [async(t) => alert('Test ok')]),
     ] as History[],
@@ -562,6 +562,7 @@ import { timings } from "../SlotView.svelte";
       {#each $qualifHistories.stack as history }
         <ItemHistory
           {history}
+          {timingSlot}
           {syncQualifWithBackend}
           {locale}
         />
