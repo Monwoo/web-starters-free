@@ -156,7 +156,23 @@
   console.log('max path :', summary.maxPath);
 </script>
 
-<tr class="{rowClass}"
+<tr class="{rowClass} border-b-0"
+class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
+>
+  <td
+  class="border-t-0 px-6 text-middle pl-{indent}"
+  colspan="100%"
+  >
+    <div class="text-lg">
+      <!-- { Array.apply(null, {length: indent / 4})
+        .map(Number.call, (n) => '*').join(' ')
+      } [{label}]</div> -->
+      <!-- <span class="text-gray-500">[{indent / 4}]</span> -->
+      <span class="sticky left-0">[{label}]</span>
+    </div>
+  </td>
+</tr>
+<tr class="{rowClass}  border-t-0"
 class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
 >
   <td
@@ -193,15 +209,10 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
   </td>
   <td
     class="border-t-0 px-6 text-left
-    border-l-0 border-r-0 text-lg whitespace-break-spaces p-4 pl-{indent}"
+    border-l-0 border-r-0 text-lg
+    whitespace-break-spaces p-4 pl-{indent}
+    "
   >
-    <div class="text-lg">
-      <!-- { Array.apply(null, {length: indent / 4})
-        .map(Number.call, (n) => '*').join(' ')
-      } [{label}]</div> -->
-       <!-- <span class="text-gray-500">[{indent / 4}]</span> -->
-       <span class="">[{label}]</span>
-    </div>
   {#each tagSlugs as tagSlug}
     {@const tag = summary.tags[tagSlug]}
     {@const isMaxTag = tagSlug == (summary.maxPath?.maxTagSlug ?? null)}

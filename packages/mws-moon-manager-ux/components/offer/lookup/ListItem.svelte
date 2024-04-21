@@ -29,7 +29,7 @@
 
   // TODO : centralize sanitizer inside service or lib or...
   export let sanitizeClientHtml = (i) => {
-    console.debug(i); // return i;
+    // console.debug(i); // return i;
     // https://www.npmjs.com/package/sanitize-html
     const clean = sanitizeHtml(i, {
       allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]).concat([
@@ -96,38 +96,10 @@
   // https://preline.co/plugins/html/scrollspy.html
   // data-hs-scrollspy="#scrollspy-1" data-hs-scrollspy-scrollable-parent="#scrollspy-scrollable-parent-1"
 
-  let isScrolling = false;
-  let isFirstColVisible = false;
-  let isSecondColVisible = false;
-  let isThirdColVisible = false;
-  // Svelte + JQuery way :
-  onMount(async () => {
-    const jQuery = window.jQuery;
-    const scrollListener = (e) => {
-      const target = jQuery(e.target);
-      const fromStart = target.scrollLeft() / (reportScale / 100);
-      // https://stackoverflow.com/questions/10463518/converting-em-to-px-in-javascript-and-getting-default-font-size/10466205#10466205
-      const emToPx = Number(
-        getComputedStyle(target[0], null).fontSize.replace(/[^\d]/g, "")
-      );
-      // console.log("Did scroll", fromStart);
-      isScrolling = fromStart > 0;
-
-      isFirstColVisible = fromStart > 11 * emToPx;
-      isSecondColVisible = fromStart > 7 * emToPx;
-      isThirdColVisible = fromStart > 0;
-    };
-
-    jQuery(yScrollable).on("scroll", scrollListener);
-    // $: {
-    //   jQuery(".mws-data-list", yScrollable).off("scroll", scrollListener);
-    //   jQuery(".mws-data-list", yScrollable).on("scroll", scrollListener);
-    // }
-
-    return () => {
-      jQuery(yScrollable).off("scroll", scrollListener);
-    };
-  });
+  export let isScrolling = false;
+  export let isFirstColVisible = false;
+  export let isSecondColVisible = false;
+  export let isThirdColVisible = false;
 </script>
 
 <tr>
@@ -181,7 +153,7 @@
     {offer.sourceDetail?.projectOffers}
   </th>
   <td
-    class="sticky max-w-[20dvw] left-[9em] w-[6em] z-10
+    class="sticky left-[9em] w-[6em] z-10
     hover:bg-white/90 hover:opacity-100
       overflow-x-scroll
     "

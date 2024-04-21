@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import { tick } from "svelte";
   import FunnelModal from "../tags/FunnelModal.svelte";
+  import newUniqueId from "locally-unique-id-generator";
 
   export let locale;
   export let offers = [];
@@ -16,6 +17,7 @@
   export let yScrollable;
   export let reportScale = 100;
   export let addModal;
+  export let isMobile;
 
   let funnelComponent;
 
@@ -25,11 +27,18 @@
   let isSecondColVisible = false;
   let isThirdColVisible = false;
   // Svelte + JQuery way :
-  onMount(async () => {
+  let cleanup = null;
+  const refreshScrollListeners = async (isMobile) => {
+    const litenerUID = newUniqueId();
+    if (cleanup) {
+      cleanup();
+      cleanup = null;
+    };
     const jQuery = window.jQuery;
+    const yScrollableSelector = isMobile ? 'body' : 'main'; // TODO : name main content scroll window ? instead of <main>
+    yScrollable = jQuery(yScrollableSelector); // TODO : name main content scroll window ? instead of <main>
     // jQuery(() => {
     const scrollListener = (e) => {
-      console.debug("listScroll");
       const target = jQuery(e.target);
       const fromStart = target.scrollLeft() / (reportScale/100);
       // https://stackoverflow.com/questions/10463518/converting-em-to-px-in-javascript-and-getting-default-font-size/10466205#10466205
@@ -42,9 +51,14 @@
       isFirstColVisible = fromStart > 11 * emToPx;
       isSecondColVisible = fromStart > 7 * emToPx;
       isThirdColVisible = fromStart > 0;
+      console.debug(
+        "listScroll " + litenerUID + ' : ' + yScrollableSelector,
+        fromStart, emToPx,
+        isScrolling, isFirstColVisible, isSecondColVisible, isThirdColVisible
+      );
     };
 
-    yScrollable = jQuery('main'); // TODO : name main content scroll window ? instead of <main>
+    // yScrollable =  jQuery('body'); // TODO : name main content scroll window ? instead of <main>
 
     // jQuery(".mws-data-list", htmlTable).on("scroll", scrollListener);
     // await tick();
@@ -55,10 +69,18 @@
     // jQuery(".mws-data-list", htmlTable).on("scroll", scrollListener);
     jQuery(yScrollable).on("scroll", scrollListener);
 
-    return () => {
+    cleanup = () => {
+      console.debug("Cleanup list scroll " + litenerUID + ' : ' + yScrollableSelector);
       jQuery(yScrollable).off("scroll", scrollListener);
     };
-  });
+    return cleanup;
+  }
+
+  $: refreshScrollListeners(isMobile);
+
+  // onMount(async () => await refreshScrollListeners(isMobile));
+  // Non bloquant :
+  onMount(async () => refreshScrollListeners(isMobile));
 
 </script>
 
@@ -165,19 +187,19 @@ AND outside of sticky elements -->
         `}>
         <th
           scope="col"
-          class="max-w-[20dvw] w-[3em]
+          class="sticky left-0 w-[3em] w-[3em]
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isFirstColVisible}>Voir</th
         >
         <th
           scope="col"
-          class="max-w-[20dvw] w-[4em]
+          class="sticky left-[4em] w-[6em] w-[4em]
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isSecondColVisible}>[Slug] Status</th
         >
         <th
           scope="col"
-          class="max-w-[20dvw] w-[6em]
+          class="sticky left-[9em] w-[6em] w-[6em]
         hover:bg-white/90 hover:opacity-100"
           class:opacity-0={isThirdColVisible}>Tags</th
         >
@@ -216,7 +238,11 @@ AND outside of sticky elements -->
           {locale}
           {viewTemplate}
           {addModal}
-          funnelModal={funnelComponent.funnelModal}
+          {isScrolling}
+          {isFirstColVisible}
+          {isSecondColVisible}
+          {isThirdColVisible}
+          funnelModal={funnelComponent?.funnelModal}
           yScrollable={yScrollable}
           messages={messagesByProjectId[
             offer.slug.split("-").slice(-1).join("")

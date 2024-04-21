@@ -45,7 +45,15 @@
   export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
-  export let reportScale = 100;
+
+  // TODO : from services ? reactive store ?
+  // => in current configuration, no Svelte Base layout
+  //    is used, base twig layout is used.... so need to compute is mobile
+  //    below do not take resize stuff, etc, cf Svelte base layout
+  const isMobileRule = "(max-width: 768px) and (min-height: 480px)";
+  export let isMobile = window.matchMedia(isMobileRule)?.matches;
+  export let reportScale; // = isMobile ? 67 : 100;
+  $: reportScale = isMobile ? 67 : 100;
 
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
@@ -1175,7 +1183,8 @@
             class="px-6 text-left border border-solid
           py-3 text-lg uppercase border-l-0 border-r-0
           whitespace-nowrap font-semibold text-left
-          bg-gray-600 text-white border-gray-800"
+          bg-gray-600 text-white border-gray-800
+          "
           >
             Tag(s)
           </th>
