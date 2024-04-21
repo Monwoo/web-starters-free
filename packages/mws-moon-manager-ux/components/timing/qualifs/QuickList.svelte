@@ -1,6 +1,61 @@
-<script context="module">
-  // import "svelte-drag-drop-touch";
-  // import DragDropTouch from 'svelte-drag-drop-touch'
+<script context="module" lang="ts">
+  // https://reallifeglobal.com/history-story/
+  // History: uncountable, more factual, non-fiction, academic, it really happened.
+  // Story: Imaginary, fiction, narrative, it often didn't really happen. 
+  // But there are moments where history, which is not countable,
+  // and story, which is countable, actually can be the same thing,
+  // and this is when there are anecdotes, anecdotes or biographies,
+  // documentaries, or historical movies.
+  // https://grammarbrain.com/plural-of-history/
+  // TODO : sync server side inside connected user configs ?
+  // let qualifHistories = {
+  //   indexByTimingId : {},
+  //   stack: [],
+  // };
+
+  // const getQualifHistories = async () => {
+  //   return qualifHistories;
+  // }
+  // const updateQualifHistories = async (newHistories) => {
+  //   qualifHistories = newHistories;
+  // }
+
+  // export type History = {
+  //   // Not exact replay, replay to another timing :
+  //   replay: (timing:any) => void,
+  //   // ordered list of actions to replay
+  //   actions: ((timing) => void)[],
+  // }
+
+  // export const historyInit:History = {
+  //   replay: (timing) => {
+  //     this.actions.forEach(a => {
+  //       await a(timing);
+  //     });
+  //   },
+  //   actions: [],
+  // }
+
+  export class History {
+    constructor(
+      protected label,
+      protected actions
+    ) {
+    }
+
+    public replay = async (timing) => {
+      for (const a of this.actions ?? []) {
+          await a(timing);
+      }
+    }
+  }
+
+  export const qualifHistories = writable({
+    indexByTimingId : {} as any,
+    stack: [
+      new History("Test", [async(t) => alert('Test ok')]),
+    ] as History[],
+  });
 
 </script>
 
@@ -13,7 +68,7 @@
     stateGet,
     stateUpdate,
   } from "../../../stores/reduxStorage.mjs";
-  import { get } from "svelte/store";
+  import { get, writable } from "svelte/store";
   import { MoveIcon, SortableItem } from "svelte-sortable-items";
   import { flip } from "svelte/animate";
   import ItemView from "./ItemView.svelte";
@@ -23,6 +78,8 @@
   import debounce from 'lodash/debounce';
   import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
   import TailwindDefaults from "../../layout/widgets/TailwindDefaults.svelte";
+import ItemHistory from "./ItemHistory.svelte";
+import { timings } from "../SlotView.svelte";
 
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
@@ -60,9 +117,9 @@
   export let timingQualifConfig = userConfig?.timing?.quickQualif ?? {};
   export let maxLimit = timingQualifConfig?.maxLimit ?? 12;
   export let itemWidth = timingQualifConfig?.itemWidth ?? defaultItemW;
+
   // TIPS : do not refresh sortOrder to avoid infinit loop
   // since will trigger list sort when list might be in custom user mode
-
   const quickQLookupInit = Object.values(timingQualifConfig?.list ?? {})
   .reduce((acc, qLabel, idx) => {
     acc[qLabel] = idx;
@@ -471,6 +528,15 @@
       {syncQualifWithBackend}
       bind:this={keyboardShortcutModal}
     />
+    <div class="flex w-full flex-wrap justify-evenly">
+      {#each $qualifHistories.stack as history }
+        <ItemHistory
+          {history}
+          {syncQualifWithBackend}
+          {locale}
+        />
+      {/each}
+    </div>
     <div class="flex w-full flex-wrap justify-evenly">
       <!-- {#each arrayUsers as currentUser, numberCounter (currentUser.id)} -->
       {#each quickQualifTemplates as qualif, numberCounter (qualif.id)}
