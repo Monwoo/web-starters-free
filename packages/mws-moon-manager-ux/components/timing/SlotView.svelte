@@ -19,7 +19,7 @@
 
   import PhotoSwipeGallery from "svelte-photoswipe";
   import Loader from "../layout/widgets/Loader.svelte";
-  import QuickList from "./qualifs/QuickList.svelte";
+  import QuickList, { addHistory, History } from "./qualifs/QuickList.svelte";
   import { draggable } from "svelte-agnostic-draggable";
   // https://svelte.dev/repl/f696ca27e6374f2cab1691727409a31d?version=3.38.2
   import { swipe, pan } from 'svelte-gestures';
@@ -456,6 +456,13 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
     newT && (timings[syncStartIdx] = newT);
     // TODO : Refactor all to this way, + improve to fix if timings change
     //  (map filter new list on existing ids in current qualif list...)
+
+    addHistory(new History(
+      q.label,
+      [
+        (t) => toggleQualif(q, t)
+      ]
+    ));
   }
 
   export let toggleQualifByTiming = async (qualif, targetSlot) => {

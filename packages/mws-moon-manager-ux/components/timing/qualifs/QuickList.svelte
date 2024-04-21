@@ -44,18 +44,31 @@
     }
 
     public replay = async (timing) => {
+      // TODO : advanced history without timing target ?
+      !timing && console.warn("Missing timing for history")
       for (const a of this.actions ?? []) {
-          await a(timing);
+        await a(timing);
       }
     }
   }
 
   export const qualifHistories = writable({
     indexByTimingId : {} as any,
+    maxSize: 4,
     stack: [
-      new History("Test", [async(t) => alert('Test ok')]),
+      // new History("Test", [async(t) => alert('Test ok')]),
     ] as History[],
   });
+
+  export const addHistory = async (h:History) => {
+    const histories = get(qualifHistories);
+
+    histories.stack.unshift(h);
+    histories.stack = histories.stack
+    .slice(0, histories.maxSize);
+
+    qualifHistories.set(histories);
+  };
 
 </script>
 
@@ -117,6 +130,7 @@ import { timings } from "../SlotView.svelte";
   export let timingQualifConfig = userConfig?.timing?.quickQualif ?? {};
   export let maxLimit = timingQualifConfig?.maxLimit ?? 12;
   export let itemWidth = timingQualifConfig?.itemWidth ?? defaultItemW;
+  export let timingSlot;
 
   // TIPS : do not refresh sortOrder to avoid infinit loop
   // since will trigger list sort when list might be in custom user mode
