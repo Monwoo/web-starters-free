@@ -38,7 +38,7 @@
 
   export class History {
     constructor(
-      protected label,
+      public label,
       protected actions
     ) {
     }
@@ -53,8 +53,8 @@
   }
 
   export const qualifHistories = writable({
-    indexByTimingId : {} as any,
-    maxSize: 4,
+    indexByLabel : {} as any,
+    maxSize: 3,
     stack: [
       // new History("Test", [async(t) => alert('Test ok')]),
     ] as History[],
@@ -62,10 +62,26 @@
 
   export const addHistory = async (h:History) => {
     const histories = get(qualifHistories);
+    // TODO : opti : use inversed list and histories.indexByLabel will not move on new history inputs...
+    const historyIdx = histories.indexByLabel[h.label] ?? null;
+
+    if (null !== historyIdx) {
+      histories.stack
+      .splice(historyIdx, 1); // IN place update
+      // histories.stack = histories.stack
+      // .toSpliced(historyIdx, 1); // copy update
+      delete histories.indexByLabel[h.label];
+    }
 
     histories.stack.unshift(h);
     histories.stack = histories.stack
     .slice(0, histories.maxSize);
+
+    histories.indexByLabel = histories.stack
+    .reduce((acc, h, idx) => {
+      acc[h.label] = idx;
+      return acc;
+    }, {});
 
     qualifHistories.set(histories);
   };
