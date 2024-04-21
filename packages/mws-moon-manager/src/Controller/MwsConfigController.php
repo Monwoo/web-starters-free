@@ -32,6 +32,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Vich\UploaderBundle\Metadata\MetadataReader;
@@ -1030,5 +1031,48 @@ class MwsConfigController extends AbstractController
         $response->headers->set('Cache-Control', "max-age=$maxAge");
         $response->headers->set('Expires', "$maxAge");
         return $response;
+    }
+
+    #[Route(
+        '/user/sync',
+        name: 'mws_config_user_sync',
+        methods: ['POST'],
+    )]
+    public function qualifSync(
+        string|null $viewTemplate,
+        Request $request,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        /** @var MwsUser $user */
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-config-user-sync', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $configRaw = $request->request->get('config');
+        $config = json_decode($configRaw, true);
+        $user->setConfig(
+            array_merge(
+                $user->getConfig() ?? [],
+                $config,
+            )
+        );
+
+        $this->em->persist($user);
+        $this->em->flush();
+
+        return $this->json([
+            'sync' => [
+                'config' => $config,
+            ],
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-sync')->getValue(),
+        ]);
     }
 }

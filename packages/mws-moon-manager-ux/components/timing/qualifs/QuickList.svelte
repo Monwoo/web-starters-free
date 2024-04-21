@@ -52,6 +52,8 @@
     }
   }
 
+  // TODO : load from user configs and sync :
+  //        cf mws_config_user_sync + serialize actions...
   export const qualifHistories = writable({
     indexByLabel : {} as any,
     maxSize: 7,
@@ -559,16 +561,6 @@ import { timings } from "../SlotView.svelte";
       bind:this={keyboardShortcutModal}
     />
     <div class="flex w-full flex-wrap justify-evenly">
-      {#each $qualifHistories.stack as history }
-        <ItemHistory
-          {history}
-          {timingSlot}
-          {syncQualifWithBackend}
-          {locale}
-        />
-      {/each}
-    </div>
-    <div class="flex w-full flex-wrap justify-evenly">
       <!-- {#each arrayUsers as currentUser, numberCounter (currentUser.id)} -->
       {#each quickQualifTemplates as qualif, numberCounter (qualif.id)}
         <div animate:flip class="p-0 grow {itemWidth}">
@@ -614,6 +606,16 @@ import { timings } from "../SlotView.svelte";
             <div class="tooltip-arrow" data-popper-arrow />
           </div> -->
         </div>
+      {/each}
+    </div>
+    <div class="flex w-full flex-wrap justify-evenly">
+      {#each $qualifHistories.stack as history }
+        <ItemHistory
+          {history}
+          {timingSlot}
+          {syncQualifWithBackend}
+          {locale}
+        />
       {/each}
     </div>
     <div class="p-2">
