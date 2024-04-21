@@ -6,7 +6,6 @@
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
   dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
-
 </script>
 
 <script lang="ts">
@@ -17,7 +16,7 @@
   import TagsInput from "../tags/TagsInput.svelte";
   import { state, offerTagsByKey } from "../../../stores/reduxStorage.mjs";
   import { onMount } from "svelte";
-  import sanitizeHtml from 'sanitize-html';
+  import sanitizeHtml from "sanitize-html";
 
   export let locale;
   export let viewTemplate;
@@ -33,36 +32,51 @@
     console.debug(i); // return i;
     // https://www.npmjs.com/package/sanitize-html
     const clean = sanitizeHtml(i, {
-      allowedTags: sanitizeHtml.defaults
-      .allowedTags.concat([ 'img' ])
-      .concat([
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]).concat([
         // SVG
-        'svg', 'g', 'defs', 'linearGradient', 'stop', 'circle',
-        'path'
+        "svg",
+        "g",
+        "defs",
+        "linearGradient",
+        "stop",
+        "circle",
+        "path",
       ]),
       // allowedAttributes: false, // For SVG
       allowedAttributes: {
         ...sanitizeHtml.defaults.allowedAttributes,
-        '*': [
-          'href', 'align', 'alt', 'center', 'bgcolor',
-          'src', 'class', 'role', 'xmlns',
-          'data*', 'aria*', 'stroke*',
-          'focusable', 'viewBox', 'd', 'fill',
+        "*": [
+          "href",
+          "align",
+          "alt",
+          "center",
+          "bgcolor",
+          "src",
+          "class",
+          "role",
+          "xmlns",
+          "data*",
+          "aria*",
+          "stroke*",
+          "focusable",
+          "viewBox",
+          "d",
+          "fill",
         ],
         iframe: [
           {
-            name: 'sandbox',
+            name: "sandbox",
             multiple: true,
-            values: ['allow-popups', 'allow-same-origin', 'allow-scripts']
-          }
+            values: ["allow-popups", "allow-same-origin", "allow-scripts"],
+          },
         ],
       },
       parser: {
-        // SVG elements like linearGradient into your content and 
+        // SVG elements like linearGradient into your content and
         // notice that they're not rendering as expected
         // due to case sensitivity issues without below option :
         lowerCaseTags: false,
-        lowerCaseAttributeNames: false
+        lowerCaseAttributeNames: false,
       },
     });
 
@@ -91,7 +105,7 @@
     const jQuery = window.jQuery;
     const scrollListener = (e) => {
       const target = jQuery(e.target);
-      const fromStart = target.scrollLeft() / (reportScale/100);
+      const fromStart = target.scrollLeft() / (reportScale / 100);
       // https://stackoverflow.com/questions/10463518/converting-em-to-px-in-javascript-and-getting-default-font-size/10466205#10466205
       const emToPx = Number(
         getComputedStyle(target[0], null).fontSize.replace(/[^\d]/g, "")
@@ -114,7 +128,6 @@
       jQuery(yScrollable).off("scroll", scrollListener);
     };
   });
-
 </script>
 
 <tr>
@@ -210,9 +223,7 @@
         <a href="${
           offer.clientUrl ?? "#not-found"
         }" target="_blank" rel="noreferrer">
-          <button class="">Publié par : ${
-            offer.clientUsername
-          }</button>
+          <button class="">Publié par : ${offer.clientUsername}</button>
         </a>    
         <p>${offer.description ?? ""}</p>      
         ${
@@ -258,9 +269,7 @@
           <a href="${
             offer.clientUrl ?? "#not-found"
           }" target="_blank" rel="noreferrer">
-            <button class="">Publié par : ${
-              offer.clientUsername
-            }</button>
+            <button class="">Publié par : ${offer.clientUsername}</button>
           </a>    
           <p>${offer.description ?? ""}</p>      
           ${
@@ -330,10 +339,16 @@
         target="_blank"
         rel="noreferrer"
       >
-        {offer.sourceDetail?.title ?? "Voir les messages"}
+        {offer.sourceDetail?.title ?? "Voir l'offre"}
       </a>
     {:else}
-      {offer.sourceDetail?.title ?? ""}
+      <a
+        href={`${offer.sourceUrl}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {offer.sourceDetail?.title ?? "Voir l'offre"}
+      </a>
     {/if}
   </td>
   <td>
