@@ -24,7 +24,7 @@
   export let isMobile;
   export let reportScale = 100;
 
-  $: reportScale = isMobile ? 67 : 100;
+  $: reportScale = isMobile ? 85 : 100;
 
   console.debug(locale);
   console.debug(lookup);

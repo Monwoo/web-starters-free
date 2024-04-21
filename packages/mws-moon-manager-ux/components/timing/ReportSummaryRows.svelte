@@ -156,19 +156,20 @@
   console.log('max path :', summary.maxPath);
 </script>
 
-<tr class="{rowClass} border-b-0"
+<!-- // TODO : why sticky left-0  not working ? no sticky left, overflow issue in parent container hierachy ? -->
+<tr class="mws-default-bg sticky left-0 top-[3rem] md:top-[1rem] z-40 border-b-0"
 class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
 >
   <td
-  class="border-t-0 px-6 text-middle pl-{indent}"
+  class="border-t-0 px-6 text-middle {rowClass}"
   colspan="100%"
   >
-    <div class="text-lg">
+    <div class="text-lg pl-{indent}">
       <!-- { Array.apply(null, {length: indent / 4})
         .map(Number.call, (n) => '*').join(' ')
       } [{label}]</div> -->
       <!-- <span class="text-gray-500">[{indent / 4}]</span> -->
-      <span class="sticky left-0">[{label}]</span>
+      <span>[{label}]</span>
     </div>
   </td>
 </tr>

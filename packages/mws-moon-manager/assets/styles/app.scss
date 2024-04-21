@@ -6,6 +6,7 @@
 @import "~select2/dist/css/select2.min.css";
 
 $mws-media-phone-w: 768px;
+$mws-media-wide-h: 480px;
 
 // .mws-survey-js-form {
 //     // TODO https://sass-lang.com/documentation/at-rules/import/ + sound
@@ -22,6 +23,10 @@ $mws-media-phone-w: 768px;
 
 body {
     background-color: lightblue;
+    // overflow: hidden;
+    // @media (max-width: $mws-media-phone-w) {
+    //     overflow: auto; // Force it, otherwise default tailwind is hidden status...
+    // }
 }
 
 // TODO @apply post css NOT working anymore in sub scss ?
@@ -53,7 +58,7 @@ footer {
     overflow-clip-margin: unset;
     // TIPS : NEED body scroll for mobile to hide top nav bar on inner scroll...
     overflow: auto;
-    @media (min-width: $mws-media-phone-w) {
+    @media ((min-width: $mws-media-phone-w) and (min-height: $mws-media-wide-h)) {
         // TIPS : NEED body scroll for mobile to hide top nav bar on inner scroll...
         overflow: hidden;
     }
@@ -175,6 +180,26 @@ thead[class*="sticky"] {
             RGB(var(--mws-background-rgb)),
             RGB(var(--mws-background-light-rgb)),
             RGB(var(--mws-background-rgb)));
+}
+
+.mws-default-bg {
+    background: linear-gradient(to right,
+    RGB(var(--mws-background-rgb)),
+    RGB(var(--mws-background-light-rgb)),
+    RGB(var(--mws-background-rgb)));    
+}
+
+.mws-default-bg-bckup {
+    &::before {
+        content: "";
+        position: absolute;
+        background: linear-gradient(to right,
+        RGB(var(--mws-background-rgb)),
+        RGB(var(--mws-background-light-rgb)),
+        RGB(var(--mws-background-rgb)));    
+        z-index: -1;
+        top: 0; right: 0; left: 0; bottom: 0;
+    }
 }
 
 a {
