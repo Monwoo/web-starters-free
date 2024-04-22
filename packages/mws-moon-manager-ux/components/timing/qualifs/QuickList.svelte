@@ -50,6 +50,14 @@
         await a(timing);
       }
     }
+
+    toData() {
+      return {
+        ...this,
+        actions: this.actions.map(a => a.toData ? a.toData() : a),
+      };
+    }
+
   }
 
   // TODO : load from user configs and sync :
@@ -67,8 +75,10 @@
     toCallable: {},
   } // TODO : init action repository, sound like redux, time to migrate to strong redux model ?
 
-  const actionToString = (a) => {
-    return actionRepository.toString[a] ?? null;
+  const actionToString = (a) => { 
+    // a.actions = a.actions.map(a => a.toData ? a.toData() : a);
+    return a.toData ? a.toData() : a;
+    // return actionRepository.toString[a] ?? a;
   };
 
   export const syncHistoryWithBackend = async (histories, locale) => {

@@ -50,11 +50,53 @@ import { addHistory, History } from "../qualifs/QuickList.svelte";
 
   let addedTagKey;
 
+  class RemoveTagCallable extends Function {
+    // 
+    // TODO : for quick serialization, auto compute on class name ?
+    public actionName = 'RemoveTagCallable';
+    protected _bound;
+    constructor(
+      public tag,
+      public comment,
+    ) {
+      // super('...args', 'return this._bound._call(...args)')
+      // // Or without the spread/rest operator:
+      // // super('return this._bound._call.apply(this._bound, arguments)')
+      // this._bound = this.bind(this)
+
+      // return this._bound;
+      super('return arguments.callee._call.apply(arguments.callee, arguments)');
+    }
+    
+    _call(t) {
+      // console.log(this, args)
+      // _call(...args) {
+      // console.log(this, args)
+      removeTagExtended(t, this.tag, this.comment)
+    }
+
+    // https://stackoverflow.com/questions/40201589/serializing-an-es6-class-object-as-json
+    toData() {
+      console.log('RemoveTagCallable toData will extract');
+      return Object.entries(this);
+    }
+    toJson() {
+      console.log('RemoveTagCallable toJson will extract');
+      return JSON.stringify(this.toData());
+    }
+    fromJson(str) {
+      console.log('RemoveTagCallable fromJson will import');
+      return JSON.stringify(this.toData());
+    }
+  }
+
+
   export let removeTag = async (tag, comment = null) => {
     addHistory(new History(
-      `rm T: ${tag}`,
+      `rm T: ${tag.label}`,
       [ // TODO : is loading indicator...
-        (t) => removeTagExtended(t, tag, comment)
+        // (t) => removeTagExtended(t, tag, comment) // TIPS : not serializable
+        new RemoveTagCallable(tag, comment)
       ]
     ));
 
