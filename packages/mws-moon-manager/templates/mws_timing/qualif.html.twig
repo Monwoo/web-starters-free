@@ -32,6 +32,7 @@
 		'csrfTimingTagUpdate': csrf_token('mws-csrf-timing-tag-update'),
 		'csrfTimingQualifSync': csrf_token('mws-csrf-timing-qualif-sync'),
 		'csrfTimingQualifConfigSync': csrf_token('mws-csrf-timing-qualif-config-sync'),
+		'csrfConfigUserSync': csrf_token('mws-csrf-config-user-sync'),		
 	} |serialize('json')|e('html_attr'), }) }}></div>
 {% endblock %}
 

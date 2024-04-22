@@ -305,6 +305,15 @@
   </td>
   <td>{offer.budget ?? ""}</td>
   <td>
+    <div class="overflow-auto max-h-[10em]">
+      {offer.sourceDetail?.description ?? ""}
+    </div>
+  </td>
+  <td>
+    <!-- // TIPS : at end to avoid sticky overlay of table start 
+      => avoid scroll back to be able to click link instead
+      of sticky actions
+    -->
     {#if myOfferId && offer.sourceUrl}
       <a
         href={`${offer.sourceUrl}/${myOfferId}`}
@@ -322,10 +331,5 @@
         {offer.sourceDetail?.title ?? "Voir l'offre"}
       </a>
     {/if}
-  </td>
-  <td>
-    <div class="overflow-auto max-h-[10em]">
-      {offer.sourceDetail?.description ?? ""}
-    </div>
   </td>
 </tr>

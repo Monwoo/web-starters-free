@@ -1058,12 +1058,12 @@ class MwsConfigController extends AbstractController
         }
         $configRaw = $request->request->get('config');
         $config = json_decode($configRaw, true);
-        $user->setConfig(
-            array_merge(
-                $user->getConfig() ?? [],
-                $config,
-            )
+        $configSync = array_merge(
+            $user->getConfig() ?? [],
+            $config,
         );
+        dd($configSync);
+        $user->setConfig($configSync);
 
         $this->em->persist($user);
         $this->em->flush();
@@ -1072,7 +1072,7 @@ class MwsConfigController extends AbstractController
             'sync' => [
                 'config' => $config,
             ],
-            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-sync')->getValue(),
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-config-user-sync')->getValue(),
         ]);
     }
 }

@@ -219,8 +219,8 @@ AND outside of sticky elements -->
         <th scope="col">
           {@html offersHeaders.budget ?? "Budget"}
         </th>
-        <th scope="col">Titre</th>
         <th scope="col" class="min-w-[24rem]">Description</th>
+        <th scope="col">Titre</th>
       </tr>
     </thead>
     <tbody

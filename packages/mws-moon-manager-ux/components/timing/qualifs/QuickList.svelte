@@ -62,6 +62,66 @@
     ] as History[],
   });
 
+  export const actionRepository = {
+    toString: {},
+    toCallable: {},
+  } // TODO : init action repository, sound like redux, time to migrate to strong redux model ?
+
+  const actionToString = (a) => {
+    return actionRepository.toString[a] ?? null;
+  };
+
+  export const syncHistoryWithBackend = async (histories, locale) => {
+    const data = {
+      _csrf_token: stateGet(get(state), "csrfConfigUserSync"),
+      config: JSON.stringify({
+        timingHistories: {
+          indexByLabel: histories.indexByLabel,
+          maxSize: histories.maxSize,
+          // https://stackoverflow.com/questions/7395686/how-can-i-serialize-a-function-in-javascript
+          // stack: histories.stack.map(a => a.toString()), // NOP : with compile stuff, give [Object Object] string instead...
+          stack: histories.stack.map(a => actionToString(a)),
+        },
+      }),
+    };
+    let headers = {};
+    const formData = new FormData();
+    for (const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate("mws_config_user_sync", {
+        _locale: locale,
+      }),
+      {
+        method: "POST",
+        headers,
+        body: formData,
+        credentials: "same-origin",
+        redirect: "error",
+      }
+    )
+      .then(async (resp) => {
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
+        if (!resp.ok) {
+          throw new Error("Not 2xx response");
+        } else {
+          const data = await resp.json();
+
+          // histories = data.sync?.timingHistories
+          stateUpdate(state, {
+            csrfConfigUserSync: data.newCsrf,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        // const shouldWait = confirm("Echec de l'enregistrement.");
+      });
+    return histories;
+  };
+  
   export const addHistory = async (h:History) => {
     const histories = get(qualifHistories);
     // TODO : opti : use inversed list and histories.indexByLabel will not move on new history inputs...
@@ -85,7 +145,10 @@
       return acc;
     }, {});
 
-    qualifHistories.set(histories);
+    const locale = 'fr'; // TODO : from redux store or other ways ? (as param is heavy to put every where ? but good for separations and storybook testings ?)
+    const historiesSync = await syncHistoryWithBackend(histories, locale);
+
+    qualifHistories.set(historiesSync);
   };
 
 </script>
