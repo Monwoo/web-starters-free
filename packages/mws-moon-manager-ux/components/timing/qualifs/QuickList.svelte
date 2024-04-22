@@ -115,7 +115,7 @@
   }
   export const emptyHistories = {
     indexByLabel : {} as any,
-    maxSize: 7,
+    maxSize: 14,
     stack: [
       // new History("Test", [async(t) => alert('Test ok')]),
     ] as History[],
