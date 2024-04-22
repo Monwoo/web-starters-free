@@ -1118,7 +1118,10 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
         </button>
       {/each} -->
       <QuickList
-        {timingSlot}
+        bind:timingSlot
+        bind:lastSelectedIndex
+        bind:timings
+        {selectionStartIndex}
         {allTagsList}
         bind:isHeaderExpanded
         bind:qualifTemplates

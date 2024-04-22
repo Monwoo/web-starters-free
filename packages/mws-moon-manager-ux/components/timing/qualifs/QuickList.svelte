@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+  import _ from "lodash";
   // https://reallifeglobal.com/history-story/
   // History: uncountable, more factual, non-fiction, academic, it really happened.
   // Story: Imaginary, fiction, narrative, it often didn't really happen. 
@@ -38,16 +39,16 @@
 
   export class History {
     constructor(
-      public label,
-      protected actions
+      public label = null,
+      protected actions = []
     ) {
     }
 
-    public replay = async (timing) => {
+    public replay = async (timing, lastSelectedIndex, timings, selectionStartIndex) => {
       // TODO : advanced history without timing target ?
       !timing && console.warn("Missing timing for history")
       for (const a of this.actions ?? []) {
-        await a(timing);
+        await a(timing, lastSelectedIndex, timings, selectionStartIndex);
       }
     }
 
@@ -57,18 +58,56 @@
         actions: this.actions.map(a => a.toData ? a.toData() : a),
       };
     }
+    fromData(data) {
+      if (!data) return this;
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries
+      // const o = new RemoveTagCallable();
+      // TODO : type cast not enough for all usecase ?
+      // Object.fromEntries(data) as RemoveTagCallable;
+      
+      // const newEntries = Object.fromEntries(data);
+      const newEntries = data;
+      _.merge(this, newEntries, {
+        actions: newEntries.actions?.map(a => this.dataAsAction(a)),
+      });
+      return this;
+    }
+
+    dataAsAction(dataEntries) {
+      // https://dev.to/alesm0101/how-to-check-if-a-value-is-an-object-in-javascript-3pin
+      // const isObject = (value) => {
+      //   return typeof value === 'object'
+      //   && value !== null
+      //   && !Array.isArray(value)
+      //   && !(value instanceof RegExp)
+      //   && !(value instanceof Date)
+      //   && !(value instanceof Set)
+      //   && !(value instanceof Map)
+      // }
+      // Already translated :
+      if (dataEntries instanceof Function) return dataEntries;
+
+      let data = Object.fromEntries(dataEntries);
+      if ('RemoveTagCallable' === data.actionName) {
+        data = new RemoveTagCallable();
+        // TODO : ok or over opti to avoid double ' Object.fromEntries' extractions
+        data.fromData(dataEntries);
+      }
+      return data;
+    }
 
   }
-
-  // TODO : load from user configs and sync :
-  //        cf mws_config_user_sync + serialize actions...
-  export const qualifHistories = writable({
+  export const emptyHistories = {
     indexByLabel : {} as any,
     maxSize: 7,
     stack: [
       // new History("Test", [async(t) => alert('Test ok')]),
     ] as History[],
-  });
+  };
+
+  // TODO : load from user configs and sync :
+  //        cf mws_config_user_sync + serialize actions...
+  export const qualifHistories = writable(emptyHistories);
 
   export const actionRepository = {
     toString: {},
@@ -161,6 +200,19 @@
     qualifHistories.set(historiesSync);
   };
 
+  export const loadHistoriesFromUser = async (user) => {
+    // Deserialize user config save :
+    if(!user) {
+      return;
+    }
+    const userHistories = user.config?.timingHistories ?? emptyHistories;
+    console.debug("loadHistoriesFromUser", user, userHistories);
+    userHistories.stack = userHistories.stack.map(
+      h => (new History()).fromData(h)
+    )
+    qualifHistories.set(userHistories);
+  }
+
 </script>
 
 <script lang="ts">
@@ -176,14 +228,13 @@
   import { MoveIcon, SortableItem } from "svelte-sortable-items";
   import { flip } from "svelte/animate";
   import ItemView from "./ItemView.svelte";
-  import _ from "lodash";
   import ConfirmUpdateOrNew from "./ConfirmUpdateOrNew.svelte";
   import ExportQualifs from "./ExportQualifs.svelte";
   import debounce from 'lodash/debounce';
   import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
   import TailwindDefaults from "../../layout/widgets/TailwindDefaults.svelte";
-import ItemHistory from "./ItemHistory.svelte";
-import { timings } from "../SlotView.svelte";
+  import ItemHistory from "./ItemHistory.svelte";
+  import { RemoveTagCallable } from "../tags/TagsInput.svelte";
 
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
@@ -222,6 +273,9 @@ import { timings } from "../SlotView.svelte";
   export let maxLimit = timingQualifConfig?.maxLimit ?? 12;
   export let itemWidth = timingQualifConfig?.itemWidth ?? defaultItemW;
   export let timingSlot;
+  export let lastSelectedIndex;
+  export let timings;
+  export let selectionStartIndex;
 
   // TIPS : do not refresh sortOrder to avoid infinit loop
   // since will trigger list sort when list might be in custom user mode
@@ -616,6 +670,8 @@ import { timings } from "../SlotView.svelte";
     return timingQualifConfig;
   };
 
+  $: loadHistoriesFromUser($state.user);
+
 </script>
 
 <!-- <svelte:head>
@@ -685,7 +741,10 @@ import { timings } from "../SlotView.svelte";
       {#each $qualifHistories.stack as history }
         <ItemHistory
           {history}
-          {timingSlot}
+          bind:timingSlot
+          bind:lastSelectedIndex
+          bind:timings
+          {selectionStartIndex}
           {syncQualifWithBackend}
           {locale}
         />

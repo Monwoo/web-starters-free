@@ -1,3 +1,138 @@
+<script context="module" lang="ts">
+  import _ from "lodash";
+  export class RemoveTagCallable extends Function {
+    // 
+    // TODO : for quick serialization, auto compute on class name ? Must be unique per class
+    public actionName = 'RemoveTagCallable';
+    protected _bound;
+    constructor(
+      public tag = null,
+      public comment = null,
+      public locale = 'fr',
+    ) {
+      // super('...args', 'return this._bound._call(...args)')
+      // // Or without the spread/rest operator:
+      // // super('return this._bound._call.apply(this._bound, arguments)')
+      // this._bound = this.bind(this)
+
+      // return this._bound;
+      super('return arguments.callee._call.apply(arguments.callee, arguments)');
+    }
+    
+    async _call(t, syncStartIdx, timings, selectionStartIndex) {
+      if (!this.tag) return;
+      // console.log(this, args)
+      // _call(...args) {
+      // console.log(this, args)
+      // const syncStartIdx = lastSelectedIndex;
+      if (undefined !== selectionStartIndex) {
+        // avoid bulk process stop on early selectionStartIndex switch...
+        // TODO : factorize Toggle qualif of all previous or next qualifs :
+        let delta = selectionStartIndex - syncStartIdx;
+        let step = delta > 0 ? -1 : 1;
+        while (delta !== 0) {
+          const timingTarget = timings[syncStartIdx + delta];
+          await this.removeTagExtended(timingTarget, this.tag, this.comment);
+          console.log("Selection side qualif for " + timingTarget.sourceStamp);
+          delta += step;
+        }
+      }
+
+      // await removeTagExtended(timings[syncStartIdx], tag, comment);
+      // TODO : timings[syncStartIdx] ? to avoid error on index change during action call ?
+      await this.removeTagExtended(t, this.tag, this.comment)
+    }
+
+    // https://stackoverflow.com/questions/40201589/serializing-an-es6-class-object-as-json
+    toData() {
+      console.log('RemoveTagCallable toData will extract');
+      return Object.entries(this);
+    }
+    fromData(data) {
+      if (!data) return this;
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries
+      // const o = new RemoveTagCallable();
+      // TODO : type cast not enough for all usecase ?
+      // Object.fromEntries(data) as RemoveTagCallable;
+      const newEntries = Object.fromEntries(data);
+      _.merge(this, newEntries);
+      return this;
+    }
+    toJson() {
+      console.log('RemoveTagCallable toJson will extract');
+      return JSON.stringify(this.toData());
+    }
+    fromJson(str) {
+      console.log('RemoveTagCallable fromJson will import');
+      if (!str) return this;
+      const data = JSON.parse(str);
+
+      return this.fromData(data);
+    }
+
+    async removeTagExtended(timingTarget, tag, comment = null) {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfTimingTagRemove"),
+        timeSlotId: timingTarget.id,
+        tagSlug: tag.slug,
+        comment, // TODO : allow optional comment on status switch ?
+      };
+      // let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
+      let headers = {};
+      // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
+      // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+      // Per this article make sure to NOT set the Content-Type header.
+      // headers['Content-Type'] = 'application/json';
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        // TODO : build back Api, will return new csrf to use on success, will error othewise,
+        // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
+        Routing.generate("mws_timing_tag_remove", {
+          _locale: this.locale,
+        }),
+        {
+          method: "POST",
+          headers,
+          // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
+          body: formData,
+          // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
+          credentials: "same-origin",
+          // https://javascript.info/fetch-api
+          redirect: "error",
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp.url, resp.ok, resp.status, resp.statusText);
+          if (!resp.ok) {
+            // make the promise be rejected if we didn't get a 2xx response
+            throw new Error("Not 2xx response");
+          } else {
+            // got the desired response
+            const data = await resp.json();
+            const tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+            timingTarget.tags = tags;
+            // TODO : better sync all in-coming props from 'needSync' attr ?
+            timingTarget.maxPath = data.sync.maxPath;
+            timingTarget.maxPriceTag = data.sync.maxPriceTag;
+
+            // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
+            stateUpdate(state, {
+              csrfTimingTagRemove: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    };
+  }
+</script>
+
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -8,7 +143,7 @@
   } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
-import { addHistory, History } from "../qualifs/QuickList.svelte";
+  import { addHistory, History } from "../qualifs/QuickList.svelte";
   // import { locale } from "dayjs";
   // import newUniqueId from 'locally-unique-id-generator';
 
@@ -50,133 +185,23 @@ import { addHistory, History } from "../qualifs/QuickList.svelte";
 
   let addedTagKey;
 
-  class RemoveTagCallable extends Function {
-    // 
-    // TODO : for quick serialization, auto compute on class name ?
-    public actionName = 'RemoveTagCallable';
-    protected _bound;
-    constructor(
-      public tag,
-      public comment,
-    ) {
-      // super('...args', 'return this._bound._call(...args)')
-      // // Or without the spread/rest operator:
-      // // super('return this._bound._call.apply(this._bound, arguments)')
-      // this._bound = this.bind(this)
-
-      // return this._bound;
-      super('return arguments.callee._call.apply(arguments.callee, arguments)');
-    }
-    
-    _call(t) {
-      // console.log(this, args)
-      // _call(...args) {
-      // console.log(this, args)
-      removeTagExtended(t, this.tag, this.comment)
-    }
-
-    // https://stackoverflow.com/questions/40201589/serializing-an-es6-class-object-as-json
-    toData() {
-      console.log('RemoveTagCallable toData will extract');
-      return Object.entries(this);
-    }
-    toJson() {
-      console.log('RemoveTagCallable toJson will extract');
-      return JSON.stringify(this.toData());
-    }
-    fromJson(str) {
-      console.log('RemoveTagCallable fromJson will import');
-      return JSON.stringify(this.toData());
-    }
-  }
-
-
   export let removeTag = async (tag, comment = null) => {
+    const a = new RemoveTagCallable(tag, comment);
     addHistory(new History(
       `rm T: ${tag.label}`,
       [ // TODO : is loading indicator...
         // (t) => removeTagExtended(t, tag, comment) // TIPS : not serializable
-        new RemoveTagCallable(tag, comment)
+        // new RemoveTagCallable(tag, comment)
+        a
       ]
     ));
 
+    const syncTiming = timings[lastSelectedIndex];
     // const syncTiming = timing;
-    const syncStartIdx = lastSelectedIndex;
-    if (undefined !== selectionStartIndex) {
-      // avoid bulk process stop on early selectionStartIndex switch...
-      // TODO : factorize Toggle qualif of all previous or next qualifs :
-      let delta = selectionStartIndex - syncStartIdx;
-      let step = delta > 0 ? -1 : 1;
-      while (delta !== 0) {
-        const timingTarget = timings[syncStartIdx + delta];
-        await removeTagExtended(timingTarget, tag, comment);
-        console.log("Selection side qualif for " + timingTarget.sourceStamp);
-        delta += step;
-      }
-    }
-    await removeTagExtended(timings[syncStartIdx], tag, comment);
     // timing = syncTiming; // trigger svelte reactivity
-  };
-
-  export let removeTagExtended = async (timingTarget, tag, comment = null) => {
-    const data = {
-      _csrf_token: stateGet(get(state), "csrfTimingTagRemove"),
-      timeSlotId: timingTarget.id,
-      tagSlug: tag.slug,
-      comment, // TODO : allow optional comment on status switch ?
-    };
-    // let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
-    let headers = {};
-    // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
-    // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
-    // Per this article make sure to NOT set the Content-Type header.
-    // headers['Content-Type'] = 'application/json';
-    const formData = new FormData();
-    for (const name in data) {
-      formData.append(name, data[name]);
-    }
-    const resp = await fetch(
-      // TODO : build back Api, will return new csrf to use on success, will error othewise,
-      // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
-      Routing.generate("mws_timing_tag_remove", {
-        _locale: locale,
-      }),
-      {
-        method: "POST",
-        headers,
-        // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
-        body: formData,
-        // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
-        credentials: "same-origin",
-        // https://javascript.info/fetch-api
-        redirect: "error",
-      }
-    )
-      .then(async (resp) => {
-        console.log(resp.url, resp.ok, resp.status, resp.statusText);
-        if (!resp.ok) {
-          // make the promise be rejected if we didn't get a 2xx response
-          throw new Error("Not 2xx response", { cause: resp });
-        } else {
-          // got the desired response
-          const data = await resp.json();
-          tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          timingTarget.tags = tags;
-          // TODO : better sync all in-coming props from 'needSync' attr ?
-          timingTarget.maxPath = data.sync.maxPath;
-          timingTarget.maxPriceTag = data.sync.maxPriceTag;
-
-          // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
-          stateUpdate(state, {
-            csrfTimingTagRemove: data.newCsrf,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-        const shouldWait = confirm("Echec de l'enregistrement.");
-      });
+    // await a._call(syncTiming);
+    await a(syncTiming, lastSelectedIndex, timings, selectionStartIndex);
+    tags = syncTiming.tags;
   };
 
   export let addTag = async (tag, comment = null) => {
@@ -243,7 +268,7 @@ import { addHistory, History } from "../qualifs/QuickList.svelte";
         console.log(resp.url, resp.ok, resp.status, resp.statusText);
         addedTagKey = "null";
         if (!resp.ok) {
-          throw new Error("Not 2xx response", { cause: resp });
+          throw new Error("Not 2xx response");
         } else {
           const data = await resp.json();
           tags = Object.values(data.newTags); // A stringified obj with '1' as index...

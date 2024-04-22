@@ -13,6 +13,9 @@ import { onMount } from "svelte";
   export let locale;
   export let history;
   export let timingSlot;
+  export let lastSelectedIndex;
+  export let timings;
+  export let selectionStartIndex;
   export let isLoading = false;
   let cssClass;
   export { cssClass as class };
@@ -29,7 +32,13 @@ text-xs md:text-base">
     flex justify-center items-center pl-1 pr-1
     "
     on:click|stopPropagation={debounce(
-      async () => await history.replay(timingSlot), userDelay
+      async () => {
+        await history.replay(
+          timingSlot, lastSelectedIndex, timings, selectionStartIndex
+        );
+        // lastSelectedIndex = lastSelectedIndex; // Force svelte reactivity, not working with number ?
+        timingSlot = timingSlot; // Force svelte reactivity, OK
+      }, userDelay
     )}
   >
     <span class="mws-drop-shadow">
