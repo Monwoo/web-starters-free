@@ -288,7 +288,7 @@
   let addedTagKey;
 
   export let removeTag = async (tag, comment = null) => {
-    const a = new RemoveTagCallable(tag, comment);
+    const a = new RemoveTagCallable(tag, comment, locale);
     addHistory(new History(
       `rm T: ${tag.label}`,
       [ // TODO : is loading indicator...
@@ -307,7 +307,7 @@
   };
 
   export let addTag = async (tag, comment = null) => {
-    const a = new AddTagCallable(tag, comment);
+    const a = new AddTagCallable(tag, comment, locale);
     addHistory(new History(
       `T: ${tag.slug}`,
       [ // TODO : is loading indicator...

@@ -1,3 +1,115 @@
+<script context="module" lang="ts">
+  import _ from "lodash";
+
+  export class ToggleQualifCallable extends Function {
+    public actionName = 'ToggleQualifCallable';
+    protected _bound;
+    constructor(
+      public qualif = null,
+      public locale = 'fr',
+    ) {
+      super('return arguments.callee._call.apply(arguments.callee, arguments)');
+    }
+    
+    async _call(t, syncStartIdx, timings, selectionStartIndex) {
+      if (!this.qualif) return;
+
+      if (undefined !== selectionStartIndex) {
+        let delta = selectionStartIndex - syncStartIdx;
+        let step = delta > 0 ? -1 : 1;
+        while (delta !== 0) {
+          const timingTarget = timings[syncStartIdx + delta];
+          await this.toggleQualifByTiming(this.qualif, t);
+          console.log("Selection side qualif for " + timingTarget.sourceStamp);
+          delta += step;
+        }
+      }
+
+      await this.toggleQualifByTiming(this.qualif, t);
+    }
+
+    toData() {
+      console.log('RemoveTagCallable toData will extract');
+      return Object.entries(this);
+    }
+    fromData(data) {
+      if (!data) return this;
+      const newEntries = Object.fromEntries(data);
+      _.merge(this, newEntries);
+      return this;
+    }
+
+    async toggleQualifByTiming(qualif, targetSlot) {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfTimingToggleQualif"),
+        timeSlotId: targetSlot?.id,
+        qualifId: qualif.id,
+      };
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        Routing.generate("mws_timing_qualif_toggle", {
+          _locale: this.locale,
+        }),
+        {
+          method: "POST",
+          body: formData,
+          credentials: "same-origin",
+          redirect: "error",
+        }
+      )
+      .then(async (resp) => {
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
+        if (!resp.ok) {
+          throw new Error("Not 2xx response", { cause: resp });
+        } else {
+          const data = await resp.json();
+          // const data = await resp.text();
+          // console.debug("resp", data);
+          // targetSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // // // TODO : better sync all in-coming props from 'needSync' attr ?
+          // targetSlot?.maxPath = data.sync.maxPath;
+          // targetSlot?.maxPriceTag = data.sync.maxPriceTag;
+
+          // targetSlot = {
+          const newSlot = {
+            ...targetSlot,
+            tags: Object.values(data.newTags),
+            maxPath: data.sync.maxPath,
+            maxPriceTag: data.sync.maxPriceTag,
+          };
+
+          // targetSlot = newSlot; // Will only change local param ref, not parent caller reactivity...
+          // timings[lastSelectedIndex] = newSlot;
+          // hackyRefresh(data);
+
+          // TODO : NO reactivity for targetSlot?.maxPath ?
+          //        => missing live price lookup update at top of SlotView when changing tags,
+          //           but : ok on full page refresh...
+          // targetSlot = {...targetSlot}; // TIPS : FORCE Svelte reactivity rebuild, since props check is not deep checked
+          _.merge(targetSlot, newSlot);
+
+          // lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads, not working on number ? not this one doing the reactivity ?
+          console.debug("Did toggle qualif, updated tags : ", targetSlot?.tags);
+          stateUpdate(state, {
+            csrfTimingToggleQualif: data.newCsrf,
+          });
+
+          // return newSlot; // TIPS : use side effect on action target data instead
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
+      return resp;
+    }
+  }
+</script>
+
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -15,7 +127,6 @@
   import dayjs from "dayjs";
   import TagsInput from "./tags/TagsInput.svelte";
   import AddModal from "../message/AddModal.svelte";
-  import _ from "lodash";
 
   import PhotoSwipeGallery from "svelte-photoswipe";
   import Loader from "../layout/widgets/Loader.svelte";
@@ -95,7 +206,8 @@
   import HtmlIcon from "./qualifs/HtmlIcon.svelte";
   import debounce from "lodash/debounce";
   import Svg from "../layout/widgets/Svg.svelte";
-import { randomEmptyPicture } from "./SlotThumbnail.svelte";
+  import { randomEmptyPicture } from "./SlotThumbnail.svelte";
+  import { qualif } from "./qualifs/ItemView.svelte";
 
   // https://day.js.org/docs/en/timezone/set-default-timezone
   // https://day.js.org/docs/en/plugin/timezone
@@ -431,117 +543,131 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
   //   // timingSlot = timingSlot;
   // };
   export let toggleQualif = async (q, targetSlot) => {
+    const a = new ToggleQualifCallable(q, locale);
     addHistory(new History(
       `Q: ${q.label}`,
       [
-        async (t) => {
-          const newT = await toggleQualifByTiming(q, t);
-          // https://stackoverflow.com/questions/7364150/find-object-by-id-in-an-array-of-javascript-objects
-          // myArray.find(x => x.id === '45').foo;
-          // myArray.findIndex(x => x.id === '45');
-          const syncStartIdx = timings
-          .findIndex(s => s.id === newT.id);
-          newT && (timings[syncStartIdx] = newT);
-        }
+        a
+        // async (t) => {
+        //   const newT = await toggleQualifByTiming(q, t);
+        //   // https://stackoverflow.com/questions/7364150/find-object-by-id-in-an-array-of-javascript-objects
+        //   // myArray.find(x => x.id === '45').foo;
+        //   // myArray.findIndex(x => x.id === '45');
+        //   const syncStartIdx = timings
+        //   .findIndex(s => s.id === newT.id);
+        //   newT && (timings[syncStartIdx] = newT);
+        // }
       ]
     ));
-
-    // const syncTiming = targetSlot; // TIPS : to avoid async change of targetSlot
+    const syncTiming = targetSlot;
+    // TODO : should lookup back in timings list where current timing id is ? in case timings orders did change ?
+    // const syncStartIdx = timings
+    // .findIndex(s => s.id === newT.id);
     const syncStartIdx = lastSelectedIndex;
-    if (undefined !== selectionStartIndex) {
-      // avoid bulk process stop on early selectionStartIndex switch...
-      // Toggle qualif of all previous or next qualifs :
-      let delta = selectionStartIndex - syncStartIdx;
-      let step = delta > 0 ? -1 : 1;
-      while (delta !== 0) {
-        const timingTarget = timings[syncStartIdx + delta];
-        const newT = await toggleQualifByTiming(q, timingTarget);
-        newT && (timings[syncStartIdx + delta] = newT);
-        console.log("Selection side qualif for " + timingTarget.sourceStamp);
-        delta += step;
-      }
+
+    // const syncTiming = timing;
+    // timing = syncTiming; // trigger svelte reactivity
+    // await a._call(syncTiming);
+
+    if (syncTiming) {
+      isLoading = true;
+      await a(syncTiming, lastSelectedIndex, timings, selectionStartIndex, );
+      timings[syncStartIdx] = syncTiming; // Svelte reactivity refresh
+      isLoading = false;
     }
 
-    // TIPS : targetSlot could have change due to reactivity on lastSelectedIndex
-    // // targetSlot = toggleQualifByTiming(q, syncTiming);
-    // syncStartIdx is a const on original index, it's our target even if
-    // lastSelectedIndex did change
-    // TODO : ok only if timings do not change for x reason, and index mismatch... (not our use case for now...)
-    const newT = await toggleQualifByTiming(q, timings[syncStartIdx]);
-    newT && (timings[syncStartIdx] = newT);
+    // // const syncTiming = targetSlot; // TIPS : to avoid async change of targetSlot
+    // const syncStartIdx = lastSelectedIndex;
+    // if (undefined !== selectionStartIndex) {
+    //   // avoid bulk process stop on early selectionStartIndex switch...
+    //   // Toggle qualif of all previous or next qualifs :
+    //   let delta = selectionStartIndex - syncStartIdx;
+    //   let step = delta > 0 ? -1 : 1;
+    //   while (delta !== 0) {
+    //     const timingTarget = timings[syncStartIdx + delta];
+    //     const newT = await toggleQualifByTiming(q, timingTarget);
+    //     newT && (timings[syncStartIdx + delta] = newT);
+    //     console.log("Selection side qualif for " + timingTarget.sourceStamp);
+    //     delta += step;
+    //   }
+    // }
+
+    // // TIPS : targetSlot could have change due to reactivity on lastSelectedIndex
+    // // // targetSlot = toggleQualifByTiming(q, syncTiming);
+    // // syncStartIdx is a const on original index, it's our target even if
+    // // lastSelectedIndex did change
+    // // TODO : ok only if timings do not change for x reason, and index mismatch... (not our use case for now...)
+    // const newT = await toggleQualifByTiming(q, timings[syncStartIdx]);
+    // newT && (timings[syncStartIdx] = newT);
     // TODO : Refactor all to this way, + improve to fix if timings change
     //  (map filter new list on existing ids in current qualif list...)
   }
 
-  export let toggleQualifByTiming = async (qualif, targetSlot) => {
-    isLoading = true;
-    const data = {
-      _csrf_token: stateGet(get(state), "csrfTimingToggleQualif"),
-      timeSlotId: targetSlot?.id,
-      qualifId: qualif.id,
-    };
-    const formData = new FormData();
-    for (const name in data) {
-      formData.append(name, data[name]);
-    }
-    const resp = await fetch(
-      Routing.generate("mws_timing_qualif_toggle", {
-        _locale: locale,
-      }),
-      {
-        method: "POST",
-        body: formData,
-        credentials: "same-origin",
-        redirect: "error",
-      }
-    )
-      .then(async (resp) => {
-        console.log(resp.url, resp.ok, resp.status, resp.statusText);
-        if (!resp.ok) {
-          throw new Error("Not 2xx response", { cause: resp });
-        } else {
-          const data = await resp.json();
-          // const data = await resp.text();
-          // console.debug("resp", data);
-          // targetSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          // // // TODO : better sync all in-coming props from 'needSync' attr ?
-          // targetSlot?.maxPath = data.sync.maxPath;
-          // targetSlot?.maxPriceTag = data.sync.maxPriceTag;
+  // export let toggleQualifByTiming = async (qualif, targetSlot) => {
+  //   isLoading = true;
+  //   const data = {
+  //     _csrf_token: stateGet(get(state), "csrfTimingToggleQualif"),
+  //     timeSlotId: targetSlot?.id,
+  //     qualifId: qualif.id,
+  //   };
+  //   const formData = new FormData();
+  //   for (const name in data) {
+  //     formData.append(name, data[name]);
+  //   }
+  //   const resp = await fetch(
+  //     Routing.generate("mws_timing_qualif_toggle", {
+  //       _locale: locale,
+  //     }),
+  //     {
+  //       method: "POST",
+  //       body: formData,
+  //       credentials: "same-origin",
+  //       redirect: "error",
+  //     }
+  //   )
+  //     .then(async (resp) => {
+  //       console.log(resp.url, resp.ok, resp.status, resp.statusText);
+  //       if (!resp.ok) {
+  //         throw new Error("Not 2xx response", { cause: resp });
+  //       } else {
+  //         const data = await resp.json();
+  //         // const data = await resp.text();
+  //         // console.debug("resp", data);
+  //         // targetSlot?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+  //         // // // TODO : better sync all in-coming props from 'needSync' attr ?
+  //         // targetSlot?.maxPath = data.sync.maxPath;
+  //         // targetSlot?.maxPriceTag = data.sync.maxPriceTag;
+  //         // targetSlot = {
+  //         const newSlot = {
+  //           ...targetSlot,
+  //           tags: Object.values(data.newTags),
+  //           maxPath: data.sync.maxPath,
+  //           maxPriceTag: data.sync.maxPriceTag,
+  //         };
+  //         // targetSlot = newSlot; // Will only change local param ref, not parent caller reactivity...
+  //         // timings[lastSelectedIndex] = newSlot;
+  //         // hackyRefresh(data);
+  //         // TODO : NO reactivity for targetSlot?.maxPath ?
+  //         //        => missing live price lookup update at top of SlotView when changing tags,
+  //         //           but : ok on full page refresh...
+  //         // targetSlot = {...targetSlot}; // TIPS : FORCE Svelte reactivity rebuild, since props check is not deep checked
+  //         lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
+  //         console.debug("Did toggle qualif, updated tags : ", targetSlot?.tags);
+  //         stateUpdate(state, {
+  //           csrfTimingToggleQualif: data.newCsrf,
+  //         });
+  //         return newSlot;
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       console.error(e);
+  //       // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+  //       const shouldWait = confirm("Echec de l'enregistrement.");
+  //     });
+  //     isLoading = false;
+  //     return resp;
+  // };
 
-          // targetSlot = {
-          const newSlot = {
-            ...targetSlot,
-            tags: Object.values(data.newTags),
-            maxPath: data.sync.maxPath,
-            maxPriceTag: data.sync.maxPriceTag,
-          };
-
-          // targetSlot = newSlot; // Will only change local param ref, not parent caller reactivity...
-          // timings[lastSelectedIndex] = newSlot;
-          // hackyRefresh(data);
-
-          // TODO : NO reactivity for targetSlot?.maxPath ?
-          //        => missing live price lookup update at top of SlotView when changing tags,
-          //           but : ok on full page refresh...
-          // targetSlot = {...targetSlot}; // TIPS : FORCE Svelte reactivity rebuild, since props check is not deep checked
-          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads
-          console.debug("Did toggle qualif, updated tags : ", targetSlot?.tags);
-          stateUpdate(state, {
-            csrfTimingToggleQualif: data.newCsrf,
-          });
-
-          return newSlot;
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-        const shouldWait = confirm("Echec de l'enregistrement.");
-      });
-      isLoading = false;
-
-      return resp;
-  };
   export let removeAllTags = async () => {
     isLoading = true;
     await new Promise((r) => setTimeout(r, 200)); // Wait for isLoading anim
@@ -1121,6 +1247,7 @@ import { randomEmptyPicture } from "./SlotThumbnail.svelte";
         bind:timingSlot
         bind:lastSelectedIndex
         bind:timings
+        bind:isLoading
         {selectionStartIndex}
         {allTagsList}
         bind:isHeaderExpanded

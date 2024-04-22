@@ -254,6 +254,7 @@
   export let confirmUpdateOrNew;
   export let keyboardShortcutModal;
   export let showColors = false;
+  export let isLoading;
 
   // // TIPS : MUST NOT be setup for top root binds
   // //         to be able to feed with initial values ?
@@ -750,6 +751,7 @@
           bind:timingSlot
           bind:lastSelectedIndex
           bind:timings
+          bind:isLoading
           {selectionStartIndex}
           {syncQualifWithBackend}
           {locale}

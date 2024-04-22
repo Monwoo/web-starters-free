@@ -16,7 +16,7 @@ import { onMount } from "svelte";
   export let lastSelectedIndex;
   export let timings;
   export let selectionStartIndex;
-  export let isLoading = false;
+  export let isLoading;
   let cssClass;
   export { cssClass as class };
 
@@ -33,11 +33,13 @@ text-xs md:text-base">
     "
     on:click|stopPropagation={debounce(
       async () => {
+        isLoading = true;
         await history.replay(
           timingSlot, lastSelectedIndex, timings, selectionStartIndex
         );
         // lastSelectedIndex = lastSelectedIndex; // Force svelte reactivity, not working with number ?
         timingSlot = timingSlot; // Force svelte reactivity, OK
+        isLoading = false;
       }, userDelay
     )}
   >
@@ -47,5 +49,4 @@ text-xs md:text-base">
     </span>
   </button>
 
-  <Loader {isLoading} />
 </div>
