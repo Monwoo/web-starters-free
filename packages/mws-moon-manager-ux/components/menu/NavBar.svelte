@@ -40,8 +40,8 @@
 <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"> -->
 <nav
   class="border-gray-200 dark:border-gray-700 w-full
-rounded-e-lg 
-"
+  rounded-e-lg 
+  "
 >
   <!-- // TIPS : max-h-[70dvh] have some meanings for md screen only since needed only if 
   // inside content size down instead of filling bottom ... -->
@@ -49,6 +49,7 @@ rounded-e-lg
     class="overflow-scroll md:max-h-[80dvh]
     flex flex-wrap items-center justify-between mx-auto"
     class:md:p-2={!inlineOpener}
+    class:wide:p-0={!inlineOpener}
   >
     <span class="hidden" class:md:inline={!inlineOpener}>
       <a
@@ -62,8 +63,8 @@ rounded-e-lg
         <span
           class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
         >
-          <button class="inline-flex flex-wrap justify-center items-center">
-            <span class="w-full text-sm">
+          <button class="inline-flex flex-wrap justify-center items-center w-min px-4">
+            <span class="w-full text-sm wide:text-xs">
               Rechercher une offre
             </span>
             <span class="w-full text-[0.69rem] leading-[0.69rem] text-gray-300">
@@ -145,7 +146,7 @@ rounded-e-lg
               })}
               class="flex flex-wrap items-center justify-center pb-2"
             >
-              <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
+              <img src={crmLogo} class="h-8 mr-3" alt="Logo" />
               <span
                 class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
               >
@@ -157,7 +158,7 @@ rounded-e-lg
             </span>
           </span>
         </li>
-        <li>
+        <li class="wide:!ml-2">
           <!-- // TIPS: SEO : fail relative link on empty locale 
           since url start with '//' => filesystemp path.. with :
           Routing.generate("app_home", undefined, true)
@@ -179,7 +180,7 @@ rounded-e-lg
             <button class="">Accueil</button>
           </a>
         </li>
-        <li>
+        <li class="wide:!ml-2">
           <!-- // TODO : only if app_pdf_billings route exist ? depend of targeted app.. -->
           <a
             href={Routing.generate("app_pdf_billings", {
@@ -196,7 +197,7 @@ rounded-e-lg
             <button>Services</button>
           </a>
         </li>
-        <li>
+        <li class="wide:!ml-2">
           <a
             href={Routing.generate("mws_timings_report", {
               _locale: locale ?? "fr",
@@ -220,7 +221,7 @@ rounded-e-lg
             <button>Contact</button>
           </a>
         </li> -->
-        <li>
+        <li class="wide:!ml-2">
           <button
             id="dropdownNavbarLink"
             data-dropdown-toggle="dropdownNavbar"
