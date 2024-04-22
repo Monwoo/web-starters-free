@@ -756,8 +756,35 @@
       {/each}
     </div>
     <div class="flex w-full flex-wrap justify-evenly">
-      <p class="w-full px-4">
-        Historique :
+      <p class="w-full px-4"
+      on:keydown|stopPropagation
+      >
+        Historique : 
+        <!-- // TODO : bad to use id (Not generated unique ID ?) for reuse and duplication -->
+        <input
+        id="max-history-size"
+        class="text-black opacity-30 hover:opacity-100 w-[5rem]"
+        value={$state.user?.config?.timingHistories?.maxSize ?? emptyHistories.maxSize}
+        type="number"
+        name="maxHistorySize"
+        on:blur={debounce(async (e) => {
+          qualifHistories.update((historiesSync) => {
+            historiesSync.maxSize = e.target.valueAsNumber;
+            historiesSync.stack = historiesSync.stack.slice(0, historiesSync.maxSize);
+            return historiesSync;
+          });
+        }, userDelay)}
+        on:keydown={debounce(async (e) => {
+          if ("Enter" == e.key) {
+            // TODO : compatibility issues with other browsers than last chrome ?
+            // https://stackoverflow.com/questions/2520650/how-do-you-clear-the-focus-in-javascript
+            if (document.activeElement instanceof HTMLElement)
+              document.activeElement.blur();
+            e.target.blur();
+          }
+        }, userDelay)}
+      />
+
       </p>
       {#each $qualifHistories.stack as history }
         <ItemHistory
