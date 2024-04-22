@@ -98,7 +98,17 @@
         // TODO : ok or over opti to avoid double ' Object.fromEntries' extractions
         data.fromData(dataEntries);
       }
-      
+      if ('ToggleQualifCallable' === data.actionName) {
+        data = new ToggleQualifCallable();
+        // TODO : ok or over opti to avoid double ' Object.fromEntries' extractions
+        data.fromData(dataEntries);
+      }
+      if ('RemoveAllTagsCallable' === data.actionName) {
+        data = new RemoveAllTagsCallable();
+        // TODO : ok or over opti to avoid double ' Object.fromEntries' extractions
+        data.fromData(dataEntries);
+      }
+            
       return data;
     }
 
@@ -241,7 +251,8 @@
   import TailwindDefaults from "../../layout/widgets/TailwindDefaults.svelte";
   import ItemHistory from "./ItemHistory.svelte";
   import { AddTagCallable, RemoveTagCallable } from "../tags/TagsInput.svelte";
-
+  import { ToggleQualifCallable, RemoveAllTagsCallable } from "../SlotView.svelte";
+  
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
 
@@ -745,6 +756,9 @@
       {/each}
     </div>
     <div class="flex w-full flex-wrap justify-evenly">
+      <p class="w-full px-4">
+        Historique :
+      </p>
       {#each $qualifHistories.stack as history }
         <ItemHistory
           {history}

@@ -1062,7 +1062,7 @@ class MwsConfigController extends AbstractController
             $user->getConfig() ?? [],
             $config,
         );
-        dd($configSync);
+        // dd($configSync);
         $user->setConfig($configSync);
 
         $this->em->persist($user);

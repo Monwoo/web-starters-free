@@ -19,7 +19,7 @@
         let step = delta > 0 ? -1 : 1;
         while (delta !== 0) {
           const timingTarget = timings[syncStartIdx + delta];
-          await this.toggleQualifByTiming(this.qualif, t);
+          await this.toggleQualifByTiming(this.qualif, timingTarget);
           console.log("Selection side qualif for " + timingTarget.sourceStamp);
           delta += step;
         }
@@ -106,6 +106,96 @@
         const shouldWait = confirm("Echec de l'enregistrement.");
       });
       return resp;
+    }
+  }
+
+  export class RemoveAllTagsCallable extends Function {
+    public actionName = 'RemoveAllTagsCallable';
+    protected _bound;
+    constructor(
+      public locale = 'fr',
+    ) {
+      super('return arguments.callee._call.apply(arguments.callee, arguments)');
+    }
+    
+    async _call(t, syncStartIdx, timings, selectionStartIndex) {
+      if (
+        !confirm(
+          "Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?"
+        )
+      ) {
+        return;
+      }
+
+      if (undefined !== selectionStartIndex) {
+        let delta = selectionStartIndex - syncStartIdx;
+        let step = delta > 0 ? -1 : 1;
+        while (delta !== 0) {
+          const timingTarget = timings[syncStartIdx + delta];
+          await this.removeAllTagsByTiming(timingTarget);
+          console.log("Selection side remove all tags for " + timingTarget.sourceStamp);
+          delta += step;
+        }
+      }
+
+      await this.removeAllTagsByTiming(t);
+    }
+
+    toData() {
+      console.log('RemoveTagCallable toData will extract');
+      return Object.entries(this);
+    }
+    fromData(data) {
+      if (!data) return this;
+      const newEntries = Object.fromEntries(data);
+      _.merge(this, newEntries);
+      return this;
+    }
+
+    async removeAllTagsByTiming(timingTarget) {
+      const data = {
+      _csrf_token: stateGet(get(state), "csrfTimingTagRemoveAll"),
+      timeSlotId: timingTarget?.id,
+    };
+    const formData = new FormData();
+    for (const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate("mws_timing_tag_remove_all", {
+        _locale: this.locale,
+      }),
+      {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        redirect: "error",
+      }
+    )
+      .then(async (resp) => {
+        console.log(resp.url, resp.ok, resp.status, resp.statusText);
+        if (!resp.ok) {
+          throw new Error("Not 2xx response", { cause: resp });
+        } else {
+          const data = await resp.json();
+          timingTarget?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // // TODO : better sync all in-coming props from 'needSync' attr ?
+          timingTarget?.maxPath = data.sync.maxPath;
+          timingTarget?.maxPriceTag = data.sync.maxPriceTag;
+          // hackyRefresh(data);
+
+          // timingTarget = timingTarget; // NICE try, but won't work...
+          console.debug("Did sync tags", timingTarget?.tags);
+          stateUpdate(state, {
+            csrfTimingTagRemoveAll: data.newCsrf,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+        const shouldWait = confirm("Echec de l'enregistrement.");
+      });
     }
   }
 </script>
@@ -671,98 +761,54 @@
   export let removeAllTags = async () => {
     isLoading = true;
     await new Promise((r) => setTimeout(r, 200)); // Wait for isLoading anim
-    if (
-      !confirm(
-        "Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?"
-      )
-    ) {
-      isLoading = false;
-      return;
-    }
+
+    const a = new RemoveAllTagsCallable(locale);
+
     addHistory(new History(
       `rm All tags`,
       [
-        async (t) => {
-          isLoading = true;
-          if (
-            !confirm(
-              "Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?"
-            )
-          ) {
-            isLoading = false;
-            return;
-          }
-          await removeAllTagsByTiming(t);
-          isLoading = false;
-        }
+        a
+        // async (t) => {
+        //   if (
+        //     !confirm(
+        //       "Êtes vous sur de vouloir supprimer tous les tags du segment sélectionné ?"
+        //     )
+        //   ) {
+        //     isLoading = false;
+        //     return;
+        //   }
+        //   await removeAllTagsByTiming(t);
+        // }
       ]
     ));
 
-    // const syncTiming = timingSlot;
-    const syncStartIdx = lastSelectedIndex;
-    if (undefined !== selectionStartIndex) {
-      // avoid bulk process stop on early selectionStartIndex switch...
-      // TODO : factorize Toggle qualif of all previous or next qualifs :
-      let delta = selectionStartIndex - syncStartIdx;
-      let step = delta > 0 ? -1 : 1;
-      while (delta !== 0) {
-        const timingTarget = timings[syncStartIdx + delta];
-        await removeAllTagsByTiming(timingTarget);
-        console.log("Selection side qualif for " + timingTarget.sourceStamp);
-        delta += step;
-      }
-    }
-    await removeAllTagsByTiming(timings[syncStartIdx]);
+    const syncTiming = timingSlot; // timings[lastSelectedIndex];
+    // const syncTiming = timing;
+    // timing = syncTiming; // trigger svelte reactivity
+    // await a._call(syncTiming);
+    await a(syncTiming, lastSelectedIndex, timings, selectionStartIndex);
+    // tags = syncTiming.tags;
+
+    timingSlot = timingSlot; // TIPS +++++ : ok, refresh current slot view UI and deps
+    // lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads (only one well placed is enough, but int set do not trigger refresh ?
+ 
+    // // const syncTiming = timingSlot;
+    // const syncStartIdx = lastSelectedIndex;
+    // if (undefined !== selectionStartIndex) {
+    //   // avoid bulk process stop on early selectionStartIndex switch...
+    //   // TODO : factorize Toggle qualif of all previous or next qualifs :
+    //   let delta = selectionStartIndex - syncStartIdx;
+    //   let step = delta > 0 ? -1 : 1;
+    //   while (delta !== 0) {
+    //     const timingTarget = timings[syncStartIdx + delta];
+    //     await removeAllTagsByTiming(timingTarget);
+    //     console.log("Selection side qualif for " + timingTarget.sourceStamp);
+    //     delta += step;
+    //   }
+    // }
+    // await removeAllTagsByTiming(timings[syncStartIdx]);
     isLoading = false;
   }
-
-  export let removeAllTagsByTiming = async (timingTarget) => {
-    const data = {
-      _csrf_token: stateGet(get(state), "csrfTimingTagRemoveAll"),
-      timeSlotId: timingTarget?.id,
-    };
-    const formData = new FormData();
-    for (const name in data) {
-      formData.append(name, data[name]);
-    }
-    const resp = await fetch(
-      Routing.generate("mws_timing_tag_remove_all", {
-        _locale: locale,
-      }),
-      {
-        method: "POST",
-        body: formData,
-        credentials: "same-origin",
-        redirect: "error",
-      }
-    )
-      .then(async (resp) => {
-        console.log(resp.url, resp.ok, resp.status, resp.statusText);
-        if (!resp.ok) {
-          throw new Error("Not 2xx response", { cause: resp });
-        } else {
-          const data = await resp.json();
-          timingTarget?.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          // // TODO : better sync all in-coming props from 'needSync' attr ?
-          timingTarget?.maxPath = data.sync.maxPath;
-          timingTarget?.maxPriceTag = data.sync.maxPriceTag;
-          // hackyRefresh(data);
-
-          // timingTarget = timingTarget; // NICE try, but won't work...
-          timingSlot = timingSlot; // TIPS +++++ : ok, refresh current slot view UI and deps
-          lastSelectedIndex = lastSelectedIndex; // Svelte reactive force reloads (only one well placed is enough ;)
-          console.debug("Did sync tags", timingTarget?.tags);
-          stateUpdate(state, {
-            csrfTimingTagRemoveAll: data.newCsrf,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-        const shouldWait = confirm("Echec de l'enregistrement.");
-      });
-  };
 
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
