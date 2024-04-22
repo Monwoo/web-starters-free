@@ -93,6 +93,12 @@
         // TODO : ok or over opti to avoid double ' Object.fromEntries' extractions
         data.fromData(dataEntries);
       }
+      if ('AddTagCallable' === data.actionName) {
+        data = new AddTagCallable();
+        // TODO : ok or over opti to avoid double ' Object.fromEntries' extractions
+        data.fromData(dataEntries);
+      }
+      
       return data;
     }
 
@@ -234,7 +240,7 @@
   import KeyboardShortcutModal from "./KeyboardShortcutModal.svelte";
   import TailwindDefaults from "../../layout/widgets/TailwindDefaults.svelte";
   import ItemHistory from "./ItemHistory.svelte";
-  import { RemoveTagCallable } from "../tags/TagsInput.svelte";
+  import { AddTagCallable, RemoveTagCallable } from "../tags/TagsInput.svelte";
 
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");

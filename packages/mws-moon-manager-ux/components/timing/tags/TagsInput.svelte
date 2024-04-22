@@ -10,6 +10,7 @@
       public comment = null,
       public locale = 'fr',
     ) {
+      // https://medium.com/@adrien.za/creating-callable-objects-in-javascript-fbf88db9904c
       // super('...args', 'return this._bound._call(...args)')
       // // Or without the spread/rest operator:
       // // super('return this._bound._call.apply(this._bound, arguments)')
@@ -131,6 +132,107 @@
         });
     };
   }
+
+  export class AddTagCallable extends Function {
+    public actionName = 'AddTagCallable';
+    protected _bound;
+    constructor(
+      public tag = null,
+      public comment = null,
+      public locale = 'fr',
+    ) {
+      super('return arguments.callee._call.apply(arguments.callee, arguments)');
+    }
+    
+    async _call(t, syncStartIdx, timings, selectionStartIndex) {
+      if (!this.tag) return;
+      if (undefined !== selectionStartIndex) {
+        let delta = selectionStartIndex - syncStartIdx;
+        let step = delta > 0 ? -1 : 1;
+        while (delta !== 0) {
+          const timingTarget = timings[syncStartIdx + delta];
+          await this.addTagExtended(timingTarget, this.tag, this.comment);
+          console.log("Selection side qualif for " + timingTarget.sourceStamp);
+          delta += step;
+        }
+      }
+
+      await this.addTagExtended(t, this.tag, this.comment)
+    }
+
+    toData() {
+      console.log('RemoveTagCallable toData will extract');
+      return Object.entries(this);
+    }
+    fromData(data) {
+      if (!data) return this;
+      const newEntries = Object.fromEntries(data);
+      _.merge(this, newEntries);
+      return this;
+    }
+
+    async addTagExtended(timingTarget, tag, comment = null) {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfTimingTagAdd"),
+        timeSlotId: timingTarget.id,
+        tagSlug: tag.slug,
+        comment, // TODO : allow optional comment on status switch ?
+      };
+      // let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
+      let headers = {};
+      // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
+      // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+      // Per this article make sure to NOT set the Content-Type header.
+      // headers['Content-Type'] = 'application/json';
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        // TODO : build back Api, will return new csrf to use on success, will error othewise,
+        // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
+        Routing.generate("mws_timing_tag_add", {
+          _locale: this.locale,
+        }),
+        {
+          method: "POST",
+          headers,
+          // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
+          body: formData,
+          // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
+          credentials: "same-origin",
+          // https://javascript.info/fetch-api
+          redirect: "error",
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp.url, resp.ok, resp.status, resp.statusText);
+          if (!resp.ok) {
+            // make the promise be rejected if we didn't get a 2xx response
+            throw new Error("Not 2xx response");
+          } else {
+            // got the desired response
+            const data = await resp.json();
+            const tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+            timingTarget.tags = tags;
+            // TODO : better sync all in-coming props from 'needSync' attr ?
+            timingTarget.maxPath = data.sync.maxPath;
+            timingTarget.maxPriceTag = data.sync.maxPriceTag;
+
+            // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
+            stateUpdate(state, {
+              csrfTimingTagAdd: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    };
+  }
+
 </script>
 
 <script lang="ts">
@@ -205,90 +307,20 @@
   };
 
   export let addTag = async (tag, comment = null) => {
+    const a = new AddTagCallable(tag, comment);
     addHistory(new History(
-      `T: ${tag}`,
+      `T: ${tag.slug}`,
       [ // TODO : is loading indicator...
-        (t) => addTagExtended(t, tag, comment)
+        a
       ]
     ));
 
+    const syncTiming = timings[lastSelectedIndex];
     // const syncTiming = timing;
-    const syncStartIdx = lastSelectedIndex;
-    if (undefined !== selectionStartIndex) {
-      // avoid bulk process stop on early selectionStartIndex switch...
-      // TODO : factorize Toggle qualif of all previous or next qualifs :
-      let delta = selectionStartIndex - syncStartIdx;
-      let step = delta > 0 ? -1 : 1;
-      while (delta !== 0) {
-        const timingTarget = timings[syncStartIdx + delta];
-        await addTagExtended(timingTarget, tag, comment);
-        console.log("Selection side qualif for " + timingTarget.sourceStamp);
-        delta += step;
-      }
-    }
-    await addTagExtended(timings[syncStartIdx], tag, comment);
     // timing = syncTiming; // trigger svelte reactivity
-  };
-
-  export let addTagExtended = async (
-    timingTarget,
-    tagSlug,
-    tagCategorySlug,
-    comment = null
-  ) => {
-    // TODO : fetch modal response
-    const $ = window.$;
-    const modalBtn = $(`[data-modal-target="${modalId}"]`);
-    console.log(modalBtn);
-    modalBtn.click();
-
-    const data = {
-      _csrf_token: stateGet(get(state), "csrfTimingTagAdd"),
-      timeSlotId: timingTarget.id,
-      tagSlug: tagSlug,
-      comment, // TODO : allow optional comment on status switch ?
-      tagCategorySlug: tagCategorySlug,
-    };
-    const formData = new FormData();
-    for (const name in data) {
-      formData.append(name, data[name]);
-    }
-    const resp = await fetch(
-      Routing.generate("mws_timing_tag_add", {
-        _locale: locale,
-      }),
-      {
-        method: "POST",
-        body: formData,
-        credentials: "same-origin",
-        redirect: "error",
-      }
-    )
-      .then(async (resp) => {
-        console.log(resp.url, resp.ok, resp.status, resp.statusText);
-        addedTagKey = "null";
-        if (!resp.ok) {
-          throw new Error("Not 2xx response");
-        } else {
-          const data = await resp.json();
-          tags = Object.values(data.newTags); // A stringified obj with '1' as index...
-          timingTarget.tags = tags;
-          // TODO : better sync all in-coming props from 'needSync' attr ?
-          timingTarget.maxPath = data.sync.maxPath;
-          timingTarget.maxPriceTag = data.sync.maxPriceTag;
-
-          console.debug("Did add tag", tags);
-          stateUpdate(state, {
-            csrfTimingTagAdd: data.newCsrf,
-          });
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-        // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
-        const shouldWait = confirm("Echec de l'enregistrement.");
-        addedTagKey = "null";
-      });
+    // await a._call(syncTiming);
+    await a(syncTiming, lastSelectedIndex, timings, selectionStartIndex);
+    tags = syncTiming.tags;
   };
 
   // TODO : refactor ? Delete and ubdate could be done with sync api...
@@ -394,13 +426,14 @@
   -->
 {/each}
 
+<!-- 
+  on:change={() 
+  A11y: on:blur must be used instead of on:change, unless absolutely necessary and it causes no negative consequences for keyboard only or screen reader users.svelte(a11y-no-onchange) -->
 <select
   bind:value={addedTagKey}
-  on:change={() => {
+  on:blur={() => {
     if ("null" === addedTagKey) return;
-
-    const [tagCategorySlug, tagSlug] = addedTagKey.split("|");
-    addTag(tagSlug, tagCategorySlug);
+    addTag({slug : addedTagKey});
   }}
   class="opacity-30 hover:opacity-100 
 bg-gray-50 border border-gray-300 text-gray-900 
@@ -411,7 +444,7 @@ dark:focus:border-blue-500"
 >
   <option value="null" selected>Ajouter un tag</option>
   {#each allTagsList as tag}
-    <option value={`${tag.categorySlug}|${tag.slug}`}>{tag.label}</option>
+    <option value={`${tag.slug}`}>{tag.label}</option>
   {/each}
 </select>
 
