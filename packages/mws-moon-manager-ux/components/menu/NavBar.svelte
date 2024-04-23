@@ -57,7 +57,7 @@
           _locale: locale ?? "fr",
           viewTemplate: viewTemplate ?? null,
         })}
-        class="flex flex-wrap items-center pb-2"
+        class="flex items-center pb-2"
       >
         <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
         <span
@@ -252,7 +252,8 @@
               intro = null; // redo animation on each expand
             }}
           >
-            Paramètres
+            { ! $state.user?.userIdentifier && `Paramètres` || ''}
+            
             <span
               class="max-w-full md:max-w-[7rem] px-1
               whitespace-nowrap overflow-hidden text-ellipsis"

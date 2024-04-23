@@ -149,7 +149,7 @@ import { onMount } from "svelte";
         </Header>
       </header>
     </slot>
-    <main class="flex-1 md:overflow-y-auto header {mainClass}">
+    <main class="flex-1 md:overflow-y-auto wide:overflow-visible {mainClass}">
       <slot />
     </main>
     <slot name="mws-footer-container">

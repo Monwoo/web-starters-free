@@ -157,7 +157,7 @@
 </script>
 
 <!-- // TODO : why sticky left-0  not working ? no sticky left, overflow issue in parent container hierachy ? -->
-<tr class="mws-default-bg sticky left-0 top-[3rem] md:top-[1rem] z-40 border-b-0"
+<tr class="mws-default-bg sticky left-0 top-[3rem] md:top-[1rem] wide:top-[3rem] z-40 border-b-0"
 class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
 >
   <td
