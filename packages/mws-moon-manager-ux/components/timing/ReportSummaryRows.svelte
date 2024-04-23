@@ -17,7 +17,7 @@
   export let showDetails = false; // TODO : CSV EXPORT instead, PDF print is too much pages... (might be ok per month, but not for one year of data...)
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
-
+  export let reportScale;
   console.debug('[ReportSummaryRows] label', label);
   console.debug('[ReportSummaryRows] subLevelKeys', subLevelKeys);
 
@@ -157,11 +157,20 @@
 </script>
 
 <!-- // TODO : why sticky left-0  not working ? no sticky left, overflow issue in parent container hierachy ? -->
-<tr class="mws-default-bg sticky left-0 top-[3rem] md:top-[1rem] wide:top-[3rem] z-40 border-b-0"
+<tr class="mws-default-bg border-l-0 border-b-0
+sticky left-0 md:-left-5 wide:left-0
+top-[3rem] md:top-[1rem] wide:top-[3rem] z-40
+flex w-[100dvw]"
 class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
+style={`
+  width: ${(100/Number(reportScale ?? 100) * 100).toFixed(0)}dvw;
+`}
 >
+  <!-- 
+    class="border-t-0 px-6 text-middle sticky left-0 top-[3rem] md:top-[1rem] wide:top-[3rem] z-40 {rowClass}"
+    colspan="100%" -->
   <td
-  class="border-t-0 px-6 text-middle {rowClass}"
+  class="grow border-t-0 px-6 text-middle {rowClass}"
   colspan="100%"
   >
     <div class="text-lg pl-{indent}">
@@ -311,7 +320,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
       summary={getSubSummary(subKey, showDetails)}
       subLevelKeys={getSubLvlKeys(subKey, showDetails)}
       rowClass={getSubRowClass(subKey, showDetails)}
-      indent={indent + 4}
+      indent={indent + 4} {reportScale}
       {showDetails} {showPictures}
       {summaryByDays} {timingsByIds}>
       </ReportSummaryRows>   

@@ -1235,6 +1235,7 @@
               {showPictures}
               {summaryByDays}
               {timingsByIds}
+              {reportScale}
             />
           {/if}
         {/each}
@@ -1256,7 +1257,8 @@
             {showPictures}
             {summaryByDays}
             {timingsByIds}
-          />
+            {reportScale}
+            />
         {/each}
       </tbody>
     </table>
