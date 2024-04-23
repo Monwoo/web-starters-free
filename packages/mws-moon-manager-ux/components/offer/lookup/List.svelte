@@ -18,6 +18,7 @@
   export let reportScale = 100;
   export let addModal;
   export let isMobile;
+  export let isWide;
 
   let funnelComponent;
 
@@ -35,7 +36,7 @@
       cleanup = null;
     };
     const jQuery = window.jQuery;
-    const yScrollableSelector = isMobile ? 'body' : 'main'; // TODO : name main content scroll window ? instead of <main>
+    const yScrollableSelector = (isMobile || isWide) ? 'body' : 'main'; // TODO : name main content scroll window ? instead of <main>
     yScrollable = jQuery(yScrollableSelector); // TODO : name main content scroll window ? instead of <main>
     // jQuery(() => {
     const scrollListener = (e) => {

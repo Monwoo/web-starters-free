@@ -22,6 +22,7 @@
   export let lookupForm;
   export let addMessageForm = "";
   export let isMobile;
+  export let isWide;
   export let reportScale = 100;
 
   $: reportScale = isMobile ? 85 : 100;
@@ -123,7 +124,7 @@
   console.log(Routing.generate("mws_offer_import"));
 </script>
 
-<Base bind:isMobile {copyright} {locale} {viewTemplate}>
+<Base bind:isMobile bind:isWide {copyright} {locale} {viewTemplate}>
   <div class="p-3 flex flex-wrap">
     <Loader {isLoading} />
     <a
@@ -215,7 +216,7 @@
     <List
       {reportScale}
       {locale}
-      {isMobile}
+      {isMobile} {isWide}
       {offers}
       {offersHeaders}
       {viewTemplate}
