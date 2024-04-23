@@ -478,7 +478,7 @@ dark:focus:border-blue-500"
           label: newTagLabel,
         });
         if (newTag) {
-          await addTag(newTag.slug);
+          await addTag({slug : newTag.slug});
         }
         //   // TODO tags Async failing, wrong server or client? instead of reload, update datas
         // window.location.reload();
