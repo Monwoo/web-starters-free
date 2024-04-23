@@ -89,7 +89,7 @@
         {offer.title}
       </a>
     </h1>
-    <div class="w-full overflow-x-auto">
+    <div class="w-full">
       <table class="m-3 text-center w-full">
         <thead>
           <tr>
