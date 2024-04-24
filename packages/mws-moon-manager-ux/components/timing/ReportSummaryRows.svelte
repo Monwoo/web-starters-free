@@ -5,7 +5,7 @@
   import MwsTimeSlotIndicator from "../layout/widgets/MwsTimeSlotIndicator.svelte";
   import dayjs from "dayjs";
 
-  export let rowClass = "bg-gray-400 font-extrabold";
+  export let rowClass = "bg-gray-400 font-extrabold bg-none";
   export let indent = 4;
   export let label = "";
   export let summary = {};
@@ -18,6 +18,7 @@
   export let showPictures = false;
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
   export let reportScale;
+  export let breadcrumb = [];
   console.debug('[ReportSummaryRows] label', label);
   console.debug('[ReportSummaryRows] subLevelKeys', subLevelKeys);
 
@@ -126,26 +127,26 @@
   const getSubRowClass = (subKey, showDetails) => {
     if ((summary.subTags ?? {})[subKey] ?? false) {
       if (summary.subTags[subKey].deepLvl == 1) {
-        return "bg-gray-300 font-bold";
+        return "bg-gray-300 font-bold bg-none";
       }
       if (summary.subTags[subKey].deepLvl == 2) {
-        return "bg-gray-100 font-bold";
+        return "bg-gray-100 font-bold bg-none";
       }
       if (summary.subTags[subKey].deepLvl == 3) {
-        return "bg-gray-100 font-bold";
+        return "bg-gray-100 font-bold bg-none";
       }
       if (summary.subTags[subKey].deepLvl == 4) {
-        return "bg-gray-100 font-bold";
+        return "bg-gray-100 font-bold bg-none";
       }
-      return "bg-gray-100 font-bold";
+      return "bg-gray-100 font-bold bg-none";
     }
     if ((summary.months ?? {})[subKey]?? false) {
-      return "bg-gray-200 font-bold";
+      return "bg-gray-200 font-bold bg-none";
     }
     if ((summary.days ?? {})[subKey]??false) {
       return "";
     }
-    return "text-gray-600";
+    return "text-gray-600 bg-none";
   };
   
   const tagSlugs = Object.keys(summary.tags ?? {}).sort();
@@ -157,29 +158,75 @@
 </script>
 
 <!-- // TODO : why sticky left-0  not working ? no sticky left, overflow issue in parent container hierachy ? -->
+
+
+<!--
+TIPS : use collspan to fill instead of fixed width that will fix first column width too...
 <tr class="mws-default-bg border-l-0 border-b-0
 sticky left-0 md:-left-5 wide:left-0
 top-[3rem] md:top-[1rem] wide:top-[3rem] z-40
-flex w-[100dvw]"
+flex"
 class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
 style={`
   width: ${(100/Number(reportScale ?? 100) * 100).toFixed(0)}dvw;
 `}
 >
-  <!-- 
+  class="grow border-t-0 px-6 text-middle {rowClass}"
+  colspan="100%"
+
+
+-->
+<tr
+class="mws-default-bg border-l-0 border-b-0
+  sticky
+  top-[3rem] md:top-[1rem] wide:top-[3rem] z-40
+  {rowClass}"
+>
+  <td
+  class="border-t-0 px-6 text-middle {rowClass}"
+  >
+  </td>
+<!-- 
     class="border-t-0 px-6 text-middle sticky left-0 top-[3rem] md:top-[1rem] wide:top-[3rem] z-40 {rowClass}"
     colspan="100%" -->
   <td
-  class="grow border-t-0 px-6 text-middle {rowClass}"
-  colspan="100%"
+  class="border-l-0 border-b-0
+  sticky left-0 md:-left-5 wide:left-0
+  z-40
+  flex w-[60dvw] md:w-auto wide:w-[60dvw] print:w-auto {rowClass}"
+  class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
+    colspan="60%" 
   >
-    <div class="text-lg pl-{indent}">
+    <div class="text-lg pl-{indent} text-ellipsis	overflow-hidden break-keep
+    flex items-center">
       <!-- { Array.apply(null, {length: indent / 4})
         .map(Number.call, (n) => '*').join(' ')
       } [{label}]</div> -->
       <!-- <span class="text-gray-500">[{indent / 4}]</span> -->
       <span>[{label}]</span>
+      {#each breadcrumb as crumb, idx}
+        <span class="text-gray-700 font-normal text-sm pl-3">
+          <!-- { idx > 0
+            ? ``
+            : ` < `
+          } -->
+
+          <!-- // TIPS : without '@html', svelte will escape html display  -->
+          { ` < ` }
+          {crumb}
+        </span>
+      {/each}
     </div>
+  </td>
+  <!-- colspan={`
+    ${(100/Number(reportScale ?? 100) * 100 - 100).toFixed(0)}%
+  `}   -->
+  <td
+  class="border-t-0 px-6 text-middle {rowClass}"
+  colspan={`
+    100%
+  `}  
+  >
   </td>
 </tr>
 <tr class="{rowClass}  border-t-0"
@@ -321,6 +368,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
       subLevelKeys={getSubLvlKeys(subKey, showDetails)}
       rowClass={getSubRowClass(subKey, showDetails)}
       indent={indent + 4} {reportScale}
+      breadcrumb={[label].concat(breadcrumb)}
       {showDetails} {showPictures}
       {summaryByDays} {timingsByIds}>
       </ReportSummaryRows>   

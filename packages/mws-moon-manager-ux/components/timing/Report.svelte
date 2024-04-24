@@ -52,8 +52,10 @@
   //    below do not take resize stuff, etc, cf Svelte base layout
   const isMobileRule = "(max-width: 768px) and (min-height: 480px)";
   export let isMobile = window.matchMedia(isMobileRule)?.matches;
+  const isWideRule = "only screen and (max-height: 480px) and (max-width: 960px)";
+  export let isWide = window.matchMedia(isWideRule)?.matches;
   export let reportScale; // = isMobile ? 67 : 100;
-  $: reportScale = isMobile ? 67 : 100;
+  $: reportScale = isMobile ? 67 : isWide ? 69 : 100;
 
   const urlParams = new URLSearchParams(window.location.search);
   const pageNumber = urlParams.get("page") ?? "1";
@@ -1011,6 +1013,12 @@
     <div id="config-report" class="detail w-full hidden">
       {@html reportForm}
     </div>
+    <div class="w-full label pb-2">
+      <button on:click={() => window.print()}>
+        Imprimer (Zoom {reportScale} %)
+      </button>
+    </div>
+
   </div>
   <div class="w-full">
     {#each [1, 2, 3, 4, 5] as lvl}
@@ -1162,8 +1170,14 @@
     style={`
       zoom: ${reportScale}%;
     `} -->
+
+    <!-- TODO : use https://tailwindcss.com/docs/grid-template-columns 
+      https://medium.com/@snowleo208/how-to-create-responsive-table-d1662cb62075 ?
+      instead of table ? table is better for old compatibility reports, 
+      printings and emails embeddings or tailwind ok for all devices ok in 2024 ?
+     -->
     <table
-      class="items-center w-full bg-transparent border-collapse"
+      class="table-auto flex-grow items-center w-full bg-transparent border-collapse"
     >
       <thead class="sticky top-[-1px] md:-top-6 wide:top-[-1px] z-40 text-xs md:text-sm">
         <tr
@@ -1230,7 +1244,7 @@
                   subTag.ids ??
                   []
               )}
-              rowClass="bg-gray-300 font-bold"
+              rowClass="bg-gray-300 font-bold bg-none"
               {showDetails}
               {showPictures}
               {summaryByDays}

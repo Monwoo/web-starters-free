@@ -183,10 +183,17 @@ thead[class*="sticky"] {
 }
 
 .mws-default-bg {
-    background: linear-gradient(to right,
-    RGB(var(--mws-background-rgb)),
-    RGB(var(--mws-background-light-rgb)),
-    RGB(var(--mws-background-rgb)));    
+    // background: linear-gradient(to right,
+    // RGB(var(--mws-background-rgb)),
+    // RGB(var(--mws-background-light-rgb)),
+    // RGB(var(--mws-background-rgb)));    
+    // TIPS : above will reset tailwind bg color ways, use tailwind ways for gradients :
+    // https://tailwindcss.com/docs/gradient-color-stops
+    --tw-gradient-from: RGB(var(--mws-background-rgb)) var(--tw-gradient-from-position);
+    --tw-gradient-to: RGB(var(--mws-background-light-rgb)) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to), var(--tw-gradient-from);
+    // https://tailwindcss.com/docs/background-image
+    background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 
 .mws-default-bg-bckup {
