@@ -205,7 +205,7 @@ class="mws-default-bg border-l-0 border-b-0
       <!-- <span class="text-gray-500">[{indent / 4}]</span> -->
       <span class="grow break-keep w-max">[{label}]</span>
       {#each breadcrumb as crumb, idx}
-        <span class="text-gray-700 font-normal text-sm pl-3 break-keep">
+        <span class="text-gray-500 font-normal text-sm pl-3 break-keep">
           <!-- { idx > 0
             ? ``
             : ` < `
