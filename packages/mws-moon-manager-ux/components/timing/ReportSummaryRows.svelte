@@ -146,7 +146,7 @@
     if ((summary.days ?? {})[subKey]??false) {
       return "";
     }
-    return "text-gray-600 bg-none";
+    return "text-gray-600";
   };
   
   const tagSlugs = Object.keys(summary.tags ?? {}).sort();
