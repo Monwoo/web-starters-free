@@ -876,7 +876,12 @@ class PdfBillingsController extends AbstractController
         // https://stackoverflow.com/questions/8811251/how-to-get-the-full-url-for-an-asset-in-controller
         $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
 
-        $defaultLogoPublic = $baseurl . $packages->getUrl('/medias/LogoMonwooDemo.jpg');
+        // TIPS : OK with FULL URL, BUT with not self signed SSL certificate
+        //         image SIZE compute will fail since https is unsecure...
+        // $defaultLogoPublic = $baseurl . $packages->getUrl('/medias/LogoMonwooDemo.jpg');
+        // TODO  : public dir form sf env vars ?
+        $defaultLogoPublic = 'file://' . $projectDir . '/public/medias/LogoMonwooDemo.jpg';
+
         $defaultLogoPrivate = 'file://' . $projectDir . '/var/businessLogo.jpg';
         $businessLogo = $bConfig->getBusinessLogo() ? $bConfig->getBusinessLogo()
         // : $urlGenerator->generate('/public/medias/LogoMonwooDemo.jpg');
