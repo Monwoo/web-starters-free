@@ -1013,12 +1013,6 @@
     <div id="config-report" class="detail w-full hidden">
       {@html reportForm}
     </div>
-    <div class="w-full label pb-2">
-      <button on:click={() => window.print()}>
-        Imprimer (Zoom {reportScale} %)
-      </button>
-    </div>
-
   </div>
   <div class="w-full">
     {#each [1, 2, 3, 4, 5] as lvl}
@@ -1142,7 +1136,12 @@
     <!-- {summaryTotals.sumOfMaxPPH.toPrettyNum(2)} € annexes. -->
     {(summaryTotals.sumOfMaxPathPerHr?.maxValue ?? 0).toPrettyNum(2)} € annexes.
   </div>
-  <div class="w-full h-4" />
+  <div class="w-full label py-2">
+    <button on:click={() => window.print()}>
+      Imprimer (Zoom {reportScale} %)
+    </button>
+  </div>
+  <!-- <div class="w-full h-2" /> -->
   <div
     class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden"
   >
