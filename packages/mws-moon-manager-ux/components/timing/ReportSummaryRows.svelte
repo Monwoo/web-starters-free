@@ -197,15 +197,15 @@ class="mws-default-bg border-l-0 border-b-0
   class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     colspan="60%" 
   >
-    <div class="text-lg pl-{indent} text-ellipsis	overflow-hidden break-keep
+    <div class="text-lg pl-{indent} text-ellipsis	overflow-show break-keep whitespace-nowrap
     flex items-center">
       <!-- { Array.apply(null, {length: indent / 4})
         .map(Number.call, (n) => '*').join(' ')
       } [{label}]</div> -->
       <!-- <span class="text-gray-500">[{indent / 4}]</span> -->
-      <span>[{label}]</span>
+      <span class="grow break-keep w-max">[{label}]</span>
       {#each breadcrumb as crumb, idx}
-        <span class="text-gray-700 font-normal text-sm pl-3">
+        <span class="text-gray-700 font-normal text-sm pl-3 break-keep">
           <!-- { idx > 0
             ? ``
             : ` < `
