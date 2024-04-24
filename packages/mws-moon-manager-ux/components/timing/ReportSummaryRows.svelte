@@ -193,7 +193,7 @@ class="mws-default-bg border-l-0 border-b-0
   class="border-l-0 border-b-0
   sticky left-0 md:-left-5 wide:left-0
   z-40
-  flex w-[60dvw] md:w-auto wide:w-[60dvw] print:!w-auto {rowClass}"
+  flex w-[60dvw] md:w-auto wide:w-[60dvw] print:w-auto print:max-w-[40dvw] {rowClass}"
   class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     colspan="40%" 
   >
