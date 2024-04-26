@@ -274,7 +274,7 @@
     <span
       class="float-right m-1 text-black sticky
       bg-white/70 text-xs md:text-base p-1
-      top-1 select-none"
+      top-8 select-none"
       class:z-[100]={!isFullScreen}
       class:z-30={isFullScreen}
       on:click={() => {
