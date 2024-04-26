@@ -178,7 +178,7 @@ class MwsTimingController extends AbstractController
         // Redirect for update :
         $uConfig = $user->getConfig();
         if ($pageLimit <= 0) {
-            $defaultPLimit = $uConfig['pageLimit'] ?? 124; // TODO : from logged user configs first
+            $defaultPLimit = $uConfig['pageLimit'] ?? 124; // TODO : from logged user configs first ok + crm default for 124 ? also used Svelte side
             return $this->redirectToRoute(
                 'mws_timings_qualif',
                 array_merge($request->query->all(), [

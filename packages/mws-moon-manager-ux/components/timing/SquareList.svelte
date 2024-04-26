@@ -32,6 +32,9 @@
   export let computedSize;
   export let isFullScreen = false;
 
+  const urlParams = new URLSearchParams(window.location.search);
+  let pageLimit = urlParams.get("pageLimit") ?? "124";
+
   $: zoomStartRange = computeStartRange(isWide, isMobile); // Need one change to update...
   // $: listZoomRange = listZoomRange ? zoomStartRange : 5;
   $: listZoomRange = zoomStartRange; // Ok due to Svelte reactivity : only update if zoomStartRange change...
@@ -169,7 +172,7 @@
       lastSelectedIndex--; // TODO : if < 0 ? or elt exist ?
       if (e.shiftKey) {
         // Move last elt previous page :
-        lastSelectedIndex = 123; // TODO : from CRM configs ...
+        lastSelectedIndex = Number(pageLimit) - 1; // TODO : from CRM configs ...
         movePageIndex(-1);
       }
       e.preventDefault();

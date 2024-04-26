@@ -36,23 +36,22 @@
   export let isWide;
   // TIPS : For reactiv, MUST pass ref in params to trigger Svelte reactivity
   // const computeStartRange = () => isWide ? 27 : isMobile ? 30 : 70; // WRONG
-  const computeStartRange = (isWide, isMobile) => isWide ? 32 : isMobile ? 30 : 28; 
+  const computeStartRange = (isWide, isMobile) =>
+    isWide ? 32 : isMobile ? 30 : 28;
   export let splitStartRange = computeStartRange(isWide, isMobile);
   export let splitRange = splitStartRange;
   export let thumbSize;
 
   const urlParams = new URLSearchParams(window.location.search);
   export let selectionStartIndex =
-  urlParams.get("selectionStartIndex") === null
-  ? undefined
-  : parseInt(
-    urlParams.get("selectionStartIndex")
-  );
+    urlParams.get("selectionStartIndex") === null
+      ? undefined
+      : parseInt(urlParams.get("selectionStartIndex"));
   export let lastSelectedIndex = parseInt(
     urlParams.get("lastSelectedIndex") ?? "0"
   );
   const pageNumber = urlParams.get("page") ?? "1";
-  let pageLimit = urlParams.get("pageLimit") ?? "1";
+  let pageLimit = urlParams.get("pageLimit") ?? "124";
   export let pageLimitForm;
 
   // https://stackoverflow.com/questions/59062025/is-there-a-way-to-perform-svelte-transition-without-a-if-block
@@ -60,19 +59,29 @@
   let uniqueKey = {};
 
   $: splitStartRange = computeStartRange(isWide, isMobile); // Need one change to update...
-  $: splitStartRange ? splitRange = splitStartRange : null;
+  $: splitStartRange ? (splitRange = splitStartRange) : null;
 
   const movePageIndex = (delta) => {
     const newPageNum = parseInt(pageNumber) + delta;
     // TODO : how to know max page num ? data.length / pageLimit, need to know details...
-    urlParams.set("page", newPageNum < 1 ? 1 : newPageNum);
+    urlParams.set(
+      "page",
+      newPageNum < 1
+        ? 1
+        : timings.length
+        ? newPageNum
+        : delta < 0
+        ? newPageNum
+        : pageNumber
+    );
     // // TIPS : or redux sync or component props ?
     // const urlParams = new URLSearchParams(window.location.search);
     // const lastSelectedIndex = urlParams.get("lastSelectedIndex") ?? "1";
     // lastSelectedIndex = 123; // TODO : from CRM configs ...
     const newSelectedIndex =
-      delta < 0 ? 123 : 0 === delta ? lastSelectedIndex : 0;
+      delta < 0 ? Number(pageLimit) - 1 : 0 === delta ? lastSelectedIndex : 0;
     urlParams.set("lastSelectedIndex", "" + newSelectedIndex);
+    urlParams.set("selectionStartIndex", "-1");
     window.location.search = urlParams;
   };
   // dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
@@ -84,13 +93,14 @@
     if (
       lastSelectedIndex != parseInt(urlParams.get("lastSelectedIndex") ?? "0")
     ) {
-      urlParams.set("lastSelectedIndex", '' + lastSelectedIndex);
+      urlParams.set("lastSelectedIndex", "" + lastSelectedIndex);
     }
     if (
       undefined !== selectionStartIndex &&
-      selectionStartIndex != parseInt(urlParams.get("selectionStartIndex") ?? "-1")
+      selectionStartIndex !=
+        parseInt(urlParams.get("selectionStartIndex") ?? "-1")
     ) {
-      urlParams.set("selectionStartIndex", '' + selectionStartIndex);
+      urlParams.set("selectionStartIndex", "" + selectionStartIndex);
     }
     if (undefined === selectionStartIndex) {
       urlParams.delete("selectionStartIndex");
@@ -98,7 +108,7 @@
     // window.location.search = urlParams; // Force page reload
     // https://stackoverflow.com/questions/824349/how-do-i-modify-the-url-without-reloading-the-page
     const newUrl =
-    window.location.origin + window.location.pathname + "?" + urlParams;
+      window.location.origin + window.location.pathname + "?" + urlParams;
     history.pushState({}, null, newUrl);
   }
 
@@ -239,22 +249,24 @@
       >
         Prev.
       </button>
-      {#if moveResp && moveResp.isLast}
-        <button
-          class="float-right m-1 top-0"
-          on:click|stopPropagation={() => movePageIndex(1)}
-        >
-          Next. Page
-        </button>
-      {/if}
-      {#if moveResp.isFirst && pageNumber > 1}
-        <button
-          class="float-right m-1 top-0"
-          on:click|stopPropagation={() => movePageIndex(-1)}
-        >
-          Prev. Page
-        </button>
-      {/if}
+      <!-- { #if moveResp && moveResp.isLast} -->
+      <button
+        class="float-right m-1 top-0"
+        class:opacity-70={!(moveResp && moveResp.isLast) || !timings.length}
+        on:click|stopPropagation={() => movePageIndex(1)}
+      >
+        Next Page
+      </button>
+      <!-- { /if} -->
+      <!-- { #if moveResp.isFirst && pageNumber > 1} -->
+      <button
+        class="float-right m-1 top-0"
+        class:opacity-70={!(moveResp.isFirst && Number(pageNumber) > 1) && timings.length}
+        on:click|stopPropagation={() => movePageIndex(-1)}
+      >
+        Prev Page
+      </button>
+      <!-- { /if} -->
     </span>
 
     <!-- // TODO : stress tests ? switching selectionStartIndex off
@@ -263,8 +275,8 @@
       class="float-right m-1 text-black sticky
       bg-white/70 text-xs md:text-base p-1
       top-1 select-none"
-      class:z-[100]={!isFullScreen}  
-      class:z-30={isFullScreen}  
+      class:z-[100]={!isFullScreen}
+      class:z-30={isFullScreen}
       on:click={() => {
         if (undefined === selectionStartIndex) {
           selectionStartIndex = lastSelectedIndex;
@@ -301,7 +313,8 @@
           <Header {locale} />
         </header>
         <div class="p-3 flex flex-wrap">
-          <form class="mws-update-page-limit-form w-full"
+          <form
+            class="mws-update-page-limit-form w-full"
             action={Routing.generate("mws_timings_qualif", {
               _locale: locale ?? "",
               viewTemplate: viewTemplate ?? "",
@@ -312,10 +325,12 @@
             method="GET"
           >
             <span>
-              <input type="number" name="pageLimit"
+              <input
+                type="number"
+                name="pageLimit"
                 bind:value={pageLimit}
                 on:keydown|stopPropagation={(e) => {
-                  if ('Enter' == e.key) {
+                  if ("Enter" == e.key) {
                     pageLimitForm.submit();
                   }
                 }}
@@ -462,7 +477,8 @@
           bind:timeQualifs
           bind:quickQualifTemplates
           bind:timings
-          {isMobile} {isWide}
+          {isMobile}
+          {isWide}
           {moveSelectedIndex}
           {movePageIndex}
           {locale}
@@ -502,7 +518,10 @@
         bind:isFullScreen
         followSelection={!isFullScreen}
         {quickQualifTemplates}
-        {timings} {isMobile} {isWide} {splitRange}
+        {timings}
+        {isMobile}
+        {isWide}
+        {splitRange}
         {movePageIndex}
         class="h-[50%] w-[100%] ml-0 mt-[2%]
         md:w-[50%] md:h-[100%] md:ml-[0.5%] md:mt-0
