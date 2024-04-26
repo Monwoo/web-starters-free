@@ -178,7 +178,7 @@ style={`
 -->
 <tr
 class="mws-default-bg border-l-0 border-b-0
-  sticky
+  sticky overfow-hidden
   top-[3rem] md:top-[1rem] wide:top-[3rem] z-40
   {rowClass}"
 >
