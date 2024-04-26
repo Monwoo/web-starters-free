@@ -321,7 +321,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     </span>
   </td>
   <td
-    class="sticky top-7 z-30 border-t-0 px-6 text-center
+    class="sticky top-7 z-30 border-b-0 border-t-0 px-6 text-center
     mws-default-bg {rowClass}
     align-top
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
