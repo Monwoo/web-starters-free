@@ -1176,7 +1176,8 @@
       printings and emails embeddings or tailwind ok for all devices ok in 2024 ?
      -->
     <table
-      class="table-auto flex-grow items-center w-full bg-transparent border-collapse"
+      class="table-auto flex-grow items-center w-full bg-transparent
+      border-collapse  overfow-y-hidden"
     >
       <thead class="sticky top-[-1px] md:-top-6 wide:top-[-1px] z-40 text-xs md:text-sm">
         <tr
