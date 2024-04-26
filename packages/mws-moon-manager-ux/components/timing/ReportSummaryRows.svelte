@@ -178,7 +178,7 @@ style={`
 -->
 <tr
 class="mws-default-bg border-l-0 border-b-0
-  sticky overfow-hidden
+  sticky
   top-[3rem] md:top-[1rem] wide:top-[3rem] z-40
   {rowClass}"
 >
@@ -197,7 +197,9 @@ class="mws-default-bg border-l-0 border-b-0
   class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     colspan="40%" 
   >
-    <div class="text-lg pl-{indent} text-ellipsis	overflow-show break-keep whitespace-nowrap
+    <div class="text-lg pl-{indent} text-ellipsis	overflow-show
+    break-keep whitespace-nowrap
+    mws-default-bg {rowClass}
     flex items-center">
       <!-- { Array.apply(null, {length: indent / 4})
         .map(Number.call, (n) => '*').join(' ')
