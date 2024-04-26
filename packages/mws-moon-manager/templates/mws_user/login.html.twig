@@ -5,6 +5,21 @@
 	Connexion
 {% endblock %}
 
+{% block javascript %}
+	{{ parent() }}``
+	<script>
+		// https://stackoverflow.com/questions/5445431/jquery-disable-submit-button-on-form-submission
+		$('form.submit-once').submit(function (e) {
+			if ($(this).hasClass('form-submitted')) {
+				e.preventDefault();
+				return;
+			}
+			$(this).addClass('form-submitted');
+		});
+	</script>
+
+{% endblock %}
+
 {% block body %}
 	<div class="content h-[80dvh] overflow-auto pt-2 text-center" style="">
 		{% if app.user %}
@@ -39,7 +54,7 @@
 
 					<div class="card-body">
 						<form action="{{ path('mws_user_login') }}" method="post"
-						class="login-form flex flex-wrap justify-center items-center">
+						class="submit-once login-form flex flex-wrap justify-center items-center">
 							<h1 class="h3 mb-3 font-weight-normal text-center">Se connecter</h1>
 							<div class="w-full flex flex-wrap justify-center items-center p-2">
 								<label class="w-[12em] text-right" for="username">Nom d'utilisateur:</label>
