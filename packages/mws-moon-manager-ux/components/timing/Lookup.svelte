@@ -81,7 +81,7 @@
     const newSelectedIndex =
       delta < 0 ? Number(pageLimit) - 1 : 0 === delta ? lastSelectedIndex : 0;
     urlParams.set("lastSelectedIndex", "" + newSelectedIndex);
-    urlParams.set("selectionStartIndex", "-1");
+    urlParams.delete("selectionStartIndex");
     window.location.search = urlParams;
   };
   // dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
