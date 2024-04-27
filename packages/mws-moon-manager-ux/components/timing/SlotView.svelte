@@ -1485,6 +1485,9 @@
           <Svg url={caretLeft}></Svg>
         </button>  
       </div>
+      <!-- // TODO : if fullscreen, scrollable list from right to left since
+      //        SCROLL is more efficient than click to go prev/next current
+      //        qualifs in progress... -->
       <object
         loading="lazy"
         use:pan="{{delay:imagePanDelayMs}}"
