@@ -38,6 +38,11 @@
   export let followSelection = true;
   export let quickQualifTemplates;
 
+  $: thumbtitle = 
+    (currentTimeSlotQualifs?.reduce((acc, q) => {
+      return acc + q.label + ' '
+    }, '') ?? '') + (timingSlot?.sourceStamp ?? '');
+
   $: slotName = timingSlot.sourceStamp.split(/[\\/]/).pop();
   $: slotPath = timingSlot.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
@@ -207,7 +212,7 @@ overflow-visible border-solid border-4"
   {#if (timingSlot?.thumbnailJpeg ?? false) && computedSize < 120}
     <img
       loading="lazy"
-      alt="screenshot"
+      alt={ thumbtitle }
       arial-label="screenshot"
       class="object-contain w-full h-full"
       src={"screenshot" == timingSlot?.source?.type
@@ -221,11 +226,11 @@ overflow-visible border-solid border-4"
     data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
     type="image/png"
     role="presentation"
-    title={timingSlot?.sourceStamp}
+    title={ thumbtitle }
   >
     <img
         loading="lazy"
-        alt="screenshot"
+        alt={ thumbtitle }
         arial-label="screenshot"
         class="object-contain w-full h-full"
         src={timingSlot.thumbnailJpeg ?? randomEmptyPicture()}

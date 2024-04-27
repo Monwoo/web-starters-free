@@ -350,6 +350,10 @@
   export let htmlRoot;
   export let viewWrapper;
 
+  $: viewtitle = (currentTimeSlotQualifs?.reduce((acc, q) => {
+      return acc + q.label + ' '
+    }, '') ?? '') + (timingSlot?.sourceStamp ?? '');
+
   $: vWidth = viewWrapper?.offsetWidth ?? 0;
 
   $: zoomStartRange = computeStartRange(isWide, isMobile); // Need one change to update...
@@ -1503,6 +1507,7 @@
         class:border-green-400={timingSlot?.tags?.length}
         data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
         type="image/png"
+        title={ viewtitle }
         style={`
         ${
           slotHeight && zoomRange == zoomStartRange
@@ -1517,6 +1522,7 @@
         `}
       >
         <img class="w-full object-contain select-none m-auto" loading="eager"
+        alt={ viewtitle }
         src={timingSlot.thumbnailJpeg ?? randomEmptyPicture()}
         />
       </object>
