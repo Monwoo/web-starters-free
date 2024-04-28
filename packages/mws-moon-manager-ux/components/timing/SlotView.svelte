@@ -350,6 +350,11 @@
   export let htmlRoot;
   export let viewWrapper;
 
+  // TODO : crop tool to resize privacy frog ?
+  // + easy crop mask history and save/reload privacy frog parameters...
+  // + add export option : 'Thumbs without frogs'
+  // + add export option : 'Include privacy frogs'
+
   $: viewtitle = (currentTimeSlotQualifs?.reduce((acc, q) => {
       return acc + q.label + ' '
     }, '') ?? '') + (timingSlot?.sourceStamp ?? '');

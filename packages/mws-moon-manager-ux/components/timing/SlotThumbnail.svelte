@@ -38,6 +38,12 @@
   export let followSelection = true;
   export let quickQualifTemplates;
 
+  // TODO : crop tool to resize privacy frog ?
+  // + easy crop mask history and save/reload privacy frog parameters...
+  // + add export option : 'Thumbs without frogs'
+  // + add export option : 'Include privacy frogs'
+
+
   $: thumbtitle = 
     (currentTimeSlotQualifs?.reduce((acc, q) => {
       return acc + q.label + ' '
