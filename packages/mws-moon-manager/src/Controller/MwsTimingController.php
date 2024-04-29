@@ -2390,6 +2390,111 @@ class MwsTimingController extends AbstractController
     }
 
     #[Route(
+        '/tag/import/{viewTemplate<[^/]*>?}',
+        name: 'mws_timing_qualif_import',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function qualifImport(
+        string|null $viewTemplate,
+        Request $request,
+        MwsTimeTagRepository $mwsTimeTagRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-import', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        // format
+        $format = $request->get('format');
+        $shouldOverwrite = $request->get('shouldOverwrite');
+        $shouldRecomputeAllOtherTags = $request->get('shouldRecomputeAllOtherTags');
+
+        // // dd($shouldOverwrite);
+        // // $importFile = $request->request->get('importFile'); // Not txt, will be null
+        // // dd($importFile);
+        // // dd ($request->getPayload());
+        // // dd ($request->getPayload()->get('importFile'));
+        // // dd( $request->request);
+        // // https://symfonycasts.com/screencast/symfony-uploads/api-uploads
+        // // dd($request->files->get('importFile'));
+        // $importFile = $request->files->get('importFile');
+        // // dd($request->getContent());
+        // $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
+        // // dd($importContent);
+        // /** @var MwsTimeTag[] $importTags */
+        // $importTags = $this->serializer->deserialize(
+        //     $importContent,
+        //     MwsTimeTag::class . "[]",
+        //     $format,
+        //     // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+        //     // [
+        //     //     AbstractNormalizer::IGNORED_ATTRIBUTES => ['id']
+        //     // ],
+        // );
+        // // dd($importTags);
+        // foreach ($importTags as $idx => $importTag) {
+        //     $tag = $mwsTimeTagRepository->findOneBy([
+        //         'slug' => $importTag->getSlug()
+        //     ]);
+        //     if ($tag) {
+        //         if ($shouldOverwrite && $shouldOverwrite != 'null') {
+        //             // dd($tag->getId());
+        //             // NOP : setting ID still duplicate on persiste...
+        //             // $reflectionProperty = new \ReflectionProperty(MwsTimeTag::class, 'id');
+        //             // $reflectionProperty->setAccessible(true);
+        //             // $reflectionProperty->setValue($importTag, $tag->getId());
+        //             // $importTag->setId($tag->getId());
+        //             $sync = function ($path) use (&$tag, &$importTag) {
+        //                 $set = 'set' . ucfirst($path);
+        //                 $get = 'get' . ucfirst($path);
+        //                 if (!method_exists($tag, $get)) {
+        //                     $get = 'is' . ucfirst($path);
+        //                 }
+        //                 $v =  $importTag->$get();
+        //                 if (null !== $v) {
+        //                     $tag->$set($v);
+        //                 }
+        //             };
+        //             $sync('slug');
+        //             $sync('label');
+        //             $sync('description');
+        //             $sync('category');
+        //             $sync('pricePerHr');
+        //             $sync('pricePerHrRules');
+        //             $importTag = $tag;
+        //         } else {
+        //             continue;
+        //         }
+        //     }
+        //     $this->em->persist($importTag);
+        //     $this->em->flush();
+        // }
+        // if ($shouldRecomputeAllOtherTags) {
+        //     $this->forceTimingsPriceRecompute();
+        //     // $importReport .= "Did recompute all timings prices<br/>";
+        // }
+        // [$tags, $tagsGrouped] = $mwsTimeTagRepository->findAllTagsWithCounts();
+
+        return $this->json([
+            // 'qualifs' => $qualifs,
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-timing-qualif-import')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
+    #[Route(
         '/qualif/export/{viewTemplate<[^/]*>?}',
         name: 'mws_timing_qualif_export',
         methods: ['POST', 'GET'],

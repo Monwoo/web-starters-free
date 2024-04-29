@@ -252,6 +252,7 @@
   import ItemHistory from "./ItemHistory.svelte";
   import { AddTagCallable, RemoveTagCallable } from "../tags/TagsInput.svelte";
   import { ToggleQualifCallable, RemoveAllTagsCallable } from "../SlotView.svelte";
+import ImportQualifs from "./ImportQualifs.svelte";
   
   // import "svelte-drag-drop-touch/dist/svelte-drag-drop-touch";
   // require("svelte-drag-drop-touch");
@@ -897,6 +898,7 @@
     // TODO : modal should be loaded by services and transfered by redux store..
     this z-index will not go over parent(s) z-index...
     -->
+    <!-- // TODO : <ImportQualifs {locale} /> -->
     <ExportQualifs {locale} />
     <div class="fixed top-0 bottom-0 left-0 right-0
       overflow-auto
