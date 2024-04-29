@@ -1,10 +1,10 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-  import ListItem from "./tags/ListItem.svelte";
-  import ImportReportModal from "./ImportReportModal.svelte";
+  import ListItem from "../tags/ListItem.svelte";
+  import ImportReportModal from "../ImportReportModal.svelte";
   import Loader from "../layout/widgets/Loader.svelte";
   import Routing from "fos-router";
-  import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
+  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   // TODO : solve ts issue for type.d.ts from js file :
   // import { Toast, Button } from 'flowbite-svelte';
