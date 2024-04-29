@@ -23,7 +23,8 @@ import { onMount } from "svelte";
   onMount(() => {
   });
 </script>
-
+<!-- // TODO : cross to remove some elements from history
+// + drag and drop re-order feature... -->
 <div class="w-full flex flex-wrap justify-center
 items-center
 text-xs md:text-base">

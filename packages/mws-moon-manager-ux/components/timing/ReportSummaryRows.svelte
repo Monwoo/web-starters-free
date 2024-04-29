@@ -276,7 +276,11 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     {@const tag = summary.tags[tagSlug]}
     {@const isMaxTag = tagSlug == (summary.maxPath?.maxTagSlug ?? null)}
     {@const isMaxSubTag = tagSlug in (summary.maxPath?.maxSubTags ?? {})}
-    <span
+    <a
+        href={Routing.generate("mws_timings_qualif", {
+          _locale: locale ?? "fr",
+          searchTagsToInclude: tagSlug,
+        })}
         class="inline-flex
         text-xs font-medium p-1 text-center
         border border-blue-800 "
@@ -287,7 +291,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
         {tag.label} {
           tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
         }
-      </span>
+      </a>
     {/each}
   </td>
   <td
