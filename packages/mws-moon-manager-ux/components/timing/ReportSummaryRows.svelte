@@ -280,7 +280,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     <a
         href={Routing.generate("mws_timings_qualif", {
           _locale: locale ?? "fr",
-          searchTagsToInclude: tagSlug,
+          searchTagsToInclude: [ tagSlug ],
         })}
         class="inline-flex
         text-xs font-medium p-1 text-center
