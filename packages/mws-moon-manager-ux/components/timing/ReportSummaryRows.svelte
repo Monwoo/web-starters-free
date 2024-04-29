@@ -11,6 +11,7 @@
   export let summary = {};
   export let summaryByDays = {};
   export let timingsByIds = {};
+  export let locale;
 
   export let subLevelKeys = [];
   // CF .legacy files, for details and pictures loadings, but not efficient, rethink, expand/collapse with lazy loads ?

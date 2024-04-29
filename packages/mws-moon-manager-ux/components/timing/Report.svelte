@@ -1237,6 +1237,7 @@
         {#each summaryByLevels.subTags ?? [] as subTag, tagIdx}
           {#if subTag ?? false}
             <ReportSummaryRows
+              {locale}
               summary={subTag}
               label={subTag.label}
               subLevelKeys={Array.from(
