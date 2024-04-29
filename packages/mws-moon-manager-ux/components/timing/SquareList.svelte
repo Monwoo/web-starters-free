@@ -31,6 +31,8 @@
   export let splitRange;
   export let computedSize;
   export let isFullScreen = false;
+  // https://svelte.dev/repl/d7680b8f5aee4d86846b0982e6c0c01d?version=3.31.0
+  export let onSlotLoaded;
 
   const urlParams = new URLSearchParams(window.location.search);
   let pageLimit = urlParams.get("pageLimit") ?? "124";
@@ -160,6 +162,7 @@
   };
 
   const isKey = {
+    shiftSpace: (k) => k.shiftKey && k.keyCode == 32,
     up: (k) => k.keyCode == 38,
     down: (k) => k.keyCode == 40,
     right: (k) => k.keyCode == 39,
@@ -168,20 +171,52 @@
 
   function onKeyDown(e) {
     // TODO : if other metaKey, etc... activated ?
+    if (isKey.shiftSpace(e)) {
+      // remove start index :
+      // urlParams.set("selectionStartIndex", "" + selectionStartIndex);
+      urlParams.delete("selectionStartIndex");
+      selectionStartIndex = undefined;
+      const newUrl =
+      window.location.origin + window.location.pathname + "?" + urlParams;
+      history.pushState({}, null, newUrl);
+
+      // TIPS : all below will have NO effect since pushState will FINISH all current animations in progress ? scroll to 0 stop in middle of scroll...
+      // lastSelectedIndex = lastSelectedIndex; // Svelte reactive, scroll to last selected element ? No effect since scalar variable ?
+      // timings = timings; // TODO : nop, no refresh too (can remove bind: from parent ?)
+      // const lastIdx = lastSelectedIndex;
+      // lastSelectedIndex = -1;
+      // lastSelectedIndex = 0;
+
+      // TIPS : ok with below, will force refresh :
+      const lastIdx = lastSelectedIndex
+      // lastSelectedIndex = undefined;
+      lastSelectedIndex = -1;
+      setTimeout(()=> {
+        lastSelectedIndex = lastIdx;
+      }, 0)
+    }
     if (isKey.left(e) || isKey.up(e)) {
-      lastSelectedIndex--; // TODO : if < 0 ? or elt exist ?
       if (e.shiftKey) {
-        // Move last elt previous page :
-        lastSelectedIndex = Number(pageLimit) - 1; // TODO : from CRM configs ...
-        movePageIndex(-1);
+        // // Move last elt previous page :
+        // lastSelectedIndex = Number(pageLimit) - 1; // TODO : from CRM configs ...
+        // movePageIndex(-1);// Not so used, keep as button only
+        // => prefer range selection :
+        if (undefined === selectionStartIndex) {
+          selectionStartIndex = lastSelectedIndex;
+        }
       }
+      lastSelectedIndex--; // TODO : if < 0 ? or elt exist ?
       e.preventDefault();
     }
     if (isKey.right(e) || isKey.down(e)) {
       if (e.shiftKey) {
-        // Move 1st elt next page :
-        lastSelectedIndex = 0;
-        movePageIndex(1);
+        // // Move 1st elt next page :
+        // lastSelectedIndex = 0;
+        // movePageIndex(1); // Not so used, keep as button only
+        // => prefer range selection :
+        if (undefined === selectionStartIndex) {
+            selectionStartIndex = lastSelectedIndex;
+        }
       }
       lastSelectedIndex++;
       e.preventDefault();
@@ -221,10 +256,19 @@
         bind:computedSize
         {followSelection}
         {timingSlot}
+        {selectionStartIndex}
+        slotIndex={idx}
+        {lastSelectedIndex}
         size={`${thumbSize.toFixed(0)}px`}
         forceHeight={listZoomRange > zoomSquareRange ? "auto" : null}
         isSelected={isSlotSelected(timingSlot, selectedSourceStamps)}
-        on:click={() => {
+        on:error={onSlotLoaded(timingSlot, idx)}
+        on:load={onSlotLoaded(timingSlot, idx)}
+        on:click={(e) => {
+          if (e.shiftKey && undefined === selectionStartIndex) {
+            selectionStartIndex = lastSelectedIndex;
+          }
+
           lastSelectedIndex = idx;
           // TIPS : below not needed, since done with svelte reactive update of lastSelectedIndex
           // selectedSourceStamps[timingSlot.sourceStamp] =

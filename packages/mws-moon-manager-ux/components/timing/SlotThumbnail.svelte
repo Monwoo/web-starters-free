@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // TODO : media credit in credits page :
-  // 
+  //
   const baseHref = window && window.baseHref;
 
   export let randomEmptyPicture = () => {
@@ -9,19 +9,22 @@
     //        then default CRM empty pict from .env if none
     const rands = [
       // baseHref + `/bundles/moonmanager/medias/pixabay/ai-generated-8702813_1280-BandWCenter.jpg`,
-      baseHref + `/bundles/moonmanager/medias/pixabay/ibiza-2954994_1280-BandWSky.jpg`,
+      baseHref +
+        `/bundles/moonmanager/medias/pixabay/ibiza-2954994_1280-BandWSky.jpg`,
     ];
     // https://futurestud.io/tutorials/generate-a-random-number-in-range-with-javascript-node-js
-    function between(min, max) {  
-      return  Math.round( // Math.floor(
+    function between(min, max) {
+      return Math.round(
+        // Math.floor(
         Math.random() * (max - min) + min
-      )
+      );
     }
 
     const r = between(0, rands.length - 1);
     return rands[r];
   };
 </script>
+
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
@@ -37,17 +40,19 @@
   export let forceHeight;
   export let followSelection = true;
   export let quickQualifTemplates;
+  export let slotIndex;
+  export let lastSelectedIndex;
+  export let selectionStartIndex;
 
   // TODO : crop tool to resize privacy frog ?
   // + easy crop mask history and save/reload privacy frog parameters...
   // + add export option : 'Thumbs without frogs'
   // + add export option : 'Include privacy frogs'
 
-
-  $: thumbtitle = 
+  $: thumbtitle =
     (currentTimeSlotQualifs?.reduce((acc, q) => {
-      return acc + q.label + ' '
-    }, '') ?? '') + (timingSlot?.sourceStamp ?? '');
+      return acc + q.label + " ";
+    }, "") ?? "") + (timingSlot?.sourceStamp ?? "");
 
   $: slotName = timingSlot.sourceStamp.split(/[\\/]/).pop();
   $: slotPath = timingSlot.source?.path
@@ -64,18 +69,26 @@
     // TIPS : opti for fullscreen next img shift :
     //       avoid sublist not seen animation eating loading time
     //       with followSelection sentinel
-    if (followSelection && isSelected) {
+    if (followSelection && isSelected && lastSelectedIndex === slotIndex) {
       // Below will also sroll parent's to fit the element at top of screen
       // htmlRoot?.scrollIntoView();
 
       // https://stackoverflow.com/questions/24665602/scrollintoview-scrolls-just-too-far
       // https://stackoverflow.com/questions/56688002/javascript-scrollintoview-only-in-immediate-parent
       htmlRoot?.scrollIntoView({
-        // block: "start", // Big parent hierarchy scroll
-        // block: "center", // Small parent hierarchy scroll
-        block: "nearest", // No parent hierarchy scroll
-        behavior: "smooth",
-        inline: "nearest",
+        // block: "start",
+        // block: "end",
+        // block: "center",
+        block: "nearest",
+        // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+        // block: "end",
+        // TODO : smooth scroll get's interrupted on history update ?
+        //        => should re-pop scroll event in 'onPopstate' ? cf packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+        // behavior: "smooth",
+        // TIPS : half solve, no scroll animation to avoid error on scroll anim interruptions
+        // https://kilianvalkhof.com/2022/css-html/preventing-smooth-scrolling-with-javascript/
+        behavior: "instant",
+        inline: "nearest", // Parent hierarchy scroll
       });
       // TIPS : CSS scroll-margin and scroll-padding
       // https://stackoverflow.com/questions/24665602/scrollintoview-scrolls-just-too-far
@@ -90,6 +103,38 @@
       // scroll-padding-top (if set)
     }
   }
+
+  // $: {
+  //   lastSelectedIndex,
+  //   // TIPS : opti for fullscreen next img shift :
+  //   //       avoid sublist not seen animation eating loading time
+  //   //       with followSelection sentinel
+  //   (followSelection && isSelected) ? (
+  //     // Below will also sroll parent's to fit the element at top of screen
+  //     // htmlRoot?.scrollIntoView();
+  //     // https://stackoverflow.com/questions/24665602/scrollintoview-scrolls-just-too-far
+  //     // https://stackoverflow.com/questions/56688002/javascript-scrollintoview-only-in-immediate-parent
+  //     htmlRoot?.scrollIntoView({
+  //       // block: "start", // Big parent hierarchy scroll
+  //       // block: "center", // Small parent hierarchy scroll
+  //       block: "nearest", // No parent hierarchy scroll
+  //       behavior: "smooth",
+  //       inline: "nearest",
+  //     })
+  //     // TIPS : CSS scroll-margin and scroll-padding
+  //     // https://stackoverflow.com/questions/24665602/scrollintoview-scrolls-just-too-far
+  //     // el.scrollIntoView({block: "start", behavior: "smooth"});
+  //     // .example {
+  //     //   scroll-margin-top: 10px;
+  //     // }
+  //     // => align the top border of the viewport with the top border of the element,
+  //     //    but with 10px of additional space
+  //     // these properties of the element are taken into account:
+  //     // padding-top border-top scroll-margin-top (and not margin-top)
+  //     // scroll-padding-top (if set)
+  //     ) : null;
+  //   }
+
   // onMount(() => { // Only once at load...
   //   if (isSelected) {
   //     htmlRoot?.scrollIntoView();
@@ -147,7 +192,6 @@
     // Only once at load... but NEEDED, for first init other than null
     computedSize = htmlRoot.offsetWidth; // htmlRoot is now != of null...
   });
-
 </script>
 
 <!-- {JSON.stringify(timingSlot)} -->
@@ -165,9 +209,11 @@
 flex justify-center items-center
 m-1 rounded-md
 overflow-visible border-solid border-4"
-  class:border-gray-600={!isSelected}
-  class:border-blue-600={isSelected}
-  class:border-green-400={!isSelected && timingSlot.tags?.length}
+  class:border-gray-600={selectionStartIndex === undefined && !isSelected}
+  class:border-blue-600={selectionStartIndex === undefined && isSelected}
+  class:border-red-600={selectionStartIndex !== undefined && isSelected}
+  
+  class:border-green-400={selectionStartIndex === undefined && !isSelected && timingSlot.tags?.length}
   style:height={forceHeight ? forceHeight : size}
   style:min-height={forceHeight
     ? computedSize > 120
@@ -218,7 +264,7 @@ overflow-visible border-solid border-4"
   {#if (timingSlot?.thumbnailJpeg ?? false) && computedSize < 120}
     <img
       loading="lazy"
-      alt={ thumbtitle }
+      alt={thumbtitle}
       arial-label="screenshot"
       class="object-contain w-full h-full"
       src={"screenshot" == timingSlot?.source?.type
@@ -226,22 +272,24 @@ overflow-visible border-solid border-4"
         : ""}
     />
   {:else}
-  <object
-    loading="lazy"
-    class="object-contain w-full h-full"
-    data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
-    type="image/png"
-    role="presentation"
-    title={ thumbtitle }
-  >
-    <img
+    <object
+      on:load
+      on:error
+      loading="lazy"
+      class="object-contain w-full h-full"
+      data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+      type="image/png"
+      role="presentation"
+      title={thumbtitle}
+    >
+      <img
         loading="lazy"
-        alt={ thumbtitle }
+        alt={thumbtitle}
         arial-label="screenshot"
         class="object-contain w-full h-full"
         src={timingSlot.thumbnailJpeg ?? randomEmptyPicture()}
       />
-  </object>
+    </object>
   {/if}
 
   <!-- <img
@@ -283,7 +331,7 @@ overflow-visible border-solid border-4"
         <!-- data-tooltip-target={tooltipIdsByQId[q.id]}
         m-1 w-full mx-2 whitespace-nowrap overflow-hidden text-ellipsis flex justify-center items-center pl-1 pr-1 
         -->
-        <div        
+        <div
           class="inline-flex  min-h-[2.4rem] min-w-[2.4rem]
           border-b-4 border-t-4 object-contain w-full h-full
           justify-center items-center"

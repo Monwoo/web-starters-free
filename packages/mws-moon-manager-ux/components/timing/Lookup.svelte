@@ -136,6 +136,12 @@
   moveResp = moveSelectedIndex(0);
   let menuIsOpen = false;
 
+  const onPopstate = (e) => {
+    console.log('Pop state', e);
+    // force list position refresh :
+    // lastSelectedIndex = lastSelectedIndex; // Svelte reactive, scroll to last selected element ? No effect since scalar variable ?
+  }
+
   onMount(async () => {
     //   uniqueKey = {};
     // });
@@ -201,8 +207,44 @@
         instanceOptions
       );
     }
+    // https://github.com/sveltejs/svelte/issues/1241
+    // TODO : <svelte:window on:popstate={onPopstate} /> not working for now, update if become ok
+    // Below not triggered too, too late to listen in onMount ? using onSlotLoaded for now
+    // window.addEventListener("popstate", (e) => console.log('Pop state', e));
+    // return () => {
+    //   window.removeEventListener("popstate", (e) => console.log('Pop state', e));
+    // };
   });
   // }
+  let nbSlotLoads = 0;
+  const onSlotLoaded = (s, idx) => {
+    // console.log('Did load slot ', idx);
+    nbSlotLoads++;
+    if (nbSlotLoads === timings.length) {
+      // Force scrollIntoView to trigger when all sizes are loaded :
+      // Below : no effect to force refresh :
+      // const lastIdx = lastSelectedIndex
+      // lastSelectedIndex = -1;
+      // lastSelectedIndex = lastIdx;
+
+      // followSelection = followSelection;
+      // // Below ok but show up fullscreen :
+      // isFullScreen = !isFullScreen;
+      // setTimeout(()=> {
+      //   isFullScreen = !isFullScreen;
+      // }, 100)
+      
+      // TIPS : ok with below, will force refresh :
+      const lastIdx = lastSelectedIndex
+      // lastSelectedIndex = undefined;
+      lastSelectedIndex = -1;
+      setTimeout(()=> {
+        lastSelectedIndex = lastIdx;
+      }, 0)
+      
+      console.log('All square list slots loaded OK');
+    }
+  }
 
   $: {
     quickQualifTemplates,
@@ -211,7 +253,12 @@
         quickQualifTemplates
       );
   }
+  
 </script>
+
+<!-- 
+  https://github.com/sveltejs/svelte/issues/1241
+  <svelte:window on:popstate={onPopstate} /> -->
 
 <svelte:head>
   <title>
@@ -516,9 +563,10 @@
         bind:selectionStartIndex
         bind:thumbSize
         bind:isFullScreen
+        bind:timings
+        {onSlotLoaded}
         followSelection={!isFullScreen}
         {quickQualifTemplates}
-        {timings}
         {isMobile}
         {isWide}
         {splitRange}

@@ -881,12 +881,12 @@
     !(k.altKey || k.metaKey || k.altKey);
 
   const isKey = {
-    space: (k) => haveNoExtraKey(k) && k.keyCode == 32,
-    return: (k) => haveNoExtraKey(k) && k.keyCode == 13,
+    space: (k) => !k.shiftKey && haveNoExtraKey(k) && k.keyCode == 32,
+    return: (k) => !k.shiftKey && haveNoExtraKey(k) && k.keyCode == 13,
     zoomLower: (k) => haveNoExtraKey(k) && k.key == "<",
     zoomHigher: (k) => haveNoExtraKey(k) && k.key == ">",
     qualifShortcut: (k) => {
-      return haveNoExtraKey(k) && qualifShortcut[k.key.charCodeAt(0)] ?? null
+      return qualifShortcut[k.key.charCodeAt(0)] ?? null
     },
   };
 
@@ -1497,6 +1497,9 @@
       <!-- // TODO : if fullscreen, scrollable list from right to left since
       //        SCROLL is more efficient than click to go prev/next current
       //        qualifs in progress... -->
+
+      <!-- // TODO : load handlers for list of objects and imgs to trigger at end of all loads
+      // https://svelte.dev/repl/d7680b8f5aee4d86846b0982e6c0c01d?version=3.31.0 -->
       <object
         loading="lazy"
         use:pan="{{delay:imagePanDelayMs}}"
