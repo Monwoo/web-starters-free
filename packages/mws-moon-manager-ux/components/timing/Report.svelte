@@ -973,7 +973,7 @@ ${acc} ${ idx > 0 ? ',' : ''} ${f} -->
       ? "Tags" +
         searchLookup.searchTags.reduce(
           (acc, f) => `
-          ${acc} "-" ${f}
+          ${acc}-${f}
         `,
           ``
         ) +
@@ -983,7 +983,7 @@ ${acc} ${ idx > 0 ? ',' : ''} ${f} -->
       ? "Inclure[" +
         searchLookup.searchTagsToInclude.reduce(
           (acc, f) => `
-            ${acc} "-" ${f}
+            ${acc}-${f}
           `,
           ``
         ) +
@@ -993,7 +993,7 @@ ${acc} ${ idx > 0 ? ',' : ''} ${f} -->
       ? "Exclure[" +
         searchLookup.searchTagsToAvoid.reduce(
           (acc, f) => `
-            ${acc} "-" ${f}
+            ${acc}-${f}
           `,
           ``
         ) +
