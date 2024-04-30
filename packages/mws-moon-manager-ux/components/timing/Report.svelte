@@ -33,6 +33,8 @@
   import AddModal from "./tags/AddModal.svelte";
   import { debug } from "svelte/internal";
   import Base from "../layout/Base.svelte";
+import TimingSearchSummary from "../layout/widgets/TimingSearchSummary.svelte";
+import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -947,58 +949,19 @@
   };
 </script>
 
-<!-- // TODO : code factorization, inside component ? -->
-<!-- TODO : no customFilters for timings ? {searchLookup.customFilters && searchLookup.customFilters.length
-...  : ""} -->
-
-<!-- TIPS : in JS only, for non empty strings
-${acc} ${ idx > 0 && ',' || ''} ${f}
-eq :
-${acc} ${ idx > 0 ? ',' : ''} ${f} -->
+<!-- <title> can only contain text and {tags}svelte(illegal-structure)
+  <TimingSearchSummary {searchLookup} /> -->
 
 <svelte:head>
   <title>
     Timings report
-    {searchLookup.searchStart && searchLookup.searchStart.length
-      ? "Début-" +
-        dayjs(searchLookup.searchStart).format("YYYY-MM-DD_HH:mm:ss") +
-        " "
-      : ""}
-    {searchLookup.searchEnd && searchLookup.searchEnd.length
-      ? "Fin-" +
-        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD_HH:mm:ss") +
-        ""
-      : ""}
-    {searchLookup.searchTags && searchLookup.searchTags.length
-      ? "Tags" +
-        searchLookup.searchTags.reduce(
-          (acc, f) => `${acc}-${f}`,
-          ``
-        ) +
-        "] "
-      : ""}
-    {searchLookup.searchTagsToInclude && searchLookup.searchTagsToInclude.length
-      ? "Inclure[" +
-        searchLookup.searchTagsToInclude.reduce(
-          (acc, f) => `${acc}-${f}`,
-          ``
-        ) +
-        "]"
-      : ""}
-    {searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
-      ? "Exclure[" +
-        searchLookup.searchTagsToAvoid.reduce(
-          (acc, f) => `${acc}-${f}`,
-          ``
-        ) +
-        "]"
-      : ""}
-    {searchLookup.searchKeyword ? `${searchLookup.searchKeyword}` : ``}
+    {timingSearchSummary(searchLookup)}
   </title>
 </svelte:head>
 
 <div class="mws-timing-report flex flex-wrap items-center">
   <Loader {isLoading} />
+  <TimingSearchSummary {searchLookup}/>
 
   <a
     href={Routing.generate("mws_timings_qualif", {

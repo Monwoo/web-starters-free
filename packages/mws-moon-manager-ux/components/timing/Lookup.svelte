@@ -20,6 +20,7 @@
   import { Collapse } from "flowbite";
   import debounce from "lodash/debounce";
   import dayjs from "dayjs";
+import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -266,41 +267,7 @@
     Timings qualif [{pageNumber}-{undefined !== selectionStartIndex
       ? `${selectionStartIndex}..`
       : ""}{lastSelectedIndex}]|{pageLimit}
-    {searchLookup.searchStart && searchLookup.searchStart.length
-      ? "Début-" +
-        dayjs(searchLookup.searchStart).format("YYYY-MM-DD_HH:mm:ss") +
-        " "
-      : ""}
-    {searchLookup.searchEnd && searchLookup.searchEnd.length
-      ? "Fin-" +
-        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD_HH:mm:ss") +
-        ""
-      : ""}
-    {searchLookup.searchTags && searchLookup.searchTags.length
-      ? "Tags" +
-        searchLookup.searchTags.reduce(
-          (acc, f) => `${acc}-${f}`,
-          ``
-        ) +
-        "] "
-      : ""}
-    {searchLookup.searchTagsToInclude && searchLookup.searchTagsToInclude.length
-      ? "Inclure[" +
-        searchLookup.searchTagsToInclude.reduce(
-          (acc, f) => `${acc}-${f}`,
-          ``
-        ) +
-        "]"
-      : ""}
-    {searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
-      ? "Exclure[" +
-        searchLookup.searchTagsToAvoid.reduce(
-          (acc, f) => `${acc}-${f}`,
-          ``
-        ) +
-        "]"
-      : ""}
-    {searchLookup.searchKeyword ? `${searchLookup.searchKeyword}` : ``}
+    {timingSearchSummary(searchLookup)}
 </title>
 </svelte:head>
 
