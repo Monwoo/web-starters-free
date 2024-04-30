@@ -259,12 +259,55 @@
   https://github.com/sveltejs/svelte/issues/1241
   <svelte:window on:popstate={onPopstate} /> -->
 
+<!-- // TODO : code factorization, inside component ? -->
+
 <svelte:head>
   <title>
     Timings Qualif [{pageNumber}-{undefined !== selectionStartIndex
       ? `${selectionStartIndex}..`
       : ""}{lastSelectedIndex}]|{pageLimit}
-  </title>
+    {searchLookup.searchStart && searchLookup.searchStart.length
+      ? "Début [" +
+        dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
+        "] "
+      : ""}
+    {searchLookup.searchEnd && searchLookup.searchEnd.length
+      ? "Fin [" +
+        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
+        "]"
+      : ""}
+    {searchLookup.searchTags && searchLookup.searchTags.length
+      ? "Tags [" +
+        searchLookup.searchTags.reduce(
+          (acc, f, idx) => `
+          ${acc} ${(idx > 0 && ",") || ""} ${f}
+        `,
+          ``
+        ) +
+        "] "
+      : ""}
+    {searchLookup.searchTagsToInclude && searchLookup.searchTagsToInclude.length
+      ? "Inclure : [" +
+        searchLookup.searchTagsToInclude.reduce(
+          (acc, f, idx) => `
+            ${acc} ${(idx > 0 && ",") || ""} ${f}
+          `,
+          ``
+        ) +
+        "]"
+      : ""}
+    {searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
+      ? "Exclure : [" +
+        searchLookup.searchTagsToAvoid.reduce(
+          (acc, f, idx) => `
+            ${acc} ${(idx > 0 && ",") || ""} ${f}
+          `,
+          ``
+        ) +
+        "]"
+      : ""}
+    {searchLookup.searchKeyword ? `[${searchLookup.searchKeyword}]` : ``}
+</title>
 </svelte:head>
 
 <Base
