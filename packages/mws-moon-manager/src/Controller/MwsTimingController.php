@@ -83,7 +83,7 @@ class MwsTimingController extends AbstractController
         $searchStart = $requestData['searchStart'] ?? null;
         $searchEnd = $requestData['searchEnd'] ?? null;
         
-        $searchTags = $requestData['tags'] ?? []; // []);
+        $searchTags = $requestData['searchTags'] ?? []; // []);
         $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
         $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
 
@@ -135,6 +135,7 @@ class MwsTimingController extends AbstractController
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchStart = $surveyAnswers['searchStart'] ?? null;
                 $searchEnd = $surveyAnswers['searchEnd'] ?? null;                $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchTags = $surveyAnswers['searchTags'] ?? [];
                 $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? [];
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
                 // dd($searchTags);
@@ -145,7 +146,7 @@ class MwsTimingController extends AbstractController
                         "keyword" => $keyword,
                         "searchStart" => $searchStart,
                         "searchEnd" => $searchEnd,
-                        "tags" => $searchTags,
+                        "searchTags" => $searchTags,
                         "searchTagsToInclude" => $searchTagsToInclude,
                         "searchTagsToAvoid" => $searchTagsToAvoid,
                         "page" => 1,
@@ -286,7 +287,7 @@ class MwsTimingController extends AbstractController
         // dd($searchStart);
         $searchEnd = $requestData['searchEnd'] ?? null;
 
-        $searchTags = $requestData['tags'] ?? []; // []);
+        $searchTags = $requestData['searchTags'] ?? []; // []);
         $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
         $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
 
@@ -359,7 +360,7 @@ class MwsTimingController extends AbstractController
                             "keyword" => $keyword,
                             "searchStart" => $searchStart,
                             "searchEnd" => $searchEnd,
-                            "tags" => $searchTags,
+                            "searchTags" => $searchTags,
                             "searchTagsToInclude" => $searchTagsToInclude,
                             "searchTagsToAvoid" => $searchTagsToAvoid,
                             "page" => 1,
