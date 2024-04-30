@@ -886,7 +886,7 @@
     zoomLower: (k) => haveNoExtraKey(k) && k.key == "<",
     zoomHigher: (k) => haveNoExtraKey(k) && k.key == ">",
     qualifShortcut: (k) => {
-      return qualifShortcut[k.key.charCodeAt(0)] ?? null
+      return haveNoExtraKey(k) && qualifShortcut[k.key.charCodeAt(0)] ?? null
     },
   };
 
