@@ -32,9 +32,17 @@ class MwsAccessDeniedHandler implements AccessDeniedHandlerInterface
         // TIPS :
         // packages/mws-moon-manager/src/EventSubscriber/MwsAccessDeniedSubscriber.php
         // will catch exception and add flashbags...
+        $mwsBackUrl = $request->headers->get('X-Mws-Back-Url') ?? $request->get('back-url') ?? null;
+        // dd($mwsBackUrl);
 
         return new RedirectResponse($this->urlGenerator->generate(
-            MwsLoginFormAuthenticator::LOGIN_ROUTE
+            MwsLoginFormAuthenticator::LOGIN_ROUTE, [ 
+                // iterator_to_array($request->query)
+                'back-url' => $mwsBackUrl ?? 
+                    $this->urlGenerator->generate(
+                        MwsLoginFormAuthenticator::SUCCESS_LOGIN_ROUTE
+                    )
+            ]
         ));
 
         // TODO : will need to warn if missing role issue ?

@@ -53,6 +53,9 @@
 				<div class="card" style="margin-top:2rem; border:none;">
 
 					<div class="card-body">
+						{# // TIPS : query param to mws_user_login route avoid security auth process..., use post hidden inputs instead...
+						<form action="{{ path('mws_user_login', app.request.query|iteratorToArray) }}" method="post" #}
+
 						<form action="{{ path('mws_user_login') }}" method="post"
 						class="submit-once login-form flex flex-wrap justify-center items-center">
 							<h1 class="h3 mb-3 font-weight-normal text-center">Se connecter</h1>
@@ -73,6 +76,9 @@
 								packages/mws-moon-manager/vendor/symfony/security-http/Util/TargetPathTrait.php
 							 #}
 							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" >
+							<input type="hidden" name="back-url" value="{{ app.request.query.get('back-url') }}" >
+							{# https://stackoverflow.com/questions/52749479/symfony-login-form-add-extra-fields #}
+			        <input type="hidden" name="_target_path" value="{{ app.request.query.get('back-url') }}" />
 
 							<button type="submit">Se connecter</button>
 							{% if error %}

@@ -4,6 +4,8 @@
 namespace MWS\MoonManagerBundle\Security;
 
 // https://symfony.com/doc/current/security/access_denied_handler.html
+
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -16,7 +18,10 @@ class MwsAuthenticationEntryPoint implements AuthenticationEntryPointInterface
     public function __construct(
         protected TranslatorInterface $translator,
         private UrlGeneratorInterface $urlGenerator,
+        protected LoggerInterface $logger,
+        protected string $firewallName = "mws_secured_area",
     ) {
+        $this->logger->debug("[MwsAuthenticationEntryPoint] DID construct");
     }
 
     public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
@@ -33,8 +38,27 @@ class MwsAuthenticationEntryPoint implements AuthenticationEntryPointInterface
         // packages/mws-moon-manager/src/EventSubscriber/MwsAccessDeniedSubscriber.php
         // will catch exception and add flashbags...
 
-        return new RedirectResponse($this->urlGenerator->generate(
-            MwsLoginFormAuthenticator::LOGIN_ROUTE
+        // $mwsBackUrl = $this->getTargetPath($request->getSession(), $this->firewallName);
+        // $this->removeTargetPath($request->getSession(), $this->firewallName); // TIPS : clean it
+        $mwsBackUrl = $request->getSession()->get(
+            // Cf :
+            // vendor/symfony/security-http/Util/TargetPathTrait.php:36
+            '_security.'.$this->firewallName.'.target_path'
+        );
+        // dd($mwsBackUrl);
+
+
+        $response = new RedirectResponse($this->urlGenerator->generate(
+            MwsLoginFormAuthenticator::LOGIN_ROUTE, [
+                // Old way with query string is safer, will also work when
+                // reloading from fresh history etc...
+                'back-url' => $mwsBackUrl,
+            ]
         ));
+
+        $response->headers->set('X-Mws-Back-Url', $mwsBackUrl); // PB : will not be passed by the client side http redirect process
+        // $response->headers->set('X-forwarded-for', $mwsBackUrl);
+        // dd($mwsBackUrl);
+        return $response;
     }
 }

@@ -95,6 +95,14 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
                 $this->logger->debug("[MwsLoginFormAuthenticator] Did reuse lastTargetPath as : $lastTargetPath");
             }
         }
+        $mwsBackUrl = $request->headers->get('X-Mws-Back-Url') ?? $request->get('back-url') ?? null;
+        // dd($request->query);
+        // dd($mwsBackUrl);
+        if ($mwsBackUrl) {
+            // dd($mwsBackUrl);
+            $this->saveTargetPath($request->getSession(), $this->firewallName, $mwsBackUrl);
+        }
+
         return $willSupport;
     }
 
@@ -130,7 +138,24 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
         // // on success, let the request continue
         // return null;
 
-        // TODO : better send back url in param ? session for multiple window open will redirect only for first logged window and wipe out redirect for others if did refresh all before login...
+        $this->firewallName = $firewallName;
+        // TIPS : better send back url in param ?
+        //        session for multiple window open will redirect only for 
+        //        first logged window and wipe out redirect for others 
+        //        if did refresh all before login and only use session system...
+
+        // X- header is not enough, header might not get transfered...
+        // https://github.com/whatwg/fetch/issues/553
+        $mwsBackUrl = $request->headers->get('X-Mws-Back-Url') ?? $request->get('back-url') ?? null;
+        // dd($request->query);
+        // dd($mwsBackUrl);
+        if ($mwsBackUrl) {
+            // dd($mwsBackUrl);
+            $this->logger->debug("[MwsLoginFormAuthenticator] mwsBackUrl", [$mwsBackUrl]);
+            $this->removeTargetPath($request->getSession(), $firewallName); // TIPS : clean it
+            return new RedirectResponse($mwsBackUrl);
+        }
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             $this->logger->debug("[MwsLoginFormAuthenticator] targetPathRedirect", [$targetPath]);
             $this->removeTargetPath($request->getSession(), $firewallName); // TIPS : clean it
@@ -139,6 +164,38 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         $this->logger->debug("[MwsLoginFormAuthenticator] classicLogin", [self::SUCCESS_LOGIN_ROUTE]);
         return new RedirectResponse($this->urlGenerator->generate(self::SUCCESS_LOGIN_ROUTE));
+    }
+
+    // TIPS : below will be called on FORM issue only if defined ? (failing CSRF for example...)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
+    {
+        // TIPS : or // TODO ? onAuthenticationFailure not called, cf
+        //        packages/mws-moon-manager/src/Security/MwsAuthenticationEntryPoint.php
+        //        instead
+        // https://openclassrooms.com/forum/sujet/symfony-custom-authentificator-authentication-47aa9
+        // $auth = new AuthLogin($request->getClientIp(), $request->request->get('_username'), AuthLogin::$failed, $exception->getMessage());
+        // $this->em->persist($auth);
+        // $this->em->flush();
+        // $response = new Response($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
+        // $mwsBackUrl = $this->getTargetPath($request->getSession(), $this->firewallName);
+        // $this->removeTargetPath($request->getSession(), $this->firewallName); // TIPS : clean it
+        // $response->headers->set('X-Mws-Back-Url', $mwsBackUrl);
+        // // dd($mwsBackUrl);
+        // return $response;
+        $mwsBackUrl = $request->headers->get('X-Mws-Back-Url')
+        ?? $request->get('back-url')
+        ?? $this->getTargetPath($request->getSession(), $this->firewallName) ?? null;
+
+        return new RedirectResponse($this->urlGenerator->generate(
+            MwsLoginFormAuthenticator::LOGIN_ROUTE, [ 
+                // iterator_to_array($request->query)
+                'back-url' => $mwsBackUrl ?? 
+                    $this->urlGenerator->generate(
+                        MwsLoginFormAuthenticator::SUCCESS_LOGIN_ROUTE
+                    )
+            ]
+        ));
+        // $subRequest = $this->request->duplicate($params, null, $attr);
     }
 
     // public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
@@ -156,6 +213,14 @@ class MwsLoginFormAuthenticator extends AbstractLoginFormAuthenticator
     protected function getLoginUrl(Request $request): string
     {
         $this->logger->debug("[MwsLoginFormAuthenticator] getLoginUrl for {$request->getRequestUri()} at {$request->getBaseUrl()}");
+        // return $this->urlGenerator->generate(self::LOGIN_ROUTE, [ 
+        // TODO : OK ? will break and infinit loop on login if use back-ul here....
+        //     // iterator_to_array($request->query)
+        //     'back-url' => $request->query->get('back-url') ?? 
+        //         $this->urlGenerator->generate(
+        //             MwsLoginFormAuthenticator::SUCCESS_LOGIN_ROUTE
+        //         )
+        // ]);
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }

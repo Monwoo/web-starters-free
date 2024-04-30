@@ -23,8 +23,15 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
     return [
       new TwigFilter('humanSize', [$this, 'humanSize']),
       new TwigFilter('bytesSize', [$this, 'bytesSize']),
+      new TwigFilter('iteratorToArray', [$this, 'iteratorToArray']),
+      
       // new TwigFilter('price', [$this, 'formatPrice']),
     ];
+  }
+
+  public function iteratorToArray($it)
+  {
+    return iterator_to_array($it);
   }
 
   public function humanSize($size)

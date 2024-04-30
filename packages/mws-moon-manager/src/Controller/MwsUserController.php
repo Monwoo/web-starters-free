@@ -358,15 +358,29 @@ class MwsUserController extends AbstractController
 
         // new FlashBag();
         $flashBag = $request->getSession()->getFlashBag();
+        $mwsBackUrl = $request->headers->get('X-Mws-Back-Url') ?? $request->get('back-url') ?? null;
+        // dd($request->headers);
+        
         if ($this->getUser() && !count($flashBag->keys())) {
-            return $this->redirectToRoute(MwsLoginFormAuthenticator::SUCCESS_LOGIN_ROUTE);
+            // dd($mwsBackUrl);
+            return $mwsBackUrl
+            ? $this->redirect($mwsBackUrl)
+            : $this->redirectToRoute(MwsLoginFormAuthenticator::SUCCESS_LOGIN_ROUTE);
         }
+        // dd(count($flashBag->keys()));
 
+        // https://symfony.com/doc/7.1/security.html#form-login
+        // +         // get the login error if there is one
+        // +         $error = $authenticationUtils->getLastAuthenticationError();
+        // +         // last username entered by the user
+        // +         $lastUsername = $authenticationUtils->getLastUsername();
+        
         // get the login error if there is one
         // TODO : no error on csrf token error ?
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
+
         return $this->render('@MoonManager/mws_user/login.html.twig', [
             'last_username' => $lastUsername,
             'error'         => $error,
