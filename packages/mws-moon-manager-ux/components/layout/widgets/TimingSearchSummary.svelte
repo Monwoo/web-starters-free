@@ -10,35 +10,35 @@
   export let timingSearchSummary = (searchLookup) => {
     return (
       (searchLookup?.searchStart && searchLookup.searchStart.length
-        ? "Début-" +
+        ? "Début_" +
           dayjs(searchLookup.searchStart).format("YYYY-MM-DD_HH:mm:ss") +
           " "
         : "") +
       (searchLookup?.searchEnd && searchLookup.searchEnd.length
-        ? "Fin-" +
+        ? "Fin_" +
           dayjs(searchLookup.searchEnd).format("YYYY-MM-DD_HH:mm:ss") +
-          ""
+          " "
         : "") +
       (searchLookup?.searchTags && searchLookup.searchTags.length
         ? "Tags" +
-          searchLookup.searchTags.reduce((acc, f) => `${acc}-${f}`, ``) +
+          searchLookup.searchTags.reduce((acc, f) => `${acc}_${f}`, ``) +
           " "
         : "") +
       (searchLookup?.searchTagsToInclude &&
       searchLookup.searchTagsToInclude.length
         ? "Inclure" +
           searchLookup.searchTagsToInclude.reduce(
-            (acc, f) => `${acc}-${f}`,
+            (acc, f) => `${acc}_${f}`,
             ``
           ) +
           " "
         : "") +
       (searchLookup?.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
         ? "Exclure" +
-          searchLookup.searchTagsToAvoid.reduce((acc, f) => `${acc}-${f}`, ``) +
+          searchLookup.searchTagsToAvoid.reduce((acc, f) => `${acc}_${f}`, ``) +
           " "
         : "") +
-      (searchLookup?.searchKeyword ? `${searchLookup.searchKeyword}` : ``)
+      (searchLookup?.searchKeyword ? `Rechercher_${searchLookup.searchKeyword}` : ``)
     );
   };
 </script>
