@@ -687,12 +687,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) { // TODO : only for admin too ?
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-delete-all', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
@@ -738,7 +738,7 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         // TIPS : no csrf renew ? only check user logged is ok ?
@@ -746,7 +746,7 @@ class MwsTimingController extends AbstractController
         //         to sync new redux token to frontend ?
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-timing-export', $csrf)) {
-        //     $this->logger->debug("Fail csrf with", [$csrf, $request]);
+        //     $this->logger->debug("Fail csrf with", [$csrf]);
         //     throw $this->createAccessDeniedException('CSRF Expired');
         // }
 
@@ -1064,12 +1064,13 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
+        dd($csrf);
         if (!$this->isCsrfTokenValid('mws-csrf-timing-import', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
@@ -1384,7 +1385,7 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         // $tags = $mwsTimeTagRepository->findAll();
@@ -1442,12 +1443,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-add', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $tagSlug = $request->request->get('tagSlug');
@@ -1500,12 +1501,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-update', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $tagData = $request->request->get('timeTag');
@@ -1602,12 +1603,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-remove', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $tagSlug = $request->request->get('tagSlug');
@@ -1660,12 +1661,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-remove-all', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $timeSlotId = $request->request->get('timeSlotId');
@@ -1715,12 +1716,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-delete-and-clean', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $tagId = $request->request->get('tagId');
@@ -1777,12 +1778,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-delete-all', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
@@ -1822,12 +1823,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-migrate-to', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $tagFromId = $request->request->get('tagFromId');
@@ -1895,7 +1896,7 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         // TIPS : no csrf renew ? only check user logged is ok ?
@@ -1903,7 +1904,7 @@ class MwsTimingController extends AbstractController
         //         to sync new redux token to frontend ?
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-export', $csrf)) {
-        //     $this->logger->debug("Fail csrf with", [$csrf, $request]);
+        //     $this->logger->debug("Fail csrf with", [$csrf]);
         //     throw $this->createAccessDeniedException('CSRF Expired');
         // }
 
@@ -2035,12 +2036,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-import', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
@@ -2146,12 +2147,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-toggle', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $qualifId = $request->request->get('qualifId');
@@ -2228,12 +2229,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-sync', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $qualifInput = $request->request->get('qualif');
@@ -2354,12 +2355,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-config-sync', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
         $config = $request->request->get('config');
@@ -2408,12 +2409,12 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
         if (!$this->isCsrfTokenValid('mws-csrf-timing-qualif-import', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
@@ -2513,7 +2514,7 @@ class MwsTimingController extends AbstractController
         // TIPS : firewall, middleware or security guard can also
         //        do the job. Double secu prefered ? :
         if (!$user) {
-            $this->logger->debug("Fail auth with", [$request]);
+            $this->logger->debug("Fail auth", []);
             throw $this->createAccessDeniedException('Only for logged users');
         }
         // TIPS : no csrf renew ? only check user logged is ok ?
@@ -2521,7 +2522,7 @@ class MwsTimingController extends AbstractController
         //         to sync new redux token to frontend ?
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-timing-tag-export', $csrf)) {
-        //     $this->logger->debug("Fail csrf with", [$csrf, $request]);
+        //     $this->logger->debug("Fail csrf with", [$csrf]);
         //     throw $this->createAccessDeniedException('CSRF Expired');
         // }
 
