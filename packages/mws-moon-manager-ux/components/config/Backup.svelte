@@ -156,6 +156,7 @@
     </div>
 
     <!-- onsubmit="return confirm('Êtes vous sur de vouloir faire et télécharger un backup ?');" -->
+    <!-- onsubmit="setTimeout(window.location.reload, 100)" -->
     <div class="p-4 w-full flex flex-wrap items-center justify-center">
       <form
         action={Routing.generate("mws_config_backup_download", {
@@ -164,6 +165,7 @@
         })}
         name="mainBackup"
         method="POST"
+        on:submit={() => setTimeout(() => window.location.reload(), 100)}
       >
         <div class="w-full text-center">
           <label class="p-2" for="backupName">Nom du backup :</label>
