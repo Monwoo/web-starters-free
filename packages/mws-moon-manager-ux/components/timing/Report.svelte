@@ -961,8 +961,9 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
 
 <div class="mws-timing-report flex flex-wrap items-center">
   <Loader {isLoading} />
-  <TimingSearchSummary {searchLookup}/>
-
+  <div class="p-3 w-full">
+    <TimingSearchSummary {searchLookup}/>
+  </div>
   <a
     href={Routing.generate("mws_timings_qualif", {
       _locale: locale ?? "fr",
