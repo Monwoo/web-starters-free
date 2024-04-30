@@ -21,58 +21,58 @@ class AppEnvExtension extends AbstractExtension implements GlobalsInterface
   public function getFilters()
   {
     return [
-      new TwigFilter('humanSize', [$this, 'humanSize']),
-      new TwigFilter('bytesSize', [$this, 'bytesSize']),
+      // new TwigFilter('humanSize', [$this, 'humanSize']),
+      // new TwigFilter('bytesSize', [$this, 'bytesSize']),
       // new TwigFilter('price', [$this, 'formatPrice']),
     ];
   }
 
-  public function humanSize($size)
-  {
-    $size = intval($size);
-    // Then, humanize :
-    if ($size < 1024) {
-      $size = $size . " Bytes";
-    } elseif (($size < 1048576) && ($size > 1023)) {
-      $size = round($size / 1024, 1) . " KB";
-    } elseif (($size < 1073741824) && ($size > 1048575)) {
-      $size = round($size / 1048576, 1) . " MB";
-    } else {
-      $size = round($size / 1073741824, 1) . " GB";
-    }
-    return $size;
-  }
+  // public function humanSize($size)
+  // {
+  //   $size = intval($size);
+  //   // Then, humanize :
+  //   if ($size < 1024) {
+  //     $size = $size . " Bytes";
+  //   } elseif (($size < 1048576) && ($size > 1023)) {
+  //     $size = round($size / 1024, 1) . " KB";
+  //   } elseif (($size < 1073741824) && ($size > 1048575)) {
+  //     $size = round($size / 1048576, 1) . " MB";
+  //   } else {
+  //     $size = round($size / 1073741824, 1) . " GB";
+  //   }
+  //   return $size;
+  // }
 
-  public function bytesSize($size)
-  {
-    // dump($size);
-    // $sizeParts = explode(' ', $size);
-    $m = [];
-    $size = str_replace(' ', '', $size);
-    preg_match('/([0-9]+)([^0-9]*)/', $size, $m);
-    // $sizeInt = intval(substr($size, );
-    $intPart = intval($m[1] ?? 0);
-    $factor = [
-      'bytes' => 1,
-      'kb' => 1023,
-      'mb' => 1048575,
-      'gb' => 1073741824,
-      // https://canada.lenovo.com/fr/ca/en/glossary/kilobyte/
-      // Bien que les kilooctets (Ko) et les kilobits (Ko) soient 
-      // des unités de l'information numérique, elles mesurent
-      // différents aspects. Les kilooctets mesurent la
-      // capacité de stockage ou la taille des données,
-      // tandis que les kilobits mesurent le débit de 
-      // transfert ou la vitesse de transmission des données.
-      'ko' => 1023,
-      'mo' => 1048575,
-      'go' => 1073741824,
-    ][strtolower(trim($m[2] ?? 'Bytes'))];
-    // dump($m);
-    // dump($intPart);
-    // dd($factor);
-    return $intPart * $factor;
-  }
+  // public function bytesSize($size)
+  // {
+  //   // dump($size);
+  //   // $sizeParts = explode(' ', $size);
+  //   $m = [];
+  //   $size = str_replace(' ', '', $size);
+  //   preg_match('/([0-9]+)([^0-9]*)/', $size, $m);
+  //   // $sizeInt = intval(substr($size, );
+  //   $intPart = intval($m[1] ?? 0);
+  //   $factor = [
+  //     'bytes' => 1,
+  //     'kb' => 1023,
+  //     'mb' => 1048575,
+  //     'gb' => 1073741824,
+  //     // https://canada.lenovo.com/fr/ca/en/glossary/kilobyte/
+  //     // Bien que les kilooctets (Ko) et les kilobits (Ko) soient 
+  //     // des unités de l'information numérique, elles mesurent
+  //     // différents aspects. Les kilooctets mesurent la
+  //     // capacité de stockage ou la taille des données,
+  //     // tandis que les kilobits mesurent le débit de 
+  //     // transfert ou la vitesse de transmission des données.
+  //     'ko' => 1023,
+  //     'mo' => 1048575,
+  //     'go' => 1073741824,
+  //   ][strtolower(trim($m[2] ?? 'Bytes'))];
+  //   // dump($m);
+  //   // dump($intPart);
+  //   // dd($factor);
+  //   return $intPart * $factor;
+  // }
 
   // public function formatPrice($number, $decimals = 0, $decPoint = '.', $thousandsSep = ',')
   // {

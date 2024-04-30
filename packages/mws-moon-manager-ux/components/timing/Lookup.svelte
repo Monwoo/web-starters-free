@@ -112,8 +112,8 @@
     history.pushState({}, null, newUrl);
   }
 
-  const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
-  console.debug("jsonLookup :", jsonLookup);
+  const searchLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
+  console.debug("searchLookup :", searchLookup);
 
   let csrfTimingDelete = stateGet(get(state), "csrfTimingDeleteAll");
   let moveResp;
@@ -137,10 +137,10 @@
   let menuIsOpen = false;
 
   const onPopstate = (e) => {
-    console.log('Pop state', e);
+    console.log("Pop state", e);
     // force list position refresh :
     // lastSelectedIndex = lastSelectedIndex; // Svelte reactive, scroll to last selected element ? No effect since scalar variable ?
-  }
+  };
 
   onMount(async () => {
     //   uniqueKey = {};
@@ -151,8 +151,8 @@
     // const htmlLookup = $(lookupForm);
     // // console.log(htmlLookup);
     // const lookupSurveyJsFormData = Object.fromEntries((new FormData(htmlLookup[0])).entries());
-    // const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[jsonLookup]'] ?? '{}')); // TODO : from param or config
-    // // TIPS : same as jsonLookup, updated by survey js or other if using ref element instead of raw string... :
+    // const lookupSurveyJsData = JSON.parse(decodeURIComponent(lookupSurveyJsFormData['mws_survey_js[searchLookup]'] ?? '{}')); // TODO : from param or config
+    // // TIPS : same as searchLookup, updated by survey js or other if using ref element instead of raw string... :
     // console.log('lookupSurveyJsData : ', lookupSurveyJsData);
 
     // TODO : avoid id and use svelte bind...
@@ -233,18 +233,18 @@
       // setTimeout(()=> {
       //   isFullScreen = !isFullScreen;
       // }, 100)
-      
+
       // TIPS : ok with below, will force refresh :
-      const lastIdx = lastSelectedIndex
+      const lastIdx = lastSelectedIndex;
       // lastSelectedIndex = undefined;
       lastSelectedIndex = -1;
-      setTimeout(()=> {
+      setTimeout(() => {
         lastSelectedIndex = lastIdx;
-      }, 0)
-      
-      console.log('All square list slots loaded OK');
+      }, 0);
+
+      console.log("All square list slots loaded OK");
     }
-  }
+  };
 
   $: {
     quickQualifTemplates,
@@ -253,7 +253,6 @@
         quickQualifTemplates
       );
   }
-  
 </script>
 
 <!-- 
@@ -308,7 +307,8 @@
       <!-- { #if moveResp.isFirst && pageNumber > 1} -->
       <button
         class="float-right m-1 top-0"
-        class:opacity-70={!(moveResp.isFirst && Number(pageNumber) > 1) && timings.length}
+        class:opacity-70={!(moveResp.isFirst && Number(pageNumber) > 1) &&
+          timings.length}
         on:click|stopPropagation={() => movePageIndex(-1)}
       >
         Prev Page
@@ -360,6 +360,23 @@
           <Header {locale} />
         </header>
         <div class="p-3 flex flex-wrap">
+          <a
+            href={Routing.generate("mws_timings_report", {
+              _locale: locale ?? "fr",
+              ...Object.keys($state.mwsTimingLookupFields ?? [])
+              .filter(lf => $state.mwsTimingLookupFields[lf])
+              .reduce((acc, lf) => {
+                console.debug('Search qualif link', searchLookup[lf], lf);
+                acc[lf] = searchLookup[lf] ?? null;
+                return acc;
+              }, {})
+            })}
+            class="pb-2 pr-2"
+          >
+            <button> Rapport des temps associé(s) </button>
+          </a>
+        </div>
+        <div class="p-3 flex flex-wrap">
           <form
             class="mws-update-page-limit-form w-full"
             action={Routing.generate("mws_timings_qualif", {
@@ -391,7 +408,7 @@
             href={Routing.generate("mws_timing_tag_list", {
               _locale: locale ?? "fr",
               viewTemplate: viewTemplate ?? "",
-              ...jsonLookup,
+              ...searchLookup,
             })}
           >
             <button>Liste des tags</button>
@@ -401,7 +418,7 @@
             action={Routing.generate("mws_timing_delete_all", {
               _locale: locale ?? "fr",
               viewTemplate: viewTemplate ?? "",
-              ...jsonLookup,
+              ...searchLookup,
             })}
             method="post"
             onsubmit="return confirm('Êtes vous sur de vouloir supprimer définitivement tous les suivi des temps ?');"
@@ -445,19 +462,19 @@
         </button>
         <div class="summary">
           <!-- // TODO : code factorization, indide component ? -->
-          {@html jsonLookup.searchStart && jsonLookup.searchStart.length
+          {@html searchLookup.searchStart && searchLookup.searchStart.length
             ? "<strong>Depuis le : </strong>" +
-              dayjs(jsonLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
+              dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
               "<br/>"
             : ""}
-          {@html jsonLookup.searchEnd && jsonLookup.searchEnd.length
+          {@html searchLookup.searchEnd && searchLookup.searchEnd.length
             ? "<strong>Jusqu'au : </strong>" +
-              dayjs(jsonLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
+              dayjs(searchLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
               "<br/>"
             : ""}
-          {@html jsonLookup.searchTags && jsonLookup.searchTags.length
+          {@html searchLookup.searchTags && searchLookup.searchTags.length
             ? "<strong>Tags : </strong>" +
-              jsonLookup.searchTags.reduce(
+              searchLookup.searchTags.reduce(
                 (acc, f) => `
                 ${acc} [${f}]
               `,
@@ -466,10 +483,10 @@
               "<br/>"
             : ""}
           <!-- // TODO : code factorization, indide component ? -->
-          {@html jsonLookup.searchTagsToInclude &&
-          jsonLookup.searchTagsToInclude.length
+          {@html searchLookup.searchTagsToInclude &&
+          searchLookup.searchTagsToInclude.length
             ? "<strong>Tags à inclure : </strong>" +
-              jsonLookup.searchTagsToInclude.reduce(
+              searchLookup.searchTagsToInclude.reduce(
                 (acc, f) => `
                   ${acc} [${f}]
                 `,
@@ -477,10 +494,10 @@
               ) +
               "<br/>"
             : ""}
-          {@html jsonLookup.searchTagsToAvoid &&
-          jsonLookup.searchTagsToAvoid.length
+          {@html searchLookup.searchTagsToAvoid &&
+          searchLookup.searchTagsToAvoid.length
             ? "<strong>Tags à éviter : </strong>" +
-              jsonLookup.searchTagsToAvoid.reduce(
+              searchLookup.searchTagsToAvoid.reduce(
                 (acc, f) => `
                   ${acc} [${f}]
                 `,
@@ -488,8 +505,8 @@
               ) +
               "<br/>"
             : ""}
-          {@html jsonLookup.searchKeyword
-            ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
+          {@html searchLookup.searchKeyword
+            ? `<strong>Mots clefs : </strong>${searchLookup.searchKeyword}`
             : ``}
           {@html timingsPaginator}
         </div>

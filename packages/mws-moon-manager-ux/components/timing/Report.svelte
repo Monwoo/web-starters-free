@@ -30,6 +30,9 @@
   import _ from "lodash";
   import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
   import Loader from "../layout/widgets/Loader.svelte";
+import AddModal from "./tags/AddModal.svelte";
+import { debug } from "svelte/internal";
+import Base from "../layout/Base.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -105,7 +108,7 @@
 
   dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 
-  const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
+  const searchLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
 
   console.debug("Report having timingsReport", timingsReport);
   // console.debug('Report having timings', timings);
@@ -943,31 +946,96 @@
   };
 </script>
 
+<!-- // TODO : code factorization, inside component ? -->
+<!-- TODO : no customFilters for timings ? {searchLookup.customFilters && searchLookup.customFilters.length
+...  : ""} -->
+
+<svelte:head>
+    <title>
+    Timings Report 
+    {searchLookup.searchStart && searchLookup.searchStart.length
+      ? "Début [" +
+        dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
+        "] "
+      : ""}
+    {searchLookup.searchEnd && searchLookup.searchEnd.length
+      ? "Fin [" +
+        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
+        "]"
+      : ""}
+    {searchLookup.searchTags && searchLookup.searchTags.length
+      ? "Tags [" +
+        searchLookup.searchTags.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "] "
+      : ""}
+    {searchLookup.searchTagsToInclude &&
+    searchLookup.searchTagsToInclude.length
+      ? "Inclure : [" +
+        searchLookup.searchTagsToInclude.reduce(
+          (acc, f) => `
+                    ${acc} [${f}]
+                  `,
+          ``
+        ) +
+        "]"
+      : ""}
+    {searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
+      ? "Exclure : [" +
+        searchLookup.searchTagsToAvoid.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "]"
+      : ""}
+    {searchLookup.searchKeyword
+      ? `[${searchLookup.searchKeyword}]`
+      : ``}    
+  </title>
+</svelte:head>
+
 <div class="mws-timing-report flex flex-wrap items-center">
   <Loader {isLoading} />
 
   <a
     href={Routing.generate("mws_timings_qualif", {
       _locale: locale ?? "fr",
+      ...Object.keys($state.mwsTimingLookupFields ?? [])
+      .filter(lf => $state.mwsTimingLookupFields[lf])
+      .reduce((acc, lf) => {
+        // TIPS :
+        // https://stackoverflow.com/questions/64247315/svelte-get-all-properties-on-current-svelte-file
+        // return $$props[lf];
+        // return $$restProps[lf];
+        console.debug('Search qualif link', searchLookup[lf], lf);
+        acc[lf] = searchLookup[lf] ?? null;
+        return acc;
+      }, {})
     })}
     class="pb-2 pr-2"
   >
-    <button> Qualification des temps </button>
+    <button> Qualification des temps associé(s) </button>
   </a>
   <a
     class="pb-2 pr-2"
     href={Routing.generate("mws_timing_tag_list", {
       _locale: locale ?? "fr",
       viewTemplate: viewTemplate ?? "",
-      ...jsonLookup,
+      ...searchLookup,
     })}
   >
     <button>Liste des tags</button>
   </a>
   <div class="p-3 w-full">
-    <ImportTimings {locale} timingLookup={jsonLookup} format="csv" />
-    <ExportTimings {locale} timingLookup={jsonLookup} format="csv" />
-    <ExportTags {locale} timingLookup={jsonLookup} format="csv" />
+    <ImportTimings {locale} timingLookup={searchLookup} format="csv" />
+    <ExportTimings {locale} timingLookup={searchLookup} format="csv" />
+    <ExportTags {locale} timingLookup={searchLookup} format="csv" />
     <button
       on:click={deleteAllTimings}
       class=" m-1"
@@ -1030,20 +1098,20 @@
     {/each}
   </div>
   <div class="pt-3 w-full">
-    <!-- // TODO : code factorization, indide component ? -->
-    {@html jsonLookup.searchStart && jsonLookup.searchStart.length
+    <!-- // TODO : code factorization, inside component ? -->
+    {@html searchLookup.searchStart && searchLookup.searchStart.length
       ? "<strong>Depuis le : </strong>" +
-        dayjs(jsonLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
+        dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
         "<br/>"
       : ""}
-    {@html jsonLookup.searchEnd && jsonLookup.searchEnd.length
+    {@html searchLookup.searchEnd && searchLookup.searchEnd.length
       ? "<strong>Jusqu'au : </strong>" +
-        dayjs(jsonLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
+        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
         "<br/>"
       : ""}
-    {@html jsonLookup.customFilters && jsonLookup.customFilters.length
+    {@html searchLookup.customFilters && searchLookup.customFilters.length
       ? "<strong>Filtres actifs : </strong>" +
-        jsonLookup.customFilters.reduce(
+        searchLookup.customFilters.reduce(
           (acc, f) => `
           ${acc} [${f}]
         `,
@@ -1051,9 +1119,9 @@
         ) +
         "<br/>"
       : ""}
-    {@html jsonLookup.searchTags && jsonLookup.searchTags.length
+    {@html searchLookup.searchTags && searchLookup.searchTags.length
       ? "<strong>Tags à rechercher : </strong>" +
-        jsonLookup.searchTags.reduce(
+        searchLookup.searchTags.reduce(
           (acc, f) => `
           ${acc} [${f}]
         `,
@@ -1062,10 +1130,10 @@
         "<br/>"
       : ""}
     <!-- // TODO : code factorization, indide component ? -->
-    {@html jsonLookup.searchTagsToInclude &&
-    jsonLookup.searchTagsToInclude.length
+    {@html searchLookup.searchTagsToInclude &&
+    searchLookup.searchTagsToInclude.length
       ? "<strong>Tags à inclure : </strong>" +
-        jsonLookup.searchTagsToInclude.reduce(
+        searchLookup.searchTagsToInclude.reduce(
           (acc, f) => `
                     ${acc} [${f}]
                   `,
@@ -1073,9 +1141,9 @@
         ) +
         "<br/>"
       : ""}
-    {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
+    {@html searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
       ? "<strong>Tags à éviter : </strong>" +
-        jsonLookup.searchTagsToAvoid.reduce(
+        searchLookup.searchTagsToAvoid.reduce(
           (acc, f) => `
           ${acc} [${f}]
         `,
@@ -1083,8 +1151,8 @@
         ) +
         "<br/>"
       : ""}
-    {@html jsonLookup.searchKeyword
-      ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
+    {@html searchLookup.searchKeyword
+      ? `<strong>Mots clefs : </strong>${searchLookup.searchKeyword}`
       : ``}
   </div>
   <div class="w-full h-4" />

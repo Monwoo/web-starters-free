@@ -66,6 +66,7 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
             'searchTagsToAvoid' => $searchTagsToAvoid,
         ] = [
             ...[
+                // TODO : dynamic from surveyJS json fields instead of ram list + reuse for twig... ?
                 'searchKeyword' => null,
                 "searchStart" => null,
                 "searchEnd" => null,
