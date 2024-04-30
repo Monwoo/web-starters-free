@@ -280,7 +280,7 @@
       ? "Tags" +
         searchLookup.searchTags.reduce(
           (acc, f) => `
-          ${acc} "-" ${f}
+          ${acc}-${f}
         `,
           ``
         ) +
@@ -290,7 +290,7 @@
       ? "Inclure[" +
         searchLookup.searchTagsToInclude.reduce(
           (acc, f) => `
-            ${acc} "-" ${f}
+            ${acc}-${f}
           `,
           ``
         ) +
@@ -300,7 +300,7 @@
       ? "Exclure[" +
         searchLookup.searchTagsToAvoid.reduce(
           (acc, f) => `
-            ${acc} "-" ${f}
+            ${acc}-${f}
           `,
           ``
         ) +
