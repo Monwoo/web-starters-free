@@ -1068,7 +1068,7 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $csrf = $request->request->get('_csrf_token');
-        dd($csrf);
+        // dd($csrf);
         if (!$this->isCsrfTokenValid('mws-csrf-timing-import', $csrf)) {
             $this->logger->debug("Fail csrf with", [$csrf]);
             throw $this->createAccessDeniedException('CSRF Expired');
