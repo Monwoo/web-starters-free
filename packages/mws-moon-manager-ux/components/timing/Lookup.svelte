@@ -267,20 +267,20 @@
       ? `${selectionStartIndex}..`
       : ""}{lastSelectedIndex}]|{pageLimit}
     {searchLookup.searchStart && searchLookup.searchStart.length
-      ? "Début[" +
-        dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
-        "] "
+      ? "Début-" +
+        dayjs(searchLookup.searchStart).format("YYYY-MM-DD_HH:mm:ss") +
+        " "
       : ""}
     {searchLookup.searchEnd && searchLookup.searchEnd.length
-      ? "Fin[" +
-        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
-        "]"
+      ? "Fin-" +
+        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD_HH:mm:ss") +
+        ""
       : ""}
     {searchLookup.searchTags && searchLookup.searchTags.length
-      ? "Tags[" +
+      ? "Tags" +
         searchLookup.searchTags.reduce(
-          (acc, f, idx) => `
-          ${acc} ${(idx > 0 && ",") || ""} ${f}
+          (acc, f) => `
+          ${acc} "-" ${f}
         `,
           ``
         ) +
@@ -289,8 +289,8 @@
     {searchLookup.searchTagsToInclude && searchLookup.searchTagsToInclude.length
       ? "Inclure[" +
         searchLookup.searchTagsToInclude.reduce(
-          (acc, f, idx) => `
-            ${acc} ${(idx > 0 && ",") || ""} ${f}
+          (acc, f) => `
+            ${acc} "-" ${f}
           `,
           ``
         ) +
@@ -299,14 +299,14 @@
     {searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
       ? "Exclure[" +
         searchLookup.searchTagsToAvoid.reduce(
-          (acc, f, idx) => `
-            ${acc} ${(idx > 0 && ",") || ""} ${f}
+          (acc, f) => `
+            ${acc} "-" ${f}
           `,
           ``
         ) +
         "]"
       : ""}
-    {searchLookup.searchKeyword ? `[${searchLookup.searchKeyword}]` : ``}
+    {searchLookup.searchKeyword ? `${searchLookup.searchKeyword}` : ``}
 </title>
 </svelte:head>
 
