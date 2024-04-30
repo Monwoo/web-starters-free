@@ -22,21 +22,21 @@
       (searchLookup?.searchTags && searchLookup.searchTags.length
         ? "Tags" +
           searchLookup.searchTags.reduce((acc, f) => `${acc}-${f}`, ``) +
-          "] "
+          " "
         : "") +
       (searchLookup?.searchTagsToInclude &&
       searchLookup.searchTagsToInclude.length
-        ? "Inclure[" +
+        ? "Inclure" +
           searchLookup.searchTagsToInclude.reduce(
             (acc, f) => `${acc}-${f}`,
             ``
           ) +
-          "]"
+          " "
         : "") +
       (searchLookup?.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
-        ? "Exclure[" +
+        ? "Exclure" +
           searchLookup.searchTagsToAvoid.reduce((acc, f) => `${acc}-${f}`, ``) +
-          "]"
+          " "
         : "") +
       (searchLookup?.searchKeyword ? `${searchLookup.searchKeyword}` : ``)
     );
