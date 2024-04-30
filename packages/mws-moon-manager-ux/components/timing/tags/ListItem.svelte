@@ -7,13 +7,16 @@
   // import "dayjs/locale/en";
   import dayjs from "dayjs";
   dayjs.locale("fr"); // Fr locale
-
 </script>
 
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import Routing from "fos-router";
-  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import {
+    state,
+    stateGet,
+    stateUpdate,
+  } from "../../../stores/reduxStorage.mjs";
   import { tick } from "svelte";
   import { get } from "svelte/store";
 
@@ -89,7 +92,7 @@
 
   const migrateToTag = async () => {
     if (isLoading) return;
-    if (!migrateToTagKey || "null" === migrateToTagKey) return;
+    if (!migrateToTagKey || "null" === migrateToTagKey) return;
     // TODO : await confirm and update tags dependencies if so...
     console.debug("Shoud migrateToTag with", migrateToTagKey);
     isLoading = true;
@@ -158,21 +161,28 @@
   console.debug("Having Tag : ", tag);
 
   // TODO : inject from root base layout instead ?
-  Number.prototype.toPrettyNum = function (this: Number, length: number, maxLength = null) {
+  Number.prototype.toPrettyNum = function (
+    this: Number,
+    length: number,
+    maxLength = null
+  ) {
     if (maxLength === null) maxLength = length;
     var s = this;
     const splited = s
-      .toFixed(maxLength).replace(new RegExp(`0{0,${maxLength - length}}$`), "")
+      .toFixed(maxLength)
+      .replace(new RegExp(`0{0,${maxLength - length}}$`), "")
       // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
       // .toLocaleString('en-US', { // TODO : centralize toPrettyNum and use locals formatings ?
       //   minimumFractionDigits: 2,
       //   maximumFractionDigits: 4
       // })
       .replace(".", ",")
-      .split(',');
-    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
-    (length >= 1 ? "," : "") +
-    (splited[1] ?? '');
+      .split(",");
+    return (
+      (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+      (length >= 1 ? "," : "") +
+      (splited[1] ?? "")
+    );
   };
 
   declare interface Number {
@@ -214,7 +224,7 @@
         // TODO : wan user : NEED to change tags, tag slug already used err...
         addModal.surveyModel.data = {
           ...tag.self,
-          id: null
+          id: null,
         };
         addModal.eltModal.show();
       }}
@@ -230,16 +240,38 @@
     </button>
   </td>
   <th scope="row" class="text-left">
-    <span>{tag.self.slug}</span>
+    <!-- <span>{tag.self.slug}</span> -->
+    <a
+      href={Routing.generate("mws_timings_report", {
+        _locale: locale ?? "fr",
+        searchTagsToInclude: [tag.self.slug],
+      })}
+      class="inline-flex
+    text-xs font-medium p-1 text-center
+    border border-blue-800 "
+    >
+      {tag.self.label}
+      {tag.self.pricePerHr
+        ? `[${tag.self.pricePerHr.toPrettyNum(2)} €/hr]`
+        : ""}
+    </a>
   </th>
   <td class="text-left">
-    <span
-      class="rounded"
-      style:color={tag.self.textColor || "black"}
-      style:background-color={tag.self.bgColor || "lightgrey"}
+    <a
+      href={Routing.generate("mws_timings_qualif", {
+        _locale: locale ?? "fr",
+        searchTagsToInclude: [tag.self.slug],
+      })}
+      class="inline-flex"
     >
-      {tag.self.label ?? ""}
-    </span>
+      <span
+        class="rounded"
+        style:color={tag.self.textColor || "black"}
+        style:background-color={tag.self.bgColor || "lightgrey"}
+      >
+        {tag.self.label ?? ""}
+      </span>
+    </a>
   </td>
   <td>
     <select
@@ -261,17 +293,17 @@
   <td class="text-center flex flex-col max-h-[5rem] overflow-scroll">
     {#if tag.self.pricePerHr ?? null}
       <span>
-        <strong>0 :</strong> {tag.self.pricePerHr.toPrettyNum(2)} €
+        <strong>0 :</strong>
+        {tag.self.pricePerHr.toPrettyNum(2)} €
       </span>
     {/if}
     {#each tag.self.pricePerHrRules ?? [] as rule, ruleIdx}
       <span>
-        <strong>{rule.maxLimitPriority ?? 0} :</strong> {rule.price.toPrettyNum(2)} €
-        <br/>With :<br/>
+        <strong>{rule.maxLimitPriority ?? 0} :</strong>
+        {rule.price.toPrettyNum(2)} €
+        <br />With :<br />
         {#each rule.withTags ?? [] as tagSlug}
-          <span
-          class='p-1 m-1 border rounded-md border-gray-700'
-          >
+          <span class="p-1 m-1 border rounded-md border-gray-700">
             {tagSlug}
           </span>
         {/each}
