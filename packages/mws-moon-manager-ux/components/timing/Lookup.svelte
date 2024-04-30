@@ -263,21 +263,21 @@
 
 <svelte:head>
   <title>
-    Timings Qualif [{pageNumber}-{undefined !== selectionStartIndex
+    Timings qualif [{pageNumber}-{undefined !== selectionStartIndex
       ? `${selectionStartIndex}..`
       : ""}{lastSelectedIndex}]|{pageLimit}
     {searchLookup.searchStart && searchLookup.searchStart.length
-      ? "Début [" +
+      ? "Début[" +
         dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
         "] "
       : ""}
     {searchLookup.searchEnd && searchLookup.searchEnd.length
-      ? "Fin [" +
+      ? "Fin[" +
         dayjs(searchLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
         "]"
       : ""}
     {searchLookup.searchTags && searchLookup.searchTags.length
-      ? "Tags [" +
+      ? "Tags[" +
         searchLookup.searchTags.reduce(
           (acc, f, idx) => `
           ${acc} ${(idx > 0 && ",") || ""} ${f}
@@ -287,7 +287,7 @@
         "] "
       : ""}
     {searchLookup.searchTagsToInclude && searchLookup.searchTagsToInclude.length
-      ? "Inclure : [" +
+      ? "Inclure[" +
         searchLookup.searchTagsToInclude.reduce(
           (acc, f, idx) => `
             ${acc} ${(idx > 0 && ",") || ""} ${f}
@@ -297,7 +297,7 @@
         "]"
       : ""}
     {searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
-      ? "Exclure : [" +
+      ? "Exclure[" +
         searchLookup.searchTagsToAvoid.reduce(
           (acc, f, idx) => `
             ${acc} ${(idx > 0 && ",") || ""} ${f}

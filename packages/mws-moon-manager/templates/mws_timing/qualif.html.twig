@@ -10,7 +10,7 @@
 {% set pageLimit = queryParams['pageLimit'] ?? null %}
 {% set lastSelectedIndex = queryParams['lastSelectedIndex'] ?? 1 %}
 
-{% block title %}Timings Qualif [{{pageNumber}}-{{selectionStartIndex != null
+{% block title %}Timings qualif [{{pageNumber}}-{{selectionStartIndex != null
       ? (selectionStartIndex ~ '..')
       : ''}}{{lastSelectedIndex}}]|{{pageLimit}}
 {% endblock %}
