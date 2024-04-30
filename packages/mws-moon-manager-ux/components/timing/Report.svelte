@@ -30,9 +30,9 @@
   import _ from "lodash";
   import ConfidentialityStamp from "./ConfidentialityStamp.svelte";
   import Loader from "../layout/widgets/Loader.svelte";
-import AddModal from "./tags/AddModal.svelte";
-import { debug } from "svelte/internal";
-import Base from "../layout/Base.svelte";
+  import AddModal from "./tags/AddModal.svelte";
+  import { debug } from "svelte/internal";
+  import Base from "../layout/Base.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -55,7 +55,8 @@ import Base from "../layout/Base.svelte";
   //    below do not take resize stuff, etc, cf Svelte base layout
   const isMobileRule = "(max-width: 768px) and (min-height: 480px)";
   export let isMobile = window.matchMedia(isMobileRule)?.matches;
-  const isWideRule = "only screen and (max-height: 480px) and (max-width: 960px)";
+  const isWideRule =
+    "only screen and (max-height: 480px) and (max-width: 960px)";
   export let isWide = window.matchMedia(isWideRule)?.matches;
   export let reportScale; // = isMobile ? 67 : 100;
   $: reportScale = isMobile ? 67 : isWide ? 69 : 100;
@@ -950,9 +951,14 @@ import Base from "../layout/Base.svelte";
 <!-- TODO : no customFilters for timings ? {searchLookup.customFilters && searchLookup.customFilters.length
 ...  : ""} -->
 
+<!-- TIPS : in JS only, for non empty strings
+${acc} ${ idx > 0 && ',' || ''} ${f}
+eq :
+${acc} ${ idx > 0 ? ',' : ''} ${f} -->
+
 <svelte:head>
-    <title>
-    Timings Report 
+  <title>
+    Timings Report
     {searchLookup.searchStart && searchLookup.searchStart.length
       ? "Début [" +
         dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
@@ -966,20 +972,19 @@ import Base from "../layout/Base.svelte";
     {searchLookup.searchTags && searchLookup.searchTags.length
       ? "Tags [" +
         searchLookup.searchTags.reduce(
-          (acc, f) => `
-          ${acc} [${f}]
+          (acc, f, idx) => `
+          ${acc} ${(idx > 0 && ",") || ""} ${f}
         `,
           ``
         ) +
         "] "
       : ""}
-    {searchLookup.searchTagsToInclude &&
-    searchLookup.searchTagsToInclude.length
+    {searchLookup.searchTagsToInclude && searchLookup.searchTagsToInclude.length
       ? "Inclure : [" +
         searchLookup.searchTagsToInclude.reduce(
-          (acc, f) => `
-                    ${acc} [${f}]
-                  `,
+          (acc, f, idx) => `
+            ${acc} ${(idx > 0 && ",") || ""} ${f}
+          `,
           ``
         ) +
         "]"
@@ -987,16 +992,14 @@ import Base from "../layout/Base.svelte";
     {searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
       ? "Exclure : [" +
         searchLookup.searchTagsToAvoid.reduce(
-          (acc, f) => `
-          ${acc} [${f}]
-        `,
+          (acc, f, idx) => `
+            ${acc} ${(idx > 0 && ",") || ""} ${f}
+          `,
           ``
         ) +
         "]"
       : ""}
-    {searchLookup.searchKeyword
-      ? `[${searchLookup.searchKeyword}]`
-      : ``}    
+    {searchLookup.searchKeyword ? `[${searchLookup.searchKeyword}]` : ``}
   </title>
 </svelte:head>
 
@@ -1007,16 +1010,16 @@ import Base from "../layout/Base.svelte";
     href={Routing.generate("mws_timings_qualif", {
       _locale: locale ?? "fr",
       ...Object.keys($state.mwsTimingLookupFields ?? [])
-      .filter(lf => $state.mwsTimingLookupFields[lf])
-      .reduce((acc, lf) => {
-        // TIPS :
-        // https://stackoverflow.com/questions/64247315/svelte-get-all-properties-on-current-svelte-file
-        // return $$props[lf];
-        // return $$restProps[lf];
-        console.debug('Search qualif link', searchLookup[lf], lf);
-        acc[lf] = searchLookup[lf] ?? null;
-        return acc;
-      }, {})
+        .filter((lf) => $state.mwsTimingLookupFields[lf])
+        .reduce((acc, lf) => {
+          // TIPS :
+          // https://stackoverflow.com/questions/64247315/svelte-get-all-properties-on-current-svelte-file
+          // return $$props[lf];
+          // return $$restProps[lf];
+          console.debug("Search qualif link", searchLookup[lf], lf);
+          acc[lf] = searchLookup[lf] ?? null;
+          return acc;
+        }, {}),
     })}
     class="pb-2 pr-2"
   >
@@ -1141,7 +1144,8 @@ import Base from "../layout/Base.svelte";
         ) +
         "<br/>"
       : ""}
-    {@html searchLookup.searchTagsToAvoid && searchLookup.searchTagsToAvoid.length
+    {@html searchLookup.searchTagsToAvoid &&
+    searchLookup.searchTagsToAvoid.length
       ? "<strong>Tags à éviter : </strong>" +
         searchLookup.searchTagsToAvoid.reduce(
           (acc, f) => `
@@ -1247,7 +1251,9 @@ import Base from "../layout/Base.svelte";
       class="table-auto flex-grow items-center w-full bg-transparent
       border-collapse"
     >
-      <thead class="sticky top-[-1px] md:-top-6 wide:top-[-1px] z-40 text-xs md:text-sm">
+      <thead
+        class="sticky top-[-1px] md:-top-6 wide:top-[-1px] z-40 text-xs md:text-sm"
+      >
         <tr
           style={`
             zoom: ${reportScale}%;
@@ -1341,7 +1347,7 @@ import Base from "../layout/Base.svelte";
             {summaryByDays}
             {timingsByIds}
             {reportScale}
-            />
+          />
         {/each}
       </tbody>
     </table>
