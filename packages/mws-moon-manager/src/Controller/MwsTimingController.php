@@ -9,6 +9,7 @@ use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
+use MWS\MoonManagerBundle\Entity\MwsMessageTchatUpload;
 use MWS\MoonManagerBundle\Entity\MwsTimeQualif;
 use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
 use MWS\MoonManagerBundle\Entity\MwsTimeTag;
@@ -18,6 +19,7 @@ use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use PHPUnit\Util\Json;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,8 +27,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SecuAttr;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\SecurityBundle\Security;
+// use Symfony\Component\Filesystem\LockHandler;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -39,6 +44,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[Route(
     '/{_locale<%app.supported_locales%>}/mws-timings',
@@ -59,8 +66,35 @@ class MwsTimingController extends AbstractController
         protected EntityManagerInterface $em,
         protected KernelInterface $kernel,
         protected SluggerInterface $slugger,
+        protected ParameterBagInterface $params,
+        protected UploaderHelper $UploaderHelper,
+        protected ?string $uploadUriPrefix = null,
+        protected ?string $thumbUploadFolder = null,
     ) {
     }
+
+    public function setContainer(ContainerInterface $container): ?ContainerInterface
+    {
+        $c = parent::setContainer($container);
+
+        $projectDir = $this->params->get('kernel.project_dir');
+        $uploadSubFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
+        $this->thumbUploadFolder = $thumbUploadFolder
+        ?? "$projectDir/$uploadSubFolder/messages/tchats/thumbs";
+        $uploadUriPrefix = $uploadUriPrefix
+        ?? $this->UploaderHelper->asset([
+            'mediaName' => ' ',
+            'mediaFile' => [
+                'filename' => ' ',
+                'basename' => ' ',
+            ]
+        ], 'mediaFile', MwsMessageTchatUpload::class);
+        $this->uploadUriPrefix = trim($uploadUriPrefix);
+
+        return $c;
+    }
+
+
 
     #[Route('/qualif/view/{viewTemplate<[^/]*>?}', name: 'mws_timings_qualif')]
     public function qualif(
@@ -82,7 +116,7 @@ class MwsTimingController extends AbstractController
         $keyword = $requestData['keyword'] ?? null;
         $searchStart = $requestData['searchStart'] ?? null;
         $searchEnd = $requestData['searchEnd'] ?? null;
-        
+
         $searchTags = $requestData['searchTags'] ?? []; // []);
         $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
         $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
@@ -134,7 +168,8 @@ class MwsTimingController extends AbstractController
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchStart = $surveyAnswers['searchStart'] ?? null;
-                $searchEnd = $surveyAnswers['searchEnd'] ?? null;                $searchTags = $surveyAnswers['searchTags'] ?? [];
+                $searchEnd = $surveyAnswers['searchEnd'] ?? null;
+                $searchTags = $surveyAnswers['searchTags'] ?? [];
                 $searchTags = $surveyAnswers['searchTags'] ?? [];
                 $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? [];
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
@@ -263,12 +298,14 @@ class MwsTimingController extends AbstractController
         //       default to client web browser config
         //       if not fixed in logged user configs...
         $mostRecentSlot = $mwsTimeSlotRepository->findOneBy(
-            [], [ 'sourceTimeGMT' => 'DESC' ]
+            [],
+            ['sourceTimeGMT' => 'DESC']
         );
         $mostRecentDate = $mostRecentSlot?->getsourceTimeGMT()
-        ?? new DateTime(
-            'now', new DateTimeZone('Europe/Paris')
-        );
+            ?? new DateTime(
+                'now',
+                new DateTimeZone('Europe/Paris')
+            );
         // dd($request->query->count());
         // Suggest start only for FIRST page load 
         // (to avoid too much overloads)
@@ -277,10 +314,10 @@ class MwsTimingController extends AbstractController
         //     date to get it, since num of slot is not end user
         //     friendly, not meanfull to say 'x slot' for time qualif...
         $suggestedStart = $request->query->count()
-        ? null
-        : $mostRecentDate->modify(
-            "-1 months"
-        )->format('Y-m-d\TH:i');
+            ? null
+            : $mostRecentDate->modify(
+                "-1 months"
+            )->format('Y-m-d\TH:i');
 
         $searchStart = $requestData['searchStart'] ?? $suggestedStart;
         // dd($searchStart);
@@ -292,7 +329,7 @@ class MwsTimingController extends AbstractController
         $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
 
         $tagQb = $mwsTimeTagRepository->createQueryBuilder("t")
-        ->orderBy('LOWER(t.slug)');
+            ->orderBy('LOWER(t.slug)');
 
         // $timingTags = array_map(
         //     function (MwsTimeTag $tag) {
@@ -348,7 +385,8 @@ class MwsTimingController extends AbstractController
                 if ($surveyAnswers['MwsTimingLookupType'] ?? false) {
                     $keyword = $surveyAnswers['searchKeyword'] ?? null;
                     $searchStart = $surveyAnswers['searchStart'] ?? null;
-                    $searchEnd = $surveyAnswers['searchEnd'] ?? null;                $searchTags = $surveyAnswers['searchTags'] ?? [];
+                    $searchEnd = $surveyAnswers['searchEnd'] ?? null;
+                    $searchTags = $surveyAnswers['searchTags'] ?? [];
                     $searchTags = $surveyAnswers['searchTags'] ?? [];
                     $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? [];
                     $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
@@ -534,6 +572,58 @@ class MwsTimingController extends AbstractController
         ]);
     }
 
+    protected function getThumbPath($request, $path) {
+        // protected function getThumbUrl($request, $path) {
+        // TIPS : below not advised since http request might be blocked for security
+        //         + dev server will not serve more than one request at a time,
+        //         // inside request will not run...
+        // return $request->getSchemeAndHttpHost()
+        // . $request->getBaseURL()
+        // . implode('/', array_map('rawurlencode', explode('/', $path)));
+        // . implode('/', array_map('urlencode', explode('/', $path)));
+        // dump($this->uploadUriPrefix);
+        // dump($this->thumbUploadFolder);
+        $relativePath = str_replace($this->uploadUriPrefix, "", $path);
+        // dd($relativePath);
+        // return "file://{$this->thumbUploadFolder}/$relativePath";
+        $localPath = "{$this->thumbUploadFolder}/$relativePath";
+        // dd($localPath);
+        return "$localPath";
+    }
+
+    protected function getCurlContext(Request $request)
+    {
+        // https://stackoverflow.com/questions/30628361/php-basic-auth-file-get-contents
+        // $h = "";
+        // // implode(";\n", array_re $request->headers->all()
+        // foreach ($request->headers->all() as $hk => $hv) {
+        //     dd($hv);
+        //     $h .= "$hk: $hv\n";
+        // }
+        // $h = '' . $request->headers;
+        // if (!$headers = $request->headers->all()) {
+        //     return '';
+        // }
+        // ksort($headers);
+        // $max = max(array_map('strlen', array_keys($headers))) + 1;
+        // $content = '';
+        // foreach ($headers as $name => $values) {
+        //     $name = ucwords($name, '-');
+        //     foreach ($values as $value) {
+        //         // $content .= sprintf("%-{$max}s %s\r\n", $name.':', $value);
+        //         $content .= sprintf("%-{$max}s %s\r\n", $name.':', $value);
+        //     }
+        // }
+        $content = 'Cookie: '. $request->headers->get('Cookie');
+
+        $curlContext = stream_context_create([
+            "http" => [
+                "header" => $content
+            ]
+        ]);
+        return $curlContext;
+    }
+
     // TIPS : 6 month of Miguel Monwoo workload
     //       is around 500Mo with thumb 100
     // public const defaultThumbSize = 100;
@@ -549,6 +639,10 @@ class MwsTimingController extends AbstractController
         if (!$user) {
             throw $this->createAccessDeniedException('Only for logged users');
         }
+        $projectDir = $this->params->get('kernel.project_dir');
+        $thumbSubFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
+        $thumbFolder = "$projectDir/$thumbSubFolder/messages/tchats/thumbs";
+        $curlContext = $this->getCurlContext($request);
 
         $url = $request->get('url', null);
         $keepOriginalSize = $request->query->get('keepOriginalSize', null);
@@ -632,8 +726,14 @@ class MwsTimingController extends AbstractController
                 $s = $mwsTimeSlotRepository->findOneBy([
                     'id' => $timingId
                 ]);
-                $b64Parts = explode(';base64,', $s?->getThumbnailJpeg() ?? '');
-                $respData = base64_decode($b64Parts[1]) ?? null;
+                $thumb = $s?->getThumbnailJpeg() ?? '';
+                if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
+                    // TODO : or use 'file://' system instead of '/' system ?
+                    $respData = file_get_contents($tUrl, false, $curlContext);
+                } else {
+                    $b64Parts = explode(';base64,', $thumb);
+                    $respData = base64_decode($b64Parts[1]) ?? null;
+                }
             }
             // dd($e);
             if (!$respData) {
@@ -732,6 +832,7 @@ class MwsTimingController extends AbstractController
         string|null $viewTemplate,
         Request $request,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
+        UploaderHelper $uploaderHelper,
         // CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
@@ -749,6 +850,7 @@ class MwsTimingController extends AbstractController
         //     $this->logger->debug("Fail csrf with", [$csrf]);
         //     throw $this->createAccessDeniedException('CSRF Expired');
         // }
+        $curlContext = $this->getCurlContext($request);
 
         $format = $request->get('format') ?? 'yaml';
         $timingLookup = $request->get('timingLookup');
@@ -774,21 +876,26 @@ class MwsTimingController extends AbstractController
         // TODO : bulk process instead of quick hack :
         $nbRefreshPerBulks = 5;
         $slotsCount = count($tSlots);
-        $flushTriggerMaxCount =$slotsCount / $nbRefreshPerBulks;
+        $flushTriggerMaxCount = $slotsCount / $nbRefreshPerBulks;
         $flushForseen = $flushTriggerMaxCount;
         $progressLogMax = 500;
         $progressCount = 0;
-        
-        $tryFlush = function() use (
-            &$flushForseen, $flushTriggerMaxCount, $em,
-            &$progressCount, $progressLogMax, $self,
+
+        $tryFlush = function () use (
+            &$flushForseen,
+            $flushTriggerMaxCount,
+            $em,
+            &$progressCount,
+            $progressLogMax,
+            $self,
             $slotsCount,
         ) {
             $progressCount++;
             if (0 === ($progressCount % $progressLogMax)) {
                 $self->logger->warning(
                     "MwsTimingController did process "
-                    . "$progressCount slots /  $slotsCount");
+                        . "$progressCount slots /  $slotsCount"
+                );
             }
             if ($flushForseen <= 1) {
                 $flushForseen = $flushTriggerMaxCount;
@@ -797,6 +904,7 @@ class MwsTimingController extends AbstractController
             }
             $flushForseen--;
         };
+        // $tmpDir = $this->createTmpDir();
 
         $tagsSerialized = $this->serializer->serialize(
             $tSlots,
@@ -829,9 +937,16 @@ class MwsTimingController extends AbstractController
                         string $attributeName,
                         string $format = null,
                         array $context = []
-                    ) use ($attachThumbnails,
-                    $tryFlush, $em,
-                    $thumbnailsSize, $self, $request) {
+                    ) use (
+                        $attachThumbnails,
+                        $tryFlush,
+                        $em,
+                        $uploaderHelper,
+                        $thumbnailsSize,
+                        $self,
+                        $request,
+                        $curlContext,
+                    ) {
                         // dd('ok');
                         $tryFlush();
                         // dump($innerObject);
@@ -844,9 +959,15 @@ class MwsTimingController extends AbstractController
                             /** @var MwsTimeSlot $outerObject */
                             if ($outerObject->getThumbnailJpeg()) {
                                 try {
-                                    $b64Parts = explode(';base64,', $outerObject->getThumbnailJpeg());
                                     $imagick = new \Imagick();
-                                    $imagick->readImageBlob(base64_decode($b64Parts[1] ?? null));
+                                    $thumb = $outerObject->getThumbnailJpeg() ?? '';
+                                    if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
+                                        $respData = file_get_contents($this->getThumbPath($request, $thumb), false, $curlContext);
+                                        $imagick->readImageBlob($respData);
+                                    } else {
+                                        $b64Parts = explode(';base64,', $thumb);
+                                        $imagick->readImageBlob(base64_decode($b64Parts[1] ?? null));
+                                    }
                                     $thumbAlreadyOk = $imagick->getImageWidth() === $thumbnailsSize;
                                     // dump($imagick->getImageWidth());
                                     // dump($thumbnailsSize);    
@@ -912,18 +1033,31 @@ class MwsTimingController extends AbstractController
                                 /** @var Response $resp */
                                 $resp = $this->container->get('http_kernel')
                                     ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+                                $em->flush();
                                 $data = $resp->getContent();
                                 // dd($resp);
                                 if (404 === $resp->getStatusCode()) {
                                     $data = null;
-                                    if ($innerObject) {
-                                        $b64 = explode(
-                                            'data:image/' . $type . ';base64,',
-                                            $innerObject,
-                                            2
-                                        )[1];
-                                        // dd($b64);
-                                        $innerData = base64_decode($b64);
+                                    if ($innerObject) {                                        
+                                        if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
+                                            $respData = file_get_contents($tUrl, false, $curlContext);
+                                            $imagick->readImageBlob($respData);
+                                                // TODO : need $context = stream_context_create([ etc... to transfert auth credentials
+                                            // https://stackoverflow.com/questions/30628361/php-basic-auth-file-get-contents
+                                            // dd($curlContext);
+                                            // https://stackoverflow.com/questions/21755377/urlencode-everything-but-slashes
+                                            $innerData = file_get_contents($this->getThumbPath($request, $innerObject), false, $curlContext);
+                                            // dd($curlContext);
+                                            // dd("ok" . !!$innerData);
+                                        } else {
+                                            $b64 = explode(
+                                                'data:image/' . $type . ';base64,',
+                                                $innerObject,
+                                                2
+                                            )[1];
+                                            // dd($b64);
+                                            $innerData = base64_decode($b64);
+                                        }
                                         $imagick = new \Imagick();
                                         $imagick->readImageBlob($innerData);
                                         // TODO : default thumbsize from app param or user db config ?
@@ -943,14 +1077,56 @@ class MwsTimingController extends AbstractController
                                 } else {
                                     $data = $resp->getContent();
                                 }
-                                $base64 = $data
-                                    ? 'data:image/' . $type . ';base64,' . base64_encode($data)
-                                    : null;
                                 // dd($base64);
-                                $outerObject->setThumbnailJpeg($base64);
+                                if (json_decode($_SERVER['STORE_THUMBNAIL_IN_DB'] ?? 'false')) {
+                                    $base64 = $data
+                                        ? 'data:image/' . $type . ';base64,' . base64_encode($data)
+                                        : null;
+                                    $outerObject->setThumbnailJpeg($base64);
+                                } else {
+                                    $upload = new MwsMessageTchatUpload();
+                                    $projectDir = $this->params->get('kernel.project_dir');
+                                    $subFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
+                                    $uploadSrc = "$projectDir/$subFolder/messages/tchats/thumbs";
+                                    // if (!file_exists($uploadSrc)) {
+                                    //     mkdir($uploadSrc, 0777, true);
+                                    // }
+
+                                    // $tmp = tempnam($uploadSrc, $outerObject->getSourceStamp()); // tmpfile(); // $this->createTmpFile();
+                                    $tmp = $uploadSrc . DIRECTORY_SEPARATOR . $outerObject->getSourceStamp(); // tmpfile(); // $this->createTmpFile();
+                                    // TODO : secu only inside target folder....
+                                    if (!file_exists(dirname($tmp))) {
+                                        mkdir(dirname($tmp), 0777, true);
+                                    }
+                                    file_put_contents($tmp, $data);
+
+                                    // $uploadUrl = $uploadHelper->asset([
+                                    //     'mediaName' => ' ',
+                                    //     'mediaFile' => [
+                                    //         'filename' => ' ',
+                                    //         'basename' => ' ',
+                                    //     ]
+                                    // ], 'mediaFile', MwsMessageTchatUpload::class);
+                                    $newMedia = new ReplacingFile($tmp);
+                                    // dump($tmp);
+                                    // dd($newMedia);
+                                    $upload->setMediaFile(
+                                        $newMedia
+                                    );
+                                    $em->persist($upload);
+                                    // unlink($tmp);
+                                    $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsMessageTchatUpload::class);
+                                    // dd($uploadUrl);
+                                    $outerObject->setThumbnailJpeg($uploadUrl);
+                                }
                                 $em->persist($outerObject);
                             }
-                            return $outerObject->getThumbnailJpeg();
+
+                            $thumb = $outerObject?->getThumbnailJpeg() ?? '';
+
+                            return starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))
+                                ? file_get_contents($tUrl, false, $curlContext)
+                                : $outerObject->getThumbnailJpeg();
                         }
                     },
                     'tags' => function ($objects) {
@@ -1016,6 +1192,65 @@ class MwsTimingController extends AbstractController
 
         $response->setContent($tagsSerialized);
         return $response;
+    }
+
+    // https://gist.github.com/carnage/68d6263e1844da8dcf4a
+    /**
+     * @param $path
+     * @param string $prefix
+     * @return string
+     */
+    protected function createTmpDir($path, $prefix = '')
+    {
+        $fs = new Filesystem();
+        // TODO : no LockHandler in SF 6 ? or custom for 
+        // https://gist.github.com/carnage/68d6263e1844da8dcf4a
+        // $lock = new LockHandler(hash('sha256', $path));
+        // $lock->lock(true);
+
+        do {
+            $dirname = $path . DIRECTORY_SEPARATOR . uniqid($prefix);
+        } while ($fs->exists($dirname));
+
+        $fs->mkdir($dirname);
+
+        register_shutdown_function(
+            function () use ($dirname, $fs) {
+                $fs->remove($dirname);
+            }
+        );
+
+        // $lock->release();
+
+        return $dirname;
+    }
+    /**
+     * @param $path
+     * @param string $prefix
+     * @return string
+     */
+    protected function createTmpFile($path, $prefix = '')
+    {
+        $fs = new Filesystem();
+        // TODO : no LockHandler in SF 6 ?
+        // $lock = new LockHandler(hash('sha256', $path));
+        // $lock->lock(true);
+
+        do {
+            $filename = $path . DIRECTORY_SEPARATOR . uniqid($prefix);
+        } while ($fs->exists($filename));
+
+        $fs->touch($filename);
+
+        register_shutdown_function(
+            function () use ($filename, $fs) {
+                $fs->remove($filename);
+            }
+        );
+
+        // $lock->release();
+
+        return $filename;
     }
 
     /**
@@ -1138,7 +1373,7 @@ class MwsTimingController extends AbstractController
                                     }
                                     return $tag;
                                 }, $innerObject),
-                                function($t) {
+                                function ($t) {
                                     // filter null
                                     return !!$t;
                                 }
@@ -2186,7 +2421,7 @@ class MwsTimingController extends AbstractController
         //        and try to merge with other tag will remove
         //        self config, not what we wanted...)
         //         + Config from user param if found way to do it
-       $cleanOnToggle = false;
+        $cleanOnToggle = false;
 
         if (!$cleanOnToggle || !$wasQualified) {
             // Add tag if was not present, keep clean otherwise

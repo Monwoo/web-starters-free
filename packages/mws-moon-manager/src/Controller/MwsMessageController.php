@@ -294,6 +294,7 @@ class MwsMessageController extends AbstractController
 
                 // clean files duplicatas, only keep last one, // TODO : warn, l'est adjust behavior...
                 foreach ($duplicats as $dups) {
+                    // TODO : also unlink or image package take care of file removal on item clean ?
                     $this->em->remove($dups);
                 }
                 $this->em->flush();

@@ -7,6 +7,7 @@ use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsTimeSlotRepository;
@@ -17,6 +18,7 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 #[ORM\Index(columns: ['source_time_gmt'])]
 #[ORM\Index(columns: ['range_day_idx_by10_min'])]
 #[ORM\Index(columns: ['range_day_idx_by_custom_norm'])]
+#[ORM\HasLifecycleCallbacks]
 class MwsTimeSlot
 {
     #[ORM\Id]
@@ -231,8 +233,74 @@ class MwsTimeSlot
 
     public function setThumbnailJpeg(?string $thumbnailJpeg): static
     {
+        // // TODO : doctrine event listeners instead of setter update ?
+        // //        => but can be used without DOCTRINE Orm is done in setter
+        // //        => May be just use <EntityName>Trait.php way to add
+        // //        custom behaviors inside trait (use trait getter/setter
+        // //        instead of raw entity setter/getter ? => more readable than
+        // //        PLAYING with entity protected var and getter/setters... ?)
+        // if ($this->thumbnailJpeg && starts_with($this->thumbnailJpeg, '/')) {
+        //     // cleanup :
+        //     $thumbUpload = 
+        //     $duplicats = $mwsTimeSlotRepository->findBy([
+        //         'mediaOriginalName' => $messageTchatUpload->getMediaOriginalName(),
+        //         'mediaSize' => $messageTchatUpload->getMediaSize(),
+        //     ]);
+        //     $this->em->persist($messageTchatUpload);
+        //     $this->em->flush();
+        //     // dd($messageTchatUpload); // OK, mediaName is setup correctly
+        //     // clean files duplicatas, only keep last one, // TODO : warn, l'est adjust behavior...
+        //     foreach ($duplicats as $dups) {
+        //         // TODO : also unlink or image package take care of file removal on item clean ?
+        //         $thumb = $dups->getThumbnailJpeg();
+        //         if ($dups->getThumbnailJpeg())
+        //         $this->em->remove($dups);
+        //     }
+        //     $this->em->flush();
+        // }
         $this->thumbnailJpeg = $thumbnailJpeg;
 
         return $this;
+    }
+
+    // https://symfony.com/doc/current/doctrine/events.html
+    // https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/events.html#lifecycle-events
+    #[ORM\PreUpdate]
+    public function doStuffOnPreUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        // TODO : inject logger ? or add as Static log methods to class
+        // (init with first constructors of all constructs ?) ?
+        // $this->value = 'changed from preUpdate callback!';
+
+        // TODO : use pslam doc and sanity checks ?
+        // https://psalm.dev/
+        $em = $eventArgs->getObjectManager();
+        // TODO : can't use in inline listener, need service listener or can get container here ?
+        //  (service injection via setter ?)
+        // /** UploaderHelper */
+        // $uploadHelper = ;
+        $mwsMessageTchatUpload = $em->getRepository(MwsMessageTchatUpload::class);
+        $timeSlot = $eventArgs->getObject();
+        $changeSet = $eventArgs->getEntityChangeSet();
+        // dump($timeSlot);
+        // dd($changeSet);
+        $thumbChange = $changeSet[ 'thumbnailJpeg' ] ?? null;
+        if ($thumbChange) {
+            [$was, $is] = $thumbChange;
+            if ($was && starts_with($was, '/') && $was !== $is) {
+                // file_get_contents($request->getSchemeAndHttpHost() . $request->getBaseURL() . $thumb)
+
+                $ghost = $mwsMessageTchatUpload->findOneBy([
+                    'mediaOriginalName' => $was, // TODO : WRONG, was contain base media URL, not file path... access with https...
+                    // 'mediaSize' => $messageTchatUpload->getMediaSize(),
+                ]);
+                // dd($ghost);
+                if ($ghost) {
+                    $em->remove($ghost);
+                    // TODO : unlink file ?
+                    $em->flush();
+                }
+            }
+        }
     }
 }
