@@ -39,7 +39,7 @@ vich_uploader:
         timing_slot_thumbnail:
             uri_prefix: '%env.base_href%/mws/%kernel.default_locale%/mws-config/uploads/timings/thumbs'
             upload_destination: '%kernel.project_dir%/%mws_moon_manager.uploadSubFolder%/timings/thumbs'
-            namer: mws_message_tchat_upload_namer
+            namer: mws_time_slot_thumb_upload_namer
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true

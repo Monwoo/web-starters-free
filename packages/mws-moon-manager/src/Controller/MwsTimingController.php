@@ -34,6 +34,7 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -70,7 +71,7 @@ class MwsTimingController extends AbstractController
         protected SluggerInterface $slugger,
         protected ParameterBagInterface $params,
         protected UploaderHelper $UploaderHelper,
-        protected ?string $uploadUriPrefix = null,
+        protected ?string $thumbUploadUriPrefix = null,
         protected ?string $thumbUploadFolder = null,
     ) {
     }
@@ -81,17 +82,20 @@ class MwsTimingController extends AbstractController
 
         $projectDir = $this->params->get('kernel.project_dir');
         $uploadSubFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
+        // TODO : will break with 
+        // packages/mws-moon-manager/src/Naming/OrignalNameNamer.php
+        // only using "$projectDir/$uploadSubFolder/timings/thumbs"
         $this->thumbUploadFolder = $thumbUploadFolder
-        ?? "$projectDir/$uploadSubFolder/messages/tchats/thumbs";
-        $uploadUriPrefix = $uploadUriPrefix
+        ?? "$projectDir/$uploadSubFolder/timings/thumbs";
+        $thumbUploadUriPrefix = $thumbUploadUriPrefix
         ?? $this->UploaderHelper->asset([
             'mediaName' => ' ',
             'mediaFile' => [
                 'filename' => ' ',
                 'basename' => ' ',
             ]
-        ], 'mediaFile', MwsMessageTchatUpload::class);
-        $this->uploadUriPrefix = trim($uploadUriPrefix);
+        ], 'mediaFile', MwsTimeSlotUpload::class);
+        $this->thumbUploadUriPrefix = trim($thumbUploadUriPrefix);
 
         return $c;
     }
@@ -583,11 +587,12 @@ class MwsTimingController extends AbstractController
         // . $request->getBaseURL()
         // . implode('/', array_map('rawurlencode', explode('/', $path)));
         // . implode('/', array_map('urlencode', explode('/', $path)));
-        // dump($this->uploadUriPrefix);
+        // dump($this->thumbUploadUriPrefix);
         // dump($this->thumbUploadFolder);
-        $relativePath = str_replace($this->uploadUriPrefix, "", $url);
+        $relativePath = str_replace($this->thumbUploadUriPrefix, "", $url);
+        // dump($relativePath);
         // dump($url);
-        // dd($relativePath);
+        // dd($this->thumbUploadUriPrefix);
         // return "file://{$this->thumbUploadFolder}/$relativePath";
         $localPath = "{$this->thumbUploadFolder}/$relativePath";
         // dd($localPath);
@@ -644,7 +649,7 @@ class MwsTimingController extends AbstractController
         }
         $projectDir = $this->params->get('kernel.project_dir');
         $thumbSubFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
-        $thumbFolder = "$projectDir/$thumbSubFolder/messages/tchats/thumbs";
+        $thumbFolder = "$projectDir/$thumbSubFolder/timings/thumbs";
         $curlContext = $this->getCurlContext($request);
 
         $url = $request->get('url', null);
@@ -995,10 +1000,10 @@ class MwsTimingController extends AbstractController
 
                                 $type  = 'jpeg';
                                 // dd($request->headers->all());
-                                $headersText = "";
-                                foreach ($request->headers->all() as $key => $header) {
-                                    $headersText .= "$key: {$header[0]}\r\n";
-                                }
+                                // $headersText = "";
+                                // foreach ($request->headers->all() as $key => $header) {
+                                //     $headersText .= "$key: {$header[0]}\r\n";
+                                // }
                                 // dd($headersText);
 
                                 // https://www.hashbangcode.com/article/using-authentication-and-filegetcontents
@@ -1044,8 +1049,8 @@ class MwsTimingController extends AbstractController
                                     if ($innerObject) {     
                                         // dd($thumb);                                   
                                         if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
-                                            $respData = file_get_contents($tUrl, false, $curlContext);
-                                            $imagick->readImageBlob($respData);
+                                            // $respData = file_get_contents($tUrl, false, $curlContext);
+                                            // $imagick->readImageBlob($respData);
                                                 // TODO : need $context = stream_context_create([ etc... to transfert auth credentials
                                             // https://stackoverflow.com/questions/30628361/php-basic-auth-file-get-contents
                                             // dd($curlContext);
@@ -1093,17 +1098,30 @@ class MwsTimingController extends AbstractController
                                     $upload = new MwsTimeSlotUpload();
                                     $projectDir = $this->params->get('kernel.project_dir');
                                     $subFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
-                                    $uploadSrc = "$projectDir/$subFolder/messages/tchats/thumbs";
+                                    $uploadSrc = "$projectDir/$subFolder/timings/thumbs";
                                     // if (!file_exists($uploadSrc)) {
                                     //     mkdir($uploadSrc, 0777, true);
                                     // }
 
                                     // $tmp = tempnam($uploadSrc, $outerObject->getSourceStamp()); // tmpfile(); // $this->createTmpFile();
+                                    // $tmp = $uploadSrc . DIRECTORY_SEPARATOR . $outerObject->getSourceStamp(); // tmpfile(); // $this->createTmpFile();
+                                    // $tmp = realpath($uploadSrc . DIRECTORY_SEPARATOR . $outerObject->getSourceStamp()); // tmpfile(); // $this->createTmpFile();
+                                    // TODO : same as real path without file_exists check ?
+                                    // $tmp = realpath($uploadSrc . DIRECTORY_SEPARATOR . $outerObject->getSourceStamp()); // tmpfile(); // $this->createTmpFile();
                                     $tmp = $uploadSrc . DIRECTORY_SEPARATOR . $outerObject->getSourceStamp(); // tmpfile(); // $this->createTmpFile();
+                                    // TIPS : need NAME change for copy to work :
+                                    // dd($tmp);
+                                    // $tmp = $uploadSrc . DIRECTORY_SEPARATOR . 'TMP-' .
+                                    $tmp = $uploadSrc . DIRECTORY_SEPARATOR .
+                                    str_replace('/', '_', str_replace($uploadSrc . DIRECTORY_SEPARATOR, '', $tmp)); // tmpfile(); // $this->createTmpFile();
+                                    // dd($tmp);
                                     // TODO : secu only inside target folder....
+                                    // TODO : using relative path as name make some tools breaks...
+
                                     if (!file_exists(dirname($tmp))) {
                                         mkdir(dirname($tmp), 0777, true);
                                     }
+
                                     file_put_contents($tmp, $data);
 
                                     // $uploadUrl = $uploadHelper->asset([
@@ -1113,7 +1131,10 @@ class MwsTimingController extends AbstractController
                                     //         'basename' => ' ',
                                     //     ]
                                     // ], 'mediaFile', MwsMessageTchatUpload::class);
+
                                     $newMedia = new ReplacingFile($tmp); // will ignore subfolders
+                                    // $newMedia = new UploadedFile($tmp, dirname($tmp), 'image/jpeg'); // will ignore subfolders
+
                                     // $newMedia = $uploaderHelper->asset([
                                     //     'path' => $tmp,
                                     //     'mediaName' => "thumbs/" . $outerObject->getSourceStamp(),
@@ -1145,15 +1166,16 @@ class MwsTimingController extends AbstractController
                                     // }; // will ignore subfolders
 
                                     // dd($newMedia);
-                                    dump($tmp);
-                                    dump($newMedia);
+                                    // dump($tmp);
+                                    // dd(file_exists( $tmp));
+                                    // dump($newMedia);
                                     $upload->setMediaFile(
                                         $newMedia
                                     );
-                                    $em->persist($upload);
-                                    // unlink($tmp);
+                                    $em->persist($upload); // This one copy file on doctrine events
+                                    // unlink($tmp); // No need of tmp anymore
                                     $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsTimeSlotUpload::class);
-                                    dd($uploadUrl);
+                                    // dd($uploadUrl);
                                     $outerObject->setThumbnailJpeg($uploadUrl);
                                 }
                                 $em->persist($outerObject);
@@ -1163,10 +1185,12 @@ class MwsTimingController extends AbstractController
                             // dump(file_exists($tUrl = $this->getThumbPath($request, $thumb)));
                             // dump($tUrl);
                             // dd($thumb);
+                            $type  = 'jpeg';
+
                             $newThumb = starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))
                                 ? 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($tUrl, false, $curlContext))
                                 : $outerObject->getThumbnailJpeg();
-                            dd($newThumb);
+                            // dd($newThumb);
                             $outerObject->setThumbnailJpeg($newThumb);
                             return $newThumb;
                         }

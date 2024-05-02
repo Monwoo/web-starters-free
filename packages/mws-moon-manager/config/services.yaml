@@ -46,6 +46,10 @@ services:
         public: true
         # alias: MWS\MoonManagerBundle\Naming\OrignalNameNamer.message_tchats_upload
 
+    mws_time_slot_thumb_upload_namer:
+        class: MWS\MoonManagerBundle\Naming\TimeSlotThumbNameNamer
+        public: true
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     MWS\MoonManagerBundle\:
