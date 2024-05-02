@@ -11,11 +11,11 @@ security:
             security: false
         main:
             lazy: true
-            provider: mws_user_provider
-            custom_authenticator: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
-            entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
-            access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
-            security: true
+            # provider: mws_user_provider
+            # custom_authenticator: MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator
+            # entry_point: MWS\MoonManagerBundle\Security\MwsAuthenticationEntryPoint
+            # access_denied_handler: MWS\MoonManagerBundle\Security\MwsAccessDeniedHandler
+            # security: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

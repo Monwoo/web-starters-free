@@ -12,6 +12,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use MWS\MoonManagerBundle\Entity\MwsMessageTchatUpload;
 use MWS\MoonManagerBundle\Entity\MwsTimeQualif;
 use MWS\MoonManagerBundle\Entity\MwsTimeSlot;
+use MWS\MoonManagerBundle\Entity\MwsTimeSlotUpload;
 use MWS\MoonManagerBundle\Entity\MwsTimeTag;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use MWS\MoonManagerBundle\Repository\MwsTimeQualifRepository;
@@ -1089,7 +1090,7 @@ class MwsTimingController extends AbstractController
                                         : null;
                                     $outerObject->setThumbnailJpeg($base64);
                                 } else {
-                                    $upload = new MwsMessageTchatUpload();
+                                    $upload = new MwsTimeSlotUpload();
                                     $projectDir = $this->params->get('kernel.project_dir');
                                     $subFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
                                     $uploadSrc = "$projectDir/$subFolder/messages/tchats/thumbs";
@@ -1112,7 +1113,7 @@ class MwsTimingController extends AbstractController
                                     //         'basename' => ' ',
                                     //     ]
                                     // ], 'mediaFile', MwsMessageTchatUpload::class);
-                                    // $newMedia = new ReplacingFile($tmp); // will ignore subfolders
+                                    $newMedia = new ReplacingFile($tmp); // will ignore subfolders
                                     // $newMedia = $uploaderHelper->asset([
                                     //     'path' => $tmp,
                                     //     'mediaName' => "thumbs/" . $outerObject->getSourceStamp(),
@@ -1124,33 +1125,34 @@ class MwsTimingController extends AbstractController
                                     // ], 'mediaFile', MwsMessageTchatUpload::class);
                                     // $newMedia = new ReplacingFile($tmp); // will ignore subfolders
                                     // $newMedia->setFilename( "thumbs/" . $outerObject->getSourceStamp());
-                                    $newMedia = new class(
-                                        $tmp,
-                                        "thumbs/" . $outerObject->getSourceStamp(),
-                                        "$projectDir/$subFolder/messages/tchats" 
-                                    ) extends ReplacingFile {
-                                        public function __construct(string $path, protected string $filename, protected string $upRoot, bool $checkPath = true)
-                                        {
-                                            parent::__construct($path, $checkPath);
-                                            // $this->filename = $filename;
-                                        }
-                                        // public function getFilename():string {
-                                        //     return $this->filename;
-                                        // }
-                                        public function getPath():string {
-                                            return $this->upRoot;
-                                        }
-                                    }; // will ignore subfolders
+
+                                    // $newMedia = new class(
+                                    //     $tmp,
+                                    //     "thumbs/" . $outerObject->getSourceStamp(),
+                                    //     "$projectDir/$subFolder/messages/tchats" 
+                                    // ) extends ReplacingFile {
+                                    //     public function __construct(string $path, protected string $filename, protected string $upRoot, bool $checkPath = true)
+                                    //     {
+                                    //         parent::__construct($path, $checkPath);
+                                    //         // $this->filename = $filename;
+                                    //     }
+                                    //     // public function getFilename():string {
+                                    //     //     return $this->filename;
+                                    //     // }
+                                    //     public function getPath():string {
+                                    //         return $this->upRoot;
+                                    //     }
+                                    // }; // will ignore subfolders
 
                                     // dd($newMedia);
-                                    // dump($tmp);
-                                    // dd($newMedia);
+                                    dump($tmp);
+                                    dump($newMedia);
                                     $upload->setMediaFile(
                                         $newMedia
                                     );
                                     $em->persist($upload);
                                     // unlink($tmp);
-                                    $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsMessageTchatUpload::class);
+                                    $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsTimeSlotUpload::class);
                                     dd($uploadUrl);
                                     $outerObject->setThumbnailJpeg($uploadUrl);
                                 }
