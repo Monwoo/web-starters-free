@@ -32,6 +32,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -572,7 +573,7 @@ class MwsTimingController extends AbstractController
         ]);
     }
 
-    protected function getThumbPath($request, $path) {
+    protected function getThumbPath($request, $url) {
         // protected function getThumbUrl($request, $path) {
         // TIPS : below not advised since http request might be blocked for security
         //         + dev server will not serve more than one request at a time,
@@ -583,7 +584,8 @@ class MwsTimingController extends AbstractController
         // . implode('/', array_map('urlencode', explode('/', $path)));
         // dump($this->uploadUriPrefix);
         // dump($this->thumbUploadFolder);
-        $relativePath = str_replace($this->uploadUriPrefix, "", $path);
+        $relativePath = str_replace($this->uploadUriPrefix, "", $url);
+        // dump($url);
         // dd($relativePath);
         // return "file://{$this->thumbUploadFolder}/$relativePath";
         $localPath = "{$this->thumbUploadFolder}/$relativePath";
@@ -1038,7 +1040,8 @@ class MwsTimingController extends AbstractController
                                 // dd($resp);
                                 if (404 === $resp->getStatusCode()) {
                                     $data = null;
-                                    if ($innerObject) {                                        
+                                    if ($innerObject) {     
+                                        // dd($thumb);                                   
                                         if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
                                             $respData = file_get_contents($tUrl, false, $curlContext);
                                             $imagick->readImageBlob($respData);
@@ -1054,25 +1057,27 @@ class MwsTimingController extends AbstractController
                                                 'data:image/' . $type . ';base64,',
                                                 $innerObject,
                                                 2
-                                            )[1];
+                                            )[1] ?? '';
                                             // dd($b64);
                                             $innerData = base64_decode($b64);
                                         }
-                                        $imagick = new \Imagick();
-                                        $imagick->readImageBlob($innerData);
-                                        // TODO : default thumbsize from app param or user db config ?
-                                        $factor = ($thumbnailsSize ? $thumbnailsSize : self::defaultThumbSize) / $imagick->getImageWidth();
-                                        // dd($factor);
-                                        $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
-                                            $imagick->getImageWidth() * $factor,
-                                            $imagick->getImageHeight() * $factor,
-                                            // https://urmaul.com/blog/imagick-filters-comparison/
-                                            \Imagick::FILTER_CATROM,
-                                            0
-                                        );
-                                        $imagick->setImageCompressionQuality(0);
-                                        $data = $imagick->getImageBlob();
-                                        $imagick->clear();
+                                        if ($innerData && strlen($innerData)) {
+                                            $imagick = new \Imagick();
+                                            $imagick->readImageBlob($innerData);
+                                            // TODO : default thumbsize from app param or user db config ?
+                                            $factor = ($thumbnailsSize ? $thumbnailsSize : self::defaultThumbSize) / $imagick->getImageWidth();
+                                            // dd($factor);
+                                            $imagick->resizeImage( // TODO : desactivate with param for qualif detail view ?
+                                                $imagick->getImageWidth() * $factor,
+                                                $imagick->getImageHeight() * $factor,
+                                                // https://urmaul.com/blog/imagick-filters-comparison/
+                                                \Imagick::FILTER_CATROM,
+                                                0
+                                            );
+                                            $imagick->setImageCompressionQuality(0);
+                                            $data = $imagick->getImageBlob();
+                                            $imagick->clear();
+                                        }
                                     }
                                 } else {
                                     $data = $resp->getContent();
@@ -1107,7 +1112,37 @@ class MwsTimingController extends AbstractController
                                     //         'basename' => ' ',
                                     //     ]
                                     // ], 'mediaFile', MwsMessageTchatUpload::class);
-                                    $newMedia = new ReplacingFile($tmp);
+                                    // $newMedia = new ReplacingFile($tmp); // will ignore subfolders
+                                    // $newMedia = $uploaderHelper->asset([
+                                    //     'path' => $tmp,
+                                    //     'mediaName' => "thumbs/" . $outerObject->getSourceStamp(),
+                                    //     'mediaFile' => [
+                                    //         'filename' => "thumbs/" . $outerObject->getSourceStamp(),
+                                    //         'basename' => "thumbs/" . $outerObject->getSourceStamp(),
+                                    //         'pathname' => $tmp,
+                                    //     ]
+                                    // ], 'mediaFile', MwsMessageTchatUpload::class);
+                                    // $newMedia = new ReplacingFile($tmp); // will ignore subfolders
+                                    // $newMedia->setFilename( "thumbs/" . $outerObject->getSourceStamp());
+                                    $newMedia = new class(
+                                        $tmp,
+                                        "thumbs/" . $outerObject->getSourceStamp(),
+                                        "$projectDir/$subFolder/messages/tchats" 
+                                    ) extends ReplacingFile {
+                                        public function __construct(string $path, protected string $filename, protected string $upRoot, bool $checkPath = true)
+                                        {
+                                            parent::__construct($path, $checkPath);
+                                            // $this->filename = $filename;
+                                        }
+                                        // public function getFilename():string {
+                                        //     return $this->filename;
+                                        // }
+                                        public function getPath():string {
+                                            return $this->upRoot;
+                                        }
+                                    }; // will ignore subfolders
+
+                                    // dd($newMedia);
                                     // dump($tmp);
                                     // dd($newMedia);
                                     $upload->setMediaFile(
@@ -1116,17 +1151,22 @@ class MwsTimingController extends AbstractController
                                     $em->persist($upload);
                                     // unlink($tmp);
                                     $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsMessageTchatUpload::class);
-                                    // dd($uploadUrl);
+                                    dd($uploadUrl);
                                     $outerObject->setThumbnailJpeg($uploadUrl);
                                 }
                                 $em->persist($outerObject);
                             }
 
                             $thumb = $outerObject?->getThumbnailJpeg() ?? '';
-
-                            return starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))
-                                ? file_get_contents($tUrl, false, $curlContext)
+                            // dump(file_exists($tUrl = $this->getThumbPath($request, $thumb)));
+                            // dump($tUrl);
+                            // dd($thumb);
+                            $newThumb = starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))
+                                ? 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($tUrl, false, $curlContext))
                                 : $outerObject->getThumbnailJpeg();
+                            dd($newThumb);
+                            $outerObject->setThumbnailJpeg($newThumb);
+                            return $newThumb;
                         }
                     },
                     'tags' => function ($objects) {
