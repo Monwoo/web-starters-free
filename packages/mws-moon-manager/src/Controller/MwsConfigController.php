@@ -111,8 +111,9 @@ class MwsConfigController extends AbstractController
         $projectDir = $this->params->get('kernel.project_dir');
         $backupsDir = "$projectDir/bckup";
         $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
-        $extractDest = "$projectDir/$uploadSubFolder";
-        $uploadSrc = "$extractDest/messages/tchats";
+        $uploadSrc = "$projectDir/$uploadSubFolder";
+        $uploadTchatSrc = "$projectDir/$uploadSubFolder/messages/tchats";
+        $extractDest = "$uploadSrc";
         $dbSrc = "$projectDir/var/data.db.sqlite";
         $gdprSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
 
@@ -206,9 +207,10 @@ class MwsConfigController extends AbstractController
                             if(!count(array_filter($files, function ($f)
                             use ($dbTestPath, $zipBckupName) {
                                 return $f === $dbTestPath
-                                || starts_with($f, "$zipBckupName/messages/tchats/");
+                                || starts_with($f, "$zipBckupName/messages/tchats/")
+                                || starts_with($f, "$zipBckupName/timings/thumb/"); // TODO : factorize, centralize, configurable... ?
                             }))) {
-                                throw new ZipException('Only "/messages/tchats/" extra folder is allowed');
+                                throw new ZipException('Only "/messages/tchats/" or "/timings/thumb/" extra folder is allowed');
                             }
 
                             $zipFile->extractTo($extractDest); // extract files to the specified directory
@@ -250,14 +252,19 @@ class MwsConfigController extends AbstractController
                                     "$extractDest/messages/tchats",
                                     true
                                 );
+                                $filesystem->rename(
+                                    "$extractDest/$zipBckupName/timings/thumb",
+                                    "$extractDest/timings/thumb",
+                                    true
+                                );
                             }
                             // $bulkload_connection = new SQLite3("$dbSrc");
 
                             // Clean up extracted folder :
                             $filesystem->remove("$extractDest/$zipBckupName");
-                            $backupForm->addError(new FormError(
-                                "Backup Zip OK, recharger la page pour vérifier les backups automatiques."
-                            ));
+                            // $backupForm->addError(new FormError(
+                            //     "Backup Zip OK, recharger la page pour vérifier les backups automatiques."
+                            // )); // No need anymore, have force reload client side
                         } catch (ZipException $e) {
                             // handle exception
                             $this->logger->error(
@@ -292,6 +299,10 @@ class MwsConfigController extends AbstractController
         $uploadsTotalSize = $this->humanSize(
             $uSize = $this->mwsFileSize($uploadSrc)
         );
+        $uploadsTchatTotalSize = $this->humanSize(
+            $uSize = $this->mwsFileSize($uploadTchatSrc)
+        );
+        
         $databasesTotalSize = $this->humanSize(
             $dSize = $this->mwsFileSize($dbSrc)
         );
@@ -349,9 +360,9 @@ class MwsConfigController extends AbstractController
         );
 
         $finder = [];
-        if (!empty(glob($uploadSrc))) {
+        if (!empty(glob($uploadTchatSrc))) {
             $finder = new Finder();
-            $finder->files()->in($uploadSrc)
+            $finder->files()->in($uploadTchatSrc)
                 ->ignoreDotFiles(true)
                 ->ignoreUnreadableDirs();
             $finder->sort(function (SplFileInfo $a, SplFileInfo $b): int {
@@ -359,7 +370,7 @@ class MwsConfigController extends AbstractController
             });
         }
 
-        $uploadedFiles = array_map(function (SplFileInfo $f) use ($uploadUriPrefix) {
+        $uploadedTchatFiles = array_map(function (SplFileInfo $f) use ($uploadUriPrefix) {
             return $uploadUriPrefix . $f->getRelativePathname() . ' ['
                 . $this->humanSize(
                     $this->mwsFileSize($f->getPathname())
@@ -380,10 +391,11 @@ class MwsConfigController extends AbstractController
             'configState' => [
                 'backupsTotalSize' => $backupsTotalSize,
                 'uploadsTotalSize' => $uploadsTotalSize,
+                'uploadsTchatTotalSize' => $uploadsTchatTotalSize,
                 'databasesTotalSize' => $databasesTotalSize,
                 'gdprBackupSize' => $gdprBackupSize,
                 'backupTotalSize' => $backupTotalSize,
-                'uploadedFiles' => $uploadedFiles,
+                'uploadedTchatFiles' => $uploadedTchatFiles,
                 'thumbnailsCount' => $thumbnailsCount,
             ]
         ]);
@@ -488,8 +500,8 @@ class MwsConfigController extends AbstractController
         if ($isLightOrFull) {
             $shouldZip = true;
             $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
-            $uploadSrc = "$projectDir/$uploadSubFolder/messages/tchats";
-            $zipDirSources[$uploadSrc] = "$zipName/messages/tchats";
+            $uploadSrc = "$projectDir/$uploadSubFolder";
+            $zipDirSources[$uploadSrc] = "$zipName";
         }
 
         if ($isFull) {
@@ -720,7 +732,7 @@ class MwsConfigController extends AbstractController
         try {
             // clean
             $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
-            $uploadSrc = "$projectDir/$uploadSubFolder/messages/tchats";
+            $uploadSrc = "$projectDir/$uploadSubFolder";
 
             // $filesystem->remove($uploadSrc); // TIPS : mirror option instead of remove
             // counter TIPS : if no src directory, target directory will keep data, so remove :
@@ -732,7 +744,8 @@ class MwsConfigController extends AbstractController
             // ));
 
             // load assets
-            $bckupUploadSrc = "$path/messages/tchats";
+            // $bckupUploadSrc = "$path/messages/tchats";
+            $bckupUploadSrc = "$path";
             // dd($bckupUploadSrc);
             // dd($uploadSrc);
             $filesystem->exists($bckupUploadSrc)

@@ -589,7 +589,7 @@ class MwsTimingController extends AbstractController
         // . implode('/', array_map('urlencode', explode('/', $path)));
         // dump($this->thumbUploadUriPrefix);
         // dump($this->thumbUploadFolder);
-        $relativePath = str_replace($this->thumbUploadUriPrefix, "", $url);
+        $relativePath = trim(str_replace($this->thumbUploadUriPrefix, "", $url), "/");
         // dump($relativePath);
         // dump($url);
         // dd($this->thumbUploadUriPrefix);
@@ -648,8 +648,8 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('Only for logged users');
         }
         $projectDir = $this->params->get('kernel.project_dir');
-        $thumbSubFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
-        $thumbFolder = "$projectDir/$thumbSubFolder/timings/thumbs";
+        // $thumbSubFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
+        // $thumbFolder = "$projectDir/$thumbSubFolder/timings/thumbs";
         $curlContext = $this->getCurlContext($request);
 
         $url = $request->get('url', null);
@@ -1132,9 +1132,18 @@ class MwsTimingController extends AbstractController
                                     //     ]
                                     // ], 'mediaFile', MwsMessageTchatUpload::class);
 
-                                    $newMedia = new ReplacingFile($tmp); // will ignore subfolders
-                                    // $newMedia = new UploadedFile($tmp, dirname($tmp), 'image/jpeg'); // will ignore subfolders
-
+                                    // $newMedia = new ReplacingFile($tmp); // will ignore subfolders
+                                    // $newMedia = new UploadedFile($tmp, dirname($tmp), 'image/jpeg', \UPLOAD_ERR_OK); // will ignore subfolders
+                                    $newMedia = new class($tmp, dirname($tmp), 'image/jpeg', \UPLOAD_ERR_OK) extends UploadedFile {
+                                        public function isValid():bool {
+                                            return true;
+                                        }
+                                        public function move(string $directory, string $name = null): File {
+                                            // TIPS : do nothing for our use case, file is already generated at right place, no need to move
+                                            $target = $this->getTargetFile($directory, $name);
+                                            return $target;
+                                        }
+                                    };
                                     // $newMedia = $uploaderHelper->asset([
                                     //     'path' => $tmp,
                                     //     'mediaName' => "thumbs/" . $outerObject->getSourceStamp(),
@@ -1191,7 +1200,7 @@ class MwsTimingController extends AbstractController
                                 ? 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($tUrl, false, $curlContext))
                                 : $outerObject->getThumbnailJpeg();
                             // dd($newThumb);
-                            $outerObject->setThumbnailJpeg($newThumb);
+                            // $outerObject->setThumbnailJpeg($newThumb);
                             return $newThumb;
                         }
                     },

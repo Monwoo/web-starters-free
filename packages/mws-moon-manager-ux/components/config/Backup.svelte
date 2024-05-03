@@ -350,7 +350,7 @@
       {/each}
     </ul>
     <h1 class="w-full p-4">
-      Liste des uploads<br/> [{$state.config.uploadsTotalSize ?? "--"}]
+      Liste des uploads des tchats<br/> [{$state.config.uploadsTchatTotalSize ?? "--"}]
     </h1>
     <div class="w-full">
       {#each $state.config.uploadedFiles ?? [] as f}

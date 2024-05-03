@@ -284,6 +284,7 @@ class MwsMessageController extends AbstractController
                 // dd($messageTchatUpload);
 
                 $duplicats = $mwsMessageTchatUploadRepository->findBy([
+                    // TODO : getMediaOriginalName might be null if using ReplacingFile instead of uploader...
                     'mediaOriginalName' => $messageTchatUpload->getMediaOriginalName(),
                     'mediaSize' => $messageTchatUpload->getMediaSize(),
                 ]);

@@ -8,15 +8,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 use Vich\UploaderBundle\Naming\ConfigurableInterface;
+use Vich\UploaderBundle\Naming\DirectoryNamerInterface;
 use Vich\UploaderBundle\Naming\NamerInterface;
 use Vich\UploaderBundle\Util\Transliterator;
 
 /**
- * TimeSlotThumbNameNamer.
+ * TimeSlotThumbNamer.
  *
  * @author Miguel Monwoo <service@monwoo.com>
  */
-final class TimeSlotThumbNameNamer implements NamerInterface, ConfigurableInterface
+final class TimeSlotThumbNamer implements 
+DirectoryNamerInterface,
+NamerInterface,
+ConfigurableInterface
 {
     private bool $transliterate = false;
 
@@ -34,6 +38,10 @@ final class TimeSlotThumbNameNamer implements NamerInterface, ConfigurableInterf
     public function configure(array $options): void
     {
         $this->transliterate = isset($options['transliterate']) ? (bool) $options['transliterate'] : $this->transliterate;
+    }
+
+    public function directoryName(object|array $object, PropertyMapping $mapping): string {
+        return 'timings/thumbs';
     }
 
     public function name(object $object, PropertyMapping $mapping): string
@@ -68,7 +76,7 @@ final class TimeSlotThumbNameNamer implements NamerInterface, ConfigurableInterf
         //     $this->filesystem->mkdir($realDir);
         // }
 
-        // dd($name);
+        // dump($name);
         // return \uniqid().'/'.$name; // TODO : not enough to create unique directory structure...
         // https://github.com/dustin10/VichUploaderBundle/blob/master/docs/namers.md
         return $name; // So directly send orinial name...

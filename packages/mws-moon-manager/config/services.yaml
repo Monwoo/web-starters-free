@@ -47,7 +47,7 @@ services:
         # alias: MWS\MoonManagerBundle\Naming\OrignalNameNamer.message_tchats_upload
 
     mws_time_slot_thumb_upload_namer:
-        class: MWS\MoonManagerBundle\Naming\TimeSlotThumbNameNamer
+        class: MWS\MoonManagerBundle\Naming\TimeSlotThumbNamer
         public: true
 
     # makes classes in src/ available to be used as services

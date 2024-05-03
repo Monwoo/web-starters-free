@@ -37,9 +37,13 @@ vich_uploader:
             delete_on_update: true
             delete_on_remove: true
         timing_slot_thumbnail:
-            uri_prefix: '%env.base_href%/mws/%kernel.default_locale%/mws-config/uploads/timings/thumbs'
-            upload_destination: '%kernel.project_dir%/%mws_moon_manager.uploadSubFolder%/timings/thumbs'
+            uri_prefix: '%env.base_href%/mws/%kernel.default_locale%/mws-config/uploads'
+            upload_destination: '%kernel.project_dir%/%mws_moon_manager.uploadSubFolder%'
             namer: mws_time_slot_thumb_upload_namer
+            # TIPS : need directory namer to avoid buggy empty dir bug giving empty end '/' breaking next stuffs :
+            # https://vscode.dev/github/Monwoo/web-starters-free/blob/tumbs-upload-folder/apps/mws-sf-pdf-billings/backend/vendor/vich/uploader-bundle/src/Storage/FileSystemStorage.php#L18-L19
+            # TODO : using ReplacingFile is buggy ? message_tchats_upload is OK without directory_namer...
+            directory_namer: mws_time_slot_thumb_upload_namer
             inject_on_load: true
             delete_on_update: true
             delete_on_remove: true
