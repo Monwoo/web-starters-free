@@ -300,7 +300,7 @@ class MwsConfigController extends AbstractController
             $uSize = $this->mwsFileSize($uploadSrc)
         );
         $uploadsTchatTotalSize = $this->humanSize(
-            $uSize = $this->mwsFileSize($uploadTchatSrc)
+            $uTchatSize = $this->mwsFileSize($uploadTchatSrc)
         );
         
         $databasesTotalSize = $this->humanSize(
