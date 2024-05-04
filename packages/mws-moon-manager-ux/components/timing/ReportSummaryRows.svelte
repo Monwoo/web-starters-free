@@ -246,8 +246,18 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     {/if}
     {summary.rangeDayIdxBy10Min ?? ''}
     {#if showPictures && summary.sourceStamp }
-    <!--
-      TIPS : too huge to import thumbnailJpeg for all summary, will count on server side...
+      <!--
+        TIPS : too huge to import thumbnailJpeg for all summary, will count on server side...
+        <object
+        data={ summary?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%" }
+        type="image/png"
+        alt="screenshot"
+        arial-label="screenshot"
+        title="screenshot"
+        class="object-contain border-solid border-4 max-w-[100px]"
+        class:border-gray-600={!tagSlugs.length}
+        class:border-green-400={tagSlugs.length}
+      > -->
       <object
       data={ summary?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%" }
       type="image/png"
@@ -257,14 +267,15 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
       class="object-contain border-solid border-4 max-w-[100px]"
       class:border-gray-600={!tagSlugs.length}
       class:border-green-400={tagSlugs.length}
-    > -->
-      <img
-        loading="lazy"
-        class="object-contain border-solid border-4 max-w-[100px]"
-        class:border-gray-600={!tagSlugs.length}
-        class:border-green-400={tagSlugs.length}
-        src={slotPath(summary)}
-      />
+      >
+        <img
+          loading="lazy"
+          class="object-contain border-solid border-4 max-w-[100px]"
+          class:border-gray-600={!tagSlugs.length}
+          class:border-green-400={tagSlugs.length}
+          src={slotPath(summary)}
+        />
+      </object>
     {/if}
   </td>
   <td
