@@ -105,6 +105,20 @@ class CleanThumbnailsCommand extends Command
         }
         // dd('ok');
         $this->em->flush();    
+
+        // SQlite will not downsize with simple delete,
+        // so need to use sqlite vacuum command to clean inDb thumb spaces :
+        // (will use twice db size...)
+        if (starts_with($_SERVER['DATABASE_URL'] ?? '', 'sqlite://')) {
+            // https://stackoverflow.com/questions/2143800/change-sqlite-file-size-after-delete-from-table
+            // https://stackoverflow.com/questions/48894037/symfony4-sqlite3-connection
+            $stmt = $this->em->getConnection()->prepare("VACUUM");
+            // $stmt->execute();
+            $stmt->executeStatement();
+            // dd("VACUUM OK");
+        }
+
+
         $progressBar->finish();
         $output->writeln(''); // To ensure line return after progress bar
 

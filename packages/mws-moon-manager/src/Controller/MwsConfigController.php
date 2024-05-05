@@ -159,7 +159,7 @@ class MwsConfigController extends AbstractController
                     $bckupNameFromFile = implode('.', array_slice(explode(
                         '.', $bckupFile['name']
                     ),0,-1));
-                    $bckupPath = "$uploadSrc/{$bckupFile['name']}";
+                    $bckupPath = "$uploadSrc/messages/tchats/{$bckupFile['name']}";
                     // Keep it OUTSIDE of next backup call :
                     $filesystem->rename($bckupPath, "$projectDir/var/cache/tmp.zip", true);
                     // TODO : config behavior ? alway bckup for now
@@ -247,6 +247,7 @@ class MwsConfigController extends AbstractController
                                 true
                             );
                             if($haveMediaFiles) {
+                                // TODO : to heavy secu ? copy folder instead of parts by parts needing code update to load new backup style ?
                                 $filesystem->rename(
                                     "$extractDest/$zipBckupName/messages/tchats",
                                     "$extractDest/messages/tchats",

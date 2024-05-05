@@ -125,10 +125,10 @@ class BackupCommand extends Command
         // $uploadSrc = $this->params->get('vich_uploader.mappings.message_tchats_upload.upload_destination');
         // $uploadSrc = $this->params->get('vich_uploader');
         $subFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
-        $uploadSrc = "$projectDir/$subFolder/messages/tchats";
+        $uploadSrc = "$projectDir/$subFolder";
         // dd($uploadSrc);
 
-        $this->recursive_copy($uploadSrc, "$currentBackupDir/messages/tchats");
+        $this->recursive_copy($uploadSrc, "$currentBackupDir");
 
         // TODO : remove and clean copy olders than 60 days ? (to keep spaces...)
 
