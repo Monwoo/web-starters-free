@@ -395,6 +395,10 @@
         <button style="--mws-primary-rgb: 255, 0, 0">Supprimer tous les thumbnails</button>
       </form>
     </div>
+    <div id="config-backup-bottom-extension" class="detail w-full">
+      {@html $state.bottomExtension ?? ''}
+    </div>
+
   </div>
 </Base>
 
