@@ -521,6 +521,7 @@ class MwsTimingController extends AbstractController
             GROUP_CONCAT(s.sourceStamp) as sourceStamps,
             GROUP_CONCAT(tag.label) as labels,
             GROUP_CONCAT(s.rangeDayIdxBy10Min) as allRangeDayIdxBy10Min,
+            GROUP_CONCAT(s.thumbnailJpeg, '#_;_#') as thumbnailJpegs,
             GROUP_CONCAT(s.id) as ids
         ");
 

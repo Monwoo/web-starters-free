@@ -247,7 +247,8 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     {summary.rangeDayIdxBy10Min ?? ''}
     {#if showPictures && summary.sourceStamp }
       <!--
-        TIPS : too huge to import thumbnailJpeg for all summary, will count on server side...
+        TIPS : too huge to import thumbnailJpeg for all summary, if huge amount of 
+          time slots and using db B64 save mode instead of upload thumb mode...
         <object
         data={ summary?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%" }
         type="image/png"

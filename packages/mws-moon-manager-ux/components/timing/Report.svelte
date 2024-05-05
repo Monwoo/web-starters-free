@@ -151,6 +151,10 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
       // const maxPaths = tSum.maxPaths?.split(",");
       // const pricePerHr = maxPath ?? 0; // TODO: handle priority
       const sourceStamps = tSum.sourceStamps?.split(",");
+      // TODO : secu, '#_;_#' used in imported filename will break reports split below :
+      //       => slug ? might lose some meanings... ensure '#_;_#' do not exist ?
+      //       => centralize separators for back and front, to avoid raw string and have configurable separators ?
+      const thumbnailJpegs = tSum.thumbnailJpegs.split("#_;_#");
 
       // console.debug(maxPath);
 
@@ -181,11 +185,21 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
           " Wrong DATASET, <> sourceStamps found " +
           ids.length
       );
+
+      console.assert(
+        !thumbnailJpegs || thumbnailJpegs.length == ids.length,
+        thumbnailJpegs?.length +
+          " Wrong DATASET, <> thumbnailJpegs found " +
+          ids.length
+      );
+
       // const srcStamps = tSum.srcStamps.split(',');
       ids.forEach((tId, idx) => {
         const tagSlug = tagSlugs ? tagSlugs[idx] ?? null : null;
         const rangeDayIdxBy10Min = allRangeDayIdxBy10Min[idx];
         const sourceStamp = sourceStamps ? sourceStamps[idx] ?? null : null;
+        const thumbnailJpeg = thumbnailJpegs ? thumbnailJpegs[idx] ?? null : null;
+        
         // const pricePerHr = maxPath
         //   ? parseFloat(pricesPerHr[idx]) ?? null
         //   : null;
@@ -213,12 +227,13 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
           id: tId,
           sourceDate: tSum.sourceDate,
           sourceTimeGMT: dayjs.unix(tSum.sourceTimeGMTstamp),
-          sourceStamp: sourceStamp,
-          rangeDayIdxBy10Min: rangeDayIdxBy10Min,
+          sourceStamp,
+          rangeDayIdxBy10Min,
           // maxPricePerHr: maxPPH,
-          maxPath: maxPath,
-          tags: tags,
+          maxPath,
+          tags,
           // tags: timingsByIds[tId]?.tags ?? {},
+          thumbnailJpeg,
         };
       });
       // if (timingsByIds[tId]) {
