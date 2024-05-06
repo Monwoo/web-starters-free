@@ -113,9 +113,11 @@ class MwsConfigController extends AbstractController
         $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
         $uploadSrc = "$projectDir/$uploadSubFolder";
         $uploadTchatSrc = "$projectDir/$uploadSubFolder/messages/tchats";
-        $extractDest = "$uploadSrc";
         $dbSrc = "$projectDir/var/data.db.sqlite";
-        $gdprSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
+        $gdprDbSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
+        $gdprUploadSrc = "$projectDir/var/uploads-gdpr-ok";
+        // $extractDest = "$uploadSrc";
+        $extractDest = "$projectDir/var/cache";
 
         // $csrf = $request->request->get('_csrf_token');
         // if (!$this->isCsrfTokenValid('mws-csrf-config-backup', $csrf)) {
@@ -159,14 +161,15 @@ class MwsConfigController extends AbstractController
                     $bckupNameFromFile = implode('.', array_slice(explode(
                         '.', $bckupFile['name']
                     ),0,-1));
-                    $bckupPath = "$uploadSrc/messages/tchats/{$bckupFile['name']}";
+                    $rawUploadPath = "$uploadSrc/messages/tchats/{$bckupFile['name']}";
+                    $bckupPath = "$projectDir/var/cache/{$bckupFile['name']}";
                     // Keep it OUTSIDE of next backup call :
-                    $filesystem->rename($bckupPath, "$projectDir/var/cache/tmp.zip", true);
+                    $filesystem->rename($rawUploadPath, $bckupPath, true);
                     // TODO : config behavior ? alway bckup for now
                     $this->backupInternalSave();
                     // TODO : better configure zip to another upload folder than same
                     // as the backuped ones ?
-                    $filesystem->rename("$projectDir/var/cache/tmp.zip", $bckupPath, true);
+                    // $filesystem->rename("$projectDir/var/cache/tmp.zip", $bckupPath, true);
                     // dd($bckupPath);
                     $isSqlite = ends_with($bckupPath, '.sqlite');
                     if ($isSqlite) {
@@ -208,9 +211,9 @@ class MwsConfigController extends AbstractController
                             use ($dbTestPath, $zipBckupName) {
                                 return $f === $dbTestPath
                                 || starts_with($f, "$zipBckupName/messages/tchats/")
-                                || starts_with($f, "$zipBckupName/timings/thumb/"); // TODO : factorize, centralize, configurable... ?
+                                || starts_with($f, "$zipBckupName/timings/thumbs/"); // TODO : factorize, centralize, configurable... ?
                             }))) {
-                                throw new ZipException('Only "/messages/tchats/" or "/timings/thumb/" extra folder is allowed');
+                                throw new ZipException('Only "/messages/tchats/" or "/timings/thumbs/" extra folder is allowed');
                             }
 
                             $zipFile->extractTo($extractDest); // extract files to the specified directory
@@ -248,16 +251,23 @@ class MwsConfigController extends AbstractController
                             );
                             if($haveMediaFiles) {
                                 // TODO : to heavy secu ? copy folder instead of parts by parts needing code update to load new backup style ?
-                                $filesystem->rename(
-                                    "$extractDest/$zipBckupName/messages/tchats",
-                                    "$extractDest/messages/tchats",
-                                    true
-                                );
-                                $filesystem->rename(
-                                    "$extractDest/$zipBckupName/timings/thumb",
-                                    "$extractDest/timings/thumb",
-                                    true
-                                );
+                                $tchatMedias = "$extractDest/$zipBckupName/messages/tchats";
+                                if (file_exists($tchatMedias)) {
+                                    $filesystem->rename(
+                                        "$tchatMedias",
+                                        "$uploadSrc/messages/tchats",
+                                        true
+                                    );                                        
+                                }
+                                $timingMedias = "$extractDest/$zipBckupName/timings/thumbs";
+                                // dd($timingMedias);
+                                if (file_exists($timingMedias)) {
+                                    $filesystem->rename(
+                                        $timingMedias,
+                                        "$uploadSrc/timings/thumbs",
+                                        true
+                                    );
+                                }
                             }
                             // $bulkload_connection = new SQLite3("$dbSrc");
 
@@ -308,7 +318,8 @@ class MwsConfigController extends AbstractController
             $dSize = $this->mwsFileSize($dbSrc)
         );
         $gdprBackupSize = $this->humanSize(
-            $gSize = $this->mwsFileSize($gdprSrc)
+            $gSize = $this->mwsFileSize($gdprDbSrc)
+            + $this->mwsFileSize($gdprUploadSrc)
         );
         // Tips : not counting  + $gSize in total since
         //        is more like an idea of the Max download size
@@ -507,7 +518,7 @@ class MwsConfigController extends AbstractController
 
         if ($isFull) {
         }
-
+        // dd($shouldZip);
         if ($shouldZip) {
             // https://packagist.org/packages/nelexa/zip
             // $zipFile = new \PhpZip\ZipFile();
@@ -871,7 +882,9 @@ class MwsConfigController extends AbstractController
                 throw $this->createNotFoundException("Wrong internalName parameter for $internalName.");
             }
             $projectDir = $this->getParameter('kernel.project_dir');
+            // $subFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
             $pathRaw = "$projectDir/bckup/$internalName";
+            // $uploadSrc = "$projectDir/$subFolder";
             $filesystem = new Filesystem();
 
             $path = realpath($pathRaw);
@@ -885,8 +898,34 @@ class MwsConfigController extends AbstractController
 
             try {
                 $backupDbSrc = "$path/data.db.sqlite";
-                $gdprSrc = "$projectDir/var/data.gdpr-ok.db.sqlite";
-                $filesystem->copy($backupDbSrc, $gdprSrc, true);
+                $backupUploadSrc = "$path";
+                $gdprDb = "$projectDir/var/data.gdpr-ok.db.sqlite";
+                $gdprUploads = $projectDir . '/var/uploads-gdpr-ok';
+                $filesystem->copy($backupDbSrc, $gdprDb, true);
+                if (file_exists($backupUploadSrc)) {
+                    // if (file_exists($gdprUploads)) {
+                    //     $filesystem->remove($gdprUploads);
+                    // }
+                    $finder = new Finder();
+                    // Avoid copy of route backup DB db :
+                    // $finder->directories()->in($safeGdprUploads)
+                    //     ->ignoreDotFiles(true)
+                    //     ->ignoreUnreadableDirs()
+                    //     ->depth(0);
+                    $finder->in($backupUploadSrc)
+                    ->ignoreDotFiles(true)
+                    ->ignoreUnreadableDirs()
+                    ->notPath('^data\.db\.sqlite');
+                    $finder = null;
+
+                    $filesystem->mirror($backupUploadSrc, $gdprUploads, $finder, [
+                        'override' => true,
+                        'delete' => true,
+                    ]);
+                    // $filesystem->remove($gdprUploads);
+                } else {
+                    $this->logger->debug("FAIL : missing $gdprUploads.");
+                }
             } catch (Exception $e) {
                 $this->logger->error(
                     "Use as GDPR reset internal backup error : " . $e->getMessage()

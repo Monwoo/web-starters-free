@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,7 @@ class FactoryResetController extends AbstractController
     public function __construct(
         protected KernelInterface $kernel,
         protected ParameterBagInterface $params,
+        protected LoggerInterface $logger,
     ) { }
 
     #[Route(
@@ -41,7 +43,8 @@ class FactoryResetController extends AbstractController
         // TODO : remove code duplication with apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
         $database = $projectDir . '/var/data.db.sqlite';
         $safeGdprDatabase = $projectDir . '/var/data.gdpr-ok.db.sqlite';
-        $dbBackup = $projectDir . '/var/data.db.' . date('Ymd_His') . '.bckup.sqlite';
+        $safeGdprUploads = $projectDir . '/var/uploads-gdpr-ok';
+        // $dbBackup = $projectDir . '/var/data.db.' . date('Ymd_His') . '.bckup.sqlite';
 
         // TODO : factorize with backup commande
         $filesystem = new Filesystem();
@@ -60,7 +63,7 @@ class FactoryResetController extends AbstractController
             $database,
             $safeGdprDatabase,
             $filesystem,
-            $dbBackup
+            $safeGdprUploads,
         ) {
             // Backup if configured to backup on each factory reset (for possible important data to keep even if should not be public for GDPR purpose)
             if (json_decode($_SERVER['FACTORY_RESET_DO_BACKUP'] ?? 'true')) {
@@ -75,7 +78,31 @@ class FactoryResetController extends AbstractController
                 $database,
                 $uploadSrc,
             ]);
-            $filesystem->copy($safeGdprDatabase, $database, true);
+            if (file_exists($safeGdprDatabase)) {
+                $filesystem->copy($safeGdprDatabase, $database, true);
+            } else {
+                $msg .= "FAIL : missing $safeGdprDatabase.";
+                $this->logger->warning("FAIL : missing $safeGdprDatabase.");
+            }
+            if (file_exists($safeGdprUploads)) {
+                // $finder = new Finder();
+                // // Avoid copy of db :
+                // $finder->directories()->in($safeGdprUploads)
+                //     ->ignoreDotFiles(true)
+                //     ->ignoreUnreadableDirs()
+                //     ->depth(0);
+                // foreach ($finder as $f) {
+                //     $p = $f->getPathname();
+                //     $filesystem->copy($p, "$uploadSrc/$p", true);
+                // }
+                $filesystem->mirror($safeGdprUploads, $uploadSrc, null, [
+                    'override' => true,
+                    'delete' => true,
+                ]);
+            } else {
+                $msg .= "FAIL : missing $safeGdprUploads.";
+                $this->logger->debug("FAIL : missing $safeGdprUploads.");
+            }
             $msg .= 'OK : Did reset this application to factory settings. ';
         };
         $serverClock = new \DateTime();
@@ -107,7 +134,7 @@ class FactoryResetController extends AbstractController
                 // TODO : e2e tests on user messages realistic with timings ? (using time stubs etc...)
                 $msg .= "ERROR : Please wait at most $delta secondes before next factory reset is available.";
                 $logger->warning($msg);
-                } else {
+            } else {
                 $clean();
                 // dd($timestamp);
                 file_put_contents($lastTimestampFile, $timestamp);

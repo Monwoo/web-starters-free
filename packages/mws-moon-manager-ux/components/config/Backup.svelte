@@ -9,6 +9,7 @@
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import dayjs from "dayjs";
+import AddModal from "../timing/tags/AddModal.svelte";
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let backups = [];
@@ -80,13 +81,14 @@
           throw new Error("Not 2xx response");
         } else {
           const data = await resp.blob();
-          console.debug("Did remove tag, resp :", data);
+          console.debug("Did download backup, resp :");
+          // dd('ok');
 
           // stateUpdate(state, {
           //   csrfTimingMigrateTo: data.newCsrf,
           // });
           // Need self refresh for merged data values :
-          window.location.reload();
+          // window.location.reload();
         }
       })
       .catch((e) => {
@@ -157,6 +159,17 @@
 
     <!-- onsubmit="return confirm('Êtes vous sur de vouloir faire et télécharger un backup ?');" -->
     <!-- onsubmit="setTimeout(window.location.reload, 100)" -->
+    <!--
+        on:submit={() => setTimeout(() => window.location.reload(), 100)}
+        useless AND BUGGY if submit slower than timeout ?...
+        Indeed, server will redirect on submit response...
+        TODO : did increase timeout time to quick solve, need
+              proxy or ajax call to monitor download status...
+              https://www.javascript-coder.com/javascript-form/javascript-submit-form-stay-on-page/
+              https://www.geeksforgeeks.org/how-to-create-a-button-that-submits-a-form-and-downloads-a-pdf-simultaneously/
+              https://javascript.info/forms-submit
+              https://www.geeksforgeeks.org/how-to-detect-when-browser-receives-download-in-web-extension/
+    -->
     <div class="p-4 w-full flex flex-wrap items-center justify-center">
       <form
         action={Routing.generate("mws_config_backup_download", {
@@ -165,7 +178,7 @@
         })}
         name="mainBackup"
         method="POST"
-        on:submit={() => setTimeout(() => window.location.reload(), 100)}
+        on:submit={() => setTimeout(() => window.location.reload(), 30000)}
       >
         <div class="w-full text-center">
           <label class="p-2" for="backupName">Nom du backup :</label>
