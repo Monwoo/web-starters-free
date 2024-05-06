@@ -1185,6 +1185,7 @@ class MwsTimingController extends AbstractController
                                     $em->persist($upload); // This one copy file on doctrine events
                                     // unlink($tmp); // No need of tmp anymore
                                     $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsTimeSlotUpload::class);
+                                    $uploadUrl = str_replace($request->getBasePath(), '', $uploadUrl);
                                     // dd($uploadUrl);
                                     $outerObject->setThumbnailJpeg($uploadUrl);
                                 }

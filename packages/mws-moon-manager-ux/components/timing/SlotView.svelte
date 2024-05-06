@@ -349,6 +349,7 @@
   export let quickQualifTemplates; // Injected by qualif/QuickList.svelte
   export let htmlRoot;
   export let viewWrapper;
+  const base = process.env.BASE_HREF_FULL ?? "";
 
   // TODO : crop tool to resize privacy frog ?
   // + easy crop mask history and save/reload privacy frog parameters...
@@ -1531,7 +1532,7 @@
       >
         <img class="w-full object-contain select-none m-auto" loading="eager"
         alt={ viewtitle }
-        src={timingSlot.thumbnailJpeg ?? randomEmptyPicture()}
+        src={(timingSlot?.thumbnailJpeg?.startsWith('/') ? base + timingSlot?.thumbnailJpeg : timingSlot?.thumbnailJpeg) ?? randomEmptyPicture()}
         />
       </object>
       <div

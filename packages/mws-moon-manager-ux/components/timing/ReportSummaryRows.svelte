@@ -20,6 +20,8 @@
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
   export let reportScale;
   export let breadcrumb = [];
+  const base = process.env.BASE_HREF_FULL ?? "";
+
   console.debug('[ReportSummaryRows] label', label);
   console.debug('[ReportSummaryRows] subLevelKeys', subLevelKeys);
 
@@ -260,7 +262,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
         class:border-green-400={tagSlugs.length}
       > -->
       <object
-      data={ summary?.thumbnailJpeg ?? "//=::NotAnUrlForPurposeFail**%%" }
+      data={ (summary?.thumbnailJpeg?.startsWith('/') ? base + summary?.thumbnailJpeg : summary?.thumbnailJpeg) ?? "//=::NotAnUrlForPurposeFail**%%" }
       type="image/png"
       alt="screenshot"
       arial-label="screenshot"

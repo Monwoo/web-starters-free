@@ -43,6 +43,7 @@
   export let slotIndex;
   export let lastSelectedIndex;
   export let selectionStartIndex;
+  const base = process.env.BASE_HREF_FULL ?? "";
 
   // TODO : crop tool to resize privacy frog ?
   // + easy crop mask history and save/reload privacy frog parameters...
@@ -268,7 +269,7 @@ overflow-visible border-solid border-4"
       arial-label="screenshot"
       class="object-contain w-full h-full"
       src={"screenshot" == timingSlot?.source?.type
-        ? timingSlot?.thumbnailJpeg
+        ? (timingSlot?.thumbnailJpeg?.startsWith('/') ? base + timingSlot?.thumbnailJpeg : timingSlot?.thumbnailJpeg)
         : ""}
     />
   {:else}
@@ -287,7 +288,7 @@ overflow-visible border-solid border-4"
         alt={thumbtitle}
         arial-label="screenshot"
         class="object-contain w-full h-full"
-        src={timingSlot.thumbnailJpeg ?? randomEmptyPicture()}
+        src={ (timingSlot?.thumbnailJpeg?.startsWith('/') ? base + timingSlot?.thumbnailJpeg : timingSlot?.thumbnailJpeg) ?? randomEmptyPicture()}
       />
     </object>
   {/if}
