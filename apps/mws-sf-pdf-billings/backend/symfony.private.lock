@@ -108,6 +108,9 @@
     "monwoo/mws-demo-bundle": {
         "version": "0.0.1"
     },
+    "monwoo/mws-google-photo-reader": {
+        "version": "0.0.1"
+    },
     "monwoo/mws-moon-manager-bundle": {
         "version": "2.0.0"
     },

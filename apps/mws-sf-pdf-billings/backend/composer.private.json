@@ -28,6 +28,10 @@
         },
         {
             "type": "path",
+            "url": "../../../../mws-google-photo-reader"
+        },
+        {
+            "type": "path",
             "url": "../../../../mws-demo"
         }
     ],
@@ -43,6 +47,7 @@
         "gedmo/doctrine-extensions": "^3.13",
         "knplabs/knp-paginator-bundle": "^5.9",
         "lexik/jwt-authentication-bundle": "*",
+        "monwoo/mws-google-photo-reader": "^0.0.1",
         "monwoo/mws-demo-bundle": "^0.0.1",
         "monwoo/mws-moon-manager-bundle": "^2.0",
         "monwoo/mws-sf-pdf-billings-lvl1-bundle": "^0.0",
