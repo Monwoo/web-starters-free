@@ -47,6 +47,12 @@ if (class_exists(MWS\DemoBundle\DemoBundle::class)
     ]);
 }
 
+if (class_exists(MWS\GooglePhotoReaderBundle\GooglePhotoReaderBundle::class)) {
+    $bundles = array_merge($bundles, [
+        MWS\GooglePhotoReaderBundle\GooglePhotoReaderBundle::class => ['all' => true],
+    ]);
+}
+
 // In case of pre-production debugs, we want to get some messages, but still stay closest to the 
 // production context. With that, we can debug without sending the dev debug bundle in production too ;)
 if (class_exists(Symfony\Bundle\DebugBundle\DebugBundle::class)) {
