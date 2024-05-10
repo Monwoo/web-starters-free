@@ -310,7 +310,7 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     {/each}
   </td>
   <td
-    class="sticky top-7 z-30 border-t-0 px-6 text-right flex flex-col
+    class="sticky top-[4rem] md:top-7 wide:top-[4rem] z-30 border-t-0 px-6 text-right flex flex-col
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
 
@@ -340,20 +340,21 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
     </span>
   </td>
   <td
-    class="sticky top-7 z-30 border-b-0 border-t-1 border-t-0 px-6 text-center
-    mws-default-bg {rowClass}
+    class="px-6 text-center
     align-top
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
-    <span class="">
+    <div class="sticky top-[5rem] md:top-12 wide:top-[5rem] z-30 border-b-0 border-t-1 border-t-0 
+    mws-default-bg {rowClass}
+    ">
     <!-- {(summary.maxPPH ?? null) === null
     ? summary.maxPricePerHr?.toPrettyNum(2) ?? '-'
     : (summary.maxPPH?.toPrettyNum(2) ?? '-')} € -->
     {(summary.maxPath?.maxValue?.toPrettyNum(2) ?? '--')} €
-    </span>
+    </div>
   </td>
   <td
-    class="sticky top-7 z-30 border-t-0 px-6 text-right flex flex-col
+    class="sticky top-[4rem] md:top-7 wide:top-[4rem] z-30 border-t-0 px-6 text-right flex flex-col
     border-l-0 border-r-0 text-lg whitespace-nowrap p-4"
   >
     <span class="p-1 bg-white rounded-md rounded-b-none"

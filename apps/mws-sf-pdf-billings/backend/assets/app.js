@@ -32,6 +32,8 @@ import './styles/app.scss';
 document.documentElement.style.background = `RGB(var(--mws-background-over-scroll-rgb))`;
 
 // alert("OK from app");
+window.registerSvelteControllerComponents = 
+window.registerSvelteControllerComponents ??
+registerSvelteControllerComponents;
 
-
-registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));
+window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));
