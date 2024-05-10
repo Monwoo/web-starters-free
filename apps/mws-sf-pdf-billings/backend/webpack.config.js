@@ -1,6 +1,7 @@
 // 🌖🌖 Copyright Monwoo 2023 🌖🌖, improved by Miguel Monwoo, service@monwoo.com
 
 const path = require('path');
+const fs = require('fs');
 const Encore = require('@symfony/webpack-encore');
 // const FosRouting = require('fos-router/webpack/FosRouting');
 // const svelteConfig = require('./svelte.config.mjs');
@@ -83,8 +84,27 @@ Encore
     .addEntry('app', './assets/app.js')
     ;
     if (HAVE_MWS_DEMO) {
+        console.warn("HAVE_MWS_DEMO enabled");
         // TODO : If file exist ?
-       Encore.addEntry('mwsDemo', '../../../../mws-demo/assets/app.js')
+        Encore.addEntry('mwsDemo', '../../../../mws-demo/assets/app.js')
+    }
+    const mwsGooglePhotoPublicFolder = `../../../../mws-google-photo-reader/public`;
+    // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/manifest.json';
+    const mwsGooglePhotoReaderWidgetEntries = `${mwsGooglePhotoPublicFolder}/build/entrypoints.json`;
+    // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build';
+    // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/runtime.fd462291.js';
+    // const mwsGooglePhotoReaderWidget2 = '../../../../mws-google-photo-reader/public/build/mwsGooglePhotoReaderWidget.3eac92b5';
+    if (fs.existsSync(mwsGooglePhotoReaderWidgetEntries)) {
+        console.warn("mwsGooglePhotoReaderWidget enabled from : ", mwsGooglePhotoReaderWidgetEntries);
+        const entries = JSON.parse(
+            fs.readFileSync(mwsGooglePhotoReaderWidgetEntries)
+        );
+        entries.entrypoints.mwsGooglePhotoReaderWidget.js
+        .forEach((e, idx) => {
+            Encore.addEntry(`mwsGooglePhotoReaderWidget${idx}`, `${mwsGooglePhotoPublicFolder}/${e}`)
+            console.warn(`mwsGooglePhotoReaderWidget${idx} added entry for `, e);
+        })        
+        // Encore.addEntry('mwsGooglePhotoReaderWidget2', mwsGooglePhotoReaderWidget2)
     }
     Encore
     // .addEntry('mwsDemo', '../../../../mws-demo/public/build/entrypoints.json')

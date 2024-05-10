@@ -7,7 +7,7 @@
 #     type: annotation
 # https://symfonycasts.com/screencast/micro-symfony/app-bundle-annotations
 # TODO : auto add from recipe
-moon_manager_controllers:
+mws_demo:
     resource: "@DemoBundle/src/Controller/"
     # https://stackoverflow.com/questions/48120939/symfony-4-global-route-prefix
     prefix: mws

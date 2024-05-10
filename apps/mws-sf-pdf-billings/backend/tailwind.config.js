@@ -21,6 +21,7 @@ module.exports = {
     // Svelte UX package
     "../../../packages/mws-moon-manager-ux/components/**/*.{js,svelte,ts}",
     "../../../../mws-demo/{assets,src,templates}/**/*.{js,svelte,ts,php,twig}",
+    "../../../../mws-google-photo-reader/{assets,src,templates}/**/*.{js,svelte,ts,php,twig}",
     // https://flowbite.com/docs/getting-started/quickstart/
     "./node_modules/flowbite/**/*.js",
     // https://flowbite-svelte.com/docs/pages/introduction
