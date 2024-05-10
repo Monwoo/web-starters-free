@@ -1,10 +1,11 @@
+// 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+
 // TODO : MoonManagerBundle recipe + factorize integration... hard coded for now :
 // TIPS : use encore or webpack path configs instead ? @moon-manger/...
 // import '../../../../packages/mws-moon-manager/assets/app.js';
 
 import { registerSvelteControllerComponents } from '@symfony/ux-svelte';
 import './bootstrap.js';
-// 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
 /*
  * Welcome to your app's main JavaScript file!

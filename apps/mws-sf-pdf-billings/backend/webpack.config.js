@@ -88,24 +88,43 @@ Encore
         // TODO : If file exist ?
         Encore.addEntry('mwsDemo', '../../../../mws-demo/assets/app.js')
     }
-    const mwsGooglePhotoPublicFolder = `../../../../mws-google-photo-reader/public`;
-    // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/manifest.json';
-    const mwsGooglePhotoReaderWidgetEntries = `${mwsGooglePhotoPublicFolder}/build/entrypoints.json`;
-    // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build';
-    // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/runtime.fd462291.js';
-    // const mwsGooglePhotoReaderWidget2 = '../../../../mws-google-photo-reader/public/build/mwsGooglePhotoReaderWidget.3eac92b5';
-    if (fs.existsSync(mwsGooglePhotoReaderWidgetEntries)) {
-        console.warn("mwsGooglePhotoReaderWidget enabled from : ", mwsGooglePhotoReaderWidgetEntries);
-        const entries = JSON.parse(
-            fs.readFileSync(mwsGooglePhotoReaderWidgetEntries)
-        );
-        entries.entrypoints.mwsGooglePhotoReaderWidget.js
-        .forEach((e, idx) => {
-            Encore.addEntry(`mwsGooglePhotoReaderWidget${idx}`, `${mwsGooglePhotoPublicFolder}/${e}`)
-            console.warn(`mwsGooglePhotoReaderWidget${idx} added entry for `, e);
-        })        
-        // Encore.addEntry('mwsGooglePhotoReaderWidget2', mwsGooglePhotoReaderWidget2)
+    // TIPS : use mwsGooglePhotoDevAsset
+    const mwsGooglePhotoDevAsset = `../../../../mws-google-photo-reader/assets/app.js`;
+    // const mwsGooglePhotoDevAsset = null; // TODO : not OK : having wrong style + wrong constructor for GPhotoList with build bundle...
+    if (mwsGooglePhotoDevAsset) {
+        // TODO : need twig widget edit for entry points changes to work ... or empty script fill...
+        console.warn("mwsGooglePhotoReaderWidget dev from : ", mwsGooglePhotoDevAsset);
+        Encore.addEntry(`mwsGooglePhotoReaderWidget0`, mwsGooglePhotoDevAsset)
+        Encore.addEntry(`mwsGooglePhotoReaderWidget1`, './assets/empty.js')
+        Encore.addEntry(`mwsGooglePhotoReaderWidget2`, './assets/empty.js')
+        Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle0`, './assets/empty.css')
+        Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle1`, './assets/empty.css')
+    } else {
+        const mwsGooglePhotoPublicFolder = `../../../../mws-google-photo-reader/public`;
+        // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/manifest.json';
+        const mwsGooglePhotoReaderWidgetEntries = `${mwsGooglePhotoPublicFolder}/build/entrypoints.json`;
+        // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build';
+        // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/runtime.fd462291.js';
+        // const mwsGooglePhotoReaderWidget2 = '../../../../mws-google-photo-reader/public/build/mwsGooglePhotoReaderWidget.3eac92b5';
+        if (fs.existsSync(mwsGooglePhotoReaderWidgetEntries)) {
+            console.warn("mwsGooglePhotoReaderWidget enabled from : ", mwsGooglePhotoReaderWidgetEntries);
+            const entries = JSON.parse(
+                fs.readFileSync(mwsGooglePhotoReaderWidgetEntries)
+            );
+            entries.entrypoints.mwsGooglePhotoReaderWidget.js
+            .forEach((e, idx) => {
+                Encore.addEntry(`mwsGooglePhotoReaderWidget${idx}`, `${mwsGooglePhotoPublicFolder}/${e}`)
+                console.warn(`mwsGooglePhotoReaderWidget${idx} added entry for `, e);
+            })        
+            entries.entrypoints.mwsGooglePhotoReaderWidget.css
+            .forEach((e, idx) => {
+                Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle${idx}`, `${mwsGooglePhotoPublicFolder}/${e}`)
+                console.warn(`mwsGooglePhotoReaderWidgetStyle${idx} added entry for `, e);
+            })        
+            // Encore.addEntry('mwsGooglePhotoReaderWidget2', mwsGooglePhotoReaderWidget2)
+        }    
     }
+
     Encore
     // .addEntry('mwsDemo', '../../../../mws-demo/public/build/entrypoints.json')
 
