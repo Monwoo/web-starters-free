@@ -7,6 +7,8 @@
 #     type: annotation
 # https://symfonycasts.com/screencast/micro-symfony/app-bundle-annotations
 # TODO : auto add from recipe
+# TODO : not failing like gphoto routes if no mws demo bundle loaded ? 
+#          conditional route on env params ? 
 mws_demo:
     resource: "@DemoBundle/src/Controller/"
     # https://stackoverflow.com/questions/48120939/symfony-4-global-route-prefix
