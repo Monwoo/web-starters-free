@@ -91,7 +91,7 @@ Encore
     // TIPS : use mwsGooglePhotoDevAsset
     const mwsGooglePhotoDevAsset = `../../../../mws-google-photo-reader/assets/app.js`;
     // const mwsGooglePhotoDevAsset = null; // TODO : not OK : having wrong style + wrong constructor for GPhotoList with build bundle...
-    if (mwsGooglePhotoDevAsset) {
+    if (mwsGooglePhotoDevAsset && fs.existsSync(mwsGooglePhotoDevAsset)) {
         // TODO : need twig widget edit for entry points changes to work ... or empty script fill...
         console.warn("mwsGooglePhotoReaderWidget dev from : ", mwsGooglePhotoDevAsset);
         Encore.addEntry(`mwsGooglePhotoReaderWidget0`, mwsGooglePhotoDevAsset)
