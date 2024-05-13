@@ -154,7 +154,7 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
       // TODO : secu, '#_;_#' used in imported filename will break reports split below :
       //       => slug ? might lose some meanings... ensure '#_;_#' do not exist ?
       //       => centralize separators for back and front, to avoid raw string and have configurable separators ?
-      const thumbnailJpegs = tSum.thumbnailJpegs.split("#_;_#");
+      const thumbnailJpegs = tSum.thumbnailJpegs?.split("#_;_#");
 
       // console.debug(maxPath);
 
