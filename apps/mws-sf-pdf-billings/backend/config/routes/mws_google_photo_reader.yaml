@@ -1,0 +1,27 @@
+
+
+# controllers:
+#     # https://symfony.com/doc/current/bundles/override.html
+#     resource: ../../../../../packages/mws-moon-manager/src/Controller/
+#     # resource: 'MoonManagerBundle/src/Controller'
+#     type: annotation
+# https://symfonycasts.com/screencast/micro-symfony/app-bundle-annotations
+# TODO : auto add from recipe => pb : remove if bundle not available ?
+# TODO : better inject routes from bundle (add config options 
+#       to avoid routes loads for the one not using routes of this bundle)
+# mws_google_photo_reader: # TIPS : will bug if GooglePhotoReaderBundle not present :
+#     resource: "@GooglePhotoReaderBundle/src/Controller/"
+#     # https://stackoverflow.com/questions/48120939/symfony-4-global-route-prefix
+#     prefix: mws
+#     type: annotation
+#     # https://stackoverflow.com/questions/61059875/controller-has-no-container-set-did-you-forget-to-define-it-as-a-service-subscr
+#     options:
+#         autowire: true
+
+# https://symfony.com/doc/current/routing/custom_route_loader.html#creating-a-custom-loader
+mws_google_photo_reader:
+    # mws_google_photo_reader: # TIPS : will bug if GooglePhotoReaderBundle not present :
+    # resource: "@GooglePhotoReaderBundle/src/Controller/" 
+    # Ok to load bundles routes if present, none if missing bundle :
+    resource: .
+    type: mws_extra
