@@ -80,6 +80,9 @@ services:
     # TODO : remove this hack and look for package dependencies version upgrades (should have miss some package upgrades ?)
     translation.extractor.php: "@translation.extractor.php_ast"
 
+    MWS\MoonManagerBundle\Routing\ExtraLoader:
+        tags: [routing.loader]
+
 # controllers:
 #   resource: ../src/src/Controller/
 #   type: annotation

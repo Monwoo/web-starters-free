@@ -23,5 +23,6 @@ mws_google_photo_reader:
     # mws_google_photo_reader: # TIPS : will bug if GooglePhotoReaderBundle not present :
     # resource: "@GooglePhotoReaderBundle/src/Controller/" 
     # Ok to load bundles routes if present, none if missing bundle :
+    # IF having app or bundles inner fallback for mws_extra type :
     resource: .
     type: mws_extra
