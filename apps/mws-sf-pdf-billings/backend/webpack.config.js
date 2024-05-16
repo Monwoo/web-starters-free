@@ -82,10 +82,10 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
+    .addEntry('app', './assets/app.js')
     // TODO : add from mwsMoonManager recipe ?
     .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/assets/app.js')
     // .addEntry('mwsMoonManager', '../../../packages/mws-moon-manager/public/build/app.js')
-    .addEntry('app', './assets/app.js')
     ;
     if (HAVE_MWS_DEMO) {
         console.warn("HAVE_MWS_DEMO enabled");
