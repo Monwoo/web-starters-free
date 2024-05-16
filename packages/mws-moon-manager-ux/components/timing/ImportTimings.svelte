@@ -163,14 +163,14 @@
     </span>
     <span>
       <input type="checkbox" name="shouldOverwritePriceRules" />
-      <label for="shouldOverwrite">Forcer la surcharge des règles de prix</label
+      <label for="shouldOverwritePriceRules">Forcer la surcharge des règles de prix</label
       >
     </span>
   </span>
   <span class="inline-flex flex-col">
     <span>
       <input type="checkbox" name="shouldRecomputeAllOtherTags" />
-      <label for="shouldOverwrite"
+      <label for="shouldRecomputeAllOtherTags"
         >Mettre à jour les tags des autres temps</label
       >
     </span>

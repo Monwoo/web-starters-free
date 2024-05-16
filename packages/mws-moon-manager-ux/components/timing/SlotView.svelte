@@ -1514,7 +1514,7 @@
         draggable="false"
         class:border-gray-600={!timingSlot?.tags?.length}
         class:border-green-400={timingSlot?.tags?.length}
-        data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+        data={"screenshot" == timingSlot?.source?.type ? slotPath : "//=::NotAnUrlForPurposeFail**%%"}
         type="image/png"
         title={ viewtitle }
         style={`

@@ -9,7 +9,7 @@
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import dayjs from "dayjs";
-import AddModal from "../timing/tags/AddModal.svelte";
+  import AddModal from "../timing/tags/AddModal.svelte";
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
   export let backups = [];

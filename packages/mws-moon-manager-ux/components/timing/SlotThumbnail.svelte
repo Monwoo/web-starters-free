@@ -278,7 +278,7 @@ overflow-visible border-solid border-4"
       on:error
       loading="lazy"
       class="object-contain w-full h-full"
-      data={"screenshot" == timingSlot?.source?.type ? slotPath : ""}
+      data={"screenshot" == timingSlot?.source?.type ? slotPath : "//=::NotAnUrlForPurposeFail**%%"}
       type="image/png"
       role="presentation"
       title={thumbtitle}
