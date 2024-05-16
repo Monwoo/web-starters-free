@@ -2,4 +2,6 @@
  Used to replace possible empty entries
 */
 
-
+.mws-empty-file {
+  content: "Not for use";
+}
