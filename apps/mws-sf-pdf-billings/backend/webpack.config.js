@@ -7,7 +7,11 @@ const Encore = require('@symfony/webpack-encore');
 // const svelteConfig = require('./svelte.config.mjs');
 // import svelteConfig from './svelte.config.mjs';
 // const svelteConfig = await import('./svelte.config.mjs');
-const svelteConfig = require('./svelte.config.js');
+const svelteConfig = require('./svelte.config.js'); // not supported
+// Instead change the require of /Users/miguel/goinfre/web-starters-free/apps/mws-sf-pdf-billings/backend/svelte.config.mjs to a dynamic import() which is available in all CommonJS modules.
+// TODO : module import is missing typescript and scss loaders :
+// const svelteConfig = import('./svelte.config.mjs');
+// const svelteConfig = import('./svelte.config.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // TODO : configure css to avoid build and bundle floders inside public folder ?

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // TODO : Will fail with UX bundle same filename... using MWSOffer prefix for now
 

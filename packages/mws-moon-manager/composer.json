@@ -32,7 +32,7 @@
         "symfony/stimulus-bundle": "^2.12",
         "symfony/webpack-encore-bundle": "^2.1",
         "friendsofsymfony/jsrouting-bundle": "^3.3",
-        "symfony/ux-svelte": "^2.12",
+        "symfony/ux-svelte": "2.*",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "symfony/dotenv": "6.3.*",
         "stof/doctrine-extensions-bundle": "^1.8",

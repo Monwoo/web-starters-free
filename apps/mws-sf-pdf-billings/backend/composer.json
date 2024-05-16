@@ -56,7 +56,7 @@
         "symfony/serializer": "6.3.*",
         "symfony/translation": "6.3.*",
         "symfony/twig-bundle": "6.3.*",
-        "symfony/ux-svelte": "^2.12",
+        "symfony/ux-svelte": "2.*",
         "symfony/validator": "6.3.*",
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "6.3.*",

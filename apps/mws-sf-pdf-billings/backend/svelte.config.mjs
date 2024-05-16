@@ -1,14 +1,14 @@
 // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
 
 // import adapter from '@sveltejs/adapter-static';
-const preprocess = require('svelte-preprocess');
-// import preprocess from 'svelte-preprocess';
+// const preprocess = require('svelte-preprocess');
+import preprocess from 'svelte-preprocess';
 // const preprocess = require('@sveltejs/vite-plugin-svelte');
 // import preprocess from '@sveltejs/vite-plugin-svelte';
 // import { vitePreprocess as preprocess } from '@sveltejs/vite-plugin-svelte'
 
-require('dotenv/config');
-// import 'dotenv/config';
+// require('dotenv/config');
+import 'dotenv/config';
 
 // let baseHref = process.env.VITE_MWS_BASE_HREF || '';
 console.warn("CONFIGURE svelte.config.js for : ", process.env.NODE_ENV);
@@ -96,5 +96,5 @@ const config = {
 	// }
 };
 
-// export default config;
-module.exports = config;
+export default config;
+// module.exports = config;

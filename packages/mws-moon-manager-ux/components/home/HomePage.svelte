@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     // 🌖🌖 Copyright Monwoo 2023-2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
     import Routing from "fos-router";
     // TODO : namespace

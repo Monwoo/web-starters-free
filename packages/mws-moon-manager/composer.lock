@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a599e886af675f40e841235a3e16ad15",
+    "content-hash": "2b616cf0c0101c6722a478fc9ee4f14d",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -6909,16 +6909,16 @@
         },
         {
             "name": "symfony/ux-svelte",
-            "version": "v2.12.0",
+            "version": "v2.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-svelte.git",
-                "reference": "44649661fdc5d11fe538d39af49e71d5bd8bbb88"
+                "reference": "b444ca6c1af16c6374a43fcf6991ffefb177cb86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-svelte/zipball/44649661fdc5d11fe538d39af49e71d5bd8bbb88",
-                "reference": "44649661fdc5d11fe538d39af49e71d5bd8bbb88",
+                "url": "https://api.github.com/repos/symfony/ux-svelte/zipball/b444ca6c1af16c6374a43fcf6991ffefb177cb86",
+                "reference": "b444ca6c1af16c6374a43fcf6991ffefb177cb86",
                 "shasum": ""
             },
             "require": {
@@ -6926,12 +6926,12 @@
                 "symfony/stimulus-bundle": "^2.9.1"
             },
             "require-dev": {
-                "symfony/asset-mapper": "6.3.x-dev",
-                "symfony/finder": "^5.4|^6.2",
-                "symfony/framework-bundle": "^5.4|^6.2",
-                "symfony/phpunit-bridge": "^5.4|^6.2",
-                "symfony/twig-bundle": "^5.4|^6.2",
-                "symfony/var-dumper": "^5.4|^6.2"
+                "symfony/asset-mapper": "^6.3|^7.0",
+                "symfony/finder": "^5.4|^6.2|^7.0",
+                "symfony/framework-bundle": "^5.4|^6.2|^7.0",
+                "symfony/phpunit-bridge": "^5.4|^6.2|^7.0",
+                "symfony/twig-bundle": "^5.4|^6.2|^7.0",
+                "symfony/var-dumper": "^5.4|^6.2|^7.0"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -6969,7 +6969,7 @@
                 "symfony-ux"
             ],
             "support": {
-                "source": "https://github.com/symfony/ux-svelte/tree/v2.12.0"
+                "source": "https://github.com/symfony/ux-svelte/tree/v2.17.0"
             },
             "funding": [
                 {
@@ -6985,7 +6985,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-24T06:49:00+00:00"
+            "time": "2024-04-19T06:36:45+00:00"
         },
         {
             "name": "symfony/validator",

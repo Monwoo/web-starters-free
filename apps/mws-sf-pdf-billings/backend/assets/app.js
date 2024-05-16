@@ -5,6 +5,11 @@
 // import '../../../../packages/mws-moon-manager/assets/app.js';
 
 import { registerSvelteControllerComponents } from '@symfony/ux-svelte';
+// https://symfony-vite.pentatrion.com/fr/stimulus/symfony-ux#symfony-ux-svelte
+// import { startStimulusApp, registerControllers } from "vite-plugin-symfony/stimulus/helpers" 
+// TODO : config vite to use typescript and scss
+// import { registerSvelteControllerComponents } from "vite-plugin-symfony/stimulus/helpers/svelte" 
+
 import './bootstrap.js';
 
 /*
@@ -36,4 +41,5 @@ window.registerSvelteControllerComponents =
 window.registerSvelteControllerComponents ??
 registerSvelteControllerComponents;
 
-window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));
+window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/, "eager"));window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/, "eager"));
+// window.registerSvelteControllerComponents(import.meta.glob('./svelte/controllers/**/*.svelte'));

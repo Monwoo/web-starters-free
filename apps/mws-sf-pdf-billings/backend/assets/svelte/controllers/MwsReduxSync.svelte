@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
     import ReduxStorage from "mws-moon-manager-ux/components/_data/ReduxStorage.svelte";
     export let stateUpdate = null;

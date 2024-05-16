@@ -5,9 +5,8 @@
 
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
 
-  Number.prototype.toPrettyNum = function (this: Number, length: number, maxLength = null) {
+  Number.prototype.toPrettyNum = function (s, length, maxLength = null) {
     if (maxLength === null) maxLength = length;
-    var s = this;
     const splited = s
       .toFixed(maxLength).replace(new RegExp(`0{0,${maxLength - length}}$`), "")
       // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
@@ -23,9 +22,9 @@
     + (splited[1] ?? '');
   };
 
-  declare interface Number {
-    toPrettyNum(length: number): string;
-  }
+  // declare interface Number {
+  //   toPrettyNum(length: number): string;
+  // }
 
 </script>
 

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
     import ImportView from "mws-moon-manager-ux/components/message/ImportView.svelte";
     export let title = null;

@@ -1,6 +1,6 @@
 <svelte:options customElement="s-mws-msg-template-choice-item" accessors />
 
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { createEventDispatcher } from 'svelte';
   import { get_current_component } from 'svelte/internal';
