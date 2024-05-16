@@ -416,7 +416,7 @@
 </Base>
 
 <style lang="scss">
-  h1 {
+  :global(h1) {
     @apply text-2xl;
     @apply font-extrabold;
     @apply p-2;

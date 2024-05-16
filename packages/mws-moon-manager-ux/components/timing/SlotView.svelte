@@ -1506,6 +1506,7 @@
 
         // TODO : load handlers for list of objects and imgs to trigger at end of all loads
       // https://svelte.dev/repl/d7680b8f5aee4d86846b0982e6c0c01d?version=3.31.0 -->
+      {#key timingSlot}
       <object
         use:pan="{{delay:imagePanDelayMs}}"
         on:pan="{imagePanHandler}"  
@@ -1539,6 +1540,7 @@
         src={(timingSlot?.thumbnailJpeg?.startsWith('/') ? base + timingSlot?.thumbnailJpeg : timingSlot?.thumbnailJpeg) ?? randomEmptyPicture()}
         />
       </object>
+      {/key}
       <div
       class="float-right sticky right-0 h-auto z-50 w-0">
         <button
