@@ -654,6 +654,7 @@ class MwsTimingController extends AbstractController
         $curlContext = $this->getCurlContext($request);
 
         $url = $request->get('url', null);
+        $url = rawurldecode($url);
         $keepOriginalSize = $request->query->get('keepOriginalSize', null);
         $thumbnailSize = intval($request->query->get('thumbnailSize', 0));
         if (!$thumbnailSize) {

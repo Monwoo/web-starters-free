@@ -823,8 +823,9 @@
   $: slotPath = timingSlot?.source?.path
     ? Routing.generate("mws_timing_fetchMediatUrl", {
         // encodeURI('file://' + timingSlot?.source.path)
-        url: "file://" + timingSlot?.source.path,
-        keepOriginalSize: true,
+        _locale: locale,
+        url: encodeURIComponent("file://" + timingSlot?.source.path),
+        keepOriginalSize: 1,
       })
     : null;
 
@@ -1499,10 +1500,13 @@
       //        SCROLL is more efficient than click to go prev/next current
       //        qualifs in progress... -->
 
-      <!-- // TODO : load handlers for list of objects and imgs to trigger at end of all loads
+      <!-- 
+        loading="lazy"
+                type="image/png"
+
+        // TODO : load handlers for list of objects and imgs to trigger at end of all loads
       // https://svelte.dev/repl/d7680b8f5aee4d86846b0982e6c0c01d?version=3.31.0 -->
       <object
-        loading="lazy"
         use:pan="{{delay:imagePanDelayMs}}"
         on:pan="{imagePanHandler}"  
         on:click={imageTouchstartHandler}
@@ -1514,8 +1518,8 @@
         draggable="false"
         class:border-gray-600={!timingSlot?.tags?.length}
         class:border-green-400={timingSlot?.tags?.length}
-        data={"screenshot" == timingSlot?.source?.type ? slotPath : "//=::NotAnUrlForPurposeFail**%%"}
-        type="image/png"
+        data={"screenshot" == timingSlot?.source?.type ? slotPath : ("//=::NotAnUrlForPurposeFail**%%" + timingSlot?.source?.type)}
+        type={timingSlot?.source?.metas?.mimeType ?? "image/png"}
         title={ viewtitle }
         style={`
         ${
