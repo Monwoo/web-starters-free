@@ -86,15 +86,15 @@ class MwsTimingController extends AbstractController
         // packages/mws-moon-manager/src/Naming/OrignalNameNamer.php
         // only using "$projectDir/$uploadSubFolder/timings/thumbs"
         $this->thumbUploadFolder = $thumbUploadFolder
-        ?? "$projectDir/$uploadSubFolder/timings/thumbs";
+            ?? "$projectDir/$uploadSubFolder/timings/thumbs";
         $thumbUploadUriPrefix = $thumbUploadUriPrefix
-        ?? $this->UploaderHelper->asset([
-            'mediaName' => ' ',
-            'mediaFile' => [
-                'filename' => ' ',
-                'basename' => ' ',
-            ]
-        ], 'mediaFile', MwsTimeSlotUpload::class);
+            ?? $this->UploaderHelper->asset([
+                'mediaName' => ' ',
+                'mediaFile' => [
+                    'filename' => ' ',
+                    'basename' => ' ',
+                ]
+            ], 'mediaFile', MwsTimeSlotUpload::class);
         $this->thumbUploadUriPrefix = trim($thumbUploadUriPrefix);
 
         return $c;
@@ -579,7 +579,8 @@ class MwsTimingController extends AbstractController
         ]);
     }
 
-    protected function getThumbPath($request, $url) {
+    protected function getThumbPath($request, $url)
+    {
         // protected function getThumbUrl($request, $path) {
         // TIPS : below not advised since http request might be blocked for security
         //         + dev server will not serve more than one request at a time,
@@ -623,7 +624,7 @@ class MwsTimingController extends AbstractController
         //         $content .= sprintf("%-{$max}s %s\r\n", $name.':', $value);
         //     }
         // }
-        $content = 'Cookie: '. $request->headers->get('Cookie');
+        $content = 'Cookie: ' . $request->headers->get('Cookie');
 
         $curlContext = stream_context_create([
             "http" => [
@@ -1048,12 +1049,12 @@ class MwsTimingController extends AbstractController
                                 // dd($resp);
                                 if (404 === $resp->getStatusCode()) {
                                     $data = null;
-                                    if ($innerObject) {     
+                                    if ($innerObject) {
                                         // dd($thumb);                                   
                                         if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
                                             // $respData = file_get_contents($tUrl, false, $curlContext);
                                             // $imagick->readImageBlob($respData);
-                                                // TODO : need $context = stream_context_create([ etc... to transfert auth credentials
+                                            // TODO : need $context = stream_context_create([ etc... to transfert auth credentials
                                             // https://stackoverflow.com/questions/30628361/php-basic-auth-file-get-contents
                                             // dd($curlContext);
                                             // https://stackoverflow.com/questions/21755377/urlencode-everything-but-slashes
@@ -1115,7 +1116,7 @@ class MwsTimingController extends AbstractController
                                     // dd($tmp);
                                     // $tmp = $uploadSrc . DIRECTORY_SEPARATOR . 'TMP-' .
                                     $tmp = $uploadSrc . DIRECTORY_SEPARATOR .
-                                    str_replace('/', '_', str_replace($uploadSrc . DIRECTORY_SEPARATOR, '', $tmp)); // tmpfile(); // $this->createTmpFile();
+                                        str_replace('/', '_', str_replace($uploadSrc . DIRECTORY_SEPARATOR, '', $tmp)); // tmpfile(); // $this->createTmpFile();
                                     // dd($tmp);
                                     // TODO : secu only inside target folder....
                                     // TODO : using relative path as name make some tools breaks...
@@ -1136,11 +1137,14 @@ class MwsTimingController extends AbstractController
 
                                     // $newMedia = new ReplacingFile($tmp); // will ignore subfolders
                                     // $newMedia = new UploadedFile($tmp, dirname($tmp), 'image/jpeg', \UPLOAD_ERR_OK); // will ignore subfolders
-                                    $newMedia = new class($tmp, dirname($tmp), 'image/jpeg', \UPLOAD_ERR_OK) extends UploadedFile {
-                                        public function isValid():bool {
+                                    $newMedia = new class($tmp, dirname($tmp), 'image/jpeg', \UPLOAD_ERR_OK) extends UploadedFile
+                                    {
+                                        public function isValid(): bool
+                                        {
                                             return true;
                                         }
-                                        public function move(string $directory, string $name = null): File {
+                                        public function move(string $directory, string $name = null): File
+                                        {
                                             // TIPS : do nothing for our use case, file is already generated at right place, no need to move
                                             $target = $this->getTargetFile($directory, $name);
                                             return $target;
@@ -1369,6 +1373,7 @@ class MwsTimingController extends AbstractController
     public function import(
         string|null $viewTemplate,
         Request $request,
+        UploaderHelper $uploaderHelper,
         MwsTimeSlotRepository $mwsTimeSlotRepository,
         MwsTimeTagRepository $mwsTimeTagRepository,
         CsrfTokenManagerInterface $csrfTokenManager
@@ -1557,6 +1562,75 @@ class MwsTimingController extends AbstractController
                             throw new Exception("Should not happen");
                         }
                     },
+                    // // TOO early, need to know other props
+                    // 'thumbnailJpeg' => function (
+                    //     $innerObject,
+                    //     $outerObject,
+                    //     string $attributeName,
+                    //     string $format = null,
+                    //     array $context = []
+                    // ) use (
+                    //     $em,
+                    //     $uploaderHelper,
+                    //     $self,
+                    //     $request,
+                    // ) {
+                    //     // dd($innerObject);
+                    //     dd($context);
+                    //     $newThumb = $innerObject;
+                    //     if (json_decode($_SERVER['STORE_THUMBNAIL_IN_DB'] ?? 'false')) {
+                    //         // $base64 = $data
+                    //         //     ? 'data:image/' . $type . ';base64,' . base64_encode($data)
+                    //         //     : null;
+                    //         // $outerObject->setThumbnailJpeg($innerObject);
+                    //     } else {
+                    //         // TODO : code factorisation with export
+                    //         $data = $newThumb;
+                    //         if (starts_with($data, 'data:image')) {
+                    //             $b64Parts = explode(';base64,', $data);
+                    //             $data = base64_decode($b64Parts[1]) ?? null;
+
+                    //             $upload = new MwsTimeSlotUpload();
+                    //             $projectDir = $this->params->get('kernel.project_dir');
+                    //             $subFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
+                    //             $uploadSrc = "$projectDir/$subFolder/timings/thumbs";
+                    //             $tmp = $uploadSrc . DIRECTORY_SEPARATOR . $outerObject->getSourceStamp(); // tmpfile(); // $this->createTmpFile();
+                    //             $tmp = $uploadSrc . DIRECTORY_SEPARATOR .
+                    //                 str_replace('/', '_', str_replace($uploadSrc . DIRECTORY_SEPARATOR, '', $tmp)); // tmpfile(); // $this->createTmpFile();
+
+                    //             if (!file_exists(dirname($tmp))) {
+                    //                 mkdir(dirname($tmp), 0777, true);
+                    //             }
+
+                    //             file_put_contents($tmp, $data);
+                    //             $newMedia = new class($tmp, dirname($tmp), 'image/jpeg', \UPLOAD_ERR_OK) extends UploadedFile
+                    //             {
+                    //                 public function isValid(): bool
+                    //                 {
+                    //                     return true;
+                    //                 }
+                    //                 public function move(string $directory, string $name = null): File
+                    //                 {
+                    //                     // TIPS : do nothing for our use case, file is already generated at right place, no need to move
+                    //                     $target = $this->getTargetFile($directory, $name);
+                    //                     return $target;
+                    //                 }
+                    //             };
+                    //             $upload->setMediaFile(
+                    //                 $newMedia
+                    //             );
+                    //             $em->persist($upload); // This one copy file on doctrine events
+                    //             $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsTimeSlotUpload::class);
+                    //             $uploadUrl = str_replace($request->getBasePath(), '', $uploadUrl);
+                    //             $newThumb = $uploadUrl;
+                    //         }
+                    //     }
+                    //     $em->persist($outerObject);
+
+                    //     dd($newThumb);
+                    //     // $outerObject->setThumbnailJpeg($newThumb);
+                    //     return $newThumb;
+                    // },
                 ],
             ]
         );
@@ -1646,6 +1720,61 @@ class MwsTimingController extends AbstractController
             } else {
                 $importNewCount++;
             }
+
+
+            $newThumb = $importSlot->getThumbnailJpeg();
+
+            if (json_decode($_SERVER['STORE_THUMBNAIL_IN_DB'] ?? 'false')) {
+                // $base64 = $data
+                //     ? 'data:image/' . $type . ';base64,' . base64_encode($data)
+                //     : null;
+                // $outerObject->setThumbnailJpeg($innerObject);
+            } else {
+                // TODO : code factorisation with export
+                $data = $newThumb;
+                if (starts_with($data, 'data:image')) {
+                    $b64Parts = explode(';base64,', $data);
+                    $data = base64_decode($b64Parts[1]) ?? null;
+
+                    $upload = new MwsTimeSlotUpload();
+                    $projectDir = $this->params->get('kernel.project_dir');
+                    $subFolder = $this->params->get('mws_moon_manager.uploadSubFolder') ?? '';
+                    $uploadSrc = "$projectDir/$subFolder/timings/thumbs";
+                    $tmp = $uploadSrc . DIRECTORY_SEPARATOR . $importSlot->getSourceStamp(); // tmpfile(); // $this->createTmpFile();
+                    $tmp = $uploadSrc . DIRECTORY_SEPARATOR .
+                        str_replace('/', '_', str_replace($uploadSrc . DIRECTORY_SEPARATOR, '', $tmp)); // tmpfile(); // $this->createTmpFile();
+
+                    if (!file_exists(dirname($tmp))) {
+                        mkdir(dirname($tmp), 0777, true);
+                    }
+
+                    file_put_contents($tmp, $data);
+                    $newMedia = new class($tmp, dirname($tmp), 'image/jpeg', \UPLOAD_ERR_OK) extends UploadedFile
+                    {
+                        public function isValid(): bool
+                        {
+                            return true;
+                        }
+                        public function move(string $directory, string $name = null): File
+                        {
+                            // TIPS : do nothing for our use case, file is already generated at right place, no need to move
+                            $target = $this->getTargetFile($directory, $name);
+                            return $target;
+                        }
+                    };
+                    $upload->setMediaFile(
+                        $newMedia
+                    );
+                    $em->persist($upload); // This one copy file on doctrine events
+                    $uploadUrl = $uploaderHelper->asset($upload, 'mediaFile', MwsTimeSlotUpload::class);
+                    $uploadUrl = str_replace($request->getBasePath(), '', $uploadUrl);
+                    $newThumb = $uploadUrl;
+                }
+            }
+            $importSlot->setThumbnailJpeg($newThumb);
+
+            // dd($newThumb);
+
             if (!$importSlot->getSourceStamp()) {
                 dd('TODO: generate sourceStamp or fail on wrong import format ?');
             }
