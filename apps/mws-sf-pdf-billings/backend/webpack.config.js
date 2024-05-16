@@ -95,10 +95,12 @@ Encore
         // TODO : need twig widget edit for entry points changes to work ... or empty script fill...
         console.warn("mwsGooglePhotoReaderWidget dev from : ", mwsGooglePhotoDevAsset);
         Encore.addEntry(`mwsGooglePhotoReaderWidget0`, mwsGooglePhotoDevAsset)
-        Encore.addEntry(`mwsGooglePhotoReaderWidget1`, './assets/empty.js')
-        Encore.addEntry(`mwsGooglePhotoReaderWidget2`, './assets/empty.js')
-        Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle0`, './assets/empty.css')
-        Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle1`, './assets/empty.css')
+
+        // TODO : below fail for prod build, ok in dev :
+        // Encore.addEntry(`mwsGooglePhotoReaderWidget1`, './assets/empty.js')
+        // Encore.addEntry(`mwsGooglePhotoReaderWidget2`, './assets/empty.js')
+        // Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle0`, './assets/empty.css')
+        // Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle1`, './assets/empty.css')
     } else {
         const mwsGooglePhotoPublicFolder = `../../../../mws-google-photo-reader/public`;
         // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/manifest.json';
