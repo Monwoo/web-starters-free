@@ -41,5 +41,6 @@ window.registerSvelteControllerComponents =
 window.registerSvelteControllerComponents ??
 registerSvelteControllerComponents;
 
-window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/, "eager"));window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/, "eager"));
+window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/, "sync"));
+// window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/, "eager"));
 // window.registerSvelteControllerComponents(import.meta.glob('./svelte/controllers/**/*.svelte'));
