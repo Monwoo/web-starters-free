@@ -1,3 +1,1326 @@
+x	x	2024-05-16 05:32:30 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+1	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/ImportTimings.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-05-14 22:14:35 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+0	28	apps/mws-sf-pdf-billings/backend/config/routes/mws_google_photo_reader.yaml
+67	0	apps/mws-sf-pdf-billings/backend/src/Kernel.php
+3	2	packages/mws-moon-manager/config/services.yaml
+x	x	2024-05-14 06:39:27 +0200
+
+1	0	apps/mws-sf-pdf-billings/backend/config/routes/mws_google_photo_reader.yaml
+3	0	packages/mws-moon-manager/config/services.yaml
+51	0	packages/mws-moon-manager/src/Routing/ExtraLoader.php
+x	x	2024-05-14 06:33:07 +0200
+
+27	0	apps/mws-sf-pdf-billings/backend/config/routes/mws_google_photo_reader.yaml
+x	x	2024-05-13 19:19:25 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-05-13 18:07:43 +0200
+
+2	0	apps/mws-sf-pdf-billings/backend/config/routes/mws_demo.yaml
+0	17	apps/mws-sf-pdf-billings/backend/config/routes/mws_google_photo_reader.yaml
+x	x	2024-05-13 17:59:12 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/webpack.config.js
+103	19	pnpm-lock.yaml
+x	x	2024-05-10 07:40:20 +0200
+
+4	2	apps/mws-sf-pdf-billings/backend/assets/app.js
+7	6	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-05-06 03:12:58 +0200
+
+3	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+3	2	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+2	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	0	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-05-06 02:20:22 +0200
+
+31	4	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+16	3	packages/mws-moon-manager-ux/components/config/Backup.svelte
+60	21	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-05-05 21:06:32 +0200
+
+7	7	apps/mws-sf-pdf-billings/backend/config/routes/moon-manager.yaml
+17	0	apps/mws-sf-pdf-billings/backend/config/routes/mws-demo.yaml
+4	0	packages/mws-moon-manager-ux/components/config/Backup.svelte
+x	x	2024-05-05 18:50:37 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/.env.dev
+1	1	apps/mws-sf-pdf-billings/backend/.env.dev.dist
+1	1	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+2	2	packages/mws-moon-manager/src/Command/BackupCommand.php
+14	0	packages/mws-moon-manager/src/Command/CleanThumbnailsCommand.php
+2	1	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-05-05 17:15:04 +0200
+
+19	4	packages/mws-moon-manager-ux/components/timing/Report.svelte
+2	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+1	0	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-05-04 22:12:41 +0200
+
+21	10	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-05-03 15:54:09 +0200
+
+1	1	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-05-03 13:33:56 +0200
+
+6	2	apps/mws-sf-pdf-billings/backend/config/packages/vich_uploader.yaml
+1	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+1	1	packages/mws-moon-manager/config/services.yaml
+21	1	packages/mws-moon-manager/src/Command/CleanThumbnailsCommand.php
+28	15	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/src/Controller/MwsMessageController.php
+16	7	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+11	3	packages/mws-moon-manager/src/Naming/{TimeSlotThumbNameNamer.php => TimeSlotThumbNamer.php}
+x	x	2024-05-03 00:40:29 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/config/packages/vich_uploader.yaml
+31	0	apps/mws-sf-pdf-billings/backend/migrations/Version20240502191800.php
+4	0	packages/mws-moon-manager/config/services.yaml
+46	22	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+76	0	packages/mws-moon-manager/src/Naming/TimeSlotThumbNameNamer.php
+x	x	2024-05-02 21:16:53 +0200
+
+7	0	apps/mws-sf-pdf-billings/backend/config/packages/vich_uploader.yaml
+5	5	packages/mws-moon-manager/config/packages/security.yaml
+24	22	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+125	0	packages/mws-moon-manager/src/Entity/MwsTimeSlotUpload.php
+48	0	packages/mws-moon-manager/src/Repository/MwsTimeSlotUploadRepository.php
+x	x	2024-05-02 06:52:41 +0200
+
+64	24	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-05-01 11:50:49 +0200
+
+2	0	apps/mws-sf-pdf-billings/backend/.env.MAMP.dist
+2	0	apps/mws-sf-pdf-billings/backend/.env.dev
+2	0	apps/mws-sf-pdf-billings/backend/.env.dev.dist
+2	0	apps/mws-sf-pdf-billings/backend/.env.prod.dist
+2	1	packages/mws-moon-manager/composer.json
+7	7	packages/mws-moon-manager/composer.lock
+1	0	packages/mws-moon-manager/src/Controller/MwsMessageController.php
+275	40	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+68	0	packages/mws-moon-manager/src/Entity/MwsTimeSlot.php
+x	x	2024-04-30 18:23:34 +0200
+
+2	0	packages/mws-moon-manager-ux/components/config/Backup.svelte
+x	x	2024-04-30 17:39:09 +0200
+
+1	1	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-30 17:38:58 +0200
+
+5	3	apps/mws-sf-pdf-billings/backend/php.ini
+36	35	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-30 15:55:36 +0200
+
+15	1	packages/mws-moon-manager/src/Controller/MwsUserController.php
+1	0	packages/mws-moon-manager/src/EventListener/MwsOfferPostUpdate.php
+25	0	packages/mws-moon-manager/src/Security/Authentication/__AuthenticationSuccessHandler.php
+9	1	packages/mws-moon-manager/src/Security/MwsAccessDeniedHandler.php
+26	2	packages/mws-moon-manager/src/Security/MwsAuthenticationEntryPoint.php
+66	1	packages/mws-moon-manager/src/Security/MwsLoginFormAuthenticator.php
+7	0	packages/mws-moon-manager/src/Twig/EnvExtension.php
+6	0	packages/mws-moon-manager/templates/mws_user/login.html.twig
+x	x	2024-04-30 05:45:02 +0200
+
+55	23	packages/mws-moon-manager-ux/components/timing/tags/ListItem.svelte
+x	x	2024-04-30 04:36:30 +0200
+
+7	7	packages/mws-moon-manager-ux/components/layout/widgets/TimingSearchSummary.svelte
+x	x	2024-04-30 04:31:41 +0200
+
+3	2	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-30 04:30:34 +0200
+
+5	5	packages/mws-moon-manager-ux/components/layout/widgets/TimingSearchSummary.svelte
+x	x	2024-04-30 04:26:53 +0200
+
+94	0	packages/mws-moon-manager-ux/components/layout/widgets/TimingSearchSummary.svelte
+2	35	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+6	43	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-30 04:06:14 +0200
+
+3	9	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+3	9	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-30 04:02:32 +0200
+
+3	3	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+x	x	2024-04-30 04:01:33 +0200
+
+3	3	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-30 03:56:35 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-30 03:55:21 +0200
+
+14	14	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+14	14	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-30 03:49:18 +0200
+
+5	4	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-30 03:37:25 +0200
+
+6	6	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+6	6	packages/mws-moon-manager-ux/components/timing/Report.svelte
+1	1	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+x	x	2024-04-30 03:35:04 +0200
+
+44	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+x	x	2024-04-30 03:31:43 +0200
+
+38	32	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-30 03:23:57 +0200
+
+47	47	apps/mws-sf-pdf-billings/backend/src/Twig/AppEnvExtension.php
+48	31	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+90	22	packages/mws-moon-manager-ux/components/timing/Report.svelte
+1	0	packages/mws-moon-manager/src/Repository/MwsTimeSlotRepository.php
+126	0	packages/mws-moon-manager/src/Twig/EnvExtension.php
+1	0	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+1	0	packages/mws-moon-manager/templates/mws_timing/report.html.twig
+x	x	2024-04-30 01:42:53 +0200
+
+49	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+80	32	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+6	3	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+52	8	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-29 23:31:32 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/ImportQualifs.svelte
+x	x	2024-04-29 23:19:19 +0200
+
+3	3	packages/mws-moon-manager-ux/components/timing/qualifs/ImportQualifs.svelte
+x	x	2024-04-29 23:10:28 +0200
+
+214	0	packages/mws-moon-manager-ux/components/timing/qualifs/ImportQualifs.svelte
+2	0	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+105	0	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-29 22:59:30 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-29 22:55:30 +0200
+
+1	0	packages/mws-moon-manager-ux/components/timing/Report.svelte
+1	0	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-29 22:30:03 +0200
+
+6	2	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+2	1	packages/mws-moon-manager-ux/components/timing/qualifs/ItemHistory.svelte
+x	x	2024-04-28 07:14:01 +0200
+
+6	0	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+5	0	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-27 21:38:38 +0200
+
+8	3	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+6	0	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-27 03:01:44 +0200
+
+3	0	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-26 10:25:28 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-26 10:09:43 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-26 09:50:09 +0200
+
+7	3	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-26 09:19:49 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+x	x	2024-04-26 07:25:47 +0200
+
+16	1	packages/mws-moon-manager/templates/mws_user/login.html.twig
+x	x	2024-04-26 06:21:59 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+x	x	2024-04-26 06:15:54 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+x	x	2024-04-26 06:00:33 +0200
+
+56	37	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+4	1	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+1	1	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-26 04:56:06 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+4	2	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-26 04:46:22 +0200
+
+2	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-26 04:40:06 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-26 02:33:53 +0200
+
+6	0	apps/mws-sf-pdf-billings/backend/tests/e2e/01-failures/todo.cest.php
+0	0	apps/mws-sf-pdf-billings/backend/tests/e2e/02-pdf-billings/todo.cest.php
+0	0	apps/mws-sf-pdf-billings/backend/tests/e2e/03-seek-offers/todo.cest.php
+0	0	apps/mws-sf-pdf-billings/backend/tests/e2e/04-timings/todo.cest.php
+-	-	apps/mws-sf-pdf-billings/backend/tests/e2e/{humanlyTested => _humanlyTested}/GenerateQuotation-ResultMonwooSvelteWpDisplay-2.pdf
+-	-	apps/mws-sf-pdf-billings/backend/tests/e2e/{humanlyTested => _humanlyTested}/GenerateQuotation-ResultMonwooSvelteWpDisplay-3.pdf
+-	-	apps/mws-sf-pdf-billings/backend/tests/e2e/{humanlyTested => _humanlyTested}/GenerateQuotation-ResultMonwooSvelteWpDisplay.pdf
+-	-	apps/mws-sf-pdf-billings/backend/tests/e2e/{humanlyTested => _humanlyTested}/GenerateQuotation-SourceMonwooSvelteWpDisplay.pdf
+0	0	apps/mws-sf-pdf-billings/backend/tests/e2e/{humanlyTested => _humanlyTested}/GenerateQuotation.test.txt
+x	x	2024-04-24 18:33:58 +0200
+
+6	1	apps/mws-sf-pdf-billings/backend/src/Controller/PdfBillingsController.php
+x	x	2024-04-24 05:48:49 +0200
+
+6	7	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-24 05:41:46 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-24 05:36:44 +0200
+
+2	2	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-24 04:38:52 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-24 04:27:03 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-24 04:20:34 +0200
+
+3	3	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-24 04:11:27 +0200
+
+17	3	packages/mws-moon-manager-ux/components/timing/Report.svelte
+61	13	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+11	4	packages/mws-moon-manager/assets/styles/app.scss
+x	x	2024-04-23 15:41:26 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+x	x	2024-04-23 14:36:16 +0200
+
+3	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+13	4	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-23 13:11:43 +0200
+
+6	0	apps/mws-sf-pdf-billings/backend/assets/styles/app.scss
+1	1	packages/mws-moon-manager-ux/components/offer/View.svelte
+x	x	2024-04-23 12:46:05 +0200
+
+3	2	packages/mws-moon-manager-ux/components/offer/Lookup.svelte
+2	1	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+x	x	2024-04-23 12:34:03 +0200
+
+1	1	packages/mws-moon-manager-ux/components/layout/Base.svelte
+3	2	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+1	1	packages/mws-moon-manager-ux/components/message/ListView.svelte
+2	2	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+1	1	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-23 12:02:23 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/templates/home/index.html.twig
+2	2	packages/mws-moon-manager-ux/components/layout/Base.svelte
+1	1	packages/mws-moon-manager/templates/base.html.twig
+1	1	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/import.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/lookup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tagEdit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tags.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/view.html.twig
+1	1	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/edit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/list.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/new.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/show.html.twig
+x	x	2024-04-22 21:47:30 +0200
+
+10	9	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+x	x	2024-04-22 20:14:28 +0200
+
+29	2	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-22 19:52:52 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-22 19:50:49 +0200
+
+131	85	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+16	2	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+1	1	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-22 19:19:24 +0200
+
+227	100	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+3	2	packages/mws-moon-manager-ux/components/timing/qualifs/ItemHistory.svelte
+2	0	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+x	x	2024-04-22 18:05:35 +0200
+
+7	1	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+115	82	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+x	x	2024-04-22 17:33:02 +0200
+
+4	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+10	1	packages/mws-moon-manager-ux/components/timing/qualifs/ItemHistory.svelte
+72	13	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+144	119	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+x	x	2024-04-22 04:13:09 +0200
+
+12	2	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+44	2	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+x	x	2024-04-22 03:08:16 +0200
+
+1	1	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+9	5	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+64	1	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+6	6	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+x	x	2024-04-21 22:26:19 +0200
+
+1	1	packages/mws-moon-manager-ux/components/offer/Lookup.svelte
+5	4	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+26	1	packages/mws-moon-manager/assets/styles/app.scss
+x	x	2024-04-21 21:27:13 +0200
+
+5	1	packages/mws-moon-manager-ux/components/offer/Lookup.svelte
+35	9	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+6	34	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+11	2	packages/mws-moon-manager-ux/components/timing/Report.svelte
+20	9	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+x	x	2024-04-21 17:28:38 +0200
+
+42	27	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+x	x	2024-04-21 17:03:48 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+12	10	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+44	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-21 16:47:03 +0200
+
+35	7	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+2	1	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+15	0	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+x	x	2024-04-21 15:59:46 +0200
+
+19	3	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-21 15:26:44 +0200
+
+8	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+5	1	packages/mws-moon-manager-ux/components/timing/qualifs/ItemHistory.svelte
+16	2	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-21 14:56:33 +0200
+
+38	0	packages/mws-moon-manager-ux/components/timing/qualifs/ItemHistory.svelte
+71	5	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-20 23:53:39 +0200
+
+12	0	apps/mws-sf-pdf-billings/Credits.md
+26	1	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+2	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+-	-	packages/mws-moon-manager/public/medias/pixabay/ai-generated-8702813_1280-BandWCenter.jpg
+-	-	packages/mws-moon-manager/public/medias/pixabay/ai-generated-8702813_1280.jpg
+-	-	packages/mws-moon-manager/public/medias/pixabay/baume-8699965_1280.jpg
+-	-	packages/mws-moon-manager/public/medias/pixabay/blind-1027860_1280.jpg
+-	-	packages/mws-moon-manager/public/medias/pixabay/ibiza-2954994_1280-BandWSky.jpg
+-	-	packages/mws-moon-manager/public/medias/pixabay/ibiza-2954994_1280.jpg
+-	-	packages/mws-moon-manager/public/medias/pixabay/nothing-2207785_1280.jpg
+x	x	2024-04-18 14:15:52 +0200
+
+1	0	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-18 13:31:54 +0200
+
+6	6	packages/mws-moon-manager-ux/components/timing/Report legacy.3.svelte
+6	6	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-18 12:32:09 +0200
+
+76	4	packages/mws-moon-manager-ux/components/layout/Base.svelte
+x	x	2024-04-18 10:42:28 +0200
+
+3	3	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-18 10:38:42 +0200
+
+1	1	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-18 10:37:48 +0200
+
+2	2	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-18 10:31:26 +0200
+
+6	2	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-18 10:17:20 +0200
+
+14	4	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+11	6	packages/mws-moon-manager/templates/base.html.twig
+2	2	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-18 09:32:26 +0200
+
+2	2	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+x	x	2024-04-18 09:29:16 +0200
+
+2	2	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+x	x	2024-04-18 09:20:51 +0200
+
+16	2	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+7	6	packages/mws-moon-manager/templates/base.html.twig
+3	3	packages/mws-moon-manager/templates/manifest.json
+7	2	packages/mws-moon-manager/templates/mws_user/login.html.twig
+x	x	2024-04-18 01:07:59 +0200
+
+5	0	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-18 00:58:46 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-18 00:40:35 +0200
+
+1	0	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+1	0	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+1	0	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-17 23:57:59 +0200
+
+29	2	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+1	0	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+25	2	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+2	1	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+x	x	2024-04-17 22:38:56 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-17 18:08:58 +0200
+
+26	22	packages/mws-moon-manager/templates/base.html.twig
+8	8	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-17 17:29:05 +0200
+
+3	3	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-17 16:56:02 +0200
+
+22	20	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-17 16:18:36 +0200
+
+20	20	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-17 15:56:32 +0200
+
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-114x114.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-120x120.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-144x144.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-152x152.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-57x57.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-60x60.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-72x72.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/apple-touch-icon-76x76.png
+20	0	packages/mws-moon-manager/public/medias/favicomatic/code.txt
+-	-	packages/mws-moon-manager/public/medias/favicomatic/favicon-128.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/favicon-16x16.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/favicon-196x196.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/favicon-32x32.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/favicon-96x96.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/favicon.ico
+-	-	packages/mws-moon-manager/public/medias/favicomatic/mstile-144x144.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/mstile-150x150.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/mstile-310x150.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/mstile-310x310.png
+-	-	packages/mws-moon-manager/public/medias/favicomatic/mstile-70x70.png
+70	9	packages/mws-moon-manager/templates/base.html.twig
+1	1	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-17 13:42:44 +0200
+
+11	6	packages/mws-moon-manager-ux/components/config/Backup.svelte
+11	2	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-17 12:56:27 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+21	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+72	4	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-17 11:57:55 +0200
+
+2	0	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-17 11:07:28 +0200
+
+5	2	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+5	1	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-17 05:52:28 +0200
+
+2	2	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/ConfidentialityStamp.svelte
+2	2	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-17 05:24:39 +0200
+
+1	1	packages/mws-moon-manager-ux/components/message/ListView.svelte
+2	2	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-17 05:07:04 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/templates/home/index.html.twig
+6	2	packages/mws-moon-manager-ux/components/layout/Base.svelte
+3	1	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+1	1	packages/mws-moon-manager-ux/components/message/ListView.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/Tags.svelte
+9	4	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/tags/List.svelte
+1	1	packages/mws-moon-manager/templates/base.html.twig
+1	1	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/import.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/lookup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tagEdit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tags.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/view.html.twig
+1	1	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/edit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/list.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/new.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/show.html.twig
+x	x	2024-04-17 03:47:46 +0200
+
+16	5	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-17 03:13:59 +0200
+
+5	3	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-17 02:44:25 +0200
+
+41	28	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+6	6	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+x	x	2024-04-17 00:29:23 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/templates/home/index.html.twig
+1	1	packages/mws-moon-manager/templates/base.html.twig
+1	1	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/import.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/lookup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tagEdit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tags.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/view.html.twig
+1	1	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/edit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/list.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/new.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/show.html.twig
+x	x	2024-04-17 00:11:13 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+x	x	2024-04-16 23:59:08 +0200
+
+6	4	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-16 23:24:29 +0200
+
+4	2	packages/mws-moon-manager/src/Controller/MwsUserController.php
+x	x	2024-04-16 23:12:29 +0200
+
+1	1	packages/mws-moon-manager/src/Form/MwsUserAdminType.php
+2	1	packages/mws-moon-manager/src/Form/MwsUserPasswordUpdateType.php
+x	x	2024-04-16 23:01:53 +0200
+
+-	-	apps/mws-sf-pdf-billings/README.pdf
+3	1	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+1	1	packages/mws-moon-manager/src/Controller/MwsUserController.php
+1	1	packages/mws-moon-manager/src/Form/MwsUserPasswordUpdateType.php
+x	x	2024-04-16 21:55:49 +0200
+
+2	2	apps/mws-sf-pdf-billings/backend/webpack.config.js
+x	x	2024-04-16 21:10:08 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/templates/home/index.html.twig
+7	2	packages/mws-moon-manager-ux/components/layout/Base.svelte
+38	24	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+140	115	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/ItemView.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/TagsInput.svelte
+17	15	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+6	1	packages/mws-moon-manager/assets/styles/app.scss
+1	1	packages/mws-moon-manager/templates/base.html.twig
+1	1	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/import.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/lookup.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tagEdit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/tags.html.twig
+1	1	packages/mws-moon-manager/templates/mws_offer/view.html.twig
+3	3	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/edit.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/list.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/new.html.twig
+1	1	packages/mws-moon-manager/templates/mws_user/show.html.twig
+x	x	2024-04-16 17:20:13 +0200
+
+12	1	packages/mws-moon-manager-ux/components/layout/Base.svelte
+1	1	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+3	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+8	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-16 16:32:32 +0200
+
+8	0	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+1	1	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+11	1	packages/mws-moon-manager/templates/mws_timing/qualif.html.twig
+x	x	2024-04-16 16:21:08 +0200
+
+5	3	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-16 16:07:42 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-16 15:37:57 +0200
+
+3	1	packages/mws-moon-manager-ux/components/layout/Base.svelte
+10	6	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+7	3	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+8	3	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+-	-	packages/mws-moon-manager/public/medias/MoonManagerLogo-196x196.png
+-	-	packages/mws-moon-manager/public/medias/MoonManagerLogo.png
+-	-	packages/mws-moon-manager/public/medias/screenshot-01.png
+-	-	packages/mws-moon-manager/public/medias/screenshot-02.png
+73	6	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+2	1	packages/mws-moon-manager/src/Entity/MwsUser.php
+5	0	packages/mws-moon-manager/templates/base.html.twig
+50	0	packages/mws-moon-manager/templates/manifest.json
+x	x	2024-04-15 23:50:15 +0200
+
+0	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+1	1	packages/mws-moon-manager-ux/components/layout/Base.svelte
+0	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+13	0	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+11	3	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+16	3	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+2	1	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-15 22:55:28 +0200
+
+29	1	apps/mws-sf-pdf-billings/backend/tailwind.config.js
+1	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+9	3	packages/mws-moon-manager-ux/components/layout/Base.svelte
+2	2	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+6	3	packages/mws-moon-manager-ux/components/timing/ConfidentialityStamp.svelte
+9	5	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+1	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+8	5	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-15 15:26:23 +0200
+
+0	1	packages/mws-moon-manager-ux/components/timing/ExportTimings.svelte
+25	5	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-15 14:42:18 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/config/packages/monolog.yaml
+x	x	2024-04-15 14:08:58 +0200
+
+6	6	apps/mws-sf-pdf-billings/backend/config/packages/monolog.yaml
+x	x	2024-04-15 14:00:43 +0200
+
+14	2	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-15 13:46:16 +0200
+
+1	1	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-15 13:37:45 +0200
+
+8	1	apps/mws-sf-pdf-billings/backend/php.ini
+33	2	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-15 00:33:24 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/composer.json
+1	1	apps/mws-sf-pdf-billings/backend/composer.private.json
+4	4	apps/mws-sf-pdf-billings/backend/tests/_data/billing/DevisMonwoo________________.yaml
+x	x	2024-04-15 00:28:49 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+9	3	packages/mws-moon-manager-ux/components/config/Backup.svelte
+30	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-15 00:18:29 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+9	3	packages/mws-moon-manager-ux/components/config/Backup.svelte
+56	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-15 00:05:45 +0200
+
+3	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+x	x	2024-04-14 23:38:18 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+19	4	packages/mws-moon-manager-ux/components/config/Backup.svelte
+41	4	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-14 22:38:54 +0200
+
+3	3	packages/mws-moon-manager-ux/components/config/Backup.svelte
+1	1	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 22:24:06 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+1	1	apps/mws-sf-pdf-billings/backend/src/Controller/PdfBillingsController.php
+17	4	packages/mws-moon-manager-ux/components/config/Backup.svelte
+2	1	packages/mws-moon-manager/src/Command/BackupCommand.php
+179	8	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	1	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-14 18:41:17 +0200
+
+46	14	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 17:42:28 +0200
+
+39	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 16:53:06 +0200
+
+4	3	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+84	36	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 15:58:16 +0200
+
+34	14	packages/mws-moon-manager/src/Command/BackupCommand.php
+8	4	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 15:36:47 +0200
+
+2	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+9	2	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 15:25:41 +0200
+
+8	4	packages/mws-moon-manager-ux/components/config/Backup.svelte
+3	1	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 15:17:02 +0200
+
+1	0	apps/mws-sf-pdf-billings/backend/composer.json
+76	2	apps/mws-sf-pdf-billings/backend/composer.lock
+1	0	apps/mws-sf-pdf-billings/backend/composer.private.json
+76	2	apps/mws-sf-pdf-billings/backend/composer.private.lock
+26	4	packages/mws-moon-manager-ux/components/config/Backup.svelte
+112	3	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 13:31:22 +0200
+
+59	0	apps/mws-sf-pdf-billings/backend/.env.dev
+2	1	apps/mws-sf-pdf-billings/backend/config/packages/twig.yaml
+3	2	packages/mws-moon-manager-ux/components/config/Backup.svelte
+6	0	packages/mws-moon-manager/config/services.yaml
+40	2	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 12:07:39 +0200
+
+2	3	apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml
+x	x	2024-04-14 11:58:42 +0200
+
+8	2	apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml
+1	1	apps/mws-sf-pdf-billings/backend/config/packages/vich_uploader.yaml
+1	1	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+1	1	packages/mws-moon-manager/src/Command/BackupCommand.php
+4	4	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 11:31:31 +0200
+
+0	59	apps/mws-sf-pdf-billings/backend/.env.dev
+3	0	apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml
+11	4	apps/mws-sf-pdf-billings/backend/config/packages/vich_uploader.yaml
+23	1	apps/mws-sf-pdf-billings/backend/public/.htaccess.upload
+2	1	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+3	2	packages/mws-moon-manager/src/Command/BackupCommand.php
+61	1	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 09:27:35 +0200
+
+3	3	packages/mws-moon-manager-ux/components/config/Backup.svelte
+x	x	2024-04-14 09:24:02 +0200
+
+2	1	apps/mws-sf-pdf-billings/backend/.env.MAMP.dist
+1	0	apps/mws-sf-pdf-billings/backend/.env.dev
+2	1	apps/mws-sf-pdf-billings/backend/.env.dev.dist
+1	0	apps/mws-sf-pdf-billings/backend/.env.prod.dist
+2	0	packages/mws-moon-manager/config/services.yaml
+66	21	packages/mws-moon-manager/src/Command/BackupCommand.php
+x	x	2024-04-14 02:41:21 +0200
+
+5	0	packages/mws-moon-manager-ux/components/config/Backup.svelte
+2	1	packages/mws-moon-manager/composer.json
+74	1	packages/mws-moon-manager/composer.lock
+1	1	packages/mws-moon-manager/package.json
+8	99	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 01:37:22 +0200
+
+70	32	packages/mws-moon-manager-ux/components/config/Backup.svelte
+12	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-14 00:42:14 +0200
+
+12	7	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-14 00:08:43 +0200
+
+34	28	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-13 23:57:04 +0200
+
+54	0	apps/mws-sf-pdf-billings/backend/.env.MAMP.dist
+6	1	apps/mws-sf-pdf-billings/backend/config/packages/vich_uploader.yaml
+1	0	apps/mws-sf-pdf-billings/backend/config/services.yaml
+5	0	apps/mws-sf-pdf-billings/backend/public/.htaccess.upload
+24	3	packages/mws-moon-manager-ux/components/config/Backup.svelte
+17	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-13 22:40:24 +0200
+
+3	0	packages/mws-moon-manager/config/services.yaml
+1	1	packages/mws-moon-manager/templates/survey_js_models/MwsConfigBackupType.json.twig
+x	x	2024-04-13 22:36:19 +0200
+
+2	0	apps/mws-sf-pdf-billings/backend/.env.dev
+2	0	apps/mws-sf-pdf-billings/backend/.env.dev.dist
+2	0	apps/mws-sf-pdf-billings/backend/.env.prod.dist
+3	1	apps/mws-sf-pdf-billings/backend/config/packages/twig.yaml
+92	43	apps/mws-sf-pdf-billings/backend/src/Twig/AppEnvExtension.php
+7	2	packages/mws-moon-manager/templates/survey_js_models/MwsConfigBackupType.json.twig
+x	x	2024-04-13 21:41:19 +0200
+
+11	6	packages/mws-moon-manager-ux/components/config/Backup.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/View.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/HtmlIcon.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/ItemView.svelte
+5	0	packages/mws-moon-manager/assets/styles/app.scss
+64	8	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	0	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-13 20:08:18 +0200
+
+11	5	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+2	0	packages/mws-moon-manager-ux/components/timing/qualifs/ItemView.svelte
+x	x	2024-04-13 19:45:37 +0200
+
+3	0	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-13 19:39:49 +0200
+
+2	1	packages/mws-moon-manager-ux/components/layout/widgets/TailwindDefaults.svelte
+3	2	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+x	x	2024-04-13 19:30:25 +0200
+
+1928	0	packages/mws-moon-manager-ux/components/layout/widgets/TailwindDefaults.svelte
+31	1	packages/mws-moon-manager-ux/components/timing/qualifs/ItemView.svelte
+11	0	packages/mws-moon-manager-ux/components/timing/qualifs/QuickList.svelte
+553	0	packages/mws-moon-manager/assets/styles/tailwind-default.scss
+x	x	2024-04-13 17:50:11 +0200
+
+3	2	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+2	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+4	1	packages/mws-moon-manager-ux/components/timing/qualifs/HtmlIcon.svelte
+x	x	2024-04-13 17:36:49 +0200
+
+46	4	packages/mws-moon-manager-ux/components/offer/View.svelte
+53	9	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+50	1	packages/mws-moon-manager-ux/components/timing/qualifs/HtmlIcon.svelte
+55	3	packages/mws-moon-manager-ux/components/timing/qualifs/ItemView.svelte
+2	0	packages/mws-moon-manager-ux/package.json
+41	0	pnpm-lock.yaml
+x	x	2024-04-13 15:39:35 +0200
+
+41	25	packages/mws-moon-manager-ux/components/offer/View.svelte
+x	x	2024-04-13 15:12:05 +0200
+
+4	3	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-13 14:56:11 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+187	45	packages/mws-moon-manager-ux/components/config/Backup.svelte
+1	0	packages/mws-moon-manager-ux/components/message/ListView.svelte
+3	1	packages/mws-moon-manager-ux/components/offer/View.svelte
+116	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+x	x	2024-04-13 05:11:17 +0200
+
+2	2	packages/mws-moon-manager-ux/components/config/Backup.svelte
+x	x	2024-04-13 05:10:36 +0200
+
+30	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+x	x	2024-04-13 04:54:37 +0200
+
+2	2	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsConfigBackup.svelte
+16	1	packages/mws-moon-manager-ux/components/config/Backup.svelte
+42	2	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+1	1	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-13 04:03:49 +0200
+
+36	0	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsConfigBackup.svelte
+56	0	packages/mws-moon-manager-ux/components/config/Backup.svelte
+1	1	packages/mws-moon-manager-ux/components/layout/widgets/GitLogsChart.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/Report.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+67	2	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+35	10	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-13 02:07:55 +0200
+
+6	2	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+x	x	2024-04-13 01:51:41 +0200
+
+58	0	packages/mws-moon-manager-ux/components/layout/widgets/Svg.svelte
+10	21	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+28	0	packages/mws-moon-manager-ux/components/timing/qualifs/KeyboardShortcutModal.svelte
+3	0	packages/mws-moon-manager-ux/medias/flowbite/trash-bin.svg
+x	x	2024-04-13 00:39:44 +0200
+
+2	2	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-13 00:32:06 +0200
+
+0	1	apps/mws-sf-pdf-billings/backend/webpack.config.js
+2	2	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-13 00:24:11 +0200
+
+3	1	apps/mws-sf-pdf-billings/backend/package.json
+42	1	apps/mws-sf-pdf-billings/backend/webpack.config.js
+124	26	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+3	0	packages/mws-moon-manager-ux/medias/flowbite/caret-left.svg
+3	0	packages/mws-moon-manager-ux/medias/flowbite/caret-right.svg
+28	4	pnpm-lock.yaml
+x	x	2024-04-12 21:41:37 +0200
+
+5	0	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 21:33:53 +0200
+
+53	39	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-12 21:07:51 +0200
+
+1	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+x	x	2024-04-12 21:04:04 +0200
+
+6	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+4	3	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+31	44	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+15	9	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-12 19:13:59 +0200
+
+0	1	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 19:11:53 +0200
+
+5	0	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 19:02:25 +0200
+
+12	3	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+13	4	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+21	6	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-12 18:22:05 +0200
+
+13	5	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-12 17:58:22 +0200
+
+1	0	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+1	0	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+2	0	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-12 17:44:25 +0200
+
+6	5	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+10	2	packages/mws-moon-manager-ux/components/timing/SlotThumbnail.svelte
+46	20	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+x	x	2024-04-12 15:38:23 +0200
+
+2	2	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+11	11	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 15:03:01 +0200
+
+58	54	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+4	2	packages/mws-moon-manager-ux/components/timing/qualifs/ItemView.svelte
+x	x	2024-04-12 14:32:51 +0200
+
+2	2	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 14:31:38 +0200
+
+24	14	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+40	11	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+3	2	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+12	6	packages/mws-moon-manager-ux/components/timing/tags/TagsInput.svelte
+8	1	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-12 13:32:58 +0200
+
+7	7	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+108	4	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	0	packages/mws-moon-manager-ux/package.json
+11396	11008	pnpm-lock.yaml
+x	x	2024-04-12 11:21:49 +0200
+
+8	6	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 10:43:31 +0200
+
+-	-	apps/mws-sf-pdf-billings/README.pdf
+x	x	2024-04-12 10:42:46 +0200
+
+5	0	apps/mws-sf-pdf-billings/README.md
+12	0	apps/mws-sf-pdf-billings/backend/.env.dev
+12	0	apps/mws-sf-pdf-billings/backend/.env.dev.dist
+-	-	apps/mws-sf-pdf-billings/backend/tests/_data/data.gdpr-ok.db.sqlite
+x	x	2024-04-12 10:27:44 +0200
+
+2	2	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 10:21:30 +0200
+
+70	24	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+x	x	2024-04-12 09:42:05 +0200
+
+12	1	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-12 09:33:18 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/tests/_data/offer/message/bulk-answers.json
+1	1	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+1	0	packages/mws-moon-manager/src/Controller/MwsOfferController.php
+7	2	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-12 08:48:24 +0200
+
+31	5	apps/mws-sf-pdf-billings/backend/assets/styles/app.scss
+3	1	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsOfferView.svelte
+4	4	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+1	1	packages/mws-moon-manager-ux/components/message/ImportView.svelte
+5	5	packages/mws-moon-manager-ux/components/message/ListView.svelte
+1	1	packages/mws-moon-manager-ux/components/message/MessageView.svelte
+4	4	packages/mws-moon-manager-ux/components/offer/Import.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/TagEdit.svelte
+7	4	packages/mws-moon-manager-ux/components/offer/Tags.svelte
+21	8	packages/mws-moon-manager-ux/components/offer/View.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+6	6	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/tags/FunnelModal.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/tags/ListItem.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/ExportTimings.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/ImportTimings.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/qualifs/ExportQualifs.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/tags/ExportTags.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/tags/ImportTags.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/tags/List.svelte
+5	5	packages/mws-moon-manager-ux/components/timing/tags/ListItem.svelte
+2	2	packages/mws-moon-manager-ux/components/user/Edit.svelte
+3	3	packages/mws-moon-manager-ux/components/user/Liste.svelte
+1	1	packages/mws-moon-manager-ux/components/user/New.svelte
+2	2	packages/mws-moon-manager-ux/components/user/View.svelte
+52	0	packages/mws-moon-manager/src/Controller/MwsOfferController.php
+1	1	packages/mws-moon-manager/src/Form/MwsUserPasswordUpdateType.php
+4	0	packages/mws-moon-manager/templates/mws_offer/view.html.twig
+x	x	2024-04-12 07:28:32 +0200
+
+11	9	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+33	0	packages/mws-moon-manager/templates/survey_js_models/MwsConfigBackupType.json.twig
+x	x	2024-04-11 22:32:29 +0200
+
+10	1	apps/mws-sf-pdf-billings/README.md
+1605	0	apps/mws-sf-pdf-billings/backend/git-logs.monwoo-moon-manager-v1.tsv
+4	2	packages/mws-moon-manager-ux/components/layout/widgets/GitLogsChart.svelte
+1	1	packages/mws-moon-manager-ux/components/message/ListView.svelte
+7	4	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/Report.svelte
+1	1	packages/mws-moon-manager/templates/mws_offer/lookup.html.twig
+x	x	2024-04-11 21:25:23 +0200
+
+2	2	apps/mws-sf-pdf-billings/backend/assets/styles/app.scss
+3	3	apps/mws-sf-pdf-billings/backend/package-lock.json
+1	1	apps/mws-sf-pdf-billings/backend/templates/pdf-billings/index.html.twig
+3	3	apps/mws-sf-pdf-billings/backend/tests/_data/timing/MoonManager-v2.0.10-TimeSlotsExport-1712391027.csv
+3	3	packages/mws-moon-manager-ux/components/layout/widgets/Video.svelte
+1	1	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+2	2	packages/mws-moon-manager-ux/components/message/AddModal.svelte
+3	3	packages/mws-moon-manager-ux/components/message/TemplateChoiceItem.svelte
+3	3	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+2	2	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+3	3	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/SquareList.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/tags/AddModal.svelte
+1	1	packages/mws-moon-manager/public/lib/survey-jquery.1.9.112.min.js
+2	2	packages/mws-moon-manager/templates/mws_user/login.html.twig
+11070	11070	pnpm-lock.yaml
+x	x	2024-04-11 21:15:40 +0200
+
+10	2	packages/mws-moon-manager/src/Controller/MwsTimingController.php
+x	x	2024-04-11 20:59:34 +0200
+
+3	3	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+14	0	packages/mws-moon-manager/src/Controller/MwsMessageController.php
+x	x	2024-04-11 20:48:18 +0200
+
+14	27	packages/mws-moon-manager-ux/components/home/HomePage.svelte
+112	86	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+x	x	2024-04-11 20:25:17 +0200
+
+24	17	apps/mws-sf-pdf-billings/backend/composer.lock
+8	4	apps/mws-sf-pdf-billings/backend/composer.private.json
+53	18	apps/mws-sf-pdf-billings/backend/composer.private.lock
+11	1	apps/mws-sf-pdf-billings/backend/config/bundles.bckup.php
+5	0	apps/mws-sf-pdf-billings/backend/config/bundles.php
+1	1	apps/mws-sf-pdf-billings/backend/config/packages/tchoulom_view_counter.yaml
+3	18	packages/mws-moon-manager/src/Command/CleanThumbnailsCommand.php
+x	x	2024-04-11 18:54:02 +0200
+
+5	2	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+16	6	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-11 18:11:25 +0200
+
+1	1	packages/mws-moon-manager-ux/components/message/ListView.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/Report.svelte
+x	x	2024-04-11 17:45:26 +0200
+
+10	9	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+2	2	packages/mws-moon-manager/templates/mws_user/login.html.twig
+x	x	2024-04-11 17:29:46 +0200
+
+1	1	packages/mws-moon-manager-ux/components/layout/Base.svelte
+8	3	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+22	7	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+7	3	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-11 06:24:07 +0200
+
+29	3	apps/mws-sf-pdf-billings/backend/config/packages/security.yaml
+8	4	packages/mws-moon-manager/config/packages/security.yaml
+x	x	2024-04-11 05:19:21 +0200
+
+26	20	packages/mws-moon-manager-ux/components/layout/widgets/DonateFunnel.svelte
+x	x	2024-04-11 05:06:44 +0200
+
+5	5	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+x	x	2024-04-11 03:52:31 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/templates/pdf-billings/index.html.twig
+1	1	packages/mws-moon-manager-ux/components/layout/Base.svelte
+156	97	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+673	655	packages/mws-moon-manager-ux/components/timing/Report.svelte
+1	1	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-11 02:13:03 +0200
+
+2	2	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+x	x	2024-04-11 02:09:55 +0200
+
+3	2	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+x	x	2024-04-11 02:02:39 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+13	1	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+1	1	packages/mws-moon-manager/src/Command/MakeUserCommand.php
+31	0	packages/mws-moon-manager/src/Controller/MwsConfigController.php
+6	6	packages/mws-moon-manager/src/Controller/MwsMessageController.php
+4	4	packages/mws-moon-manager/src/Controller/MwsOfferController.php
+9	7	packages/mws-moon-manager/src/Entity/MwsUser.php
+2	2	packages/mws-moon-manager/src/Form/MwsUserAdminType.php
+1	1	packages/mws-moon-manager/src/Repository/MwsUserRepository.php
+14	0	packages/mws-moon-manager/templates/mws_config/backup.html.twig
+x	x	2024-04-11 01:17:23 +0200
+
+9	1	apps/mws-sf-pdf-billings/backend/.env.prod.dist
+55	15	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+147	64	apps/mws-sf-pdf-billings/backend/src/EventListener/GdprSentinelListener.php
+2	2	apps/mws-sf-pdf-billings/backend/templates/pdf-billings/base.html.twig
+5	3	apps/mws-sf-pdf-billings/backend/templates/pdf-billings/index.html.twig
+1	0	apps/mws-sf-pdf-billings/backend/tests/bootstrap.php
+2	2	apps/mws-sf-pdf-billings/backend/translations/messages+intl-icu.fr.yaml
+28	4	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+1	1	packages/mws-moon-manager-ux/components/layout/widgets/GitLogsChart.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/View.svelte
+4	4	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+1	1	packages/mws-moon-manager-ux/components/offer/tags/ListItem.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/Lookup.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/Report.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/ReportSummaryRows.svelte
+2	2	packages/mws-moon-manager-ux/components/timing/SlotView.svelte
+1	1	packages/mws-moon-manager-ux/components/timing/tags/ListItem.svelte
+4	0	packages/mws-moon-manager/src/Command/BackupCommand.php
+x	x	2024-04-10 21:14:28 +0200
+
+2	0	apps/mws-sf-pdf-billings/backend/templates/pdf-billings/base.html.twig
+17	12	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+2	0	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-10 10:34:28 +0200
+
+1	0	apps/mws-sf-pdf-billings/backend/templates/pdf-billings/base.html.twig
+78	60	packages/mws-moon-manager-ux/components/menu/NavBar.svelte
+1	0	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-10 09:33:36 +0200
+
+16	3	packages/mws-moon-manager-ux/components/layout/Footer.svelte
+x	x	2024-04-10 08:46:33 +0200
+
+2	1	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+18	8	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+-	-	apps/mws-sf-pdf-billings/backend/tests/_data/data.gdpr-ok.db.sqlite
+x	x	2024-04-10 06:46:24 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/assets/fos-routes.json
+3	0	apps/mws-sf-pdf-billings/backend/config/packages/twig.yaml
+4	1	apps/mws-sf-pdf-billings/backend/src/Controller/FactoryResetController.php
+3	0	apps/mws-sf-pdf-billings/backend/templates/pdf-billings/base.html.twig
+10	5	apps/mws-sf-pdf-billings/backend/webpack.config.js
+2	0	packages/mws-moon-manager/templates/base.html.twig
+x	x	2024-04-10 05:37:50 +0200
+
+4	0	packages/mws-moon-manager-ux/components/offer/lookup/List.svelte
+2	1	packages/mws-moon-manager-ux/components/offer/lookup/ListItem.svelte
+3	13	packages/mws-moon-manager-ux/components/offer/tags/FunnelModal.svelte
+20	4	packages/mws-moon-manager-ux/components/offer/tags/TagsInput.svelte
+x	x	2024-04-10 04:57:43 +0200
+
+4	0	apps/mws-sf-pdf-billings/backend/.env.prod.dist
+2	1	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+6	1	apps/mws-sf-pdf-billings/backend/config/bundles.php
+6	1	apps/mws-sf-pdf-billings/backend/webpack.config.js
+x	x	2024-04-10 04:13:25 +0200
+
+3	1	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+x	x	2024-04-10 04:02:34 +0200
+
+7	5	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+x	x	2024-04-10 04:00:10 +0200
+
+6	1	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+x	x	2024-04-10 03:45:00 +0200
+
+14	2	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+x	x	2024-04-10 03:35:34 +0200
+
+27	6	apps/mws-sf-pdf-billings/backend/config/bundles.php
+x	x	2024-04-10 03:29:15 +0200
+
+7	0	apps/mws-sf-pdf-billings/backend/assets/svelte/controllers/MwsDemoWidget.svelte
+1	0	apps/mws-sf-pdf-billings/backend/composer.json
+13344	0	apps/mws-sf-pdf-billings/backend/composer.lock
+2	1	apps/mws-sf-pdf-billings/backend/composer.private.json
+89	2	apps/mws-sf-pdf-billings/backend/composer.private.lock
+4	2	apps/mws-sf-pdf-billings/backend/config/bundles.bckup.php
+7	27	apps/mws-sf-pdf-billings/backend/config/bundles.php
+3	0	apps/mws-sf-pdf-billings/backend/config/packages/doctrine.yaml
+12	0	apps/mws-sf-pdf-billings/backend/config/packages/tchoulom_view_counter.yaml
+34	0	apps/mws-sf-pdf-billings/backend/migrations/Version20240410012606.php
+1	0	apps/mws-sf-pdf-billings/backend/package.json
+3	0	apps/mws-sf-pdf-billings/backend/symfony.lock
+6	0	apps/mws-sf-pdf-billings/backend/symfony.private.lock
+1	0	apps/mws-sf-pdf-billings/backend/tailwind.config.js
+7	0	apps/mws-sf-pdf-billings/backend/webpack.config.js
+1	0	packages/mws-moon-manager-ux/components/timing/Report.svelte
+4	4	packages/mws-moon-manager/src/DependencyInjection/MoonManagerExtension.php
+3	0	pnpm-lock.yaml
+1	0	pnpm-workspace.yaml
+x	x	2024-04-09 11:54:24 +0200
+
+0	13276	apps/mws-sf-pdf-billings/backend/composer.lock
+5	0	apps/mws-sf-pdf-billings/backend/composer.private.json
+436	306	apps/mws-sf-pdf-billings/backend/composer.private.lock
+2	2	apps/mws-sf-pdf-billings/backend/config/bundles.php
+x	x	2024-04-09 09:59:37 +0200
+
+4	0	apps/mws-sf-pdf-billings/README.md
+5	1	packages/mws-moon-manager-ux/components/layout/widgets/DonateFunnel.svelte
+x	x	2024-04-09 09:45:13 +0200
+
+-	-	apps/mws-sf-pdf-billings/backend/tests/_data/data.gdpr-ok.db.sqlite
+x	x	2024-04-09 09:21:36 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/translations/messages+intl-icu.fr.yaml
+x	x	2024-04-09 09:19:06 +0200
+
+1	1	apps/mws-sf-pdf-billings/backend/translations/messages+intl-icu.fr.yaml
+x	x	2024-04-09 08:43:55 +0200
+
+8	4	packages/mws-moon-manager-ux/components/layout/widgets/DonateFunnel.svelte
+x	x	2024-04-09 08:05:24 +0200
+
+18	15	packages/mws-moon-manager-ux/components/home/HomePage.svelte
+108	29	packages/mws-moon-manager-ux/components/layout/widgets/DonateFunnel.svelte
+x	x	2024-04-09 06:28:51 +0200
+
+40	4	packages/mws-moon-manager-ux/components/layout/widgets/DonateFunnel.svelte
+x	x	2024-04-09 05:38:15 +0200
+
+222	0	apps/mws-sf-pdf-billings/backend/git-logs.tsv
+3	0	packages/mws-moon-manager-ux/components/home/HomePage.svelte
+30	0	packages/mws-moon-manager-ux/components/layout/widgets/DonateFunnel.svelte
+8	0	packages/mws-moon-manager/assets/styles/app.scss
 x	x	2024-04-09 04:40:12 +0200
 
 -	-	apps/mws-sf-pdf-billings/backend/tests/_data/data.gdpr-ok.db.sqlite
