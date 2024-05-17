@@ -22,7 +22,7 @@
 {% block body %}
 	{# TODO : subpath controller give hard debug time since components have same
 		name as the moon-manager-ux package one, all debug link go to wrong file... #}
-	<div class="mws-config-backup" {{ svelte_component('MwsConfigBackup', {
+	<div class="mws-config-backup-page" {{ svelte_component('MwsConfigBackup', {
 		'locale': app.locale,
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'backups': backups|serialize('json')|e('html_attr'),
