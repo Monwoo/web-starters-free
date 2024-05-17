@@ -48,6 +48,7 @@ if (class_exists(MWS\DemoBundle\DemoBundle::class)
 }
 
 if (class_exists(MWS\GooglePhotoReaderBundle\GooglePhotoReaderBundle::class)) {
+    // var_dump('GooglePhotoReaderBundle ok'); exit;
     $bundles = array_merge($bundles, [
         MWS\GooglePhotoReaderBundle\GooglePhotoReaderBundle::class => ['all' => true],
     ]);
