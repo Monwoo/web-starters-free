@@ -89,6 +89,21 @@
           }`
       }
   `;
+  $: {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (affiliationCode) {
+      console.debug("Affiliation :", affiliationCode);
+      urlParams.set("affiliationCode", encodeURIComponent(affiliationCode));
+    } else {
+      urlParams.delete("affiliationCode");
+    }
+      // TIPS : refresh page :
+      // window.location.search = urlParams;
+      const newUrl =
+      window.location.origin + window.location.pathname + "?" + urlParams;
+      history.pushState({}, null, newUrl); // No refresh
+  }
+
 
   onMount(async () => {
     // syncPaypal();

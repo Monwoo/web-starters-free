@@ -83,7 +83,11 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
       delta < 0 ? Number(pageLimit) - 1 : 0 === delta ? lastSelectedIndex : 0;
     urlParams.set("lastSelectedIndex", "" + newSelectedIndex);
     urlParams.delete("selectionStartIndex");
-    window.location.search = urlParams;
+    window.location.search = urlParams; // TODO : will refresh page, ok instead of : 
+    // const newUrl =
+    //   window.location.origin + window.location.pathname + "?" + urlParams;
+    // history.pushState({}, null, newUrl);
+
   };
   // dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 

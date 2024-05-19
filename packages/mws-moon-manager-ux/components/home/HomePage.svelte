@@ -39,6 +39,12 @@
     const baseHref = window && window.baseHref;
 </script>
 
+<svelte:head>
+    <title>
+        Accueil {affiliationCode ? `via ${affiliationCode}` : ``}
+    </title>
+</svelte:head>
+
 <Base {copyright} {locale} {viewTemplate}>
     <!-- {currentLanguage ?? ""} -->
     <!-- <h1>{ title ?? "" }</h1> -->
