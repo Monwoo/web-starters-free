@@ -159,6 +159,17 @@
     </div>
   </div>
   <div class="summary">
+    {@html searchLookup.searchBudgets && searchLookup.searchBudgets.length
+      ? "<strong>Budgets : </strong>" +
+        searchLookup.searchBudgets.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+
     <!-- // TODO : code factorization, inside component ? -->
     {@html searchLookup.searchStart && searchLookup.searchStart.length
       ? "<strong>Depuis le : </strong>" +
