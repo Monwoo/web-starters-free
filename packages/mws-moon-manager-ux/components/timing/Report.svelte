@@ -112,6 +112,17 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
   dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 
   const searchLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
+  const searchLookupState = Object.keys($state.mwsTimingLookupFields ?? [])
+        .filter((lf) => $state.mwsTimingLookupFields[lf])
+        .reduce((acc, lf) => {
+          // TIPS :
+          // https://stackoverflow.com/questions/64247315/svelte-get-all-properties-on-current-svelte-file
+          // return $$props[lf];
+          // return $$restProps[lf];
+          console.debug("Search qualif link", searchLookup[lf], lf);
+          acc[lf] = searchLookup[lf] ?? null;
+          return acc;
+        }, {});
 
   console.debug("Report having timingsReport", timingsReport);
   // console.debug('Report having timings', timings);
@@ -927,7 +938,8 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
       }
       const resp = await fetch(
         Routing.generate("mws_timing_delete_all", {
-          _locale: locale,
+          _locale: locale ?? "fr",
+          ...searchLookupState
         }),
         {
           method: "POST",
@@ -982,17 +994,7 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
   <a
     href={Routing.generate("mws_timings_qualif", {
       _locale: locale ?? "fr",
-      ...Object.keys($state.mwsTimingLookupFields ?? [])
-        .filter((lf) => $state.mwsTimingLookupFields[lf])
-        .reduce((acc, lf) => {
-          // TIPS :
-          // https://stackoverflow.com/questions/64247315/svelte-get-all-properties-on-current-svelte-file
-          // return $$props[lf];
-          // return $$restProps[lf];
-          console.debug("Search qualif link", searchLookup[lf], lf);
-          acc[lf] = searchLookup[lf] ?? null;
-          return acc;
-        }, {}),
+      ...searchLookupState
     })}
     class="pb-2 pr-2"
   >
@@ -1138,13 +1140,13 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
   <!-- <div>{@html timingsPaginator}</div> // TODO : not used, synth all... -->
   <div class="w-full">
     <strong>{Object.keys(timingsByIds).length.toPrettyNum(0)} points</strong> de
-    contrôles sur
+    contrôles en
     <strong>
       {(
         Object.keys(summaryByDays).length +
         Object.keys(summaryReportByDays).length
       ).toPrettyNum(0)} jours</strong
-    >
+    > ( sur {$state.timeSlotDbCount ?? 0} en base )
   </div>
   <div class="w-full h-4" />
   <div class="w-full text-lg">

@@ -5,10 +5,16 @@
 
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
 
-  Number.prototype.toPrettyNum = function (s, length, maxLength = null) {
+  Number.prototype.toPrettyNum = function (
+    this: Number,
+    length: number,
+    maxLength = null
+  ) {
     if (maxLength === null) maxLength = length;
+    var s = this;
     const splited = s
-      .toFixed(maxLength).replace(new RegExp(`0{0,${maxLength - length}}$`), "")
+      .toFixed(maxLength)
+      .replace(new RegExp(`0{0,${maxLength - length}}$`), "")
       // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
       // .replace(/0{0,2}$/, "")
       // .toLocaleString('en-US', { // TODO : centralize toPrettyNum and use locals formatings ?
@@ -16,10 +22,12 @@
       //   maximumFractionDigits: 4
       // })
       .replace(".", ",")
-      .split(',');
-    return (splited[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-    + (length >= 1 ? "," : "") 
-    + (splited[1] ?? '');
+      .split(",");
+    return (
+      (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+      (length >= 1 ? "," : "") +
+      (splited[1] ?? "")
+    );
   };
 
   // declare interface Number {
@@ -48,6 +56,7 @@
         } -->
       </div>
       <div>
+        <!-- {dayjs($state.gdprNextCleanDate).format("YYYY-MM-DD_HH:mm:ss")} -->
         {
           dayjs()
           .diff(dayjs($state.gdprNextCleanDate), 'hour', true)

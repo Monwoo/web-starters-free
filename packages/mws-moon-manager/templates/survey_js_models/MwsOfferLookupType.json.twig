@@ -44,9 +44,38 @@
     "showSelectAllItem": true,
     "separateSpecialChoices": true
   }, {
+    name: "searchBudgets",
+    title: "Budgets",
+    description: "Ajouter des budgets à rechercher.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allOfferBudgets,
+    "__choicesByUrl": {
+      "url": "https://surveyjs.io/api/CountriesExample"
+    },
+  }, {
+    "_cmt": "https://surveyjs.io/form-library/examples/datetime-entry-question/jquery#content-code",
+    "_cmt2": "https://stackoverflow.com/questions/58063185/input-time-how-to-allow-input-of-only-the-hour-no-minutes-or-seconds",
+    "name": "searchStart",
+    "type": "text",
+    "title": "Début le",
+    "inputType": "datetime-local",
+    isRequired: false,
+  }, {
+    "_cmt": "https://surveyjs.io/form-library/examples/datetime-entry-question/jquery#content-code",
+    "_cmt2": "https://stackoverflow.com/questions/58063185/input-time-how-to-allow-input-of-only-the-hour-no-minutes-or-seconds",
+    "name": "searchEnd",
+    "type": "text",
+    "title": "Fin le",
+    "inputType": "datetime-local",
+    isRequired: false,
+    startWithNewLine: false,
+  }, {
     name: "searchTags",
     title: "Tags",
-    description: "Ajouter des tags à filtrer.",
+    description: "Ajouter des tags à rechercher.",
     type: "tagbox",
     validators: [],
     minWidth: "20%",
@@ -56,6 +85,15 @@
       "url": "https://surveyjs.io/api/CountriesExample"
     },
   }, {
+    name: "searchTagsToInclude",
+    title: "Inclure les tags",
+    description: "Ajouter des tags à inclure.",
+    type: "tagbox",
+    validators: [],
+    minWidth: "20%",
+    isRequired: false,
+    choices: allOfferTags,
+  }, {
     name: "searchTagsToAvoid",
     title: "Eviter les tags",
     description: "Ajouter des tags à exclure.",
@@ -64,7 +102,7 @@
     minWidth: "20%",
     isRequired: false,
     choices: allOfferTags,
-  },
+  }
   ]
 } %}
 {# TODO : predefined

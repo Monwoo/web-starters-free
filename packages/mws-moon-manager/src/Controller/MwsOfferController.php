@@ -93,9 +93,14 @@ class MwsOfferController extends AbstractController
         // After symfony 6, get will not return array anymore
         // $searchTags = $request->query->get('tags', null); // []);
         $keyword = $requestData['keyword'] ?? null;
-        $searchTags = $requestData['tags'] ?? []; // []);
-        // TODO : avoid tag filter system...
-        $searchTagsToAvoid = $requestData['tagsToAvoid'] ?? []; // []);
+        $searchBudgets = $requestData['searchBudgets'] ?? null;
+        $searchStart = $requestData['searchStart'] ?? null;
+        $searchEnd = $requestData['searchEnd'] ?? null;
+
+        $searchTags = $requestData['searchTags'] ?? []; // []);
+        $searchTagsToInclude = $requestData['searchTagsToInclude'] ?? []; // []);
+        $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
+
         // dd($searchTagsToAvoid);
         
         $customFilters = $requestData['customFilters'] ?? [];
@@ -108,7 +113,11 @@ class MwsOfferController extends AbstractController
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
                 "searchKeyword" => $keyword,
+                "searchBudgets" => $searchBudgets,
+                "searchStart" => $searchStart,
+                "searchEnd" => $searchEnd,
                 "searchTags" => $searchTags,
+                "searchTagsToInclude" => $searchTagsToInclude,
                 "searchTagsToAvoid" => $searchTagsToAvoid,
                 "customFilters" => $customFilters,
                 // "sourceRootLookupUrl" => $sourceRootLookupUrl,
@@ -126,6 +135,20 @@ class MwsOfferController extends AbstractController
                             ->where($qb->expr()->isNotNull("t.categorySlug"))
                             ->getQuery()->getResult()
                     ),
+                    'allOfferBudgets' => 
+                        // explode(
+                        // ',', // TODO : split on , migh clash if budget use , inside labels...
+                        // dd(
+                        $mwsOfferRepository
+                        ->createQueryBuilder("o")
+                        ->select("
+                            DISTINCT o.budget as value
+                        ")
+                        ->orderBy('o.budget', 'ASC')
+                        ->getQuery()->getResult()
+                        // [0]['budgets'] ?? ''
+                        // )
+                    // ),
                 ]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
@@ -144,8 +167,14 @@ class MwsOfferController extends AbstractController
                     true
                 );
                 $keyword = $surveyAnswers['searchKeyword'] ?? null;
-                $searchTags = $surveyAnswers['searchTags'] ?? [];
-                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
+                $searchBudgets = $surveyAnswers['searchBudgets'] ?? null;
+                $searchStart = $surveyAnswers['searchStart'] ?? null;
+                $searchEnd = $surveyAnswers['searchEnd'] ?? null;
+        
+                $searchTags = $surveyAnswers['searchTags'] ?? []; // []);
+                $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? []; // []);
+                $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? []; // []);
+        
                 $customFilters = $surveyAnswers['customFilters'] ?? [];
                 // dd($searchTags);
                 // $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
@@ -154,8 +183,12 @@ class MwsOfferController extends AbstractController
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
-                        "tags" => $searchTags,
-                        "tagsToAvoid" => $searchTagsToAvoid,
+                        "searchBudgets" => $searchBudgets,
+                        "searchStart" => $searchStart,
+                        "searchEnd" => $searchEnd,
+                        "searchTags" => $searchTags,
+                        "searchTagsToInclude" => $searchTagsToInclude,
+                        "searchTagsToAvoid" => $searchTagsToAvoid,
                         "customFilters" => $customFilters,
                         "page" => 1,
                         // "sourceRootLookupUrl" => $sourceRootLookupUrl,
@@ -181,7 +214,31 @@ class MwsOfferController extends AbstractController
                 ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
         }
 
-        if (count($searchTags) || count($searchTagsToAvoid)) {
+        if (count($searchBudgets ?? [])) {
+            $orClause = '';
+            foreach ($searchBudgets as $idx => $searchBudget) {
+                if ($idx) {
+                    $orClause .= ' OR ';
+                }
+                $orClause .= ":budget$idx = o.budget";
+                $qb->setParameter("budget$idx", $searchBudget);
+            }
+
+            $qb = $qb->andWhere($orClause);
+        }
+
+        if ($searchStart && strlen($searchStart)) {
+            $searchStart = (new DateTime($searchStart));
+            $qb->andWhere("o.leadStart > :searchStart")
+                ->setParameter('searchStart', $searchStart);
+        }
+        if ($searchEnd && strlen($searchEnd)) {
+            $searchStart = (new DateTime($searchEnd));
+            $qb->andWhere("o.leadStart < :searchEnd")
+                ->setParameter('searchEnd', $searchEnd);
+        }
+
+        if (count($searchTags) || count($searchTagsToAvoid) || count($searchTagsToInclude)) {
             $qb = $qb
                 ->innerJoin('o.tags', 'tag');
         }
@@ -230,6 +287,23 @@ class MwsOfferController extends AbstractController
                 // $qb->setParameter("tagToAvoidCategory$idx", $category);
                 $dql .= ":tagToAvoid$idx NOT MEMBER OF o.tags";
                 $qb->setParameter("tagToAvoid$idx", $tag);
+                // dd($dql);
+                $qb = $qb->andWhere($dql);
+            }
+        }
+
+        if ($searchTagsToInclude && count($searchTagsToInclude)) {
+            // dd($searchTagsToAvoid);
+            foreach ($searchTagsToInclude as $idx => $slug) {
+                $dql = '';
+                [$category, $slug] = explode($tagSlugSep, $slug);
+                $tag = $mwsOfferStatusRepository->findOneBy([
+                    'slug' => $slug,
+                    'categorySlug' => $category,
+                ]);
+
+                $dql .= ":tagToInclude$idx MEMBER OF o.tags";
+                $qb->setParameter("tagToInclude$idx", $tag);
                 // dd($dql);
                 $qb = $qb->andWhere($dql);
             }
@@ -701,8 +775,8 @@ class MwsOfferController extends AbstractController
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
                         "keyword" => $keyword,
-                        "tags" => $searchTags,
-                        "tagsToAvoid" => $searchTagsToAvoid,
+                        "searchTags" => $searchTags,
+                        "searchTagsToAvoid" => $searchTagsToAvoid,
                         "page" => 1,
                     ]),
                     Response::HTTP_SEE_OTHER

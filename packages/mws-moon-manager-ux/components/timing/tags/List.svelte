@@ -78,6 +78,7 @@
 
   <p>
     Attention, les prix ne sont pas directement re-calculé pour des raisons d'optimisations. Pensez à cocher 'Mettre à jour les tags des temps' et importez sans fichiers pour mettre à jour le prix des temps segmentés.
+    De même, après une suppression (ou plusieurs suppressions), pensez à re-calculer/nettoyer les temps pour éviter des erreurs d'accès sur des tags inexistants.
   </p>
 
   <ImportTags {locale} bind:importedTagsGrouped={tags} />

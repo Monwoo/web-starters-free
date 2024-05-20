@@ -542,6 +542,12 @@ class MwsTimingController extends AbstractController
         // ); // TIPS : will REMOVE the groupBy etc.... (select too ?)...
         $timingsReport = $groupedQuery->getResult();
 
+        $timeSlotDbCount = $mwsTimeSlotRepository
+        ->createQueryBuilder('s')
+        ->select('count(s.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+
         // // TODO : too slow :
         // $timingsPage = $paginator->paginate(
         //     $query, /* query NOT result */
@@ -563,6 +569,7 @@ class MwsTimingController extends AbstractController
 
         return $this->render('@MoonManager/mws_timing/report.html.twig', [
             'timingsReport' => $timingsReport,
+            'timeSlotDbCount' => $timeSlotDbCount,
             // 'timingsById' => $timingsById,
             // 'timings' => $timingsPage,
             'timingTags' => $timingTags,
@@ -792,6 +799,7 @@ class MwsTimingController extends AbstractController
     public function deleteAll(
         string|null $viewTemplate,
         Request $request,
+        MwsTimeSlotRepository $mwsTimeSlotRepository,
         CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
@@ -807,8 +815,24 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
-        $qb = $this->em->createQueryBuilder()
-            ->delete(MwsTimeSlot::class, 't');
+        $keyword = $request->get('keyword', null);
+        $searchStart = $request->get('searchStart', null);
+        $searchEnd = $request->get('searchEnd', null);
+        $searchTags = $request->get('searchTags', []); // []);
+        $searchTagsToInclude = $request->get('searchTagsToInclude', []); // []);
+        $searchTagsToAvoid = $request->get('searchTagsToAvoid', []); // []);
+
+        $qb = $this->em->createQueryBuilder('s')
+        ->delete(MwsTimeSlot::class, 's');
+        $mwsTimeSlotRepository->applyTimingLokup($qb, [
+            'searchKeyword' => $keyword,
+            "searchStart" => $searchStart,
+            "searchEnd" => $searchEnd,
+            'searchTags' => $searchTags,
+            'searchTagsToInclude' => $searchTagsToInclude,
+            'searchTagsToAvoid' => $searchTagsToAvoid,
+        ]);
+    
         $query = $qb->getQuery();
         $query->execute();
         $this->em->flush();

@@ -34,12 +34,12 @@
   console.debug(viewTemplate);
   console.debug(lookupForm);
 
-  const jsonLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
-  console.debug("jsonLookup :", jsonLookup);
+  const searchLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
+  console.debug("searchLookup :", searchLookup);
   // TODO : basehref ? => NOP, use Routing from fos-routing instead...
   const baseHref = "/mws";
   // const respUrl = `${baseHref}/${locale}/mws-offer/fetch-root-url?url=`
-  // + encodeURIComponent(jsonLookup.sourceRootLookupUrl);
+  // + encodeURIComponent(searchLookup.sourceRootLookupUrl);
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
 
   const deleteAllOffers = async () => {
@@ -101,7 +101,7 @@
     // // NOP, not common, will have security errors this way :
     // const htmlResp = await fetch(respUrl);
     // console.debug(htmlResp);
-    // // const win = window.open(jsonLookup.sourceRootLookupUrl, "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+    // // const win = window.open(searchLookup.sourceRootLookupUrl, "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
     // const win = window.open('', "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
     // // win.document.body.innerHTML = "HTML";
     // win.document.body.innerHTML = await htmlResp.text();
@@ -158,40 +158,56 @@
       {@html lookupForm}
     </div>
   </div>
-  {@html jsonLookup.customFilters && jsonLookup.customFilters.length
-    ? "<strong>Filtres actifs : </strong>" +
-      jsonLookup.customFilters.reduce(
-        (acc, f) => `
-        ${acc} [${f}]
-      `,
-        ``
-      ) +
-      "<br/>"
-    : ""}
-  {@html jsonLookup.searchTags && jsonLookup.searchTags.length
-    ? "<strong>Tags : </strong>" +
-      jsonLookup.searchTags.reduce(
-        (acc, f) => `
-        ${acc} [${f}]
-      `,
-        ``
-      ) +
-      "<br/>"
-    : ""}
-  {@html jsonLookup.searchTagsToAvoid && jsonLookup.searchTagsToAvoid.length
-    ? "<strong>Tags à éviter : </strong>" +
-      jsonLookup.searchTagsToAvoid.reduce(
-        (acc, f) => `
-        ${acc} [${f}]
-      `,
-        ``
-      ) +
-      "<br/>"
-    : ""}
-  {@html jsonLookup.searchKeyword
-    ? `<strong>Mots clefs : </strong>${jsonLookup.searchKeyword}`
-    : ``}
-  {@html offersPaginator}
+  <div class="summary">
+    <!-- // TODO : code factorization, inside component ? -->
+    {@html searchLookup.searchStart && searchLookup.searchStart.length
+      ? "<strong>Depuis le : </strong>" +
+        dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +
+        "<br/>"
+      : ""}
+    {@html searchLookup.searchEnd && searchLookup.searchEnd.length
+      ? "<strong>Jusqu'au : </strong>" +
+        dayjs(searchLookup.searchEnd).format("YYYY-MM-DD HH:mm:ss") +
+        "<br/>"
+      : ""}
+    {@html searchLookup.searchTags && searchLookup.searchTags.length
+      ? "<strong>Tags : </strong>" +
+        searchLookup.searchTags.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+    <!-- // TODO : code factorization, indide component ? -->
+    {@html searchLookup.searchTagsToInclude &&
+    searchLookup.searchTagsToInclude.length
+      ? "<strong>Tags à inclure : </strong>" +
+        searchLookup.searchTagsToInclude.reduce(
+          (acc, f) => `
+            ${acc} [${f}]
+          `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+    {@html searchLookup.searchTagsToAvoid &&
+    searchLookup.searchTagsToAvoid.length
+      ? "<strong>Tags à éviter : </strong>" +
+        searchLookup.searchTagsToAvoid.reduce(
+          (acc, f) => `
+            ${acc} [${f}]
+          `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+    {@html searchLookup.searchKeyword
+      ? `<strong>Mots clefs : </strong>${searchLookup.searchKeyword}`
+      : ``}
+    {@html offersPaginator}
+  </div>
 
   <!-- { JSON.stringify(offers) } -->
   <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">

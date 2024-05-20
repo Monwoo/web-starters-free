@@ -180,7 +180,7 @@
         }
       })
       .catch((e) => {
-        console.error(e);
+        console.error("FAIL :", e);
         // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
         // const shouldWait = confirm("Echec de l'enregistrement.");
       });
@@ -609,12 +609,13 @@ import ImportQualifs from "./ImportQualifs.svelte";
           // Refacor all call to update from resonse instead of inside custom stuff ??
           // ++ USE Redux EFFECTs etc, will remove all those 
           //    kind of side effects hacky codes :
-          qualif.timeTags = data.sync.timeTags;
           if (data.didDelete) {
             quickQualifTemplates = quickQualifTemplates.filter(
               (q) => q.id !== qualif.id
             );
             qualifTemplates = qualifTemplates.filter((q) => q.id !== qualif.id);
+          } else {
+            qualif.timeTags = data.sync.timeTags;
           }
 
           stateUpdate(state, {
@@ -682,7 +683,7 @@ import ImportQualifs from "./ImportQualifs.svelte";
         }
       })
       .catch((e) => {
-        console.error(e);
+        console.error("FAIL :", e);
         // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
         const shouldWait = confirm("Echec de l'enregistrement.");
       });

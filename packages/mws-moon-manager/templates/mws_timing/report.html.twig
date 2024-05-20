@@ -13,6 +13,7 @@
 	{{ svelte_component('MwsReduxSync', {
 		'stateUpdate': {
 			'timingAvailableTags': timingTags,
+			'timeSlotDbCount': timeSlotDbCount,
 			'mwsTimingLookupFields': mwsTimingLookupFields,
 			'csrfTimingDeleteAll': csrf_token('mws-csrf-timing-delete-all'),
 			'csrfTimingImport': csrf_token('mws-csrf-timing-import'),

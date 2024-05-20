@@ -469,7 +469,7 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
           Menu
         </button>
         <div class="summary">
-          <!-- // TODO : code factorization, indide component ? -->
+          <!-- // TODO : code factorization, inside component ? -->
           {@html searchLookup.searchStart && searchLookup.searchStart.length
             ? "<strong>Depuis le : </strong>" +
               dayjs(searchLookup.searchStart).format("YYYY-MM-DD HH:mm:ss") +

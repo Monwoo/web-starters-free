@@ -147,8 +147,10 @@ class GdprSentinelListener
     $next_clean_date = clone $last_clean_date;
     // $next_clean_date->add(new \DateInterval('PT1M'));
     $minDelaySec = round($minDelay * 60 * 60);
-    // dd($minDelaySec);
+    // dd("PT{$minDelaySec}S");
     $next_clean_date->add(new \DateInterval("PT{$minDelaySec}S"));
+    // dump($last_clean_date);
+    // dd($next_clean_date);
 
     $lastBckupDelta = $lastTimestamp
       ? $timestamp - $lastTimestamp

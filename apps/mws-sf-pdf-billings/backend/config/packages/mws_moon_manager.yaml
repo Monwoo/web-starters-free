@@ -35,4 +35,15 @@ parameters:
                 categorySlug: prospection
               - label: Hors cible business
                 categorySlug: prospection
-
+              - label: Kanban
+                categoryOkWithMultiplesTags: false
+              - label: Marché
+                categorySlug: kanban
+              - label: Backlog
+                categorySlug: kanban
+              - label: Appelé
+                categorySlug: kanban
+              - label: Devis OK
+                categorySlug: kanban
+              - label: Devis KO
+                categorySlug: kanban
