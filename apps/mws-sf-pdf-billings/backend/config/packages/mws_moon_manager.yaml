@@ -41,7 +41,9 @@ parameters:
                 categorySlug: kanban
               - label: Backlog
                 categorySlug: kanban
-              - label: Appelé
+              - label: A relancer
+                categorySlug: kanban
+              - label: Devis à négocier
                 categorySlug: kanban
               - label: Devis OK
                 categorySlug: kanban
