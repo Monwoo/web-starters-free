@@ -268,6 +268,23 @@ class MwsOfferController extends AbstractController
             $qb = $qb->andWhere($orClause);
         }
 
+        if ($searchTagsToInclude && count($searchTagsToInclude)) {
+            // dd($searchTagsToAvoid);
+            foreach ($searchTagsToInclude as $idx => $slug) {
+                $dql = '';
+                [$category, $slug] = explode($tagSlugSep, $slug);
+                $tag = $mwsOfferStatusRepository->findOneBy([
+                    'slug' => $slug,
+                    'categorySlug' => $category,
+                ]);
+
+                $dql .= ":tagToInclude$idx MEMBER OF o.tags";
+                $qb->setParameter("tagToInclude$idx", $tag);
+                // dd($dql);
+                $qb = $qb->andWhere($dql);
+            }
+        }
+
         if (count($searchTagsToAvoid)) {
             // dd($searchTagsToAvoid);
 
@@ -287,23 +304,6 @@ class MwsOfferController extends AbstractController
                 // $qb->setParameter("tagToAvoidCategory$idx", $category);
                 $dql .= ":tagToAvoid$idx NOT MEMBER OF o.tags";
                 $qb->setParameter("tagToAvoid$idx", $tag);
-                // dd($dql);
-                $qb = $qb->andWhere($dql);
-            }
-        }
-
-        if ($searchTagsToInclude && count($searchTagsToInclude)) {
-            // dd($searchTagsToAvoid);
-            foreach ($searchTagsToInclude as $idx => $slug) {
-                $dql = '';
-                [$category, $slug] = explode($tagSlugSep, $slug);
-                $tag = $mwsOfferStatusRepository->findOneBy([
-                    'slug' => $slug,
-                    'categorySlug' => $category,
-                ]);
-
-                $dql .= ":tagToInclude$idx MEMBER OF o.tags";
-                $qb->setParameter("tagToInclude$idx", $tag);
                 // dd($dql);
                 $qb = $qb->andWhere($dql);
             }

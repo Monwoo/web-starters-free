@@ -47,3 +47,27 @@ parameters:
                 categorySlug: kanban
               - label: Devis KO
                 categorySlug: kanban
+              - label: Meilleur choix Monwoo
+                categoryOkWithMultiplesTags: false
+              - label: Monwoo 1/5
+                categorySlug: meilleur-choix-monwoo
+              - label: Monwoo 2/5
+                categorySlug: meilleur-choix-monwoo
+              - label: Monwoo 3/5
+                categorySlug: meilleur-choix-monwoo
+              - label: Monwoo 4/5
+                categorySlug: meilleur-choix-monwoo
+              - label: Monwoo 5/5
+                categorySlug: meilleur-choix-monwoo
+              - label: Meilleur choix Axelo
+                categoryOkWithMultiplesTags: false
+              - label: Axelo 1/5
+                categorySlug: meilleur-choix-axelo
+              - label: Axelo 2/5
+                categorySlug: meilleur-choix-axelo
+              - label: Axelo 3/5
+                categorySlug: meilleur-choix-axelo
+              - label: Axelo 4/5
+                categorySlug: meilleur-choix-axelo
+              - label: Axelo 5/5
+                categorySlug: meilleur-choix-axelo
