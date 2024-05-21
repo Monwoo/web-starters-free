@@ -159,6 +159,17 @@
     </div>
   </div>
   <div class="summary">
+    {@html searchLookup.customFilters && searchLookup.customFilters.length
+      ? "<strong>Filtres personnalisés actifs : </strong>" +
+      searchLookup.customFilters.reduce(
+          (acc, f) => `
+          ${acc} [${f}]
+        `,
+          ``
+        ) +
+        "<br/>"
+      : ""}
+
     {@html searchLookup.searchBudgets && searchLookup.searchBudgets.length
       ? "<strong>Budgets : </strong>" +
         searchLookup.searchBudgets.reduce(
