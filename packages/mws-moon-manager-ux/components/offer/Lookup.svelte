@@ -4,11 +4,15 @@
   // TODO : namespace
   import Base from "../layout/Base.svelte";
   import List from "./lookup/List.svelte";
+  import Columns from "./lookup/Columns.svelte";
   import { onMount } from "svelte";
   import Loader from "../layout/widgets/Loader.svelte";
   import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
+  import {
+    BarsOutline, ColumnSolid
+  } from "flowbite-svelte-icons";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -24,6 +28,7 @@
   export let isMobile;
   export let isWide;
   export let reportScale = 100;
+  export let viewMode = "list-view";
 
   $: reportScale = isMobile ? 85 : 100;
 
@@ -230,7 +235,65 @@
       : ``}
     {@html offersPaginator}
   </div>
-
+  <div>
+    Affichage : {viewMode}
+  </div>
+  <ul class="flex flex-wrap">
+    <li>
+        <input type="radio"
+        id="mws-offer-list-radio"
+        name="mws-offer-lookup-view"
+        value="list-view" class="hidden peer" required
+        checked={viewMode == "list-view"}
+        on:change={ (e) => {
+          viewMode = e.target.value;
+        } } />
+        <label for="mws-offer-list-radio" class="
+        inline-flex items-center justify-between w-full
+        p-1
+        text-gray-500 bg-white border border-gray-200 
+        ounded-lg cursor-pointer dark:hover:text-gray-300
+        dark:border-gray-700 dark:peer-checked:text-blue-500
+        peer-checked:border-blue-600
+        peer-checked:text-blue-600
+        hover:text-gray-600 hover:bg-gray-100
+        dark:text-gray-400 dark:bg-gray-800
+        dark:hover:bg-gray-700"
+        >
+          <BarsOutline />
+          <div class="ps-1">
+              <div class="">Liste</div>
+          </div>
+        </label>
+    </li>
+    <li>
+        <input type="radio"
+        id="mws-offer-table-radio"
+        name="mws-offer-lookup-view"
+        value="table-view"
+        class="hidden peer"
+        checked={viewMode == "table-view"}
+        on:change={ (e) => {
+          viewMode = e.target.value;
+        } } />
+        <label for="mws-offer-table-radio" class="
+        inline-flex items-center justify-between w-full
+        p-1
+        text-gray-500 bg-white border border-gray-200 
+        ounded-lg cursor-pointer dark:hover:text-gray-300
+        dark:border-gray-700 dark:peer-checked:text-blue-500
+        peer-checked:border-blue-600
+        peer-checked:text-blue-600
+        hover:text-gray-600 hover:bg-gray-100
+        dark:text-gray-400 dark:bg-gray-800
+        dark:hover:bg-gray-700">
+          <ColumnSolid />
+          <div class="ps-1">
+            <div class="">Tableau</div>
+          </div>
+        </label>
+    </li>
+  </ul>
   <!-- { JSON.stringify(offers) } -->
   <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
     <div class="fill-white/70 text-white/70 w-full">
@@ -249,18 +312,30 @@
     </div>
   </div>
 
-  <div class="mws-offer-lookup"
->
-    <List
-      {reportScale}
-      {locale}
-      {isMobile} {isWide}
-      {offers}
-      {offersHeaders}
-      {viewTemplate}
-      {addMessageForm}
-      {messagesByProjectId}
-    />
+  <div class="mws-offer-lookup">
+    {#if viewMode == "table-view" }
+      <Columns
+        {reportScale}
+        {locale}
+        {isMobile} {isWide}
+        {offers}
+        {offersHeaders}
+        {viewTemplate}
+        {addMessageForm}
+        {messagesByProjectId}
+      />
+    {:else}
+      <List
+        {reportScale}
+        {locale}
+        {isMobile} {isWide}
+        {offers}
+        {offersHeaders}
+        {viewTemplate}
+        {addMessageForm}
+        {messagesByProjectId}
+      />
+    {/if}
   </div>
   <div>{@html offersPaginator}</div>
 </Base>

@@ -3,9 +3,9 @@
   // TODO : namespace
   import ListItem from "./ListItem.svelte";
   import AddModal from "../../message/AddModal.svelte";
+  import FunnelModal from "../tags/FunnelModal.svelte";
   import { onMount } from "svelte";
   import { tick } from "svelte";
-  import FunnelModal from "../tags/FunnelModal.svelte";
   import newUniqueId from "locally-unique-id-generator";
 
   export let locale;
