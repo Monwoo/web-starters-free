@@ -93,6 +93,12 @@ class MwsMessageController extends AbstractController
             return $acc;
         }, []);
 
+        // TODO : from config file or user param configs ?
+        $availableMonwooAmountType = [
+            "Pour le projet",
+            "Par jour",
+        ];
+        
         $addMessageConfig = [
             "jsonResult" => rawurlencode(json_encode([
                 // "searchKeyword" => $keyword,
@@ -102,6 +108,7 @@ class MwsMessageController extends AbstractController
                 [
                     "availableTemplates" => $availableTemplates,
                     "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+                    "availableMonwooAmountType" => $availableMonwooAmountType,
                     "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
                 ]
             )),
@@ -170,6 +177,7 @@ class MwsMessageController extends AbstractController
                     $sync('projectId');
                     $sync('destId'); // TODO : validation error : can't be empty
                     $sync('monwooAmount');
+                    $sync('monwooAmountType');
                     $sync('projectDelayInOpenDays');
                     $sync('asNewOffer');
                     $sync('isDraft', true);
@@ -612,6 +620,7 @@ class MwsMessageController extends AbstractController
                                 $sync('projectId');
                                 $sync('destId');
                                 $sync('monwooAmount');
+                                $sync('monwooAmountType');
                                 $sync('projectDelayInOpenDays');
                                 $sync('asNewOffer');
                                 $sync('isDraft');
@@ -786,6 +795,7 @@ class MwsMessageController extends AbstractController
                     $message->setProjectId($cleanUp($m["projectId"] ?? null));
                     $message->setDestId($cleanUp($m["destId"]));
                     $message->setMonwooAmount($m["monwooAmount"] ?? null);
+                    $message->setMonwooAmountType($m["monwooAmountType"] ?? null);
                     $message->setProjectDelayInOpenDays($m["projectDelayInOpenDays"] ?? null);
                     $message->setAsNewOffer($m["asNewOffer"] ?? null);
                     $message->setIsDraft($m["isDraft"] ?? true);

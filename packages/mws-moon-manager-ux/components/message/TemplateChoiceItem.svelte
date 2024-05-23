@@ -146,7 +146,7 @@
   {#if itemData}
     <div class="mws-choice-detail">
       <div class="relative">
-        <div>Proposition : { itemData?.monwooAmount ?? '' }</div>
+        <div>Proposition : { itemData?.monwooAmount ?? '' } { itemData?.monwooAmountType ?? '' }</div>
         <div>Délais : { itemData?.projectDelayInOpenDays ?? '' } jour(s) ouvrés</div>
         {@html (itemData?.messages ?? []).reduce(
           // <pre>${msg.text}</pre>
@@ -185,7 +185,7 @@
       @apply fixed;
       @apply z-50; // TODO hierarchy issue, do not go over detail view... => service to open menu detail popup instantiated in parent ?
       @apply left-0;
-      @apply w-[35dvw];
+      @apply w-[30dvw];
       @apply h-[30dvh];
       @apply top-[10dvh];
     }

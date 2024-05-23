@@ -297,7 +297,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 sourceDetailView.length &&
                 showSourceDetail}
                 <div
-                    class="p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[35dvw] h-[60dvh] top-[10dvh]"
+                    class="p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[30dvw] h-[60dvh] top-[10dvh]"
                 >
                     {@html sourceDetailView}
                 </div>

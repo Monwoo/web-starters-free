@@ -50,6 +50,9 @@ class MwsMessage
     #[ORM\Column(nullable: true)]
     private ?float $monwooAmount = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $monwooAmountType = null;
+
     #[ORM\Column(nullable: true)]
     private ?float $projectDelayInOpenDays = null;
 
@@ -239,6 +242,18 @@ class MwsMessage
     public function setTemplateCategorySlug(?string $templateCategorySlug): static
     {
         $this->templateCategorySlug = $templateCategorySlug;
+
+        return $this;
+    }
+
+    public function getMonwooAmountType(): ?string
+    {
+        return $this->monwooAmountType;
+    }
+
+    public function setMonwooAmountType(?string $monwooAmountType): static
+    {
+        $this->monwooAmountType = $monwooAmountType;
 
         return $this;
     }

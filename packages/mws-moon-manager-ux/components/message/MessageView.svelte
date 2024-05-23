@@ -78,6 +78,9 @@
     {message.monwooAmount}
   </td>
   <td>
+    {message.monwooAmountType}
+  </td>
+  <td>
     {message.projectDelayInOpenDays}
   </td>
   <td>

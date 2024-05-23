@@ -567,6 +567,12 @@ class MwsOfferController extends AbstractController
         // dd($availableTemplateCategorySlugs);
         // dd($availableTemplateNameSlugs);
 
+        // TODO : from config file or user param configs ?
+        $availableMonwooAmountType = [
+            "Pour le projet",
+            "Par jour",
+        ];
+
         $addMessageConfig = [
             // "jsonResult" => rawurlencode(json_encode([])),
             "jsonResult" => rawurlencode('{}'),
@@ -575,6 +581,7 @@ class MwsOfferController extends AbstractController
                 [
                     "availableTemplates" => $availableTemplates,
                     "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+                    "availableMonwooAmountType" => $availableMonwooAmountType,
                     "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
                 ]
             )),
@@ -659,6 +666,11 @@ class MwsOfferController extends AbstractController
             []
         );
 
+        // TODO : from config file or user param configs ?
+        $availableMonwooAmountType = [
+            "Pour le projet",
+            "Par jour",
+        ];
 
         $addMessageConfig = [
             // "jsonResult" => rawurlencode(json_encode([])),
@@ -668,6 +680,7 @@ class MwsOfferController extends AbstractController
                 [
                     "availableTemplates" => $availableTemplates,
                     "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+                    "availableMonwooAmountType" => $availableMonwooAmountType,
                     "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
                 ]
             )),

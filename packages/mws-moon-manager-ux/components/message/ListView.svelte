@@ -80,6 +80,9 @@
         {@html messagesHeaders.monwooAmount ?? "monwooAmount"}
       </th>
       <th scope="col">
+        {@html messagesHeaders.monwooAmountType ?? "monwooAmountType"}
+      </th>
+      <th scope="col">
         {@html messagesHeaders.projectDelayInOpenDays ?? "projectDelayInOpenDays"}
       </th>
       <th scope="col">

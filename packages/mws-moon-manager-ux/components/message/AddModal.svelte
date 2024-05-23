@@ -120,13 +120,25 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 </button>
             </div>
             <!-- Modal body -->
+            <button
+            on:click={() => (showSourceDetail = !showSourceDetail)}
+            type="button"
+            class="text-gray-500 bg-white hover:bg-gray-100
+            fixed z-20 right-0 top-[10dvh]"
+            >{showSourceDetail
+                ? "Cacher"
+                : "Voir"}
+            </button>
+
             {#if sourceDetailView &&
                 sourceDetailView.length &&
                 showSourceDetail}
                 <div
-                    class="p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[35dvw] h-[60dvh] top-[10dvh]"
+                    class="pt-12 p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[30dvw] h-[60dvh] top-[10dvh]"
                 >
-                    {@html sourceDetailView}
+                    <div>
+                        {@html sourceDetailView}
+                    </div>
                 </div>
             {/if}
             <!-- Modal body -->

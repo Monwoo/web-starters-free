@@ -170,7 +170,8 @@
           } else {
             const data = await resp.json();
             // TODO : sync trakings :
-            trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
+            // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
+            offer = data.sync; // Svelte reactive will take care of 'trackings'
             stateUpdate(state, {
               csrfOfferAddComment: data.newCsrf,
             });
@@ -232,7 +233,8 @@
           } else {
             const data = await resp.json();
             // TODO : sync trakings :
-            trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
+            // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
+            offer = data.sync; // Svelte reactive will take care of 'trackings'
             stateUpdate(state, {
               csrfOfferDeleteTracking: data.newCsrf,
             });
@@ -344,17 +346,23 @@
         </div>
       </div>
       {#if !isTrackingsCollapsed}
-        <div class="mws-offer-tracking-list flex flex-wrap w-full cursor-pointer">
+        <div
+          class="mws-offer-tracking-list flex flex-wrap w-full cursor-pointer"
+        >
           {#each trackings ?? [] as tracking, idx (idx)}
             <div animate:flip class="mws-offer-tracking w-full p-1">
               {#if $state.user?.roles?.includes("ROLE_MWS_ADMIN")}
                 <button
                   on:click={debounce(async () => {
-                    if (confirm(`Supprimer le suivi de [${
-                      tracking.id ?? "--"
-                    }] du ${dayjs(tracking.updatedAt).format(
-                      "YYYY/MM/DD HH:mm"
-                    )}`)) {
+                    if (
+                      confirm(
+                        `Supprimer le suivi de [${
+                          tracking.id ?? "--"
+                        }] du ${dayjs(tracking.updatedAt).format(
+                          "YYYY/MM/DD HH:mm"
+                        )}`
+                      )
+                    ) {
                       await deleteTracking(tracking.id);
                     }
                   })}
@@ -364,12 +372,11 @@
                   x
                 </button>
               {/if}
-    
 
               [{dayjs(tracking.updatedAt).format(
                 "YYYY/MM/DD HH:mm"
               )}][{tracking.id ?? "--"}]
-              {#if tracking.offerStatusSlug && 'null' != tracking.offerStatusSlug}
+              {#if tracking.offerStatusSlug && "null" != tracking.offerStatusSlug}
                 [{tracking.offerStatusSlug}]
               {/if}
               <span class="font-bold">
@@ -395,7 +402,9 @@
         }; // Ensure data is empty before show...
         // TODO: remove code duplication with message list :
         addModal.sourceDetailView = `
-        <h1>${offer.title}</h1>
+        <a href="${offer.sourceUrl}" target="_blank" rel="noreferrer">
+          <h1>${offer.title}</h1>
+        </a>
         <p>${offer.contact1 ?? ""}</p>
         <p>${offer.contact2 ?? ""}</p>      
         <p>${offer.budget ?? ""}</p>      
@@ -404,7 +413,25 @@
           offer.clientUrl ?? "#not-found"
         }" target="_blank" rel="noreferrer">
           <button class="">Publié par : ${offer.clientUsername}</button>
-        </a>    
+        </a>
+        <div class="mws-last-trakings p-3">
+          ${(offer.mwsOfferTrackings.toReversed().slice(0,3) ?? []).reduce(
+            (acc, traking) => {
+              acc += `
+              <div class="w-full">
+                [${
+                  traking.updatedAt
+                    ? dayjs(traking.updatedAt).format("YYYY/MM/DD")
+                    : "--"
+                }] ${traking.comment ?? "--"}
+              </div>
+            `;
+              return acc;
+            },
+            ""
+          )}
+        </div>
+
         <p>${offer.description ?? ""}</p>      
         ${
           myOfferId && offer.sourceUrl
@@ -441,40 +468,60 @@
             addModal.surveyModel.data = message;
             // TODO: remove code duplication with message list :
             addModal.sourceDetailView = `
-          <h1>${offer.title}</h1>
-          <p>${offer.contact1 ?? ""}</p>
-          <p>${offer.contact2 ?? ""}</p>      
-          <p>${offer.budget ?? ""}</p>      
-          <p>${dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>      
-          <a href="${
-            offer.clientUrl ?? "#not-found"
-          }" target="_blank" rel="noreferrer">
-            <button class="">Publié par : ${offer.clientUsername}</button>
-          </a>    
-          <p>${offer.description ?? ""}</p>      
-          ${
-            myOfferId && offer.sourceUrl
-              ? `
-            <a href="${
-              offer.sourceUrl
-            }/${myOfferId}" target="_blank" rel="noreferrer">
-              <button class="">Source des messages</button>
-            </a><br/>
-            Proposition : ${offer.sourceDetail.monwooOfferAmount ?? ""}<br/>
-            Délais : ${offer.sourceDetail.monwooOfferDelay ?? ""}<br/>
-          `
-              : ``
-          }
-          ${(offer.sourceDetail?.messages ?? []).reduce(
-            (html, msg) =>
-              html + // TODO : factorise code duplication
-              msg
-                .replaceAll('src="/', `src="https://${offer.sourceName}/`)
-                .replaceAll('href="/', `href="https://${offer.sourceName}/`)
-                .replaceAll(`https://${offer.sourceName}/http`, `http`),
-            ``
-          )}
-        `;
+              <a href="${offer.sourceUrl}" target="_blank" rel="noreferrer">
+                <h1>${offer.title}</h1>
+              </a>
+              <p>${offer.contact1 ?? ""}</p>
+              <p>${offer.contact2 ?? ""}</p>      
+              <p>${offer.budget ?? ""}</p>
+              <p>${dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>      
+              <a href="${
+                offer.clientUrl ?? "#not-found"
+              }" target="_blank" rel="noreferrer">
+                <button class="">Publié par : ${offer.clientUsername}</button>
+              </a>
+              <div class="mws-last-trakings p-3">
+                ${(offer.mwsOfferTrackings.toReversed().slice(0,3) ?? []).reduce(
+                  (acc, traking) => {
+                    acc += `
+                    <div class="w-full">
+                      [${
+                        traking.updatedAt
+                          ? dayjs(traking.updatedAt).format("YYYY/MM/DD")
+                          : "--"
+                      }] ${traking.comment ?? "--"}
+                    </div>
+                  `;
+                    return acc;
+                  },
+                  ""
+                )}
+              </div>
+
+              <p>${offer.description ?? ""}</p>      
+              ${
+                myOfferId && offer.sourceUrl
+                  ? `
+                <a href="${
+                  offer.sourceUrl
+                }/${myOfferId}" target="_blank" rel="noreferrer">
+                  <button class="">Source des messages</button>
+                </a><br/>
+                Proposition : ${offer.sourceDetail.monwooOfferAmount ?? ""}<br/>
+                Délais : ${offer.sourceDetail.monwooOfferDelay ?? ""}<br/>
+              `
+                  : ``
+              }
+              ${(offer.sourceDetail?.messages ?? []).reduce(
+                (html, msg) =>
+                  html + // TODO : factorise code duplication
+                  msg
+                    .replaceAll('src="/', `src="https://${offer.sourceName}/`)
+                    .replaceAll('href="/', `href="https://${offer.sourceName}/`)
+                    .replaceAll(`https://${offer.sourceName}/http`, `http`),
+                ``
+              )}
+            `;
             addModal.eltModal.show();
           }}
         >
@@ -522,9 +569,11 @@
       => avoid scroll back to be able to click link instead
       of sticky actions
     -->
+    <!-- TODO : remove code duplications -->
     {#if myOfferId && offer.sourceUrl}
+      <!-- TODO : offert dest slug rewrite system ... -->
       <a
-        href={`${offer.sourceUrl}/${myOfferId}`}
+        href={`${offer.sourceUrl}/offers/${myOfferId}`}
         target="_blank"
         rel="noreferrer"
       >
