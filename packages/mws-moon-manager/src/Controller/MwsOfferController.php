@@ -22,6 +22,7 @@ use MWS\MoonManagerBundle\Repository\MwsContactRepository;
 use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
+use MWS\MoonManagerBundle\Repository\MwsOfferTrackingRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -733,7 +734,7 @@ class MwsOfferController extends AbstractController
         $traking->setComment($comment);
 
         $offerStatusSlug = $request->request->get('offerStatusSlug', '--');
-        if ($offerStatusSlug && strlen($offerStatusSlug)) {
+        if ($offerStatusSlug && strlen($offerStatusSlug && 'null' !== $offerStatusSlug)) {
             $offer->setCurrentStatusSlug($offerStatusSlug);
             $this->em->persist($offer);
             $traking->setOfferStatusSlug($offerStatusSlug);
@@ -751,6 +752,66 @@ class MwsOfferController extends AbstractController
             return $this->json([
                 'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-add-comment')->getValue(),
                 'viewTemplate' => $viewTemplate,
+                'sync' => $offer,
+            ]);
+        }
+        return $this->redirectToRoute(
+            'mws_offer_lookup',
+            [ // array_merge($request->query->all(), [
+                "viewTemplate" => $viewTemplate,
+                "page" => 1,
+            ], //),
+            Response::HTTP_SEE_OTHER
+        );
+    }
+
+    #[Route(
+        '/delete-tracking/{viewTemplate<[^/]*>?}',
+        name: 'mws_offer_delete_tracking',
+        methods: ['POST'],
+    )]
+    public function deleteTracking(
+        string|null $viewTemplate,
+        Request $request,
+        MwsOfferTrackingRepository $mwsOfferTrackingRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+            // TODO : also allow any user to remove SELF comment 
+            // if at most 10 minutes after post, admin will have to review otherwise
+            throw $this->createAccessDeniedException('Only for admins');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-offer-delete-tracking', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        $trackingId = $request->request->get('trackingId');
+        if (!$trackingId) {
+            throw $this->createAccessDeniedException('Missing trackingId');
+        }
+
+        /** @var MwsOfferTracking $traking */
+        $traking = $mwsOfferTrackingRepository->findOneBy([
+            'id' => $trackingId
+        ]);
+        if (!$traking) {
+            throw $this->createAccessDeniedException("Unknown traking id [$trackingId]");
+        }
+        $offer = $traking->getOffer();
+
+        $this->em->remove($traking);
+        $this->em->flush(); // TIPS : Sync Generated ID in DB for new traking
+
+        if (in_array('application/json', $request->getAcceptableContentTypes())) {
+            return $this->json([
+                'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-delete-tracking')->getValue(),
+                'viewTemplate' => $viewTemplate,
+                'sync' => $offer,
             ]);
         }
         return $this->redirectToRoute(

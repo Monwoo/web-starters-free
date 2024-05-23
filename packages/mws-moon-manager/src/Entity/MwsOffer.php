@@ -55,7 +55,7 @@ class MwsOffer
     private ?string $currentStatusSlug = null;
 
     #[ORM\OneToMany(mappedBy: 'offer', targetEntity: MwsOfferTracking::class, cascade: ['persist'])]
-    #[Serializer\Ignore]
+    // #[Serializer\Ignore]
     private Collection $mwsOfferTrackings;
 
     // cascade: ['persist', 'remove']

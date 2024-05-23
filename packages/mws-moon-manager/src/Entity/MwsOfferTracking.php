@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use MWS\MoonManagerBundle\Repository\MwsOfferTrackingRepository;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: MwsOfferTrackingRepository::class)]
 class MwsOfferTracking
@@ -18,6 +19,7 @@ class MwsOfferTracking
 
     #[ORM\ManyToOne(inversedBy: 'mwsOfferTrackings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Serializer\Ignore]
     private ?MwsOffer $offer = null;
 
     #[ORM\ManyToOne(inversedBy: 'mwsOfferTrackings')]
