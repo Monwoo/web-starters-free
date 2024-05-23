@@ -1,4 +1,5 @@
 <script context="module">
+  // 🌖🌖 Copyright Monwoo 2024 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // let sdkPaypalMissing = !(window.PayPal ?? false);
   let sdkPaypalMissing = true;
 </script>

@@ -25,6 +25,7 @@
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import Loader from "../../layout/widgets/Loader.svelte";
+  import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import { flip } from "svelte/animate";
 
   export let locale;
@@ -319,8 +320,19 @@
     depuis : {offer.contacts[0].sourceDetail?.membershipStart} <br />
   </td>
   <td>
-    {offer.contact1 ?? ""}<br />
-    {offer.contact2 ?? ""}
+    <ContactLink
+    source={offer.slug}
+    name={offer.clientUsername}
+    title={offer.title}
+    contact={offer.contact1 ?? ""}
+    ></ContactLink>
+    <br />
+    <ContactLink
+    source={offer.slug}
+    name={offer.clientUsername}
+    title={offer.title}
+    contact={offer.contact2 ?? ""}
+    ></ContactLink>
   </td>
   <td class="max-w-[30dvw]">
     <div class="offer-trackings">
