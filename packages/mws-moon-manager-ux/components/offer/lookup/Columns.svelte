@@ -4,6 +4,9 @@
   import ListItem from "./ListItem.svelte";
   import AddModal from "../../message/AddModal.svelte";
   import { MoveIcon, SortableItem } from "svelte-sortable-items";
+  // TODO : use svelte-dnd-action instead of "svelte-sortable-items" limited to one list ?
+  // https://dev.to/isaachagoel/drag-and-drop-with-svelte-using-svelte-dnd-action-4554
+  // https://svelte.dev/repl/077cf720e2a6439caca5fb00d92d58a8?version=3.22.3
   import newUniqueId from "locally-unique-id-generator";
   import { flip } from "svelte/animate";
 
