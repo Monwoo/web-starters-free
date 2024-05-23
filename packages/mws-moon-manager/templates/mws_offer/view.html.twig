@@ -19,6 +19,7 @@
 		'copyright': 'mws.copyright'|trans({}, 'mws-moon-manager'),
 		'locale': app.locale,
 		'offer': offer|serialize('json')|e('html_attr'),
+		'messagesByProjectId': messagesByProjectId|serialize('json')|e('html_attr'),
 		'addMessageForm': (form_start(addMessageForm, { 'attr' : {
 				'class': 'd-flex flex-wrap mws-survey-js-form'
 		} }) ~ form_widget(addMessageForm)

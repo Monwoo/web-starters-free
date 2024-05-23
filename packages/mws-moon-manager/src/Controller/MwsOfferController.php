@@ -695,12 +695,17 @@ class MwsOfferController extends AbstractController
             ])
         ]);
 
+        $messagesByProjectId = $mwsMessageRepository->getMessagesByProjectIdFromOffers(
+            [$offer]
+        );
+
         $offerTagsByCatSlugAndSlug = $mwsOfferStatusRepository->getTagsByCategorySlugAndSlug();
         return $this->render('@MoonManager/mws_offer/view.html.twig', [
             'offerTagsByCatSlugAndSlug' => $offerTagsByCatSlugAndSlug,
             'offer' => $offer,
             'viewTemplate' => $viewTemplate,
             'addMessageForm' => $addMessageForm,
+            'messagesByProjectId' => $messagesByProjectId,
         ]);
     }
 

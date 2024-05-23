@@ -20,6 +20,7 @@
   export let viewTemplate;
   export let offer;
   export let addMessageForm = "";
+  export let messagesByProjectId = {};
 
   // TODO : centralize sanitizer inside service or lib or...
   export let sanitizeClientHtml = (i) => {
@@ -136,7 +137,9 @@
     </div>
   </div>
   <div class="mws-offer-detail w-full overflow-auto">
-    <List {locale} offers={[offer]} {viewTemplate} {addMessageForm}></List>
+    <List {locale} offers={[offer]} {viewTemplate} {addMessageForm}
+    {messagesByProjectId}
+    ></List>
   </div>
 </Base>
 

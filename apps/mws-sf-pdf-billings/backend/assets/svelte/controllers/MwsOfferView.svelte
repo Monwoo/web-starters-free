@@ -7,6 +7,8 @@
   export let offer = '{}';
   export let viewTemplate;
   export let addMessageForm = "";
+  export let messagesByProjectId;
+  
 
   // TODO : remove code duplication and put this in some 'mws-utils' package ?
   // https://stackoverflow.com/questions/5796718/html-entity-decode
@@ -19,10 +21,11 @@
 
   offer = JSON.parse(decodeHtml(offer));
   addMessageForm = decodeHtml(addMessageForm);
+  messagesByProjectId = JSON.parse(decodeHtml(messagesByProjectId));
   // console.debug(offer);
 </script>
 
 <!-- <View {...$$props} /> ??? -->
-<View {offer} {copyright}
+<View {offer} {copyright} {messagesByProjectId}
 {locale} {viewTemplate} {addMessageForm}
 ></View>
