@@ -102,7 +102,7 @@ class MwsOfferController extends AbstractController
         $searchTagsToAvoid = $requestData['searchTagsToAvoid'] ?? []; // []);
 
         // dd($searchTagsToAvoid);
-        
+
         $customFilters = $requestData['customFilters'] ?? [];
         // $sourceRootLookupUrl = $requestData['sourceRootLookupUrl'] ?? null;
         // dd($searchTags);
@@ -135,19 +135,19 @@ class MwsOfferController extends AbstractController
                             ->where($qb->expr()->isNotNull("t.categorySlug"))
                             ->getQuery()->getResult()
                     ),
-                    'allOfferBudgets' => 
-                        // explode(
-                        // ',', // TODO : split on , migh clash if budget use , inside labels...
-                        // dd(
-                        $mwsOfferRepository
+                    'allOfferBudgets' =>
+                    // explode(
+                    // ',', // TODO : split on , migh clash if budget use , inside labels...
+                    // dd(
+                    $mwsOfferRepository
                         ->createQueryBuilder("o")
                         ->select("
                             DISTINCT o.budget as value
                         ")
                         ->orderBy('o.budget', 'ASC')
                         ->getQuery()->getResult()
-                        // [0]['budgets'] ?? ''
-                        // )
+                    // [0]['budgets'] ?? ''
+                    // )
                     // ),
                 ]
             )),
@@ -170,11 +170,11 @@ class MwsOfferController extends AbstractController
                 $searchBudgets = $surveyAnswers['searchBudgets'] ?? null;
                 $searchStart = $surveyAnswers['searchStart'] ?? null;
                 $searchEnd = $surveyAnswers['searchEnd'] ?? null;
-        
+
                 $searchTags = $surveyAnswers['searchTags'] ?? []; // []);
                 $searchTagsToInclude = $surveyAnswers['searchTagsToInclude'] ?? []; // []);
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? []; // []);
-        
+
                 $customFilters = $surveyAnswers['customFilters'] ?? [];
                 // dd($searchTags);
                 // $sourceRootLookupUrl = $surveyAnswers['sourceRootLookupUrl'] ?? null;
@@ -331,7 +331,7 @@ class MwsOfferController extends AbstractController
                     // ->andWhere('e.date BETWEEN :from AND :to')
                     // ->setParameter('from', $from )
                     // ->setParameter('to', $to)
-            
+
                     $qb = $qb->andWhere("o.leadStart >= :startTime");
                     $qb->setParameter('startTime', $lastWeekDate);
                 }
@@ -369,7 +369,7 @@ class MwsOfferController extends AbstractController
                     $qb = $qb->andWhere("
                      JSON_EXTRACT(o.sourceDetail, '$.isBookmark') = :isBookmark
                     ")
-                    ->setParameter('isBookmark', true);
+                        ->setParameter('isBookmark', true);
                 }
                 if ($customFilter === "Manque une réponse") {
                     $autoResponse = 'Nous pouvons commencer par une étude de projet via sessions de 20 minutes en distanciel dès 125,76 € TTC';
@@ -387,7 +387,7 @@ class MwsOfferController extends AbstractController
                     //     CONCAT('$.messages[',JSON_LENGTH('$.messages') - 1,']')
                     //  ) LIKE :msgOwner
                     // ")
-                    
+
                     // $qb = $qb->andWhere("
                     //     JSON_EXTRACT(o.sourceDetail,
                     //     " . $qb->expr()->concat(
@@ -425,8 +425,8 @@ class MwsOfferController extends AbstractController
                             ) LIKE :autoResponse
                         )
                     ")
-                    ->setParameter('msgOwner', '%' . $msgOwner . '%')
-                    ->setParameter('autoResponse', '%' . $autoResponse . '%');
+                        ->setParameter('msgOwner', '%' . $msgOwner . '%')
+                        ->setParameter('autoResponse', '%' . $autoResponse . '%');
 
                     // https://database.guide/sqlite-json_array_length/
                     // $qb = $qb->andWhere("
@@ -457,7 +457,7 @@ class MwsOfferController extends AbstractController
                     // $qb->addOrderBy($request->query->get('sort'),$request->query->get('direction'));
                     $request->query->remove('sort');
                     $request->query->remove('direction');
-                }                
+                }
                 if ($customFilter === "Ordonner par meilleure taux de réponse") {
                     // $qb = $qb->andWhere("
                     //  JSON_EXTRACT(o.sourceDetail, '$.isBookmark') IS TRUE
@@ -473,7 +473,7 @@ class MwsOfferController extends AbstractController
                     //         ((p2.projectOffersViewed / p2.projectOffers) - (p1.projectOffersViewed / p1.projectOffers));
                     // });
 
-                    
+
                     // $qb = $qb->select("o, (1.0 * JSON_EXTRACT(o.sourceDetail, '$.projectOffersViewed')
                     // / JSON_EXTRACT(o.sourceDetail, '$.projectOffers')) as clientAnswerRatio");
                     // $qb = $qb->orderBy("
@@ -495,7 +495,7 @@ class MwsOfferController extends AbstractController
                     // Remove other order by tags from KNP bundle ? or combine ?
                     $request->query->remove('sort');
                     $request->query->remove('direction');
-                }                
+                }
             }
         }
 
@@ -517,12 +517,11 @@ class MwsOfferController extends AbstractController
         // TODO : helper inside repository ?, factorize code
         // TODO : remove code duplication
         $availableTQb = $mwsMessageRepository
-        ->createQueryBuilder('m')
-        ->where('m.isTemplate = :isTemplate')
-        ->setParameter('isTemplate', true)
-        ->orderBy('m.templateCategorySlug')
-        ->addOrderBy('m.templateNameSlug')
-        ;
+            ->createQueryBuilder('m')
+            ->where('m.isTemplate = :isTemplate')
+            ->setParameter('isTemplate', true)
+            ->orderBy('m.templateCategorySlug')
+            ->addOrderBy('m.templateNameSlug');
         $availableTemplates = $availableTQb->getQuery()->execute();
         // https://surveyjs.answerdesk.io/ticket/details/t12135/how-to-get-full-choise-object-when-the-value-in-dropdown-selected
         // https://surveyjs.io/form-library/documentation/api-reference/survey-data-model#onLoadChoicesFromServer
@@ -536,23 +535,29 @@ class MwsOfferController extends AbstractController
         // $availableTemplateNameSlugs = array_map(function(MwsMessage $o) {
         //     return $o->getTemplateNameSlug();
         // }, $availableTemplates);
-        $availableTemplateNameSlugs = array_reduce($availableTemplates,
-        function($acc, MwsMessage $o) {
-            $slug = $o->getTemplateNameSlug();
-            // if (!in_array($slug, $acc, true)) { + insertionSort...
-            if (!in_array($slug, $acc)) {
-                $acc[] = $slug;
-            }
-            return $acc;
-        }, []);
-        $availableTemplateCategorySlugs = array_reduce($availableTemplates,
-        function($acc, MwsMessage $o) {
-            $slug = $o->getTemplateCategorySlug();
-            if (!in_array($slug, $acc)) {
-                $acc[] = $slug;
-            }
-            return $acc;
-        }, []);
+        $availableTemplateNameSlugs = array_reduce(
+            $availableTemplates,
+            function ($acc, MwsMessage $o) {
+                $slug = $o->getTemplateNameSlug();
+                // if (!in_array($slug, $acc, true)) { + insertionSort...
+                if (!in_array($slug, $acc)) {
+                    $acc[] = $slug;
+                }
+                return $acc;
+            },
+            []
+        );
+        $availableTemplateCategorySlugs = array_reduce(
+            $availableTemplates,
+            function ($acc, MwsMessage $o) {
+                $slug = $o->getTemplateCategorySlug();
+                if (!in_array($slug, $acc)) {
+                    $acc[] = $slug;
+                }
+                return $acc;
+            },
+            []
+        );
 
         // TIPS : bad idea : autocomplet will re-order on
         // function best match... + losing index remove full array feature ?
@@ -624,29 +629,34 @@ class MwsOfferController extends AbstractController
 
         // TODO : factorize with repo and remove code duplication :
         $availableTQb = $mwsMessageRepository
-        ->createQueryBuilder('m')
-        ->where('m.isTemplate = :isTemplate')
-        ->setParameter('isTemplate', true)
-        ->orderBy('m.templateCategorySlug')
-        ->addOrderBy('m.templateNameSlug')
-        ;
+            ->createQueryBuilder('m')
+            ->where('m.isTemplate = :isTemplate')
+            ->setParameter('isTemplate', true)
+            ->orderBy('m.templateCategorySlug')
+            ->addOrderBy('m.templateNameSlug');
         $availableTemplates = $availableTQb->getQuery()->execute();
-        $availableTemplateNameSlugs = array_reduce($availableTemplates,
-        function($acc, MwsMessage $o) {
-            $slug = $o->getTemplateNameSlug();
-            if (!in_array($slug, $acc)) {
-                $acc[] = $slug;
-            }
-            return $acc;
-        }, []);
-        $availableTemplateCategorySlugs = array_reduce($availableTemplates,
-        function($acc, MwsMessage $o) {
-            $slug = $o->getTemplateCategorySlug();
-            if (!in_array($slug, $acc)) {
-                $acc[] = $slug;
-            }
-            return $acc;
-        }, []);
+        $availableTemplateNameSlugs = array_reduce(
+            $availableTemplates,
+            function ($acc, MwsMessage $o) {
+                $slug = $o->getTemplateNameSlug();
+                if (!in_array($slug, $acc)) {
+                    $acc[] = $slug;
+                }
+                return $acc;
+            },
+            []
+        );
+        $availableTemplateCategorySlugs = array_reduce(
+            $availableTemplates,
+            function ($acc, MwsMessage $o) {
+                $slug = $o->getTemplateCategorySlug();
+                if (!in_array($slug, $acc)) {
+                    $acc[] = $slug;
+                }
+                return $acc;
+            },
+            []
+        );
 
 
         $addMessageConfig = [
@@ -678,6 +688,79 @@ class MwsOfferController extends AbstractController
             'viewTemplate' => $viewTemplate,
             'addMessageForm' => $addMessageForm,
         ]);
+    }
+
+    #[Route(
+        '/add-comment/{viewTemplate<[^/]*>?}',
+        name: 'mws_offer_add_comment',
+        methods: ['POST'],
+    )]
+    public function addComment(
+        string|null $viewTemplate,
+        Request $request,
+        MwsOfferRepository $mwsOfferRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) { // TODO : only for admin too ?
+            $this->logger->debug("Fail auth with", [$request]);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-offer-add-comment', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf, $request]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+
+        $offerSlug = $request->request->get('offerSlug');
+        $offer = $mwsOfferRepository->findOneBy([
+            'slug' => $offerSlug,
+        ]);
+        if (!$offer) {
+            throw $this->createNotFoundException("Unknow offer slug [$offerSlug]");
+        }
+
+        $traking = new MwsOfferTracking();
+        $traking->setOffer($offer);
+        $traking->setOwner($user);
+
+        $comment = $request->request->get('comment', '--');
+        // if (!$comment) {
+        //     throw $this->createNotFoundException("Missing comment");
+        // }
+        $traking->setComment($comment);
+
+        $offerStatusSlug = $request->request->get('offerStatusSlug', '--');
+        if ($offerStatusSlug && strlen($offerStatusSlug)) {
+            $offer->setCurrentStatusSlug($offerStatusSlug);
+            $this->em->persist($offer);
+            $traking->setOfferStatusSlug($offerStatusSlug);
+        }
+
+        $this->em->persist($traking);
+        $this->em->flush(); // TIPS : Sync Generated ID in DB for new traking
+
+        // No need of below, inverse relationship of setOffer take care of it
+        // $offer->addMwsOfferTracking($traking);
+        // $this->em->persist($offer);
+        // $this->em->flush();
+
+        if (in_array('application/json', $request->getAcceptableContentTypes())) {
+            return $this->json([
+                'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-add-comment')->getValue(),
+                'viewTemplate' => $viewTemplate,
+            ]);
+        }
+        return $this->redirectToRoute(
+            'mws_offer_lookup',
+            [ // array_merge($request->query->all(), [
+                "viewTemplate" => $viewTemplate,
+                "page" => 1,
+            ], //),
+            Response::HTTP_SEE_OTHER
+        );
     }
 
     #[Route(
@@ -1257,7 +1340,8 @@ class MwsOfferController extends AbstractController
                                     $sync('currentStatusSlug');
                                     $slugs = explode('|', $offer->getCurrentStatusSlug());
                                     $currentStatusTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-                                        $slugs[1], $slugs[0]
+                                        $slugs[1],
+                                        $slugs[0]
                                     );
                                     // TODO : if currentStatusTag not found ? wrong slug ? etc ...
                                     // TODO : refactor to : slug / nameSlug / categorySlug
@@ -1308,10 +1392,9 @@ class MwsOfferController extends AbstractController
                                     $offer->setCurrentStatusSlug($offerStatusSlug);
                                     // dd($offer);    
                                 }
-
                             } else {
                                 $reportSummary .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
-                                continue;// TODO : WHY BELOW counting one write when all is duplicated ?
+                                continue; // TODO : WHY BELOW counting one write when all is duplicated ?
                             }
                         }
                         $em->persist($offer);

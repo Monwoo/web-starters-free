@@ -14,18 +14,28 @@
   // TODO : why "svelte-time" not working ?
   // import Time from "svelte-time";
   import TagsInput from "../tags/TagsInput.svelte";
-  import { state, offerTagsByKey } from "../../../stores/reduxStorage.mjs";
   import { onMount } from "svelte";
   import sanitizeHtml from "sanitize-html";
+  import {
+    state,
+    offerTagsByKey,
+    stateGet,
+    stateUpdate,
+  } from "../../../stores/reduxStorage.mjs";
+  import { get } from "svelte/store";
+  import debounce from "lodash/debounce";
+import Loader from "../../layout/widgets/Loader.svelte";
 
   export let locale;
   export let viewTemplate;
   export let offer;
   export let messages;
+  export let trackings;
   export let addModal;
   export let funnelModal;
   export let yScrollable;
   export let reportScale = 100;
+  export let newComment;
 
   // TODO : centralize sanitizer inside service or lib or...
   export let sanitizeClientHtml = (i) => {
@@ -86,6 +96,7 @@
   // TODO : format leadAt date with dayJs ?
   console.debug("LIST ITEM OFFER : ", offer);
   console.debug("messages :", messages);
+  console.debug("trackings :", trackings);
 
   // TODO : configurable services, use generic data connectors instead of :
   // TODO : remove code duplication :
@@ -100,6 +111,67 @@
   export let isFirstColVisible = false;
   export let isSecondColVisible = false;
   export let isThirdColVisible = false;
+
+  let isLoading = false;
+
+  export let addComment = async (comment, offerStatusSlug = null) => {
+    isLoading = true;
+    try {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfOfferAddComment"),
+        offerSlug: offer.slug,
+        comment, // TODO : allow optional comment on status switch ?
+        offerStatusSlug,
+      };
+      // let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
+      let headers = {};
+      // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
+      // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+      // Per this article make sure to NOT set the Content-Type header.
+      // headers['Content-Type'] = 'application/json';
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        // TODO : build back Api, will return new csrf to use on success, will error othewise,
+        // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
+        Routing.generate("mws_offer_add_comment", {
+          _locale: locale,
+        }),
+        {
+          method: "POST",
+          headers,
+          // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
+          body: formData,
+          // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
+          credentials: "same-origin",
+          // https://javascript.info/fetch-api
+          redirect: "error",
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp.url, resp.ok, resp.status, resp.statusText);
+          if (!resp.ok) {
+            // make the promise be rejected if we didn't get a 2xx response
+            throw new Error("Not 2xx response"); // , {cause: resp});
+          } else {
+            const data = await resp.json();
+            stateUpdate(state, {
+              csrfOfferAddComment: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });      
+    } catch(e) {
+      console.error(e);
+    }
+    isLoading = false;
+  };
 </script>
 
 <tr>
@@ -173,6 +245,27 @@
     {offer.contact2 ?? ""}
   </td>
   <td class="max-w-[30dvw]">
+    <div class="offer-trackings">
+      <textarea class="w-full" bind:value={newComment} />
+      <button
+        on:click={debounce(async () => {
+          await addComment(newComment);
+        })}
+        class=""
+        style="--mws-primary-rgb: 0,200,0;"
+      >
+        Commenter
+      </button>
+      <Loader {isLoading} />
+      <div class="mws-offer-traking">
+        <div>{(trackings ?? [])[0]?.updatedAt ?? "--"}</div>
+        <div>{(trackings ?? [])[0]?.comment ?? "--"}</div>
+      </div>
+      {#each trackings ?? [] as traking, idx}
+        <div class="mws-offer-traking" />
+      {/each}
+    </div>
+
     <button
       class="md:m-3"
       on:click={() => {
@@ -323,11 +416,7 @@
         {offer.sourceDetail?.title ?? "Voir l'offre"}
       </a>
     {:else}
-      <a
-        href={`${offer.sourceUrl}`}
-        target="_blank"
-        rel="noreferrer"
-      >
+      <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
         {offer.sourceDetail?.title ?? "Voir l'offre"}
       </a>
     {/if}
