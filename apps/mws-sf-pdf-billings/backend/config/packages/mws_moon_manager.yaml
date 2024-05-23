@@ -73,3 +73,15 @@ parameters:
                 categorySlug: meilleur-choix-axelo
               - label: Axelo 5/5
                 categorySlug: meilleur-choix-axelo
+              - label: Meilleur choix Jpsy
+                categoryOkWithMultiplesTags: false
+              - label: Jpsy 1/5
+                categorySlug: meilleur-choix-jpsy
+              - label: Jpsy 2/5
+                categorySlug: meilleur-choix-jpsy
+              - label: Jpsy 3/5
+                categorySlug: meilleur-choix-jpsy
+              - label: Jpsy 4/5
+                categorySlug: meilleur-choix-jpsy
+              - label: Jpsy 5/5
+                categorySlug: meilleur-choix-jpsy
