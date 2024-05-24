@@ -47,6 +47,32 @@
   // + encodeURIComponent(searchLookup.sourceRootLookupUrl);
   export let isLoading = false; // TODO : show loader when showDetails or showPictures is loading...
 
+  const urlParams = new URLSearchParams(window.location.search);
+  $: showTableView = Number(urlParams.get(`showTableView`));
+
+  $: viewMode = showTableView ? 'table-view' : 'list-view';
+
+  $: {
+    const urlParams = new URLSearchParams(window.location.search);
+    // showTableView = Number(urlParams.get(`showTableView`)); // ValidationError: Cyclical dependency detected: viewMode → showTableView → viewMode
+    const showTableView = Number(urlParams.get(`showTableView`));
+    if (viewMode == 'list-view' && showTableView) {
+      urlParams.delete(`showTableView`);
+      // showTableView = 0; // ValidationError: Cyclical dependency detected: viewMode → showTableView → viewMode
+      const newUrl =
+      window.location.origin + window.location.pathname + "?" + urlParams;
+      history.pushState({}, null, newUrl); // No redirect
+      // window.location = newUrl; // Force redirect
+    }
+    if (viewMode == 'table-view' && !showTableView) {
+      urlParams.set(`showTableView`, '1');
+      const newUrl =
+      window.location.origin + window.location.pathname + "?" + urlParams;
+      history.pushState({}, null, newUrl); // No redirect
+      // window.location = newUrl; // Force redirect
+    }
+  }
+
   const deleteAllOffers = async () => {
     if (isLoading) return;
     isLoading = true;
