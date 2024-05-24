@@ -33,7 +33,8 @@
 
   $: {
     console.debug('Columns searchLookup :', searchLookup);
-    if (!(searchLookup.searchTagsToInclude?.include(selectedCategory) ?? true)) {
+    if (selectedCategory && 'null' != selectedCategory &&
+      !(searchLookup.searchTagsToInclude?.includes(selectedCategory) ?? false)) {
       const urlParams = new URLSearchParams(window.location.search);
       urlParams.set(`searchTagsToInclude[${
         searchLookup.searchTagsToInclude?.length ?? 0

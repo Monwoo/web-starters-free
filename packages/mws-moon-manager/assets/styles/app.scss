@@ -221,3 +221,10 @@ a {
 [data-bind*='question.cssClasses.error.item'] {
     color: red;
 }
+
+// .pagination {
+//     .page {
+//         @apply mws-btn; // not yet defined ?  // TODO load this css after app css ? (add prepend and postpend files ?)
+//         background: red;
+//     }
+// }

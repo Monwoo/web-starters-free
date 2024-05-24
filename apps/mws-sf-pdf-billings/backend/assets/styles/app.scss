@@ -224,3 +224,15 @@ html {
 // 🛸🛸🛸🛸🛸🛸🛸🛸🛸🛸🛸🛸
 // (S)CSS hacks
 ///////////////////////
+
+.pagination {
+    @apply p-2;
+    > span a {
+        @apply mws-btn;
+        // background: red;
+    }
+    .current {
+        @apply mws-btn;
+        @apply bg-gray-400;
+    }
+}

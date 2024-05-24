@@ -294,18 +294,26 @@ class MwsOfferController extends AbstractController
                 }
                 $tags = $mwsOfferStatusRepository->findBy($criteria);
                 
-                // No meaning to force include of all tags of exclusive category,
+                // No meaning to force include of all tags for exclusive category,
                 // will only have one of it... ok for other category ?
                 // not tested yet, only exclusive category for now...
+                // So will 'OR' the force include to contain at least one
+                // tag of root category :
+                $dql = '( ';
                 foreach ($tags as $tIdx => $tag) {
-                    $dql = '';
+                    if ($tIdx) {
+                        $dql .= ' OR ';
+                    }
                     $dql .= ":tagToInclude{$idx}_$tIdx MEMBER OF o.tags";
                     $qb->setParameter("tagToInclude{$idx}_$tIdx", $tag);
                     // dd($dql);
-                    $qb = $qb->andWhere($dql);    
                 }
+                $dql .= ' )';
+                $qb = $qb->andWhere($dql);    
             }
         }
+
+        // TODO : User Deprecated: Not enabling lazy ghost objects is deprecated and will not be supported in Doctrine ORM 3.0. Ensure Doctrine\ORM\Configuration::setLazyGhostObjectEnabled(true) is called to enable them. (ProxyFactory.php:166 called by EntityManager.php:178, https://github.com/doctrine/orm/pull/10837/, package doctrine/orm)
 
         if (count($searchTagsToAvoid)) {
             // dd($searchTagsToAvoid);
