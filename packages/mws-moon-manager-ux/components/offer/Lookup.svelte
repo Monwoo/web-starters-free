@@ -318,6 +318,7 @@
         {reportScale}
         {locale}
         {isMobile} {isWide}
+        {searchLookup}
         {offers}
         {offersHeaders}
         {viewTemplate}

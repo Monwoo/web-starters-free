@@ -21,16 +21,48 @@
   export let addModal;
   export let isMobile;
   export let isWide;
+  // Offer tag main category to build table from
+  export let selectedCategory;
+
+  // fetch {offers} {offersHeaders} {messagesByProjectId}
+  // With selectedCategory filters (keep num of page limits ?)
+  // TIPS : could be ASYNC loaded from url page limits etc...
+  //        BUT wrong for url rankings,
+  //        will redirect with right filters instead....
+  export let searchLookup;
+
+  $: {
+    console.debug('Columns searchLookup :', searchLookup);
+    if (!(searchLookup.searchTagsToInclude?.include(selectedCategory) ?? true)) {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set(`searchTagsToInclude[${
+        searchLookup.searchTagsToInclude?.length ?? 0
+      }]`, selectedCategory);
+      const newUrl =
+      window.location.origin + window.location.pathname + "?" + urlParams;
+      history.pushState({}, null, newUrl);
+    }
+  }
 
   let numberHoveredItem;
+
+  $: selectedTags = [];
+  $: columns = offers.reduce((acc, o) => {
+    console.debug('Offer :', o);
+    selectedTags.push(o);
+    // selectedCategory
+
+    return acc;
+  }, []);
 
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
 
+{selectedTags.length}
 TODO : columns with drag and drop {numberHoveredItem}
 <div class="w-full flex flex-wrap">
-  {#each [{id:'TODO 1'}, {id:'TODO 2'}] as column, idx (column.id)}
+  {#each columns as column, idx (column.id)}
     <div animate:flip class="p-0 w-6">
       {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
         <!-- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  -->

@@ -133,7 +133,7 @@ class MwsOfferController extends AbstractController
                         // $mwsOfferStatusRepository->findAll()
                         $mwsOfferStatusRepository
                             ->createQueryBuilder("t")
-                            ->where($qb->expr()->isNotNull("t.categorySlug"))
+                            // ->where($qb->expr()->isNotNull("t.categorySlug"))
                             ->getQuery()->getResult()
                     ),
                     'allOfferBudgets' =>
@@ -258,11 +258,17 @@ class MwsOfferController extends AbstractController
                 // + TODO : join search on o.tags instead ? 
                 // $orClause .= "o.currentStatusSlug = :tag$idx";
                 // $orClause .= ":tag$idx in (o.tags)";
-                $orClause .= "( :tagSlug$idx = tag.slug";
-                $orClause .= " AND :tagCategory$idx = tag.categorySlug )";
+                if ($category) {
+                    $orClause .= "( :tagSlug$idx = tag.slug AND ";
+                    $qb->setParameter("tagSlug$idx", $slug);
+                } else {
+                    // Otherwise : fetch all tags from category
+                    $category = $slug;
+                    $orClause .= "( ";
+                }
+                $orClause .= ":tagCategory$idx = tag.categorySlug )";
                 // $qb->setParameter("tag$idx", str_replace($tagSlugSep, '|', $tag));
                 // $qb->setParameter("tag$idx", $tag);
-                $qb->setParameter("tagSlug$idx", $slug);
                 $qb->setParameter("tagCategory$idx", $category);
             }
 
