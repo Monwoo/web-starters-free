@@ -7,7 +7,9 @@
   import { MoveIcon, SortableItem } from "svelte-sortable-items";
   // TODO : use svelte-dnd-action instead of "svelte-sortable-items" limited to one list ?
   // https://dev.to/isaachagoel/drag-and-drop-with-svelte-using-svelte-dnd-action-4554
+  // https://dev.to/isaachagoel/svelte-now-has-an-accessible-drag-and-drop-library-15p
   // https://svelte.dev/repl/077cf720e2a6439caca5fb00d92d58a8?version=3.22.3
+  // https://github.com/isaacHagoel/svelte-dnd-action
   import newUniqueId from "locally-unique-id-generator";
   import { flip } from "svelte/animate";
   import {
@@ -17,6 +19,7 @@
   } from "../../../stores/reduxStorage.mjs";
   import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import Routing from "fos-router";
+  import {dndzone} from "svelte-dnd-action";
 
   export let locale;
   export let offers = [];
@@ -136,6 +139,8 @@
         const pos = selectedT.columnIndex ?? 0;
         if (!(acc[pos] ?? false)) {
           acc[pos] = {
+            // Id needed for https://dev.to/isaachagoel/drag-and-drop-with-svelte-using-svelte-dnd-action-4554 ?
+            id: selectedT.categorySlug + tagSlugSep + selectedT.slug,
             tag: selectedT,
             offers: [],
           };
@@ -152,6 +157,19 @@
     }, []);
 
   $: console.debug("Columns : ", columns);
+
+  // https://github.com/isaacHagoel/svelte-dnd-action?tab=readme-ov-file#basic-example
+  const flipDurationMs = 300;
+
+  function handleDndConsider(e) {
+    console.debug("handleDndConsider : ", e);
+    columns = e.detail.items;
+  }
+  function handleDndFinalize(e) {
+    console.debug("handleDndFinalize : ", e);
+    columns = e.detail.items;
+  }
+
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
@@ -183,66 +201,76 @@ style={`
       {/each}
     </select>  
   </div>
-  {#each columns as column, idx (idx)}
-    <div class="flex p-2"
-    style="width: {(100 / columns.length).toFixed(2)}%">
-      <div class="w-full h-full p-2 border-2 border-gray-400 rounded-md">
-        <div>
-          {column.tag.label}
-        </div>
-        {#each column.offers ?? [] as offer, idx (offer.id)}
-          {@const trackings = offer?.mwsOfferTrackings?.toReversed() ?? []}
-          <div class="m-2 p-2 border-2 border-gray-700 rounded-md">
-            <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
-            <a
-              href={Routing.generate("mws_offer_view", {
-                _locale: locale ?? "fr",
-                viewTemplate: viewTemplate ?? "",
-                offerSlug: offer.slug,
-              })}
-              target="_blank"
-            >
-              {offer.clientUsername}
-            </a>
-            <br />
-            ${offer.budget ?? ""} <br />
-
-            <h1 class="font-bold text-lg">
-              <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
-                {offer.sourceDetail?.title ?? "Voir l'offre"}
-              </a>  
-            </h1>
-
-            <div class="w-full font-bold text-gray-500">
-              [{(trackings ?? [])[0]?.updatedAt
-                ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
-                : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
-            </div>
-            <ContactLink
-            source={offer.slug}
-            name={offer.clientUsername}
-            title={offer.title}
-            contact={offer.contact1 ?? ""}
-            ></ContactLink>
-            <ContactLink
-            source={offer.slug}
-            name={offer.clientUsername}
-            title={offer.title}
-            contact={offer.contact2 ?? ""}
-            ></ContactLink>
+  <div class="w-full flex overflow-scroll"
+  use:dndzone="{{
+    items: columns,
+    // ...otherOptions
+    flipDurationMs,
+  }}"
+  on:consider="{handleDndConsider}"
+  on:finalize="{handleDndFinalize}">
+    {#each columns as column, idx (column.id)}
+      <div class="flex p-2"
+      animate:flip="{{duration: flipDurationMs}}"
+      style="width: {(100 / columns.length).toFixed(2)}%">
+        <div class="w-full h-full p-2 border-2 border-gray-400 rounded-md">
+          <div>
+            {column.tag.label}
           </div>
-        {/each}
-        <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
-          <! -- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  - ->
-          <SortableItem
-          class="h-full w-full flex justify-center content-start"
-          propItemNumber={idx}
-          bind:propHoveredItemNumber={numberHoveredItem}
-          >
-            <span>TEST</span>
-          </SortableItem>
-        {/each} -->
+          {#each column.offers ?? [] as offer, idx (offer.id)}
+            {@const trackings = offer?.mwsOfferTrackings?.toReversed() ?? []}
+            <div class="m-2 p-2 border-2 border-gray-700 rounded-md">
+              <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
+              <a
+                href={Routing.generate("mws_offer_view", {
+                  _locale: locale ?? "fr",
+                  viewTemplate: viewTemplate ?? "",
+                  offerSlug: offer.slug,
+                })}
+                target="_blank"
+              >
+                {offer.clientUsername}
+              </a>
+              <br />
+              ${offer.budget ?? ""} <br />
+
+              <h1 class="font-bold text-lg">
+                <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
+                  {offer.sourceDetail?.title ?? "Voir l'offre"}
+                </a>  
+              </h1>
+
+              <div class="w-full font-bold text-gray-500">
+                [{(trackings ?? [])[0]?.updatedAt
+                  ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
+                  : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
+              </div>
+              <ContactLink
+              source={offer.slug}
+              name={offer.clientUsername}
+              title={offer.title}
+              contact={offer.contact1 ?? ""}
+              ></ContactLink>
+              <ContactLink
+              source={offer.slug}
+              name={offer.clientUsername}
+              title={offer.title}
+              contact={offer.contact2 ?? ""}
+              ></ContactLink>
+            </div>
+          {/each}
+          <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
+            <! -- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  - ->
+            <SortableItem
+            class="h-full w-full flex justify-center content-start"
+            propItemNumber={idx}
+            bind:propHoveredItemNumber={numberHoveredItem}
+            >
+              <span>TEST</span>
+            </SortableItem>
+          {/each} -->
+        </div>
       </div>
-    </div>
-  {/each}
+    {/each}
+  </div>
 </div>

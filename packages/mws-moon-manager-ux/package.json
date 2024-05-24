@@ -32,6 +32,7 @@
     "svelte-agnostic-draggable": "^0.2.0",
     "svelte-awesome-color-picker": "^2.4.1",
     "svelte-copy": "^1.4.1",
+    "svelte-dnd-action": "^0.9.47",
     "svelte-drag-drop-touch": "^0.1.9",
     "svelte-gestures": "^4.0.0",
     "svelte-i18n": "^4.0.0",
