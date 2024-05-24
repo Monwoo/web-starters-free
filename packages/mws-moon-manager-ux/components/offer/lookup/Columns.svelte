@@ -140,7 +140,7 @@
         if (!(acc[pos] ?? false)) {
           acc[pos] = {
             // Id needed for https://dev.to/isaachagoel/drag-and-drop-with-svelte-using-svelte-dnd-action-4554 ?
-            id: selectedT.categorySlug + tagSlugSep + selectedT.slug,
+            id: 'column_' + selectedT.categorySlug + tagSlugSep + selectedT.slug,
             tag: selectedT,
             offers: [],
           };
@@ -163,12 +163,73 @@
 
   function handleDndConsider(e) {
     console.debug("handleDndConsider : ", e);
+    const id = e.detail.info.id;
+    // if (!e.srcElement.hasAttribute('data-column')) {
+    //   // scrElement of event is dest drop target, not source item...
+    //   return; // Ignore drag and drop column inside tail list
+    // }
+    if (!('' + id).startsWith('column_')) {
+      console.debug("Ignore handleDndConsider");
+      columns = [...columns];
+      // scrElement of event is dest drop target, not source item...
+      return; // Ignore drag and drop column inside tail list
+    }
+
     columns = e.detail.items;
+    // e.stopPropagation();
+    // e.preventDefault();
   }
   function handleDndFinalize(e) {
     console.debug("handleDndFinalize : ", e);
+    const id = e.detail.info.id;
+    // if (!e.srcElement.hasAttribute('data-column')) {
+    //   // scrElement of event is dest drop target, not source item...
+    //   return; // Ignore drag and drop column inside tail list
+    // }
+    if (!('' + id).startsWith('column_')) {
+      console.debug("Ignore handleDndFinalize");
+      columns = [...columns];
+      // scrElement of event is dest drop target, not source item...
+      return; // Ignore drag and drop column inside tail list
+    }
+
     columns = e.detail.items;
+    // e.stopPropagation();
+    // e.preventDefault();
   }
+
+  function handleOffersDndConsider(e, column) {
+    console.debug("handleOffersDndConsider : ", e, column);
+    // if (!e.srcElement.hasAttribute('data-tail')) {
+    //   // scrElement of event is dest drop target, not source item...
+    //   return; // Ignore drag and drop column inside tail list
+    // }
+    const id = e.detail.info.id;
+    // if (('' + id).startsWith('tail_')) { // Offers already have ids systems
+    if (('' + id).startsWith('column_')) {
+      console.debug("Ignore handleOffersDndConsider");
+      column.offers = column.offers;
+      columns = [...columns];
+      // scrElement of event is dest drop target, not source item...
+      return; // Ignore drag and drop column inside tail list
+    }
+    column.offers = e.detail.items;
+    columns = [...columns];
+  }
+  function handleOffersDndFinalize(e, column) {
+    console.debug("handleOffersDndFinalize : ", e, column);
+    const id = e.detail.info.id;
+    if (('' + id).startsWith('column_')) {
+      console.debug("Ignore handleOffersDndFinalize");
+      column.offers = column.offers;
+      columns = [...columns];
+      // scrElement of event is dest drop target, not source item...
+      return; // Ignore drag and drop column inside tail list
+    }
+    column.offers = e.detail.items;
+    columns = [...columns];
+  }
+  // column.offers
 
 </script>
 
@@ -202,8 +263,11 @@ style={`
     </select>  
   </div>
   <div class="w-full flex overflow-scroll"
+  data-column="1"
   use:dndzone="{{
     items: columns,
+    // https://github.com/isaacHagoel/svelte-dnd-action?tab=readme-ov-file#input
+    type: 'column',
     // ...otherOptions
     flipDurationMs,
   }}"
@@ -211,64 +275,80 @@ style={`
   on:finalize="{handleDndFinalize}">
     {#each columns as column, idx (column.id)}
       <div class="flex p-2"
-      animate:flip="{{duration: flipDurationMs}}"
+      animate:flip="{{
+        duration: flipDurationMs
+      }}"
       style="width: {(100 / columns.length).toFixed(2)}%">
         <div class="w-full h-full p-2 border-2 border-gray-400 rounded-md">
           <div>
             {column.tag.label}
           </div>
-          {#each column.offers ?? [] as offer, idx (offer.id)}
-            {@const trackings = offer?.mwsOfferTrackings?.toReversed() ?? []}
-            <div class="m-2 p-2 border-2 border-gray-700 rounded-md">
-              <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
-              <a
-                href={Routing.generate("mws_offer_view", {
-                  _locale: locale ?? "fr",
-                  viewTemplate: viewTemplate ?? "",
-                  offerSlug: offer.slug,
-                })}
-                target="_blank"
-              >
-                {offer.clientUsername}
-              </a>
-              <br />
-              ${offer.budget ?? ""} <br />
+          <div class="w-full flex flex-wrap overflow-scroll min-h-[80%] content-start"
+          data-tail="1"
+          use:dndzone="{{
+            items: column.offers,
+            // https://github.com/isaacHagoel/svelte-dnd-action?tab=readme-ov-file#input
+            type: 'tail',
+            // ...otherOptions
+            flipDurationMs,
+          }}"
+          on:consider="{(e) => handleOffersDndConsider(e, column)}"
+          on:finalize="{(e) => handleOffersDndFinalize(e, column)}">
+            {#each column.offers ?? [] as offer, idx (offer.id)}
+              {@const trackings = offer?.mwsOfferTrackings?.toReversed() ?? []}
+              <div
+              animate:flip="{{duration: flipDurationMs}}"
+              class="m-2 p-2 border-2 border-gray-700 rounded-md">
+                <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
+                <a
+                  href={Routing.generate("mws_offer_view", {
+                    _locale: locale ?? "fr",
+                    viewTemplate: viewTemplate ?? "",
+                    offerSlug: offer.slug,
+                  })}
+                  target="_blank"
+                >
+                  {offer.clientUsername}
+                </a>
+                <br />
+                ${offer.budget ?? ""} <br />
 
-              <h1 class="font-bold text-lg">
-                <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
-                  {offer.sourceDetail?.title ?? "Voir l'offre"}
-                </a>  
-              </h1>
+                <h1 class="font-bold text-lg">
+                  <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
+                    {offer.sourceDetail?.title ?? "Voir l'offre"}
+                  </a>  
+                </h1>
 
-              <div class="w-full font-bold text-gray-500">
-                [{(trackings ?? [])[0]?.updatedAt
-                  ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
-                  : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
+                <div class="w-full font-bold text-gray-500">
+                  [{(trackings ?? [])[0]?.updatedAt
+                    ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
+                    : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
+                </div>
+                <ContactLink
+                source={offer.slug}
+                name={offer.clientUsername}
+                title={offer.title}
+                contact={offer.contact1 ?? ""}
+                ></ContactLink>
+                <ContactLink
+                source={offer.slug}
+                name={offer.clientUsername}
+                title={offer.title}
+                contact={offer.contact2 ?? ""}
+                ></ContactLink>
               </div>
-              <ContactLink
-              source={offer.slug}
-              name={offer.clientUsername}
-              title={offer.title}
-              contact={offer.contact1 ?? ""}
-              ></ContactLink>
-              <ContactLink
-              source={offer.slug}
-              name={offer.clientUsername}
-              title={offer.title}
-              contact={offer.contact2 ?? ""}
-              ></ContactLink>
-            </div>
-          {/each}
-          <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
-            <! -- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  - ->
-            <SortableItem
-            class="h-full w-full flex justify-center content-start"
-            propItemNumber={idx}
-            bind:propHoveredItemNumber={numberHoveredItem}
-            >
-              <span>TEST</span>
-            </SortableItem>
-          {/each} -->
+            {/each}
+            <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
+              <! -- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  - ->
+              <SortableItem
+              class="h-full w-full flex justify-center content-start"
+              propItemNumber={idx}
+              bind:propHoveredItemNumber={numberHoveredItem}
+              >
+                <span>TEST</span>
+              </SortableItem>
+            {/each} -->
+          </div>
         </div>
       </div>
     {/each}
