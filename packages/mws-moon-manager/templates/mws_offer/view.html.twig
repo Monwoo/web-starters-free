@@ -8,6 +8,8 @@
 	{{ svelte_component('MwsReduxSync', {
 		'stateUpdate': {
 			'offerTagsByCatSlugAndSlug': offerTagsByCatSlugAndSlug,
+			'csrfOfferAddComment': csrf_token('mws-csrf-offer-add-comment'),
+			'csrfOfferDeleteTracking': csrf_token('mws-csrf-offer-delete-tracking'),
 			'csrfOfferTagDelete': csrf_token('mws-csrf-offer-tag-delete'),
 			'csrfOfferTagAdd': csrf_token('mws-csrf-offer-tag-add'),
 		}|serialize('json')|e('html_attr'),

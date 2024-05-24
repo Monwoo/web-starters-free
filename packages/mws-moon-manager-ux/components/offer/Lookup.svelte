@@ -261,6 +261,23 @@
       : ``}
     {@html offersPaginator}
   </div>
+  <!-- { JSON.stringify(offers) } -->
+  <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
+    <div class="fill-white/70 text-white/70 w-full">
+      <!-- // TODO : userDelay instead of 400 ? not same for all situation,
+      //         might need bigDelay or short or medium ?
+      //         or too specific, keep number easyer than multiples var or const ? -->
+      <input
+        value={reportScale}
+        on:change={debounce((e) => (reportScale = e.target.value), 200)}
+        id="report-scale"
+        type="range"
+        class="w-full h-8 bg-gray-200/50 rounded-lg
+          appearance-none cursor-pointer outline-none
+          "
+      />
+    </div>
+  </div>
   <div>
     Affichage : {viewMode}
   </div>
@@ -320,23 +337,6 @@
         </label>
     </li>
   </ul>
-  <!-- { JSON.stringify(offers) } -->
-  <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
-    <div class="fill-white/70 text-white/70 w-full">
-      <!-- // TODO : userDelay instead of 400 ? not same for all situation,
-      //         might need bigDelay or short or medium ?
-      //         or too specific, keep number easyer than multiples var or const ? -->
-      <input
-        value={reportScale}
-        on:change={debounce((e) => (reportScale = e.target.value), 200)}
-        id="report-scale"
-        type="range"
-        class="w-full h-8 bg-gray-200/50 rounded-lg
-          appearance-none cursor-pointer outline-none
-          "
-      />
-    </div>
-  </div>
 
   <div class="mws-offer-lookup">
     {#if viewMode == "table-view" }

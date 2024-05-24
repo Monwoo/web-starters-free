@@ -585,7 +585,7 @@
     {#if myOfferId && offer.sourceUrl}
       <!-- TODO : offert dest slug rewrite system ... -->
       <a
-        href={`${offer.sourceUrl}/offers/${myOfferId}`}
+        href={`${offer.sourceUrl}/${myOfferId}`}
         target="_blank"
         rel="noreferrer"
       >

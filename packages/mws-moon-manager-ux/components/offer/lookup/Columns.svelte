@@ -2,6 +2,7 @@
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // TODO : namespace
   import ListItem from "./ListItem.svelte";
+  import dayjs from "dayjs";
   import AddModal from "../../message/AddModal.svelte";
   import { MoveIcon, SortableItem } from "svelte-sortable-items";
   // TODO : use svelte-dnd-action instead of "svelte-sortable-items" limited to one list ?
@@ -14,6 +15,8 @@
     stateGet,
     stateUpdate,
   } from "../../../stores/reduxStorage.mjs";
+  import ContactLink from "../../layout/widgets/ContactLink.svelte";
+  import Routing from "fos-router";
 
   export let locale;
   export let offers = [];
@@ -90,93 +93,156 @@
 
   // TIPS : conditional 'selectedCategorySlug' for reactivity, inside subfunction, will not be detected
   $: selectedCategoryTags = selectedCategorySlug
-    ? Object.keys($state.offerTagsByCatSlugAndSlug).reduce(
-        (acc, tIdx) => {
-          const t = $state.offerTagsByCatSlugAndSlug[tIdx];
-          if (selectedCategorySlug === t.categorySlug) {
-            const position = acc['__nextColumnIndex'] ?? 0;
-            // acc.push(t);
-            // TODO : ok to update tag source ? 
-            // will keep column dragged order if switch category ?
-            // => will need user setting sync of $state.offerTagsByCatSlugAndSlug to work over page refresh...
-            t.columnIndex =
-              (t.columnIndex ?? null) === null ? position : t.columnIndex;
-            acc[t.slug] = t;
-            acc['__nextColumnIndex'] = position + 1;
+    ? Object.keys($state.offerTagsByCatSlugAndSlug).reduce((acc, tIdx) => {
+        const t = $state.offerTagsByCatSlugAndSlug[tIdx];
+        if (selectedCategorySlug === t.categorySlug) {
+          const position = acc["__nextColumnIndex"] ?? 0;
+          // acc.push(t);
+          // TODO : ok to update tag source ?
+          // will keep column dragged order if switch category ?
+          // => will need user setting sync of $state.offerTagsByCatSlugAndSlug to work over page refresh...
+          t.columnIndex =
+            (t.columnIndex ?? null) === null ? position : t.columnIndex;
+          acc[t.slug] = t;
+          acc["__nextColumnIndex"] = position + 1;
+        }
+        return acc;
+      }, {})
+    : {};
+
+  $: columns =
+    selectedCategoryTags &&
+    offers.reduce((acc, o) => {
+      console.debug("Offer :", o);
+      const matchTags = Object.keys(selectedCategoryTags).reduce(
+        (acc: any, matchTSlug) => {
+          const matchT = selectedCategoryTags[matchTSlug];
+          const matchTCat = matchT.categorySlug;
+          if (
+            o.tags.filter(
+              (t) => t.categorySlug === matchTCat && t.slug === matchTSlug
+            ).length
+          ) {
+            acc[matchTSlug] = matchT;
           }
           return acc;
         },
         {}
-      )
-    : {};
-
-  $: columns = selectedCategoryTags && offers.reduce((acc, o) => {
-    console.debug("Offer :", o);
-    const matchTags = Object.keys(selectedCategoryTags).reduce((acc:any, matchTSlug) => {
-      const matchT = selectedCategoryTags[matchTSlug];
-      const matchTCat = matchT.categorySlug;
-      if (
-        o.tags
-        .filter((t => t.categorySlug === matchTCat && t.slug === matchTSlug))
-        .length
-      ) {
-        acc[matchTSlug] = matchT;
+      );
+      console.debug("matchTags :", matchTags);
+      // Init empty columns for all tags :
+      for (const selectedTSlug in selectedCategoryTags) {
+        const selectedT = selectedCategoryTags[selectedTSlug];
+        const pos = selectedT.columnIndex ?? 0;
+        if (!(acc[pos] ?? false)) {
+          acc[pos] = {
+            tag: selectedT,
+            offers: [],
+          };
+        }
       }
+      // Fill with matched offers :
+      for (const matchTSlug in matchTags) {
+        const matchT = matchTags[matchTSlug];
+        const pos = matchT.columnIndex ?? 0;
+        acc[pos].offers.push(o);
+      }
+
       return acc;
-    }, {});
-    console.debug("matchTags :", matchTags);
-    // Init empty columns for all tags :
-    for (const selectedTSlug in selectedCategoryTags) {
-      const selectedT = selectedCategoryTags[selectedTSlug];
-      const pos = selectedT.columnIndex ?? 0;
-      if (!(acc[pos] ?? false)) {
-        acc[pos] = {
-          tag: selectedT,
-          offers: []
-        };
-      }
-    }
-    // Fill with matched offers :
-    for (const matchTSlug in matchTags) {
-      const matchT = matchTags[matchTSlug];
-      const pos = matchT.columnIndex ?? 0;
-      acc[pos].offers.push(o);
-    }
+    }, []);
 
-    return acc;
-  }, []);
-  
   $: console.debug("Columns : ", columns);
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
-
-{selectedCategoryTags.length}
-TODO : columns with drag and drop {numberHoveredItem}
-<div class="w-full flex flex-wrap">
+<div class="w-full flex flex-wrap"
+style={`
+  zoom: ${reportScale}%;
+`}
+>
   <div class="w-full">
-    {selectedCategorySlug}
+    <select
+    value={selectedCategorySlug}
+    name="selectedCategorySlug"
+    class="opacity-30 hover:opacity-100 
+    bg-gray-50 border border-gray-300 text-gray-900 
+    text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
+    inline-flex w-[10rem] p-1 m-2 dark:bg-gray-700 dark:border-gray-600 
+    dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
+    dark:focus:border-blue-500">
+      <!-- <option value="null" selected>Type de backup</option> -->
+      {#each [
+        {value:selectedCategorySlug, label:selectedCategorySlug},
+        // {format:'full', label:'Tout le CRM'},
+      ] as opt}
+        <option
+        value={`${opt.value}`}
+        selected={opt.selected}>
+          {opt.label}
+        </option>
+      {/each}
+    </select>  
   </div>
   {#each columns as column, idx (idx)}
-    <div class="p-0 w-min">
-      <div>
-        {column.tag.label}
-      </div>
-      {#each column.offers ?? [] as offer, idx (offer.id)}
+    <div class="flex p-2"
+    style="width: {(100 / columns.length).toFixed(2)}%">
+      <div class="w-full h-full p-2 border-2 border-gray-400 rounded-md">
         <div>
-          {offer.id}
+          {column.tag.label}
         </div>
-      {/each}
-      <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
-        <! -- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  - ->
-        <SortableItem
-        class="h-full w-full flex justify-center content-start"
-        propItemNumber={idx}
-        bind:propHoveredItemNumber={numberHoveredItem}
-        >
-          <span>TEST</span>
-        </SortableItem>
-      {/each} -->
+        {#each column.offers ?? [] as offer, idx (offer.id)}
+          {@const trackings = offer?.mwsOfferTrackings?.toReversed() ?? []}
+          <div class="m-2 p-2 border-2 border-gray-700 rounded-md">
+            <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
+            <a
+              href={Routing.generate("mws_offer_view", {
+                _locale: locale ?? "fr",
+                viewTemplate: viewTemplate ?? "",
+                offerSlug: offer.slug,
+              })}
+              target="_blank"
+            >
+              {offer.clientUsername}
+            </a>
+            <br />
+            ${offer.budget ?? ""} <br />
+
+            <h1 class="font-bold text-lg">
+              <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
+                {offer.sourceDetail?.title ?? "Voir l'offre"}
+              </a>  
+            </h1>
+
+            <div class="w-full font-bold text-gray-500">
+              [{(trackings ?? [])[0]?.updatedAt
+                ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
+                : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
+            </div>
+            <ContactLink
+            source={offer.slug}
+            name={offer.clientUsername}
+            title={offer.title}
+            contact={offer.contact1 ?? ""}
+            ></ContactLink>
+            <ContactLink
+            source={offer.slug}
+            name={offer.clientUsername}
+            title={offer.title}
+            contact={offer.contact2 ?? ""}
+            ></ContactLink>
+          </div>
+        {/each}
+        <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
+          <! -- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  - ->
+          <SortableItem
+          class="h-full w-full flex justify-center content-start"
+          propItemNumber={idx}
+          bind:propHoveredItemNumber={numberHoveredItem}
+          >
+            <span>TEST</span>
+          </SortableItem>
+        {/each} -->
+      </div>
     </div>
   {/each}
 </div>
