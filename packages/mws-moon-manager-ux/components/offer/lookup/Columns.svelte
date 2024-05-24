@@ -9,7 +9,11 @@
   // https://svelte.dev/repl/077cf720e2a6439caca5fb00d92d58a8?version=3.22.3
   import newUniqueId from "locally-unique-id-generator";
   import { flip } from "svelte/animate";
-  import { state, stateGet, stateUpdate } from "../../../stores/reduxStorage.mjs";
+  import {
+    state,
+    stateGet,
+    stateUpdate,
+  } from "../../../stores/reduxStorage.mjs";
 
   export let locale;
   export let offers = [];
@@ -36,63 +40,128 @@
   // export let hideUnclassifiedColumn = true;
 
   // TODO : factorize, cf php controller :
-  const tagSlugSep = ' > ';
+  const tagSlugSep = " > ";
 
   const urlParams = new URLSearchParams(window.location.search);
 
   $: {
     selectedCategory = urlParams.get(`selectedCategory`);
 
-    console.debug('Columns searchLookup :', searchLookup, $state.offerTagsByCatSlugAndSlug);
-    if ((!selectedCategory) || 'null' == selectedCategory) {
-      selectedCategory = Object.keys($state.offerTagsByCatSlugAndSlug).reduce((acc, tIdx) => {
-        const t = $state.offerTagsByCatSlugAndSlug[tIdx];
-        if (!acc && !t.categorySlug) {
-          acc = tagSlugSep + t.slug;
-        }
-        return acc;
-      }, null)
+    console.debug(
+      "Columns searchLookup :",
+      searchLookup,
+      $state.offerTagsByCatSlugAndSlug
+    );
+    if (!selectedCategory || "null" == selectedCategory) {
+      selectedCategory = Object.keys($state.offerTagsByCatSlugAndSlug).reduce(
+        (acc, tIdx) => {
+          const t = $state.offerTagsByCatSlugAndSlug[tIdx];
+          if (!acc && !t.categorySlug) {
+            acc = tagSlugSep + t.slug;
+          }
+          return acc;
+        },
+        null
+      );
     }
-    console.debug('Columns selectedCategory :', selectedCategory);
+    console.debug("Columns selectedCategory :", selectedCategory);
     if (
-      selectedCategory && 'null' != selectedCategory &&
-      !(searchLookup.searchTagsToInclude?.includes(selectedCategory) ?? false)) {
-      urlParams.set(`searchTagsToInclude[${
-        searchLookup.searchTagsToInclude?.length ?? 0
-      }]`, selectedCategory);
+      selectedCategory &&
+      "null" != selectedCategory &&
+      !(searchLookup.searchTagsToInclude?.includes(selectedCategory) ?? false)
+    ) {
+      urlParams.set(
+        `searchTagsToInclude[${searchLookup.searchTagsToInclude?.length ?? 0}]`,
+        selectedCategory
+      );
       urlParams.set(`showTableView`, "1");
       urlParams.set(`selectedCategory`, selectedCategory);
       const newUrl =
-      window.location.origin + window.location.pathname + "?" + urlParams;
+        window.location.origin + window.location.pathname + "?" + urlParams;
       // history.pushState({}, null, newUrl); // No redirect
       window.location = newUrl;
     }
   }
 
+  // TODO : filter one tag ? nop => will have another props for custom tag by tag column..
+  $: selectedCategorySlug = selectedCategory.split(tagSlugSep).slice(-1)[0];
+
   let numberHoveredItem;
 
-  $: selectedTags = [];
-  $: columns = offers.reduce((acc, o) => {
-    console.debug('Offer :', o);
-    selectedTags.push(o);
-    // selectedCategory
+  // TIPS : conditional 'selectedCategorySlug' for reactivity, inside subfunction, will not be detected
+  $: selectedCategoryTags = selectedCategorySlug
+    ? Object.keys($state.offerTagsByCatSlugAndSlug).reduce(
+        (acc, tIdx) => {
+          const t = $state.offerTagsByCatSlugAndSlug[tIdx];
+          if (selectedCategorySlug === t.categorySlug) {
+            const position = acc['__nextColumnIndex'] ?? 0;
+            // acc.push(t);
+            // TODO : ok to update tag source ? 
+            // will keep column dragged order if switch category ?
+            // => will need user setting sync of $state.offerTagsByCatSlugAndSlug to work over page refresh...
+            t.columnIndex =
+              (t.columnIndex ?? null) === null ? position : t.columnIndex;
+            acc[t.slug] = t;
+            acc['__nextColumnIndex'] = position + 1;
+          }
+          return acc;
+        },
+        {}
+      )
+    : {};
+
+  $: columns = selectedCategoryTags && offers.reduce((acc, o) => {
+    console.debug("Offer :", o);
+    const matchTags = Object.keys(selectedCategoryTags).reduce((acc:any, matchTSlug) => {
+      const matchT = selectedCategoryTags[matchTSlug];
+      const matchTCat = matchT.categorySlug;
+      if (
+        o.tags
+        .filter((t => t.categorySlug === matchTCat && t.slug === matchTSlug))
+        .length
+      ) {
+        acc[matchTSlug] = matchT;
+      }
+      return acc;
+    }, {});
+    console.debug("matchTags :", matchTags);
+    // Init empty columns for all tags :
+    for (const selectedTSlug in selectedCategoryTags) {
+      const selectedT = selectedCategoryTags[selectedTSlug];
+      const pos = selectedT.columnIndex ?? 0;
+      if (!(acc[pos] ?? false)) {
+        acc[pos] = {
+          tag: selectedT,
+          offers: []
+        };
+      }
+    }
+    // Fill with matched offers :
+    for (const matchTSlug in matchTags) {
+      const matchT = matchTags[matchTSlug];
+      const pos = matchT.columnIndex ?? 0;
+      acc[pos].offers.push(o);
+    }
 
     return acc;
   }, []);
-
+  
+  $: console.debug("Columns : ", columns);
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
 
-{selectedTags.length}
+{selectedCategoryTags.length}
 TODO : columns with drag and drop {numberHoveredItem}
 <div class="w-full flex flex-wrap">
-  <div>
-    { selectedCategory }
+  <div class="w-full">
+    {selectedCategorySlug}
   </div>
-  {#each columns as column, idx (column.id)}
-    <div animate:flip class="p-0 w-6">
-      Colonne : {idx}
+  {#each columns as column, idx (idx)}
+    <div class="p-0 w-min">
+      <div>
+        {column.tag.label}
+      </div>
       {#each column.offers ?? [] as offer, idx (offer.id)}
         <div>
           {offer.id}
