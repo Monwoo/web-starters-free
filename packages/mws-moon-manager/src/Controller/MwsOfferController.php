@@ -127,13 +127,20 @@ class MwsOfferController extends AbstractController
                 "@MoonManager/survey_js_models/MwsOfferLookupType.json.twig",
                 [
                     'allOfferTags' => array_map(
-                        function (MwsOfferStatus $tag) use ($tagSlugSep) {
+                        function (array $tagResp) use ($tagSlugSep) {
+                            $tag = $tagResp[0];
+                            // dd($tagResp);
                             return $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
                         },
                         // $mwsOfferStatusRepository->findAll()
                         $mwsOfferStatusRepository
                             ->createQueryBuilder("t")
+                            // https://stackoverflow.com/questions/8233746/concatenate-with-null-values-in-sql
+                            ->select("t, CONCAT(COALESCE(t.categorySlug, ''), t.slug) AS slugKey")
                             // ->where($qb->expr()->isNotNull("t.categorySlug"))
+                            // ->orderBy("t.categorySlug")
+                            // ->addOrderBy("t.slug")
+                            ->addOrderBy("slugKey")
                             ->getQuery()->getResult()
                     ),
                     'allOfferBudgets' =>
@@ -278,17 +285,25 @@ class MwsOfferController extends AbstractController
         if ($searchTagsToInclude && count($searchTagsToInclude)) {
             // dd($searchTagsToAvoid);
             foreach ($searchTagsToInclude as $idx => $slug) {
-                $dql = '';
                 [$category, $slug] = explode($tagSlugSep, $slug);
-                $tag = $mwsOfferStatusRepository->findOneBy([
-                    'slug' => $slug,
-                    'categorySlug' => $category,
-                ]);
-
-                $dql .= ":tagToInclude$idx MEMBER OF o.tags";
-                $qb->setParameter("tagToInclude$idx", $tag);
-                // dd($dql);
-                $qb = $qb->andWhere($dql);
+                $criteria = [
+                    'categorySlug' => $category ? $category : $slug,
+                ];
+                if ($category) {
+                    $criteria['slug'] = $slug;
+                }
+                $tags = $mwsOfferStatusRepository->findBy($criteria);
+                
+                // No meaning to force include of all tags of exclusive category,
+                // will only have one of it... ok for other category ?
+                // not tested yet, only exclusive category for now...
+                foreach ($tags as $tIdx => $tag) {
+                    $dql = '';
+                    $dql .= ":tagToInclude{$idx}_$tIdx MEMBER OF o.tags";
+                    $qb->setParameter("tagToInclude{$idx}_$tIdx", $tag);
+                    // dd($dql);
+                    $qb = $qb->andWhere($dql);    
+                }
             }
         }
 
@@ -296,12 +311,15 @@ class MwsOfferController extends AbstractController
             // dd($searchTagsToAvoid);
 
             foreach ($searchTagsToAvoid as $idx => $searchTagToAvoidSlug) {
-                $dql = '';
                 [$category, $slug] = explode($tagSlugSep, $searchTagToAvoidSlug);
-                $tag = $mwsOfferStatusRepository->findOneBy([
-                    'slug' => $slug,
-                    'categorySlug' => $category,
-                ]);
+                $criteria = [
+                    'categorySlug' => $category ? $category : $slug,
+                ];
+                if ($category) {
+                    $criteria['slug'] = $slug;
+                }
+                $tags = $mwsOfferStatusRepository->findBy($criteria);
+                // dd($tags);
                 // dump($category); dd($slug);
                 // $dql .= "NOT ( :tagToAvoidSlug$idx = tag.slug";
                 // $dql .= " AND :tagToAvoidCategory$idx = tag.categorySlug )";
@@ -309,10 +327,13 @@ class MwsOfferController extends AbstractController
                 // $dql .= " AND :tagToAvoidCategory$idx MEMBER OF o.tags.categorySlug )";
                 // $qb->setParameter("tagToAvoidSlug$idx", $slug);
                 // $qb->setParameter("tagToAvoidCategory$idx", $category);
-                $dql .= ":tagToAvoid$idx NOT MEMBER OF o.tags";
-                $qb->setParameter("tagToAvoid$idx", $tag);
-                // dd($dql);
-                $qb = $qb->andWhere($dql);
+                foreach ($tags as $tIdx => $tag) {
+                    $dql = '';
+                    $dql .= ":tagToAvoid{$idx}_$tIdx NOT MEMBER OF o.tags";
+                    $qb->setParameter("tagToAvoid{$idx}_$tIdx", $tag);
+                    // dd($dql);
+                    $qb = $qb->andWhere($dql);
+                }
             }
         }
 
