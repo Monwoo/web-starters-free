@@ -388,6 +388,20 @@ style={`
     </select>
     <Loader {isLoading} />
   </div>
+  <!-- <div class="sticky top-0"> will work since no wrapped overflow parent -->
+  <div class="w-full flex sticky top-0 md:-top-7 wide:top-0">
+    {#each columns as column, idx (column.id)}
+      <div class="flex p-2"
+      style="width: {(100 / columns.length).toFixed(2)}%">
+        <div class="w-full h-full p-2 bg-gray-200 rounded-md text-center">
+          <!-- <div class="sticky top-0"> will not work since have parent xxx??? -->
+          <div class="">
+            {column.tag.label}
+          </div>
+        </div>
+      </div>
+    {/each}
+  </div>
   <div class="w-full flex overflow-scroll"
   data-column="1"
   use:dndzone="{{
@@ -406,7 +420,8 @@ style={`
       }}"
       style="width: {(100 / columns.length).toFixed(2)}%">
         <div class="w-full h-full p-2 border-2 border-gray-400 rounded-md">
-          <div>
+          <!-- <div class="sticky top-0"> will not work due to wrapped overflow parent -->
+          <div class="">
             {column.tag.label}
           </div>
           <div class="w-full flex flex-wrap overflow-scroll min-h-[80%] content-start"

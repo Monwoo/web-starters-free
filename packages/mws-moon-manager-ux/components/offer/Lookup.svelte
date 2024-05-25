@@ -153,6 +153,10 @@
   });
 
   console.log(Routing.generate("mws_offer_import"));
+
+  const pageNumber = urlParams.get("page") ?? "1";
+  let pageLimit = urlParams.get("pageLimit") ?? "10"; // TODO : from CRM config... default in sync with backend request
+  export let pageLimitForm;
 </script>
 
 <Base bind:isMobile bind:isWide {copyright} {locale} {viewTemplate}>
@@ -260,6 +264,35 @@
       ? `<strong>Mots clefs : </strong>${searchLookup.searchKeyword}`
       : ``}
     {@html offersPaginator}
+  </div>
+  <div class="flex w-full">
+    <form
+      class="mws-update-page-limit-form w-full"
+      action={Routing.generate("mws_offer_lookup", {
+        _locale: locale ?? "",
+        viewTemplate: viewTemplate ?? "",
+        pageLimit,
+      })}
+      bind:this={pageLimitForm}
+      name="pageLimitForm"
+      method="GET"
+    >
+      <span>
+        <input
+          type="number"
+          name="pageLimit"
+          bind:value={pageLimit}
+          on:keydown|stopPropagation={(e) => {
+            if ("Enter" == e.key) {
+              pageLimitForm.submit();
+            }
+          }}
+        />
+        <button type="submit" class="m-1">
+          Définir la limite de pages
+        </button>
+      </span>
+    </form>
   </div>
   <!-- { JSON.stringify(offers) } -->
   <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
