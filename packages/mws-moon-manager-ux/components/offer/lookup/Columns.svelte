@@ -140,6 +140,7 @@
     });
   };
 
+  let lastSelectedCategory;
   $: {
     selectedCategory = selectedCategory ?? urlParams.get(`selectedCategory`);
 
@@ -166,6 +167,15 @@
       "null" != selectedCategory &&
       !(searchLookup.searchTagsToInclude?.includes(selectedCategory) ?? false)
     ) {
+      searchLookup.searchTagsToInclude = searchLookup.searchTagsToInclude?.filter((t, idx) => {
+        if (t === lastSelectedCategory) {
+          urlParams.delete(
+            `searchTagsToInclude[${idx}]`
+          );
+          return false;
+        }
+        return true;
+      });
       urlParams.set(
         `searchTagsToInclude[${searchLookup.searchTagsToInclude?.length ?? 0}]`,
         selectedCategory
@@ -177,6 +187,7 @@
       // history.pushState({}, null, newUrl); // No redirect
       window.location = newUrl;
     }
+    lastSelectedCategory = selectedCategory;
   }
 
   // TODO : filter one tag ? nop => will have another props for custom tag by tag column..
@@ -334,11 +345,13 @@
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
-<div class="w-full flex flex-wrap"
+<!--
+  TODO : zoom is messing up drag & drop computations, like did not refresh zoomed size but initial one... 
 style={`
   zoom: ${reportScale}%;
 `}
->
+ -->
+<div class="w-full flex flex-wrap">
   <div class="w-full">
     <select
     value={selectedCategory}
@@ -467,3 +480,9 @@ style={`
     {/each}
   </div>
 </div>
+
+<style lang="scss">
+  [data-tail="1"] {
+    word-break: break-word;
+  }
+</style>
