@@ -403,6 +403,9 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
                 bind:value={pageLimit}
                 on:keydown|stopPropagation={(e) => {
                   if ("Enter" == e.key) {
+                    if (Number(pageLimit) <= 0) {
+                      pageLimit = "1";
+                    }
                     pageLimitForm.submit();
                   }
                 }}

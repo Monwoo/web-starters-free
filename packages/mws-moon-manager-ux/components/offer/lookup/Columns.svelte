@@ -22,6 +22,7 @@
   import {dndzone} from "svelte-dnd-action";
   import Loader from "../../layout/widgets/Loader.svelte";
   import { get } from "svelte/store";
+  import debounce from "lodash/debounce";
 
   export let locale;
   export let offers = [];
@@ -37,6 +38,7 @@
   export let isLoading = false;
   // Offer tag main category to build table from
   export let selectedCategory;
+  // export let newComment;
 
   // fetch {offers} {offersHeaders} {messagesByProjectId}
   // With selectedCategory filters (keep num of page limits ?)
@@ -56,7 +58,12 @@
   // TODO : centralize web services ? 
   // or differ since != usage even if similar to tags/TagsInput.svelte
   // export let removeTag = async (tag, comment = null) => {
-    export let removeTag = async (offer, tagSlug, tagCategorySlug, comment = null) => {
+  export let removeTag = async (offer, tagSlug, tagCategorySlug, comment = null) => {
+    // if (isLoading) { // handled outsid of addTag, no need here, will bug
+    //   console.debug("isLoading in progress, addTag avoided");
+    //   return;
+    // }
+
     const data = {
       _csrf_token: stateGet(get(state), 'csrfOfferTagDelete'),
       offerSlug: offer.slug,
@@ -100,6 +107,10 @@
   };
 
   export let addTag = async (offer, tagSlug, tagCategorySlug, comment = null) => {
+    // if (isLoading) { // handled outsid of addTag, no need here, will bug
+    //   console.debug("isLoading in progress, addTag avoided");
+    //   return;
+    // }
     const data = {
       _csrf_token: stateGet(get(state), 'csrfOfferTagAdd'),
       offerSlug: offer.slug,
@@ -138,6 +149,81 @@
       const shouldWait = confirm("Echec de l'enregistrement.");
       addedTagKey = "null";
     });
+  };
+
+  // TODO : centralize web services ? 
+  // or differ since != usage even if similar to tags/TagsInput.svelte
+  export let addComment = async (offer, comment, offerStatusSlug = null) => {
+    if (!comment || !comment.length) {
+      console.debug("addComment is missing comment");
+      return;
+    }
+    if (isLoading) {
+      console.debug("isLoading in progress, addComment avoided");
+      return;
+    }
+    isLoading = true;
+    try {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfOfferAddComment"),
+        offerSlug: offer.slug,
+        comment, // TODO : allow optional comment on status switch ?
+        offerStatusSlug,
+      };
+      // let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
+      let headers = {
+        Accept: "application/json",
+      };
+
+      // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
+      // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+      // Per this article make sure to NOT set the Content-Type header.
+      // headers['Content-Type'] = 'application/json';
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        // TODO : build back Api, will return new csrf to use on success, will error othewise,
+        // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
+        Routing.generate("mws_offer_add_comment", {
+          _locale: locale,
+        }),
+        {
+          method: "POST",
+          headers,
+          // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
+          body: formData,
+          // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
+          credentials: "same-origin",
+          // https://javascript.info/fetch-api
+          redirect: "error",
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp.url, resp.ok, resp.status, resp.statusText);
+          if (!resp.ok) {
+            // make the promise be rejected if we didn't get a 2xx response
+            throw new Error("Not 2xx response"); // , {cause: resp});
+          } else {
+            const data = await resp.json();
+            // TODO : sync trakings :
+            // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
+            _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
+            stateUpdate(state, {
+              csrfOfferAddComment: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    } catch (e) {
+      console.error(e);
+    }
+    isLoading = false;
   };
 
   let lastSelectedCategory;
@@ -318,6 +404,11 @@
     columns = [...columns];
   }
   const handleOffersDndFinalize = async (e, column) => {
+    if (isLoading) {
+      console.debug("isLoading in progress, handleOffersDndFinalize avoided");
+      return;
+    }
+
     isLoading = true;
     console.debug("handleOffersDndFinalize : ", e, column);
     const id = e.detail.info.id;
@@ -351,8 +442,18 @@ style={`
   zoom: ${reportScale}%;
 `}
  -->
-<div class="w-full flex flex-wrap">
-  <div class="w-full">
+<div class="mws-table-columns w-full flex flex-wrap"
+class:pointer-event-none={isLoading}
+style={`
+  --mws-report-scale: ${reportScale};
+  --mws-text-lg-delta: ${(1 * (1 - reportScale / 100)).toFixed(3)}rem;
+  --mws-text-lg-height-delta: ${(1.25 * (1 - reportScale / 100)).toFixed(3)}rem;
+  --mws-text-delta: ${(0.75 * (1 - reportScale / 100)).toFixed(3)}rem;
+  --mws-p-2-delta: ${(0.45 * (1 - reportScale / 100)).toFixed(3)}rem;
+  --mws-p-3-delta: ${(0.70 * (1 - reportScale / 100)).toFixed(3)}rem;
+`}
+>
+  <div class="w-full flex flex-wrap">
     <select
     value={selectedCategory}
     on:change={e => {
@@ -389,7 +490,7 @@ style={`
     <Loader {isLoading} />
   </div>
   <!-- <div class="sticky top-0"> will work since no wrapped overflow parent -->
-  <div class="w-full flex sticky top-0 md:-top-7 wide:top-0">
+  <div class="w-full flex sticky z-10 top-0 md:-top-7 wide:top-0">
     {#each columns as column, idx (column.id)}
       <div class="flex p-2"
       style="width: {(100 / columns.length).toFixed(2)}%">
@@ -424,7 +525,7 @@ style={`
           <div class="">
             {column.tag.label}
           </div>
-          <div class="w-full flex flex-wrap overflow-scroll min-h-[80%] content-start"
+          <div class="w-full flex flex-wrap overflow-scroll min-h-[80%] content-start justify-center"
           data-tail="1"
           use:dndzone="{{
             items: column.offers,
@@ -439,51 +540,68 @@ style={`
               {@const trackings = offer?.mwsOfferTrackings?.toReversed() ?? []}
               <div
               animate:flip="{{duration: flipDurationMs}}"
-              class="m-2 p-2 border-2 border-gray-700 rounded-md">
-                <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
-                <a
-                  href={Routing.generate("mws_offer_view", {
-                    _locale: locale ?? "fr",
-                    viewTemplate: viewTemplate ?? "",
-                    offerSlug: offer.slug,
-                  })}
-                  class="flex flex-col items-center justify-center text-center"
-                  target="_blank"
-                >
-                  {#if offer.contacts[0].avatarUrl ?? false}
-                    <img
-                      width="64"
-                      src={offer.contacts[0].avatarUrl}
-                      alt="Avatar"
-                    />
-                  {/if}
-                  {offer.clientUsername}
-                </a>
-                ${offer.budget ?? ""} <br />
+              class="p-2">
+                <!-- // TIPS : avoid margin for % height compute to fit contents without overflows -->
+                <div
+                class="p-2 border-2 border-gray-700 rounded-md">
+                  <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
+                  <a
+                    href={Routing.generate("mws_offer_view", {
+                      _locale: locale ?? "fr",
+                      viewTemplate: viewTemplate ?? "",
+                      offerSlug: offer.slug,
+                    })}
+                    class="flex flex-col items-center justify-center text-center"
+                    target="_blank"
+                  >
+                    {#if offer.contacts[0].avatarUrl ?? false}
+                      <img
+                        width={64 - 50 * (1 - reportScale/100)}
+                        src={offer.contacts[0].avatarUrl}
+                        alt="Avatar"
+                      />
+                    {/if}
+                    {offer.clientUsername}
+                  </a>
+                  {offer.budget ?? ""} <br />
 
-                <h1 class="font-bold text-lg">
-                  <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
-                    {offer.sourceDetail?.title ?? "Voir l'offre"}
-                  </a>  
-                </h1>
+                  <h1 class="font-bold text-lg">
+                    <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
+                      {offer.sourceDetail?.title ?? "Voir l'offre"}
+                    </a>  
+                  </h1>
 
-                <div class="w-full font-bold text-gray-500">
-                  [{(trackings ?? [])[0]?.updatedAt
-                    ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
-                    : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
+                  <div class="offer-trackings">
+                    <div class="w-full font-bold text-gray-500">
+                      [{(trackings ?? [])[0]?.updatedAt
+                        ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
+                        : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
+                    </div>
+                    <textarea class="w-full" bind:value={offer.newComment} />
+                    <button
+                      on:click={debounce(async () => {
+                        await addComment(offer, offer.newComment);
+                      })}
+                      class=""
+                      style="--mws-primary-rgb: 0,200,0;"
+                    >
+                      Commenter
+                    </button>
+                    <Loader {isLoading} />
+                  </div>
+                  <ContactLink
+                  source={offer.slug}
+                  name={offer.clientUsername}
+                  title={offer.title}
+                  contact={offer.contact1 ?? ""}
+                  ></ContactLink>
+                  <ContactLink
+                  source={offer.slug}
+                  name={offer.clientUsername}
+                  title={offer.title}
+                  contact={offer.contact2 ?? ""}
+                  ></ContactLink>
                 </div>
-                <ContactLink
-                source={offer.slug}
-                name={offer.clientUsername}
-                title={offer.title}
-                contact={offer.contact1 ?? ""}
-                ></ContactLink>
-                <ContactLink
-                source={offer.slug}
-                name={offer.clientUsername}
-                title={offer.title}
-                contact={offer.contact2 ?? ""}
-                ></ContactLink>
               </div>
             {/each}
             <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
@@ -506,5 +624,42 @@ style={`
 <style lang="scss">
   [data-tail="1"] {
     word-break: break-word;
+  }
+
+  .offer-trackings {
+    textarea, button {
+      opacity: 0.50;
+      &:hover {
+        opacity: 1;        
+      }
+    }
+    &:hover {
+      textarea, button {
+        opacity: 1;        
+      }
+    }
+  }
+  :global(*) {
+    font-size: calc(1rem - var(--mws-text-delta));
+    [type='text'], [type='email'], [type='url'],
+    [type='password'], [type='number'], [type='date'],
+    [type='datetime-local'], [type='month'], [type='search'],
+    [type='tel'], [type='time'], [type='week'], [multiple],
+    textarea, select{
+      font-size: calc(1rem - var(--mws-text-delta));
+
+      padding-top: calc(0.5rem - var(--mws-p-2-delta));
+      padding-right: calc(0.75rem - var(--mws-p-3-delta));
+      padding-bottom: calc(0.5rem - var(--mws-p-2-delta));
+      padding-left: calc(0.75rem - var(--mws-p-3-delta));
+    }
+
+    .text-lg {
+      font-size: calc(1.125rem - var(--mws-text-lg-delta)) !important;
+      line-height: calc(1.75rem - var(--mws-text-lg-height-delta)) !important;
+    }
+    .p-2, .m-2 { // TIPS : avoid .m-2
+        padding: calc(0.5rem - var(--mws-p-2-delta));
+    }
   }
 </style>

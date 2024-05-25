@@ -284,12 +284,23 @@
           bind:value={pageLimit}
           on:keydown|stopPropagation={(e) => {
             if ("Enter" == e.key) {
+              if (Number(pageLimit) <= 0) {
+                pageLimit = "1";
+              }
               pageLimitForm.submit();
             }
           }}
         />
-        <button type="submit" class="m-1">
-          Définir la limite de pages
+        <!-- <button type="submit" class="m-1"> -->
+        <button class="m-1"
+          on:click|stopPropagation={(e) => {
+              if (Number(pageLimit) <= 0) {
+              pageLimit = "1";
+            }
+            pageLimitForm.submit();
+          }}
+        >
+            Définir la limite de pages
         </button>
       </span>
     </form>
