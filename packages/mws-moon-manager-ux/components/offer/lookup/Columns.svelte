@@ -20,6 +20,8 @@
   import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import Routing from "fos-router";
   import {dndzone} from "svelte-dnd-action";
+  import Loader from "../../layout/widgets/Loader.svelte";
+  import { get } from "svelte/store";
 
   export let locale;
   export let offers = [];
@@ -32,6 +34,7 @@
   export let addModal;
   export let isMobile;
   export let isWide;
+  export let isLoading = false;
   // Offer tag main category to build table from
   export let selectedCategory;
 
@@ -49,6 +52,93 @@
   const tagSlugSep = " > ";
 
   const urlParams = new URLSearchParams(window.location.search);
+
+  // TODO : centralize web services ? 
+  // or differ since != usage even if similar to tags/TagsInput.svelte
+  // export let removeTag = async (tag, comment = null) => {
+    export let removeTag = async (offer, tagSlug, tagCategorySlug, comment = null) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfOfferTagDelete'),
+      offerSlug: offer.slug,
+      tagSlug,
+      tagCategorySlug,
+      comment, // TODO : allow optional comment on status switch ?
+    };
+		let headers = {};
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate('mws_offer_tag_delete', {
+        _locale: locale,
+      }), {
+        method: "POST",
+        headers,
+        body: formData,
+        credentials: "same-origin",
+        redirect: 'error',
+      }
+    ).then(async resp => {
+      console.log(resp.url, resp.ok, resp.status, resp.statusText);
+      if (!resp.ok) {
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+        const data = await resp.json();
+        offer.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+        // TODO : like for stateGet, use stateUpdate instead ? (for hidden merge or deepMerge adjustment)
+        console.debug("Did remove tag", tagCategorySlug, tagSlug, offer.tags);
+        stateUpdate(state, {
+          csrfOfferTagDelete: data.newCsrf,
+        });
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+    });
+  };
+
+  export let addTag = async (offer, tagSlug, tagCategorySlug, comment = null) => {
+    const data = {
+      _csrf_token: stateGet(get(state), 'csrfOfferTagAdd'),
+      offerSlug: offer.slug,
+      tagSlug,
+      tagCategorySlug,
+      comment, // TODO : allow optional comment on status switch ?
+    };
+    const formData  = new FormData();      
+    for(const name in data) {
+      formData.append(name, data[name]);
+    }
+    const resp = await fetch(
+      Routing.generate('mws_offer_tag_add', {
+        _locale: locale,
+      }), {
+        method: "POST",
+        body: formData,
+        credentials: "same-origin",
+        redirect: 'error',
+      }
+    ).then(async resp => {
+      console.log(resp.url, resp.ok, resp.status, resp.statusText);
+      if (!resp.ok) {
+        throw new Error("Not 2xx response", {cause: resp});
+      } else {
+          const data = await resp.json();
+          offer.tags = Object.values(data.newTags); // A stringified obj with '1' as index...
+          console.debug("Did add tag", tagCategorySlug, tagSlug, offer.tags);
+          stateUpdate(state, {
+            csrfOfferTagAdd: data.newCsrf,
+          });
+      }
+    }).catch(e => {
+      console.error(e);
+      // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+      const shouldWait = confirm("Echec de l'enregistrement.");
+      addedTagKey = "null";
+    });
+  };
 
   $: {
     selectedCategory = urlParams.get(`selectedCategory`);
@@ -216,18 +306,28 @@
     column.offers = e.detail.items;
     columns = [...columns];
   }
-  function handleOffersDndFinalize(e, column) {
+  const handleOffersDndFinalize = async (e, column) => {
+    isLoading = true;
     console.debug("handleOffersDndFinalize : ", e, column);
     const id = e.detail.info.id;
     if (('' + id).startsWith('column_')) {
       console.debug("Ignore handleOffersDndFinalize");
       column.offers = column.offers;
       columns = [...columns];
+      isLoading = false;
       // scrElement of event is dest drop target, not source item...
       return; // Ignore drag and drop column inside tail list
     }
+    const srcOffer = e.detail.items.filter((o) => {
+      return o.id === id;
+    })[0];
+    // Update id state :
+    // await removeTag(srcOffer.slug, ); // Should remove for non exclusive category ? or clone ? (but UI will note reflet cloning for now right ?)
+    // In OUR CASE ONLY, below will work, since can't keep last tag of same category ;)
+    await addTag(srcOffer, column.tag.slug, column.tag.categorySlug);
     column.offers = e.detail.items;
     columns = [...columns];
+    isLoading = false;
   }
   // column.offers
 
@@ -260,7 +360,8 @@ style={`
           {opt.label}
         </option>
       {/each}
-    </select>  
+    </select>
+    <Loader {isLoading} />
   </div>
   <div class="w-full flex overflow-scroll"
   data-column="1"
