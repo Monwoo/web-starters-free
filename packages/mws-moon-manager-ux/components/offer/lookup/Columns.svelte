@@ -447,11 +447,18 @@ style={`
                     viewTemplate: viewTemplate ?? "",
                     offerSlug: offer.slug,
                   })}
+                  class="flex flex-col items-center justify-center text-center"
                   target="_blank"
                 >
+                  {#if offer.contacts[0].avatarUrl ?? false}
+                    <img
+                      width="64"
+                      src={offer.contacts[0].avatarUrl}
+                      alt="Avatar"
+                    />
+                  {/if}
                   {offer.clientUsername}
                 </a>
-                <br />
                 ${offer.budget ?? ""} <br />
 
                 <h1 class="font-bold text-lg">
