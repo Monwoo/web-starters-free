@@ -141,7 +141,7 @@
   };
 
   $: {
-    selectedCategory = urlParams.get(`selectedCategory`);
+    selectedCategory = selectedCategory ?? urlParams.get(`selectedCategory`);
 
     console.debug(
       "Columns searchLookup :",
@@ -341,8 +341,11 @@ style={`
 >
   <div class="w-full">
     <select
-    value={selectedCategorySlug}
-    name="selectedCategorySlug"
+    value={selectedCategory}
+    on:change={e => {
+      selectedCategory = e.target.value;
+    }}
+    name="selectedCategory"
     class="opacity-30 hover:opacity-100 
     bg-gray-50 border border-gray-300 text-gray-900 
     text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 
@@ -350,10 +353,19 @@ style={`
     dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
     dark:focus:border-blue-500">
       <!-- <option value="null" selected>Type de backup</option> -->
-      {#each [
-        {value:selectedCategorySlug, label:selectedCategorySlug},
-        // {format:'full', label:'Tout le CRM'},
-      ] as opt}
+      {#each Object.keys($state.offerTagsByCatSlugAndSlug).reduce(
+        (acc, tIdx) => {
+          const t = $state.offerTagsByCatSlugAndSlug[tIdx];
+          if (!t.categorySlug) {
+            acc.push({
+              value:  tagSlugSep + t.slug,
+              label:  t.slug,
+            });
+          }
+          return acc;
+        },
+        []
+      ) as opt}
         <option
         value={`${opt.value}`}
         selected={opt.selected}>
