@@ -1,0 +1,198 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{% set model = {
+    description: "Ajouter"|trans,
+    fitToContainer: true,
+    "__CMT_TIPS": "Will validate form on searchKeyword enter key with goNextPageAutomatic",
+    '__goNextPageAutomatic': true,
+    completeText: {
+        en: "Save offer",
+        fr: "Enregistrer l'offre"
+    },
+    "__CMT__showPrevButton": true,
+    focusFirstQuestionAutomatic: false,
+    showQuestionNumbers: false,
+    elements: [{
+                visibleIf: "{id}",
+                startWithNewLine: true,
+                type: "html",
+                html: "Will update offer : {id}",
+            }, {
+            name: "clientUsername",
+            title: "clientUsername",
+            type: "text",
+            "_cmt": "limited to 255 chars : ",
+            maxLength: 255,
+            validators: [],
+            minWidth: "20%",
+            isRequired: false,
+        }, {
+            "type": "paneldynamic",
+            "minPanelCount": 0,
+            "name": "contacts",
+            "valueName": "contacts",
+            "title": "Add contact to offer :",
+            "panelAddText": "Add contact",
+            "panelCount": 0,
+            "templateElements": [
+                {
+                    name: "username",
+                    title: "Texte",
+                    type: "text",
+                    "_cmt": "limited to 255 chars : ",
+                    maxLength: 255,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                }, {
+                    name: "status",
+                    title: "Texte",
+                    type: "comment",
+                    "_cmt": "limited to 1000 chars : ",
+                    maxLength: 1000,
+                    '_cmt2': "Nb of lines in textarea :",
+                    rows: 21,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                },{
+                    name: "postalCode",
+                    title: "Texte",
+                    type: "text",
+                    "_cmt": "limited to 255 chars : ",
+                    maxLength: 255,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                },{
+                    name: "city",
+                    title: "Texte",
+                    type: "text",
+                    "_cmt": "limited to 255 chars : ",
+                    maxLength: 255,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                },{
+                    name: "avatarUrl",
+                    title: "Texte",
+                    type: "comment",
+                    "_cmt": "limited to 255 chars : ",
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                },{
+                    name: "email",
+                    title: "Texte",
+                    type: "text",
+                    "_cmt": "limited to 255 chars : ",
+                    maxLength: 255,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                },{
+                    name: "phone",
+                    title: "Texte",
+                    type: "text",
+                    "_cmt": "limited to 255 chars : ",
+                    maxLength: 255,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                },{
+                    name: "sourceName",
+                    title: "Texte",
+                    type: "text",
+                    "_cmt": "limited to 255 chars : ",
+                    maxLength: 255,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                },{
+                    name: "businessUrl",
+                    title: "Texte",
+                    type: "comment",
+                    "_cmt": "limited to 255 chars : ",
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                }
+            ]
+        }, {
+            startWithNewLine: true,
+            name: "shouldDeleteOffer",
+            title: "Supprimer cette offre",
+            visibleIf: "{id}",
+            type: "boolean",
+            "description": "Supprimer cette offre de la base de données.",
+            validators: [],
+            minWidth: "20%",
+            isRequired: false,
+        },
+    ]
+} %}
+{{ model|serialize('json')|raw }}
+
+{# 
+                , {
+                    visibleIf: "{panel.uploadFile.0.content} != ''",
+                    startWithNewLine: false,
+                    type: "html",
+                    html: "Fichier joint : <a href='{panel.uploadFile.0.content}' target='_blank'>{panel.uploadFile.0.name}</a>",
+                }, {
+                    visibleIf: "{panel.uploadFile.0.content} != ''",
+                    startWithNewLine: false,
+                    name: "deleteUpload",
+                    title: "Supprimer ",
+                    type: "boolean",
+                    "description": "Enlever la pièce jointe.",
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                }, 
+ #}
+
+{#
+TODO : can't show alert with json data model only ? :
+https://surveyjs.answerdesk.io/ticket/details/t11430/how-can-i-show-a-confirmation-popup-on-changing-a-value-in-the-form
+survey.onValueChanging.add(function(sender, options){
+   if(confirm('Your name is: ' + options.value)){
+     alert('The name is successfully updated');
+   } else {
+     options.value = options.oldValue;
+   }
+});
+#}
+
+{# 
+// TODO : migrate back to full js side config file, will be better for syntax checks, comments, {% endswitch %}
+//        x-state base ?
+{
+                "_cmt2": "For informational purpose in sync with data model, will upload other way :",
+                enableIf: "false",
+                name: "attachementFileKeyPath",
+                title: "attachementFileKeyPath",
+                type: "text",
+                "_cmt": "limited to 200 chars : // TODO : ok for URL ? ",
+                maxLength: 200,
+                validators: [],
+                minWidth: "20%",
+                isRequired: false,
+            }, {
+                "_cmt2": "For informational purpose in sync with data model, will upload other way :",
+                _enableIf: "{panel.attachementFileKeyPath} <> ''",
+                enableIf: "false",
+                startWithNewLine: false,
+                name: "uploadFilePath",
+                title: "uploadFilePath",
+                type: "text",
+                "_cmt": "limited to 200 chars : // TODO : ok for URL ? ",
+                maxLength: 200,
+                validators: [],
+                minWidth: "20%",
+                isRequired: false,
+            }, {
+                visibleIf: "false",
+                startWithNewLine: false,
+                type: "html",
+                html: "displayValue( {row.attachementFileKeyPath} | displayValue({panel.attachementFileKeyPath}) | {panel.attachementFileKeyPath} | {displayValue(isTemplate)})",
+            }, #}

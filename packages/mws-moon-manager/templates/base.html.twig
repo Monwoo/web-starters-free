@@ -101,11 +101,17 @@
 	{# {{ app.request.attributes.get('_route') }}
 	{{ app.request._route }} #}
 		{% block storesInit %}
+			{% set mwsAddOfferForm = fetchMwsAddOfferConfig() %}
+
 			<div
 			class="hidden"
 			{{ svelte_component('MwsReduxSync', {
 				'stateUpdate': {
 					'user': app.user,
+					'mwsAddOfferForm': (form_start(mwsAddOfferForm, { 'attr' : {
+                'class': 'd-flex flex-wrap mws-survey-js-form'
+            } }) ~ form_widget(mwsAddOfferForm)
+            ~ form_end(mwsAddOfferForm)),
 					'gdprLastCleanDate': gdprLastCleanDate ?? null,
 					'gdprNextCleanDate': gdprNextCleanDate ?? null,
 					'packageName': packageName,

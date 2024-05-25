@@ -8,10 +8,16 @@
   import { fly, scale, slide } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import { create_in_transition, tick } from "svelte/internal";
-
+  import AddModal from "../offer/AddModal.svelte";
+  // TODO : try multiple theme with other icon packages ?
+  // https://svelte-svg-icons.codewithshin.com/
+  import {
+    CirclePlusSolid
+  } from "flowbite-svelte-icons";
   export let locale;
   export let viewTemplate;
   export let inlineOpener = false;
+  export let addOfferModal;
   // let inlineOpener = false;
   let dropdown;
   let intro;
@@ -37,6 +43,8 @@
   let uniqueKey = {};
 </script>
 
+<AddModal bind:this={addOfferModal} mwsAddOfferForm={$state.mwsAddOfferForm} />
+
 <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"> -->
 <nav
   class="border-gray-200 dark:border-gray-700 w-full
@@ -51,33 +59,48 @@
     class:md:p-2={!inlineOpener}
     class:wide:p-0={!inlineOpener}
   >
-    <span class="hidden" class:md:inline={!inlineOpener}>
-      <a
-        href={Routing.generate("mws_offer_lookup", {
-          _locale: locale ?? "fr",
-          viewTemplate: viewTemplate ?? null,
-        })}
-        class="flex items-center pb-2"
-      >
-        <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
-        <span
-          class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+    <span class="inline-flex items-center">
+      <span class="hidden" class:md:inline={!inlineOpener}>
+        <a
+          href={Routing.generate("mws_offer_lookup", {
+            _locale: locale ?? "fr",
+            viewTemplate: viewTemplate ?? null,
+          })}
+          class="flex items-center pb-2"
         >
-          <button class="inline-flex flex-wrap justify-center items-center w-min px-4">
-            <span class="w-full text-sm wide:text-xs">
-              Rechercher une offre
-            </span>
-            <span class="w-full text-[0.69rem] leading-[0.69rem] text-gray-300">
-              sur : 
-              <span class="">
-                { appName } { appHost }
+          <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
+          <span
+            class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+          >
+            <button class="inline-flex flex-wrap justify-center items-center w-min px-4">
+              <span class="w-full text-sm wide:text-xs">
+                Rechercher une offre
               </span>
-            </span>
-          </button>
+              <span class="w-full text-[0.69rem] leading-[0.69rem] text-gray-300">
+                sur : 
+                <span class="">
+                  { appName } { appHost }
+                </span>
+              </span>
+            </button>
+          </span>
+        </a>
+        <span>
+          <slot />
         </span>
-      </a>
+      </span>
       <span>
-        <slot />
+        <button
+        class=""
+        on:click={() => {
+          if (addOfferModal.surveyModel) {
+            addOfferModal.surveyModel.data = null; // Ensure data is empty before show...
+          }
+          addOfferModal.eltModal.show();
+        }}
+        >
+          <CirclePlusSolid class="text-2xl" />
+        </button>      
       </span>
     </span>
     <!-- focus:ring-2

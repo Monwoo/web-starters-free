@@ -12,19 +12,41 @@ php bin/console debug:twig --filter=price
 // https://symfony.com/doc/5.3/templating/twig_extension.html
 namespace MWS\MoonManagerBundle\Twig;
 
+use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
+// use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Container;
+// use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Twig\TwigFunction;
+use Twig\Environment as TwigEnv;
 
 class EnvExtension extends AbstractExtension implements GlobalsInterface
 {
+  protected Container $container;
+
+  public function __construct(
+    // protected ContainerInterface $container
+    protected KernelInterface $kernel,
+    protected TwigEnv $twig,
+    protected FormFactoryInterface $formFactory,
+  ) {
+    // https://stackoverflow.com/questions/45965327/symfony-how-to-get-container-in-my-service
+    // $this->container = $kernel->getContainer();
+    // dd($this->container);
+  }
+
   public function getFilters()
   {
     return [
       new TwigFilter('humanSize', [$this, 'humanSize']),
       new TwigFilter('bytesSize', [$this, 'bytesSize']),
       new TwigFilter('iteratorToArray', [$this, 'iteratorToArray']),
-      
+
       // new TwigFilter('price', [$this, 'formatPrice']),
     ];
   }
@@ -90,17 +112,41 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
   // }
 
 
-  // public function getFunctions()
-  // {
-  //     return [
-  //         new TwigFunction('area', [$this, 'calculateArea']),
-  //     ];
-  // }
+  public function getFunctions()
+  {
+      return [
+        new TwigFunction('fetchMwsAddOfferConfig', [$this, 'fetchMwsAddOfferConfig']),
+        // new TwigFunction('area', [$this, 'calculateArea']),
+      ];
+  }
 
   // public function calculateArea(int $width, int $length)
   // {
   //     return $width * $length;
   // }
+
+  public function fetchMwsAddOfferConfig() {
+    $this->container = $this->kernel->getContainer();
+    // dd($this->container);
+
+    $mwsAddOfferConfig = [
+      "jsonResult" => rawurlencode(json_encode([
+        // "searchKeyword" => $keyword,
+      ])),
+      "surveyJsModel" => rawurlencode($this->renderView(
+        "@MoonManager/survey_js_models/MwsOfferAddType.json.twig",
+        [
+          // "availableTemplates" => $availableTemplates,
+          // "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+          // "availableMonwooAmountType" => $availableMonwooAmountType,
+          // "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
+        ]
+      )),
+    ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
+    $mwsAddOfferForm = $this->createForm(MwsSurveyJsType::class, $mwsAddOfferConfig);
+
+    return $mwsAddOfferForm->createView();
+  }
 
   // Lazy load :
   // public function getFilters()
@@ -113,12 +159,29 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
 
   public function getGlobals(): array
   {
-    $rootPackage = \Composer\InstalledVersions::getRootPackage();
+    // $fetchMwsAddOfferConfig = function () {
+    //   $this->container = $this->kernel->getContainer();
+    //   dd($this->container);
+  
+    //   $mwsAddOfferConfig = [
+    //     "jsonResult" => rawurlencode(json_encode([
+    //       // "searchKeyword" => $keyword,
+    //     ])),
+    //     "surveyJsModel" => rawurlencode($this->renderView(
+    //       "@MoonManager/survey_js_models/MwsMessageType.json.twig",
+    //       [
+    //         // "availableTemplates" => $availableTemplates,
+    //         // "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
+    //         // "availableMonwooAmountType" => $availableMonwooAmountType,
+    //         // "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
+    //       ]
+    //     )),
+    //   ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
+    //   $mwsAddOfferForm = $this->createForm(MwsSurveyJsType::class, $mwsAddOfferConfig);  
+    // };
 
-    $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
-    $packageName = array_slice(explode("monwoo/", $rootPackage['name']), -1)[0];
-    $isDev = $rootPackage['dev'] ?? false;
     return [
+      // 'fetchMwsAddOfferConfig' => $fetchMwsAddOfferConfig, // Nop, use set function instead...
       'mwsTimingLookupFields' => [
         // TODO : dynamic from surveyJS json fields instead of ram list + reuse for twig... ? or from backend configs ?
         'searchKeyword' => true,
@@ -130,4 +193,40 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
       ],
     ];
   }
+
+  /**
+   * Creates and returns a Form instance from the type of the form.
+   */
+  protected function createForm(string $type, mixed $data = null, array $options = []): FormInterface
+  {
+    // An exception has been thrown during the rendering of a template 
+    // ("The "form.factory" service or alias has been removed or inlined 
+    // when the container was compiled. You should either make it public,
+    // or stop using the container directly and use dependency injection instead.").
+    // return $this->container->get('form.factory')->create($type, $data, $options);
+    // php bin/console debug:container | grep 'form.factory'
+    return $this->formFactory->create($type, $data, $options);
+  }
+
+    /**
+     * Returns a rendered view.
+     *
+     * Forms found in parameters are auto-cast to form views.
+     */
+    protected function renderView(string $view, array $parameters = []): string
+    {
+      // TODO : container is missing twig ?
+        // if (!$this->container->has('twig')) {
+        //     throw new \LogicException('You cannot use the "renderView" method if the Twig Bundle is not available. Try running "composer require symfony/twig-bundle".');
+        // }
+
+        foreach ($parameters as $k => $v) {
+            if ($v instanceof FormInterface) {
+                $parameters[$k] = $v->createView();
+            }
+        }
+
+        // return $this->container->get('twig')->render($view, $parameters);
+        return $this->twig->render($view, $parameters);
+    }
 }
