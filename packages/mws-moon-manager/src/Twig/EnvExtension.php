@@ -13,6 +13,7 @@ php bin/console debug:twig --filter=price
 namespace MWS\MoonManagerBundle\Twig;
 
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
+use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
@@ -35,8 +36,9 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
     protected KernelInterface $kernel,
     protected TwigEnv $twig,
     protected FormFactoryInterface $formFactory,
+    protected MwsOfferRepository $mwsOfferRepository,
     protected MwsOfferStatusRepository $mwsOfferStatusRepository,
-    ) {
+  ) {
     // https://stackoverflow.com/questions/45965327/symfony-how-to-get-container-in-my-service
     // $this->container = $kernel->getContainer();
     // dd($this->container);
@@ -116,10 +118,10 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
 
   public function getFunctions()
   {
-      return [
-        new TwigFunction('fetchMwsAddOfferConfig', [$this, 'fetchMwsAddOfferConfig']),
-        // new TwigFunction('area', [$this, 'calculateArea']),
-      ];
+    return [
+      new TwigFunction('fetchMwsAddOfferConfig', [$this, 'fetchMwsAddOfferConfig']),
+      // new TwigFunction('area', [$this, 'calculateArea']),
+    ];
   }
 
   // public function calculateArea(int $width, int $length)
@@ -127,11 +129,54 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
   //     return $width * $length;
   // }
 
-  public function fetchMwsAddOfferConfig() {
+  public function fetchMwsAddOfferConfig()
+  {
     $this->container = $this->kernel->getContainer();
     // dd($this->container);
     // $tagSlugSep = '|'; // TODO :load objects and trick display/value function of surveyJS allowing '|' separator instead... ?
     $tagSlugSep = ' > ';
+    $allSourceNames = $this->mwsOfferRepository
+      ->createQueryBuilder("o")
+      ->select("
+        DISTINCT
+          o.sourceName as value,
+          o.sourceName as label
+    ")
+      // TODO : 'value as label' not working. Why and do tips below...
+      ->orderBy('o.sourceName', 'ASC')
+      ->getQuery()->getResult();
+    $allClientNames = $this->mwsOfferRepository
+      ->createQueryBuilder("o")
+      ->select("
+        DISTINCT
+          o.clientUsername as value,
+          o.clientUsername as label
+    ")
+      ->orderBy('o.clientUsername', 'ASC')
+      ->getQuery()->getResult();
+    $allOfferTags = array_map(
+      function (array $tagResp) use ($tagSlugSep) {
+        $tag = $tagResp[0];
+        $slug = $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
+        // dd($slug);
+        return $slug;
+        // return [
+        //   "value" => $slug,
+        //   "label" => $tag->getCategorySlug() . " > " . $tag->getSlug(),
+        // ];
+      },
+      // $mwsOfferStatusRepository->findAll()
+      $this->mwsOfferStatusRepository
+        ->createQueryBuilder("s")
+        // https://stackoverflow.com/questions/8233746/concatenate-with-null-values-in-sql
+        ->select("s, CONCAT(COALESCE(s.categorySlug, ''), s.slug) AS slugKey")
+        // ->where($qb->expr()->isNotNull("t.categorySlug"))
+        // ->orderBy("t.categorySlug")
+        // ->addOrderBy("t.slug")
+        ->addOrderBy("slugKey")
+        ->getQuery()->getResult()
+    );
+    // dd($allClientNames);
 
     $mwsAddOfferConfig = [
       "jsonResult" => rawurlencode(json_encode([
@@ -140,33 +185,9 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
       "surveyJsModel" => rawurlencode($this->renderView(
         "@MoonManager/survey_js_models/MwsOfferAddType.json.twig",
         [
-          'allOfferTags' => array_map(
-              function (array $tagResp) use ($tagSlugSep) {
-                  $tag = $tagResp[0];
-                  $slug = $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
-                  // dd($slug);
-                  return $slug;
-                  // return [
-                  //   "value" => $slug,
-                  //   "label" => $tag->getCategorySlug() . " > " . $tag->getSlug(),
-                  // ];
-              },
-              // $mwsOfferStatusRepository->findAll()
-              $this->mwsOfferStatusRepository
-                  ->createQueryBuilder("t")
-                  // https://stackoverflow.com/questions/8233746/concatenate-with-null-values-in-sql
-                  ->select("t, CONCAT(COALESCE(t.categorySlug, ''), t.slug) AS slugKey")
-                  // ->where($qb->expr()->isNotNull("t.categorySlug"))
-                  // ->orderBy("t.categorySlug")
-                  // ->addOrderBy("t.slug")
-                  ->addOrderBy("slugKey")
-                  ->getQuery()->getResult()
-          ),
-
-          // "availableTemplates" => $availableTemplates,
-          // "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
-          // "availableMonwooAmountType" => $availableMonwooAmountType,
-          // "availableTemplateCategorySlugs" => $availableTemplateCategorySlugs,
+          'allSourceNames' => $allSourceNames,
+          'allClientNames' => $allClientNames,
+          'allOfferTags' => $allOfferTags,
         ]
       )),
     ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
@@ -189,7 +210,7 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
     // $fetchMwsAddOfferConfig = function () {
     //   $this->container = $this->kernel->getContainer();
     //   dd($this->container);
-  
+
     //   $mwsAddOfferConfig = [
     //     "jsonResult" => rawurlencode(json_encode([
     //       // "searchKeyword" => $keyword,
@@ -235,25 +256,25 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
     return $this->formFactory->create($type, $data, $options);
   }
 
-    /**
-     * Returns a rendered view.
-     *
-     * Forms found in parameters are auto-cast to form views.
-     */
-    protected function renderView(string $view, array $parameters = []): string
-    {
-      // TODO : container is missing twig ?
-        // if (!$this->container->has('twig')) {
-        //     throw new \LogicException('You cannot use the "renderView" method if the Twig Bundle is not available. Try running "composer require symfony/twig-bundle".');
-        // }
+  /**
+   * Returns a rendered view.
+   *
+   * Forms found in parameters are auto-cast to form views.
+   */
+  protected function renderView(string $view, array $parameters = []): string
+  {
+    // TODO : container is missing twig ?
+    // if (!$this->container->has('twig')) {
+    //     throw new \LogicException('You cannot use the "renderView" method if the Twig Bundle is not available. Try running "composer require symfony/twig-bundle".');
+    // }
 
-        foreach ($parameters as $k => $v) {
-            if ($v instanceof FormInterface) {
-                $parameters[$k] = $v->createView();
-            }
-        }
-
-        // return $this->container->get('twig')->render($view, $parameters);
-        return $this->twig->render($view, $parameters);
+    foreach ($parameters as $k => $v) {
+      if ($v instanceof FormInterface) {
+        $parameters[$k] = $v->createView();
+      }
     }
+
+    // return $this->container->get('twig')->render($view, $parameters);
+    return $this->twig->render($view, $parameters);
+  }
 }

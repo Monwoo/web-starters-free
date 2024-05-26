@@ -19,6 +19,7 @@
             maxLength: 255,
             validators: [],
             minWidth: "20%",
+            choices: allSourceNames,
             isRequired: false,
         },{
             name: "clientUsername",
@@ -28,6 +29,7 @@
             maxLength: 255,
             validators: [],
             minWidth: "20%",
+            choices: allClientNames,
             isRequired: false,
             startWithNewLine: false,
         }, {
@@ -93,6 +95,9 @@
             title: "Dernier statut",
             description: "Slug du dernier status",
             type: "dropdown",
+            showNoneItem: false,
+            showOtherItem: false,
+            searchEnabled: false,
             validators: [],
             minWidth: "20%",
             isRequired: false,
@@ -153,6 +158,7 @@
                     "_cmt": "limited to 255 chars : ",
                     maxLength: 255,
                     validators: [],
+                    choices: allSourceNames,
                     minWidth: "20%",
                     isRequired: false,
                 },{
