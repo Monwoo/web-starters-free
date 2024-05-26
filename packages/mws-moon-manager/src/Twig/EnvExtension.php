@@ -13,6 +13,7 @@ php bin/console debug:twig --filter=price
 namespace MWS\MoonManagerBundle\Twig;
 
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
+use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
@@ -34,7 +35,8 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
     protected KernelInterface $kernel,
     protected TwigEnv $twig,
     protected FormFactoryInterface $formFactory,
-  ) {
+    protected MwsOfferStatusRepository $mwsOfferStatusRepository,
+    ) {
     // https://stackoverflow.com/questions/45965327/symfony-how-to-get-container-in-my-service
     // $this->container = $kernel->getContainer();
     // dd($this->container);
@@ -128,6 +130,7 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
   public function fetchMwsAddOfferConfig() {
     $this->container = $this->kernel->getContainer();
     // dd($this->container);
+    $tagSlugSep = ' > '; // TODO :load objects and trick display/value function of surveyJS instead...
 
     $mwsAddOfferConfig = [
       "jsonResult" => rawurlencode(json_encode([
@@ -136,6 +139,24 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
       "surveyJsModel" => rawurlencode($this->renderView(
         "@MoonManager/survey_js_models/MwsOfferAddType.json.twig",
         [
+          'allOfferTags' => array_map(
+              function (array $tagResp) use ($tagSlugSep) {
+                  $tag = $tagResp[0];
+                  // dd($tagResp);
+                  return $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
+              },
+              // $mwsOfferStatusRepository->findAll()
+              $this->mwsOfferStatusRepository
+                  ->createQueryBuilder("t")
+                  // https://stackoverflow.com/questions/8233746/concatenate-with-null-values-in-sql
+                  ->select("t, CONCAT(COALESCE(t.categorySlug, ''), t.slug) AS slugKey")
+                  // ->where($qb->expr()->isNotNull("t.categorySlug"))
+                  // ->orderBy("t.categorySlug")
+                  // ->addOrderBy("t.slug")
+                  ->addOrderBy("slugKey")
+                  ->getQuery()->getResult()
+          ),
+
           // "availableTemplates" => $availableTemplates,
           // "availableTemplateNameSlugs" => $availableTemplateNameSlugs,
           // "availableMonwooAmountType" => $availableMonwooAmountType,

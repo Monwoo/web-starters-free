@@ -41,6 +41,8 @@
   ).join(' ');
 
   let uniqueKey = {};
+
+  $: $state.addOfferModal = addOfferModal;
 </script>
 
 <AddModal bind:this={addOfferModal} mwsAddOfferForm={$state.mwsAddOfferForm} />
@@ -93,9 +95,7 @@
         <button
         class=""
         on:click={() => {
-          if (addOfferModal.surveyModel) {
-            addOfferModal.surveyModel.data = null; // Ensure data is empty before show...
-          }
+          addOfferModal.surveyModel.data = null; // Ensure data is empty before show...
           addOfferModal.eltModal.show();
         }}
         >

@@ -88,7 +88,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
             >
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    {surveyModel?.data.destId ? "Edit Offer" : "Add Offer"}
+                    {surveyModel?.data.id ? "Éditer l'offre " + surveyModel?.data.id : "Ajouter une offre"}
                 </h3>
                 <button
                     type="button"

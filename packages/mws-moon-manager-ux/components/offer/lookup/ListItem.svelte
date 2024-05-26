@@ -27,6 +27,9 @@
   import Loader from "../../layout/widgets/Loader.svelte";
   import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import { flip } from "svelte/animate";
+  import {
+    EditOutline
+  } from "flowbite-svelte-icons";
 
   export let locale;
   export let viewTemplate;
@@ -272,6 +275,24 @@
         alt={offer.contacts[0].username ?? ""}
       />
     </a>
+    <button
+    class="m-2"
+    on:click={() => {
+      $state.addOfferModal.surveyModel.data = {
+        ...offer,
+        sourceDetail: [{
+          ...(offer.sourceDetail ?? {}),
+          messages: (offer.sourceDetail.messages ?? [])
+          .map((m) => ({
+            msg: m,
+          }))
+        }]
+      }; // Ensure data is in sync
+      $state.addOfferModal.eltModal.show();
+    }}
+    >
+      <EditOutline class="text-2xl" />
+    </button>
     <!-- <a href="#qualify">
       TIPS : short cuted by 'status' update, will qualify depending of logic
              linked to new status change
