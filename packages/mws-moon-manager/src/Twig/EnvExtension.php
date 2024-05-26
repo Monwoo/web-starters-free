@@ -130,7 +130,8 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
   public function fetchMwsAddOfferConfig() {
     $this->container = $this->kernel->getContainer();
     // dd($this->container);
-    $tagSlugSep = ' > '; // TODO :load objects and trick display/value function of surveyJS instead...
+    // $tagSlugSep = '|'; // TODO :load objects and trick display/value function of surveyJS allowing '|' separator instead... ?
+    $tagSlugSep = ' > ';
 
     $mwsAddOfferConfig = [
       "jsonResult" => rawurlencode(json_encode([
@@ -142,8 +143,13 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
           'allOfferTags' => array_map(
               function (array $tagResp) use ($tagSlugSep) {
                   $tag = $tagResp[0];
-                  // dd($tagResp);
-                  return $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
+                  $slug = $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
+                  // dd($slug);
+                  return $slug;
+                  // return [
+                  //   "value" => $slug,
+                  //   "label" => $tag->getCategorySlug() . " > " . $tag->getSlug(),
+                  // ];
               },
               // $mwsOfferStatusRepository->findAll()
               $this->mwsOfferStatusRepository

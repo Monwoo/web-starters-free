@@ -276,6 +276,11 @@ class MwsConfigController extends AbstractController
                             // $backupForm->addError(new FormError(
                             //     "Backup Zip OK, recharger la page pour vérifier les backups automatiques."
                             // )); // No need anymore, have force reload client side
+
+                            // TODO : ensure DB is at top version by migrating on new db ?
+                            //       => but on next request to keep timings ?
+
+                            // TODO run : php bin/console doctrine:migrations:migrate -n
                         } catch (ZipException $e) {
                             // handle exception
                             $this->logger->error(

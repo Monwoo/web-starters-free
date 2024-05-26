@@ -280,6 +280,8 @@
     on:click={() => {
       $state.addOfferModal.surveyModel.data = {
         ...offer,
+        // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
+        currentStatusSlug: offer.currentStatusSlug.replace('|', ' > '),
         sourceDetail: [{
           ...(offer.sourceDetail ?? {}),
           messages: (offer.sourceDetail.messages ?? [])

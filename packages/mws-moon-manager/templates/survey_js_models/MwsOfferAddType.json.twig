@@ -92,11 +92,51 @@
             name: "currentStatusSlug",
             title: "Dernier statut",
             description: "Slug du dernier status",
-            type: "tagbox",
+            type: "dropdown",
             validators: [],
             minWidth: "20%",
             isRequired: false,
             choices: allOfferTags,
+        }, {
+            "type": "paneldynamic",
+            "minPanelCount": 1,
+            "maxPanelCount": 1,
+            "name": "sourceDetail",
+            "title": "Détail de la source :",
+            "state": "expanded",
+            "templateElements": [
+                {
+                    name: "description",
+                    title: "Description de l'offre",
+                    type: "comment",
+                    '_cmt2': "Nb of lines in textarea :",
+                    rows: 12,
+                    validators: [],
+                    minWidth: "20%",
+                    isRequired: false,
+                }, {
+                    "_cmt": "https://surveyjs.io/stay-updated/blog/how-to-use-text-piping-in-surveys",
+                    "_cmt2": "https://surveyjs.io/form-library/examples/aggregate-data-within-form/reactjs",
+                    "type": "paneldynamic",
+                    "minPanelCount": 0,
+                    "name": "messages",
+                    "title": "Ajouter une conversation :",
+                    "panelAddText": "Nouvelle conversation",
+                    "panelCount": 0,
+                    "templateElements": [
+                        {
+                            name: "msg",
+                            title: "Conversation (html)",
+                            type: "comment",
+                            '_cmt2': "Nb of lines in textarea :",
+                            rows: 12,
+                            validators: [],
+                            minWidth: "20%",
+                            isRequired: false,
+                        },
+                    ],
+                }
+            ]
         }, {
             "type": "paneldynamic",
             "minPanelCount": 0,
@@ -193,46 +233,6 @@
                     rows: 1,
                     minWidth: "20%",
                     isRequired: false,
-                }
-            ]
-        }, {
-            "type": "paneldynamic",
-            "minPanelCount": 1,
-            "maxPanelCount": 1,
-            "name": "sourceDetail",
-            "title": "Détail de la source :",
-            "state": "expanded",
-            "templateElements": [
-                {
-                    name: "description",
-                    title: "Description de l'offre",
-                    type: "comment",
-                    '_cmt2': "Nb of lines in textarea :",
-                    rows: 12,
-                    validators: [],
-                    minWidth: "20%",
-                    isRequired: false,
-                }, {
-                    "_cmt": "https://surveyjs.io/stay-updated/blog/how-to-use-text-piping-in-surveys",
-                    "_cmt2": "https://surveyjs.io/form-library/examples/aggregate-data-within-form/reactjs",
-                    "type": "paneldynamic",
-                    "minPanelCount": 0,
-                    "name": "messages",
-                    "title": "Ajouter un message :",
-                    "panelAddText": "Nouveau message",
-                    "panelCount": 0,
-                    "templateElements": [
-                        {
-                            name: "msg",
-                            title: "Text html",
-                            type: "comment",
-                            '_cmt2': "Nb of lines in textarea :",
-                            rows: 12,
-                            validators: [],
-                            minWidth: "20%",
-                            isRequired: false,
-                        },
-                    ],
                 }
             ]
         }, {

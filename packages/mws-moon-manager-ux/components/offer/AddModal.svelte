@@ -47,6 +47,8 @@
                 // TIPS : force refresh, since public accessor
                 // update the value but do not trigger reactive refresh...
                 // (since set surveyModel.data inside it instead of re-assign)
+                // window.jQuery('html, body, main').scrollTop( 0 );
+                window.jQuery('.mws-add-modal').scrollTop( 0 );
                 surveyModel = surveyModel;
                 console.log("modal is shown");
             },
