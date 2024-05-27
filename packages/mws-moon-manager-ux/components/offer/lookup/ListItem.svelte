@@ -254,6 +254,10 @@
     }
     isLoading = false;
   };
+
+  // TODO : factorize, cf php controller :
+  const tagSlugSep = " > ";
+
 </script>
 
 <tr>
@@ -283,6 +287,7 @@
         ...offer,
         // leadStart: dayjs(offer.leadStart).format("DD/MM/YYYY HH:mm"),
         leadStart: dayjs(offer.leadStart).format("YYYY-MM-DDTHH:mm"),
+        tags: offer.tags.map((t) => t.categorySlug + tagSlugSep + t.slug),
         // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
         currentStatusSlug: offer.currentStatusSlug.replace('|', ' > '),
         sourceDetail: [{
