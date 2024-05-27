@@ -177,6 +177,13 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
         ->getQuery()->getResult()
     );
     // dd($allClientNames);
+    $allOfferBudgets = $this->mwsOfferRepository
+        ->createQueryBuilder("o")
+        ->select("
+            DISTINCT o.budget as value
+        ")
+        ->orderBy('o.budget', 'ASC')
+        ->getQuery()->getResult();
 
     $mwsAddOfferConfig = [
       "jsonResult" => rawurlencode(json_encode([
@@ -188,6 +195,7 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
           'allSourceNames' => $allSourceNames,
           'allClientNames' => $allClientNames,
           'allOfferTags' => $allOfferTags,
+          'allOfferBudgets' => $allOfferBudgets,
         ]
       )),
     ]; // TODO : save in session or similar ? or keep GET system data transfert system ?

@@ -278,8 +278,11 @@
     <button
     class="m-2"
     on:click={() => {
+      // TODO : factorize with offerExportSJDataNormalizer / offerImportSJDataNormalizer
       $state.addOfferModal.surveyModel.data = {
         ...offer,
+        // leadStart: dayjs(offer.leadStart).format("DD/MM/YYYY HH:mm"),
+        leadStart: dayjs(offer.leadStart).format("YYYY-MM-DDTHH:mm"),
         // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
         currentStatusSlug: offer.currentStatusSlug.replace('|', ' > '),
         sourceDetail: [{
