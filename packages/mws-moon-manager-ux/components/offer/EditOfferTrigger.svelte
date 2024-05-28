@@ -2,24 +2,27 @@
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   import dayjs from "dayjs";
 
-  export const offerToSurveyJsTransformer = (offer) => ({
-    ...offer,
-    // leadStart: dayjs(offer.leadStart).format("DD/MM/YYYY HH:mm"),
-    leadStart: offer.leadStart
-      ? dayjs(offer.leadStart).format("YYYY-MM-DDTHH:mm")
-      : null,
-    tags: offer.tags?.map((t) => t.categorySlug + tagSlugSep + t.slug),
-    // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
-    currentStatusSlug: offer.currentStatusSlug?.replace("|", " > "),
-    sourceDetail: [
-      {
-        ...(offer.sourceDetail ?? {}),
-        messages: (offer.sourceDetail?.messages ?? []).map((m) => ({
-          msg: m,
-        })),
-      },
-    ],
-  });
+  export const offerToSurveyJsTransformer = (offer) =>
+    offer
+      ? {
+          ...offer,
+          // leadStart: dayjs(offer.leadStart).format("DD/MM/YYYY HH:mm"),
+          leadStart: offer.leadStart
+            ? dayjs(offer.leadStart).format("YYYY-MM-DDTHH:mm")
+            : null,
+          tags: offer.tags?.map((t) => t.categorySlug + tagSlugSep + t.slug),
+          // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
+          currentStatusSlug: offer.currentStatusSlug?.replace("|", " > "),
+          sourceDetail: [
+            {
+              ...(offer.sourceDetail ?? {}),
+              messages: (offer.sourceDetail?.messages ?? []).map((m) => ({
+                msg: m,
+              })),
+            },
+          ],
+        }
+      : null;
 </script>
 
 <script lang="ts">
