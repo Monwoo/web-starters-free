@@ -23,7 +23,10 @@
   import Loader from "../../layout/widgets/Loader.svelte";
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
-import EditOfferTrigger from "../EditOfferTrigger.svelte";
+  import EditOfferTrigger from "../EditOfferTrigger.svelte";
+  import { EyeSlashOutline } from "flowbite-svelte-icons";
+  import { EyeOutline } from "flowbite-svelte-icons";
+import Base from "../../layout/Base.svelte";
 
   export let locale;
   export let offers = [];
@@ -436,6 +439,10 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
   }
   // column.offers
 
+  $: visibleColumnsCount = columns.filter((c) => {
+    return !columns._tableHidden;
+  }).length;
+
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
@@ -444,8 +451,9 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
 style={`
   zoom: ${reportScale}%;
 `}
+TIPS : border for finger scroll under mobile done with : p-2
  -->
-<div class="mws-table-columns w-full flex flex-wrap"
+<div class="mws-table-columns w-full flex flex-wrap p-2 md:p-0 wide:p-2"
 class:pointer-event-none={isLoading}
 style={`
   --mws-report-scale: ${reportScale};
@@ -493,16 +501,45 @@ style={`
     <Loader {isLoading} />
   </div>
   <!-- <div class="sticky top-0"> will work since no wrapped overflow parent -->
-  <div class="w-full flex sticky z-10 top-0 md:-top-7 wide:top-0">
+  <div class="w-full flex items-start h-min sticky z-10 top-0 md:-top-7 wide:top-0">
     {#each columns as column, idx (column.id)}
-      <div class="flex p-2"
-      style="width: {(100 / columns.length).toFixed(2)}%">
-        <div class="w-full h-full p-2 bg-gray-200 rounded-md text-center">
+    <div class="relative flex overflow-visible w-[0px] h-[0px]">
+      {#if (column._tableHidden ?? false)}
+        <button
+          class="m-2 z-30 opacity-40 hover:opacity-100 absolute top-0 -left-1"
+          on:click={() => {
+            column._tableHidden = !column._tableHidden;
+            columns = columns.slice(); // Force refresh by new obj instance
+          }}
+        >
+          <EyeOutline class="text-2xl" />
+        </button>
+      {/if}
+    </div>
+    <div class="flex overflow-hidden"
+      class:p-2={!column._tableHidden}
+      class:h-[0px]={column._tableHidden}
+      style="width: {column._tableHidden ? 0 : (100 / visibleColumnsCount).toFixed(2)}%">
+        <div class="w-full p-2 bg-gray-200 rounded-md text-center">
           <!-- <div class="sticky top-0"> will not work since have parent xxx??? -->
           <div class="">
             {column.tag.label}
           </div>
         </div>
+      </div>
+      <div class="relative flex overflow-visible w-[0px] h-[0px]">
+        {#if !(column._tableHidden ?? false)}
+          <button
+            class="m-2 z-30 opacity-40 hover:opacity-100 absolute top-0 right-0"
+            on:click={() => {
+              column._tableHidden = !column._tableHidden;
+              // columns = [...columns]; // Force refresh by new obj instance
+              columns = columns.slice(); // Force refresh by new obj instance
+            }}
+          >
+            <EyeSlashOutline class="text-2xl" />
+          </button>
+        {/if}
       </div>
     {/each}
   </div>
@@ -518,11 +555,12 @@ style={`
   on:consider="{handleDndConsider}"
   on:finalize="{handleDndFinalize}">
     {#each columns as column, idx (column.id)}
-      <div class="flex p-2"
+      <div class="flex overflow-hidden"
+      class:p-2={!column._tableHidden}
       animate:flip="{{
         duration: flipDurationMs
       }}"
-      style="width: {(100 / columns.length).toFixed(2)}%">
+      style="width: {column._tableHidden ? 0 : (100 / visibleColumnsCount).toFixed(2)}%">
         <div class="w-full h-full p-2 border-2 border-gray-400 rounded-md">
           <!-- <div class="sticky top-0"> will not work due to wrapped overflow parent -->
           <div class="">
