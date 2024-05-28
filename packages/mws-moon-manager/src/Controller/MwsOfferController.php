@@ -545,6 +545,107 @@ class MwsOfferController extends AbstractController
                     OR o.contact2 <> ''
                     ");
                 }
+                if ($customFilter === "Avec un contact à ouvrir") {
+                    $qb = $qb->andWhere("
+                    o.contact1 IS NOT NULL
+                    OR o.contact2 IS NOT NULL
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact1 <> ''
+                    OR o.contact2 <> ''
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact1 LIKE :seeEmailLookup
+                    OR o.contact1 LIKE :seePhoneLookup
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact2 LIKE :seeEmailLookup
+                    OR o.contact2 LIKE :seePhoneLookup
+                    ");
+                    $qb->setParameter('seeEmailLookup', "%Voir l'adresse email%")
+                    ->setParameter('seePhoneLookup', "%Voir le téléphone%");
+                    ;
+                }
+                if ($customFilter === "Avec un contact ouvert") {
+                    $qb = $qb->andWhere("
+                    o.contact1 IS NOT NULL
+                    OR o.contact2 IS NOT NULL
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact1 <> ''
+                    OR o.contact2 <> ''
+                    ");
+                    $qb = $qb->andWhere("
+                    NOT (o.contact1 LIKE :seeEmailLookup
+                    OR o.contact1 LIKE :seePhoneLookup)
+                    ");
+                    $qb = $qb->andWhere("
+                    NOT (o.contact2 LIKE :seeEmailLookup
+                    OR o.contact2 LIKE :seePhoneLookup)
+                    ");
+
+                    $qb->setParameter('seeEmailLookup', "%Voir l'adresse email%")
+                    ->setParameter('seePhoneLookup', "%Voir le téléphone%");
+                    ;
+                    // dd($qb->getQuery()->getDQL());
+                }
+                if ($customFilter === "Avec un téléphone à ouvrir") {
+                    $qb = $qb->andWhere("
+                    o.contact1 IS NOT NULL
+                    OR o.contact2 IS NOT NULL
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact1 <> ''
+                    OR o.contact2 <> ''
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact1 LIKE :seePhoneLookup
+                    OR o.contact2 LIKE :seePhoneLookup
+                    ");
+                    $qb->setParameter('seePhoneLookup', "%Voir le téléphone%");
+                    ;
+                    // dd($qb->getQuery()->getDQL());
+                }
+                if ($customFilter === "Avec un téléphone ouvert") {
+                    $qb = $qb->andWhere("
+                    o.contact1 IS NOT NULL
+                    OR o.contact2 IS NOT NULL
+                    ");
+                    $qb = $qb->andWhere("
+                    o.contact1 <> ''
+                    OR o.contact2 <> ''
+                    ");
+                    $qb = $qb->andWhere("
+                    NOT (o.contact1 LIKE :seeEmailLookup
+                    OR o.contact1 LIKE :seePhoneLookup)
+                    ");
+                    // OR o.contact1 LIKE :emailSign)
+                    // ");
+                    $qb = $qb->andWhere("
+                    NOT (o.contact2 LIKE :seeEmailLookup
+                    OR o.contact2 LIKE :seePhoneLookup)
+                    ");
+
+                    $qb->setParameter('seeEmailLookup', "%Voir l'adresse email%")
+                    ->setParameter('seePhoneLookup', "%Voir le téléphone%");
+                    // $qb->setParameter('emailSign', "%@%");
+                    // $qb->setParameter('phoneSign', "%+%"); // Indicatif.
+                    ;
+                    // dd($qb->getQuery()->getDQL());
+                    // https://www.sqlite.org/lang_expr.html#regexp
+                    // TODO : version of SQLITE ? + SQLITE FUNCTION, using sql one avoid it's usage for sqlite ?
+                    // $qb = $qb->andWhere("
+                    // (REGEXP(o.contact1, :phoneRegexp) = 0
+                    // OR REGEXP(o.contact2, :phoneRegexp) = 0)
+                    // ");
+                    // $qb->setParameter('phoneRegexp', "[0-9 +()]+");
+                    $qb = $qb->andWhere("
+                        (o.contact1 LIKE :phoneSign
+                        OR o.contact2 LIKE :phoneSign)
+                    ");
+                    $qb->setParameter('phoneSign', "%+%"); // Indicatif.
+
+                }
                 if ($customFilter === "Sans offre déposée") {
                     // $qb = $qb->andWhere("
                     // o.sourceDetail.monwooOfferId IS NOT NULL

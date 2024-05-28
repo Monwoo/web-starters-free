@@ -108,6 +108,7 @@ doctrine:
                 # radians: DoctrineExtensions\Query\Sqlite\Radians
                 random: DoctrineExtensions\Query\Sqlite\Random
                 # regexp: DoctrineExtensions\Query\Sqlite\Regexp
+                regexp: DoctrineExtensions\Query\Mysql\Regexp
                 replace: DoctrineExtensions\Query\Sqlite\Replace
                 # sha1: DoctrineExtensions\Query\Sqlite\Sha1
                 # sha2: DoctrineExtensions\Query\Sqlite\Sha2
