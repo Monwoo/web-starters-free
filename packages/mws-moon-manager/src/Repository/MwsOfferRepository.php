@@ -42,6 +42,7 @@ class MwsOfferRepository extends ServiceEntityRepository
                 o.sourceName as value,
                 o.sourceName as label
             ")
+            ->where("o.sourceName IS NOT NULL")
             // TODO : 'value as label' not working. Why and do tips below...
             ->orderBy('o.sourceName', 'ASC')
             ->getQuery()->getResult();
@@ -52,6 +53,7 @@ class MwsOfferRepository extends ServiceEntityRepository
                 o.clientUsername as value,
                 o.clientUsername as label
             ")
+            ->where("o.clientUsername IS NOT NULL")
             ->orderBy('o.clientUsername', 'ASC')
             ->getQuery()->getResult();
         $allOfferTags = array_map(
@@ -80,8 +82,9 @@ class MwsOfferRepository extends ServiceEntityRepository
         $allOfferBudgets = $this
             ->createQueryBuilder("o")
             ->select("
-            DISTINCT o.budget as value
-        ")
+                DISTINCT o.budget as value
+            ")
+            ->where("o.clientUsername IS NOT NULL")
             ->orderBy('o.budget', 'ASC')
             ->getQuery()->getResult();
 

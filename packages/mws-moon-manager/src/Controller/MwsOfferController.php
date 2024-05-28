@@ -161,7 +161,7 @@ class MwsOfferController extends AbstractController
         //     $offerInput['leadStart'] = new DateTime();
         // }
         $offerInput['leadStart'] = new DateTime(
-            $offerInput['leadStart']
+            ($offerInput['leadStart'] ?? false)
                 ? $offerInput['leadStart']
                 : 'now'
         );
