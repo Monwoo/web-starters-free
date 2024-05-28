@@ -85,6 +85,7 @@ class MwsOfferController extends AbstractController
         string|null $viewTemplate,
         Request $request,
         MwsOfferRepository $mwsOfferRepository,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
         // MwsTimeQualifRepository $mwsTimeQualifRepository,
         CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
@@ -104,6 +105,7 @@ class MwsOfferController extends AbstractController
         // TODO : use serializer deserialize ?
         $offerInput = json_decode($offerInput, true);
         // dd($offerInput);
+        $tagSlugSep = ' > '; // TODO :load objects and trick display/value function of surveyJS instead...
 
         $criteria = [];
         if ($offerInput['id'] ?? false) {
@@ -164,8 +166,32 @@ class MwsOfferController extends AbstractController
                 : 'now'
         );
         $sync('leadStart');
+        $offerInput['slug'] = $this->slugger->slug($offerInput['slug']);
         $sync('slug');
+        $sync('sourceName');
         $sync('clientUsername');
+        $sync('contact1');
+        $sync('contact2');
+        $sync('contact3');
+        $sync('sourceUrl');
+        $sync('clientUrl');
+        $sync('currentBillingNumber');
+        $offerInput['currentStatusSlug'] = ($offerInput['currentStatusSlug'] ?? false) 
+            ? str_replace($tagSlugSep, '|', $offerInput['currentStatusSlug'])
+            : null;
+        $sync('currentStatusSlug');
+        $offerInput['tags'] = $offerInput['tags'] ?? [];
+        foreach($offerInput['tags'] as $idx => $tag) {
+            if (is_string($tag)) {
+                [$categorySlug, $slug] = explode($tagSlugSep, $tag);
+                $offerInput['tags'][$idx] = $mwsOfferStatusRepository->findOneBy([
+                    "categorySlug" => $categorySlug,
+                    "slug" => $slug,
+                ]);
+            }
+        }
+        // dd($offerInput['tags']);
+        $sync('tags');
 
         $this->em->persist($offer);
         $this->em->flush();
