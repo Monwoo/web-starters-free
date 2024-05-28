@@ -191,7 +191,7 @@ class MwsOfferController extends AbstractController
             }
         }
         // dd($offerInput['tags']);
-        $sync('tags');
+        // $sync('tags'); // TODO : sync issue, removing existing tags
 
         $this->em->persist($offer);
         $this->em->flush();

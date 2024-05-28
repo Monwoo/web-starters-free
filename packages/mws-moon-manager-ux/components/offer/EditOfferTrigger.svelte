@@ -81,8 +81,10 @@
           const data = await resp.json();
           offer = {
             ...offer, // TIPS : keep current frontend extra param injections
-            ...offerToSurveyJsTransformer(data.sync), // sync with backend results
+            ...data.sync, // sync with backend results
+            // ...offerToSurveyJsTransformer(data.sync)
           };
+          $state.addOfferModal.surveyModel.data = offerToSurveyJsTransformer(offer);
 
           // if (data.didDelete) {
           // } else {

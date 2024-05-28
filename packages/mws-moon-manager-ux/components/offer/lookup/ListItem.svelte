@@ -27,7 +27,7 @@
   import Loader from "../../layout/widgets/Loader.svelte";
   import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import { flip } from "svelte/animate";
-import EditOfferTrigger from "../EditOfferTrigger.svelte";
+  import EditOfferTrigger from "../EditOfferTrigger.svelte";
 
   export let locale;
   export let viewTemplate;
@@ -42,7 +42,11 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
   export let refreshKey = {};
 
   $: trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
+  // $: console.debug('Did update offer to :', offer);
+  $: offer, refreshKey;
+  // $: console.debug('Did update offer to :', offer);
 
+  // console.debug('Did update offer to :', offer);
   // TODO : centralize sanitizer inside service or lib or...
   export let sanitizeClientHtml = (i) => {
     // console.debug(i); // return i;

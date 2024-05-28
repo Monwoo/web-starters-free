@@ -391,7 +391,7 @@
         {locale}
         {isMobile} {isWide}
         {searchLookup}
-        {offers}
+        bind:offers
         {offersHeaders}
         {viewTemplate}
         {addMessageForm}

@@ -210,7 +210,9 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
             const data = await resp.json();
             // TODO : sync trakings :
             // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
-            _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
+            // _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
+            // TIPS : BAD IDEA to use _.merge, use bind: instead...
+            offer = data.sync;
             stateUpdate(state, {
               csrfOfferAddComment: data.newCsrf,
             });
