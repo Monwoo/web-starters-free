@@ -440,7 +440,7 @@ import Base from "../../layout/Base.svelte";
   // column.offers
 
   $: visibleColumnsCount = columns.filter((c) => {
-    return !columns._tableHidden;
+    return !c._tableHidden;
   }).length;
 
 </script>
