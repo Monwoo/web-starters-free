@@ -26,7 +26,7 @@
   import EditOfferTrigger from "../EditOfferTrigger.svelte";
   import { EyeSlashOutline } from "flowbite-svelte-icons";
   import { EyeOutline } from "flowbite-svelte-icons";
-import Base from "../../layout/Base.svelte";
+  import Base from "../../layout/Base.svelte";
 
   export let locale;
   export let offers = [];
@@ -241,17 +241,20 @@ import Base from "../../layout/Base.svelte";
       searchLookup,
       $state.offerTagsByCatSlugAndSlug
     );
-    if (!selectedCategory || "null" == selectedCategory) {
-      selectedCategory = Object.keys($state.offerTagsByCatSlugAndSlug).reduce(
-        (acc, tIdx) => {
-          const t = $state.offerTagsByCatSlugAndSlug[tIdx];
-          if (!acc && !t.categorySlug) {
-            acc = tagSlugSep + t.slug;
-          }
-          return acc;
-        },
-        null
-      );
+    if (!selectedCategory || ("null" == selectedCategory)) {
+      // selectedCategory = Object.keys($state.offerTagsByCatSlugAndSlug).reduce(
+      //   (acc, tIdx) => {
+      //     const t = $state.offerTagsByCatSlugAndSlug[tIdx];
+      //     if (!acc && !t.categorySlug) {
+      //       acc = tagSlugSep + t.slug;
+      //     }
+      //     return acc;
+      //   },
+      //   null
+      // );
+      // TODO : default category from CRM parameters...
+      const defaultParam = ' > kanban';
+      selectedCategory = defaultParam;
     }
     console.debug("Columns selectedCategory :", selectedCategory);
     if (
@@ -549,6 +552,8 @@ style={`
     items: columns,
     // https://github.com/isaacHagoel/svelte-dnd-action?tab=readme-ov-file#input
     type: 'column',
+    // on:click={(e) => (columnDragDisabled = true)}
+    // dragDisabled: columnDragDisabled,
     // ...otherOptions
     flipDurationMs,
   }}"
@@ -566,7 +571,8 @@ style={`
           <div class="">
             {column.tag.label}
           </div>
-          <div class="w-full flex flex-wrap overflow-scroll min-h-[80%] content-start justify-center"
+          <div 
+          class="w-full flex flex-wrap overflow-scroll min-h-[80%] content-start justify-center"
           data-tail="1"
           use:dndzone="{{
             items: column.offers,
