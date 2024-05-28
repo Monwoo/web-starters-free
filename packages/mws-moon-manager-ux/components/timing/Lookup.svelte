@@ -391,6 +391,8 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
               _locale: locale ?? "",
               viewTemplate: viewTemplate ?? "",
               pageLimit,
+              ...urlParams,
+              page: '1',
             })}
             bind:this={pageLimitForm}
             name="pageLimitForm"

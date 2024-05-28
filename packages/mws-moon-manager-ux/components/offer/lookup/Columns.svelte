@@ -23,6 +23,7 @@
   import Loader from "../../layout/widgets/Loader.svelte";
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
+import EditOfferTrigger from "../EditOfferTrigger.svelte";
 
   export let locale;
   export let offers = [];
@@ -543,7 +544,9 @@ style={`
               class="p-2">
                 <!-- // TIPS : avoid margin for % height compute to fit contents without overflows -->
                 <div
-                class="p-2 border-2 border-gray-700 rounded-md">
+                class="p-2 border-2 border-gray-700 rounded-md
+                flex flex-col items-center justify-center text-center">
+                  <EditOfferTrigger {offer} />
                   <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
                   <a
                     href={Routing.generate("mws_offer_view", {
@@ -554,10 +557,10 @@ style={`
                     class="flex flex-col items-center justify-center text-center"
                     target="_blank"
                   >
-                    {#if offer.contacts[0].avatarUrl ?? false}
+                    {#if offer.contacts[0]?.avatarUrl ?? false}
                       <img
                         width={64 - 50 * (1 - reportScale/100)}
-                        src={offer.contacts[0].avatarUrl}
+                        src={offer.contacts[0]?.avatarUrl}
                         alt="Avatar"
                       />
                     {/if}

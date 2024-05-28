@@ -119,7 +119,7 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
   public function getFunctions()
   {
     return [
-      new TwigFunction('fetchMwsAddOfferConfig', [$this, 'fetchMwsAddOfferConfig']),
+      new TwigFunction('fetchMwsAddOfferForm', [$this, 'fetchMwsAddOfferForm']),
       // new TwigFunction('area', [$this, 'calculateArea']),
     ];
   }
@@ -129,77 +129,12 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
   //     return $width * $length;
   // }
 
-  public function fetchMwsAddOfferConfig()
+  public function fetchMwsAddOfferForm()
   {
     $this->container = $this->kernel->getContainer();
-    // dd($this->container);
-    // $tagSlugSep = '|'; // TODO :load objects and trick display/value function of surveyJS allowing '|' separator instead... ?
-    $tagSlugSep = ' > ';
-    $allSourceNames = $this->mwsOfferRepository
-      ->createQueryBuilder("o")
-      ->select("
-        DISTINCT
-          o.sourceName as value,
-          o.sourceName as label
-    ")
-      // TODO : 'value as label' not working. Why and do tips below...
-      ->orderBy('o.sourceName', 'ASC')
-      ->getQuery()->getResult();
-    $allClientNames = $this->mwsOfferRepository
-      ->createQueryBuilder("o")
-      ->select("
-        DISTINCT
-          o.clientUsername as value,
-          o.clientUsername as label
-    ")
-      ->orderBy('o.clientUsername', 'ASC')
-      ->getQuery()->getResult();
-    $allOfferTags = array_map(
-      function (array $tagResp) use ($tagSlugSep) {
-        $tag = $tagResp[0];
-        $slug = $tag->getCategorySlug() . $tagSlugSep . $tag->getSlug();
-        // dd($slug);
-        return $slug;
-        // return [
-        //   "value" => $slug,
-        //   "label" => $tag->getCategorySlug() . " > " . $tag->getSlug(),
-        // ];
-      },
-      // $mwsOfferStatusRepository->findAll()
-      $this->mwsOfferStatusRepository
-        ->createQueryBuilder("s")
-        // https://stackoverflow.com/questions/8233746/concatenate-with-null-values-in-sql
-        ->select("s, CONCAT(COALESCE(s.categorySlug, ''), s.slug) AS slugKey")
-        // ->where($qb->expr()->isNotNull("t.categorySlug"))
-        // ->orderBy("t.categorySlug")
-        // ->addOrderBy("t.slug")
-        ->addOrderBy("slugKey")
-        ->getQuery()->getResult()
-    );
-    // dd($allClientNames);
-    $allOfferBudgets = $this->mwsOfferRepository
-        ->createQueryBuilder("o")
-        ->select("
-            DISTINCT o.budget as value
-        ")
-        ->orderBy('o.budget', 'ASC')
-        ->getQuery()->getResult();
 
-    $mwsAddOfferConfig = [
-      "jsonResult" => rawurlencode(json_encode([
-        // "searchKeyword" => $keyword,
-      ])),
-      "surveyJsModel" => rawurlencode($this->renderView(
-        "@MoonManager/survey_js_models/MwsOfferAddType.json.twig",
-        [
-          'allSourceNames' => $allSourceNames,
-          'allClientNames' => $allClientNames,
-          'allOfferTags' => $allOfferTags,
-          'allOfferBudgets' => $allOfferBudgets,
-        ]
-      )),
-    ]; // TODO : save in session or similar ? or keep GET system data transfert system ?
-    $mwsAddOfferForm = $this->createForm(MwsSurveyJsType::class, $mwsAddOfferConfig);
+    $mwsAddOfferForm = $this->mwsOfferRepository
+    ->fetchMwsAddOfferForm();
 
     return $mwsAddOfferForm->createView();
   }
@@ -215,7 +150,7 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
 
   public function getGlobals(): array
   {
-    // $fetchMwsAddOfferConfig = function () {
+    // $fetchMwsAddOfferForm = function () {
     //   $this->container = $this->kernel->getContainer();
     //   dd($this->container);
 
@@ -237,7 +172,7 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
     // };
 
     return [
-      // 'fetchMwsAddOfferConfig' => $fetchMwsAddOfferConfig, // Nop, use set function instead...
+      // 'fetchMwsAddOfferForm' => $fetchMwsAddOfferForm, // Nop, use set function instead...
       'mwsTimingLookupFields' => [
         // TODO : dynamic from surveyJS json fields instead of ram list + reuse for twig... ? or from backend configs ?
         'searchKeyword' => true,
@@ -250,39 +185,39 @@ class EnvExtension extends AbstractExtension implements GlobalsInterface
     ];
   }
 
-  /**
-   * Creates and returns a Form instance from the type of the form.
-   */
-  protected function createForm(string $type, mixed $data = null, array $options = []): FormInterface
-  {
-    // An exception has been thrown during the rendering of a template 
-    // ("The "form.factory" service or alias has been removed or inlined 
-    // when the container was compiled. You should either make it public,
-    // or stop using the container directly and use dependency injection instead.").
-    // return $this->container->get('form.factory')->create($type, $data, $options);
-    // php bin/console debug:container | grep 'form.factory'
-    return $this->formFactory->create($type, $data, $options);
-  }
+  // /**
+  //  * Creates and returns a Form instance from the type of the form.
+  //  */
+  // protected function createForm(string $type, mixed $data = null, array $options = []): FormInterface
+  // {
+  //   // An exception has been thrown during the rendering of a template 
+  //   // ("The "form.factory" service or alias has been removed or inlined 
+  //   // when the container was compiled. You should either make it public,
+  //   // or stop using the container directly and use dependency injection instead.").
+  //   // return $this->container->get('form.factory')->create($type, $data, $options);
+  //   // php bin/console debug:container | grep 'form.factory'
+  //   return $this->formFactory->create($type, $data, $options);
+  // }
 
-  /**
-   * Returns a rendered view.
-   *
-   * Forms found in parameters are auto-cast to form views.
-   */
-  protected function renderView(string $view, array $parameters = []): string
-  {
-    // TODO : container is missing twig ?
-    // if (!$this->container->has('twig')) {
-    //     throw new \LogicException('You cannot use the "renderView" method if the Twig Bundle is not available. Try running "composer require symfony/twig-bundle".');
-    // }
+  // /**
+  //  * Returns a rendered view.
+  //  *
+  //  * Forms found in parameters are auto-cast to form views.
+  //  */
+  // protected function renderView(string $view, array $parameters = []): string
+  // {
+  //   // TODO : container is missing twig ?
+  //   // if (!$this->container->has('twig')) {
+  //   //     throw new \LogicException('You cannot use the "renderView" method if the Twig Bundle is not available. Try running "composer require symfony/twig-bundle".');
+  //   // }
 
-    foreach ($parameters as $k => $v) {
-      if ($v instanceof FormInterface) {
-        $parameters[$k] = $v->createView();
-      }
-    }
+  //   foreach ($parameters as $k => $v) {
+  //     if ($v instanceof FormInterface) {
+  //       $parameters[$k] = $v->createView();
+  //     }
+  //   }
 
-    // return $this->container->get('twig')->render($view, $parameters);
-    return $this->twig->render($view, $parameters);
-  }
+  //   // return $this->container->get('twig')->render($view, $parameters);
+  //   return $this->twig->render($view, $parameters);
+  // }
 }

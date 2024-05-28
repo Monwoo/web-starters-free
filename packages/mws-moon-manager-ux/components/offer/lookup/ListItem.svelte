@@ -27,9 +27,7 @@
   import Loader from "../../layout/widgets/Loader.svelte";
   import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import { flip } from "svelte/animate";
-  import {
-    EditOutline
-  } from "flowbite-svelte-icons";
+import EditOfferTrigger from "../EditOfferTrigger.svelte";
 
   export let locale;
   export let viewTemplate;
@@ -254,10 +252,6 @@
     }
     isLoading = false;
   };
-
-  // TODO : factorize, cf php controller :
-  const tagSlugSep = " > ";
-
 </script>
 
 <tr>
@@ -275,34 +269,11 @@
     >
       <img
         width="64"
-        src={offer.contacts[0].avatarUrl ?? ""}
-        alt={offer.contacts[0].username ?? ""}
+        src={offer.contacts[0]?.avatarUrl ?? ""}
+        alt={offer.contacts[0]?.username ?? ""}
       />
     </a>
-    <button
-    class="m-2"
-    on:click={() => {
-      // TODO : factorize with offerExportSJDataNormalizer / offerImportSJDataNormalizer
-      $state.addOfferModal.surveyModel.data = {
-        ...offer,
-        // leadStart: dayjs(offer.leadStart).format("DD/MM/YYYY HH:mm"),
-        leadStart: dayjs(offer.leadStart).format("YYYY-MM-DDTHH:mm"),
-        tags: offer.tags.map((t) => t.categorySlug + tagSlugSep + t.slug),
-        // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
-        currentStatusSlug: offer.currentStatusSlug.replace('|', ' > '),
-        sourceDetail: [{
-          ...(offer.sourceDetail ?? {}),
-          messages: (offer.sourceDetail.messages ?? [])
-          .map((m) => ({
-            msg: m,
-          }))
-        }]
-      }; // Ensure data is in sync
-      $state.addOfferModal.eltModal.show();
-    }}
-    >
-      <EditOutline class="text-2xl" />
-    </button>
+    <EditOfferTrigger {offer} />
     <!-- <a href="#qualify">
       TIPS : short cuted by 'status' update, will qualify depending of logic
              linked to new status change
@@ -346,9 +317,9 @@
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>
     {offer.clientUsername} <br />
-    {offer.contacts[0].sourceDetail?.status} <br />
-    {offer.contacts[0].sourceDetail?.nbProjects} projet(s) <br />
-    depuis : {offer.contacts[0].sourceDetail?.membershipStart} <br />
+    {offer.contacts[0]?.sourceDetail?.status} <br />
+    {offer.contacts[0]?.sourceDetail?.nbProjects} projet(s) <br />
+    depuis : {offer.contacts[0]?.sourceDetail?.membershipStart} <br />
   </td>
   <td>
     <ContactLink
@@ -484,8 +455,8 @@
           }/${myOfferId}" target="_blank" rel="noreferrer">
             <button class="">Source des messages</button>
           </a><br/>
-          Proposition : ${offer.sourceDetail.monwooOfferAmount ?? ""}<br/>
-          Délais : ${offer.sourceDetail.monwooOfferDelay ?? ""}<br/>
+          Proposition : ${offer.sourceDetail?.monwooOfferAmount ?? ""}<br/>
+          Délais : ${offer.sourceDetail?.monwooOfferDelay ?? ""}<br/>
           `
             : ``
         }
@@ -550,8 +521,8 @@
                 }/${myOfferId}" target="_blank" rel="noreferrer">
                   <button class="">Source des messages</button>
                 </a><br/>
-                Proposition : ${offer.sourceDetail.monwooOfferAmount ?? ""}<br/>
-                Délais : ${offer.sourceDetail.monwooOfferDelay ?? ""}<br/>
+                Proposition : ${offer.sourceDetail?.monwooOfferAmount ?? ""}<br/>
+                Délais : ${offer.sourceDetail?.monwooOfferDelay ?? ""}<br/>
               `
                   : ``
               }
@@ -574,8 +545,8 @@
     </div>
     <div class="overflow-auto max-h-[8em]">
       <div class="sended-messages">
-        Proposition : {offer.sourceDetail.monwooOfferAmount ?? ""}<br />
-        Délais : {offer.sourceDetail.monwooOfferDelay ?? ""}<br />
+        Proposition : {offer.sourceDetail?.monwooOfferAmount ?? ""}<br />
+        Délais : {offer.sourceDetail?.monwooOfferDelay ?? ""}<br />
 
         <!-- TODO : .reverse() not working with reduce ?
           {@html (offer.sourceDetail?.messages ?? []).reverse().reduce( FAIL

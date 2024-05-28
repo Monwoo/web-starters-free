@@ -95,8 +95,10 @@
         <button
         class=""
         on:click={() => {
-          addOfferModal.surveyModel.data = null; // Ensure data is empty before show...
-          addOfferModal.eltModal.show();
+          if (addOfferModal.surveyModel) {
+            addOfferModal.surveyModel.data = null; // Ensure data is empty before show...
+            addOfferModal.eltModal.show();
+          } // Otherwise, ignore click, still loading, user will have to retry...
         }}
         >
           <CirclePlusSolid class="text-2xl" />

@@ -272,6 +272,8 @@
         _locale: locale ?? "",
         viewTemplate: viewTemplate ?? "",
         pageLimit,
+        ...urlParams,
+        page: '1',
       })}
       bind:this={pageLimitForm}
       name="pageLimitForm"

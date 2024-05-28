@@ -101,7 +101,7 @@
 	{# {{ app.request.attributes.get('_route') }}
 	{{ app.request._route }} #}
 		{% block storesInit %}
-			{% set mwsAddOfferForm = fetchMwsAddOfferConfig() %}
+			{% set mwsAddOfferForm = fetchMwsAddOfferForm() %}
 
 			<div
 			class="hidden"
@@ -112,6 +112,7 @@
                 'class': 'd-flex flex-wrap mws-survey-js-form'
             } }) ~ form_widget(mwsAddOfferForm)
             ~ form_end(mwsAddOfferForm)),
+					'csrfOfferSync': csrf_token('mws-csrf-offer-sync'),
 					'gdprLastCleanDate': gdprLastCleanDate ?? null,
 					'gdprNextCleanDate': gdprNextCleanDate ?? null,
 					'packageName': packageName,

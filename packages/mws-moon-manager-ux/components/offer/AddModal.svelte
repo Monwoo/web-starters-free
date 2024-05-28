@@ -16,6 +16,7 @@
     import { tick } from "svelte";
     import { Modal } from "flowbite";
     import Routing from "fos-router";
+    import Loader from "../layout/widgets/Loader.svelte";
     const UID = newUniqueId();
     export let mwsAddOfferForm;
     export let modalId = `offerAddModal-${UID}`;
@@ -25,6 +26,8 @@
     export let surveyModel;
     export let sourceDetailView; // HTML view of source to help fill form....
     export let showSourceDetail = true;
+    export let syncOfferWithBackend; // If defined, will ajax call instead of html submit refresh
+    export let isLoading = false;
 
     let htmlModalRoot;
 
@@ -48,7 +51,7 @@
                 // update the value but do not trigger reactive refresh...
                 // (since set surveyModel.data inside it instead of re-assign)
                 // window.jQuery('html, body, main').scrollTop( 0 );
-                window.jQuery('.mws-add-modal').scrollTop( 0 );
+                window.jQuery(".mws-add-modal").scrollTop(0);
                 surveyModel = surveyModel;
                 console.log("modal is shown");
             },
@@ -62,16 +65,45 @@
             const jQuery = window.$; // TODO : no missing 'window' with SF controllers ways ?
             let surveyWrapper = jQuery(".survey-js-wrapper", htmlModalRoot);
             surveyModel = surveyWrapper.data("surveyModel");
-
             console.debug("Add Modal onMount surveyModel : ", surveyModel);
-        }, 500);
+            if (syncOfferWithBackend) {
+                jQuery('.mws-offer-add-modal form[name="mws_survey_js"]').on(
+                    "submit",
+                    async (e) => {
+                        isLoading = true;
+                        console.debug('Did submit add offer :', e, surveyModel.data);
+                        e.stopPropagation();
+                        e.preventDefault();
+                        // const offer = surveyModel.dataTransformer
+                        // ? surveyModel.dataTransformer(surveyModel.data) : surveyModel.data;
+
+                        // TODO : convert back to offer format or do it server side
+                        // since server drive json survey model ? => detect 2 data model, to reduce in same classique db offer model...
+                        const offer = surveyModel.data;
+
+                        await syncOfferWithBackend(offer, (offer) => {
+                            // Clean and close popup :
+                            surveyModel.data = null;
+                            surveyModel.clear();
+                            eltModal.hide();
+                        }, (offer, error) => {
+                            surveyModel.clear();
+                            // TIPS : nothing updated if error, below useless ? :
+                            // https://vscode.dev/github/Monwoo/web-starters-free/blob/main/packages/mws-moon-manager-ux/components/offer/EditOfferTrigger.svelte#L84
+                            // => useful since previous 'clear' did empty form...
+                            surveyModel.data = offer;
+                        });
+                        isLoading = false;
+                    }
+                );
+            }
+        }, 500); // TODO : timeout for quick hack, find right event position for this code to run instead...
 
         const modalElement = document.querySelector(`#${modalId}`);
 
         eltModal = eltModal || new Modal(modalElement, modalOptions);
         return;
     });
-
 </script>
 
 <div
@@ -79,7 +111,7 @@
     id={modalId}
     tabindex="-1"
     aria-hidden="true"
-    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden
+    class="mws-offer-add-modal fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden
 overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
 >
     <div class="relative w-full max-w-full max-h-full m-3">
@@ -90,8 +122,12 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
             >
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    {surveyModel?.data.id ? "Éditer l'offre " + surveyModel?.data.id : "Ajouter une offre"}
+                    {surveyModel?.data.id
+                        ? "Éditer l'offre " + surveyModel?.data.id
+                        : "Ajouter une offre"}
                 </h3>
+                <Loader {isLoading} />
+                <Loader class="fixed top-4 right-4" {isLoading} />
                 <button
                     type="button"
                     class="text-gray-400 bg-transparent
@@ -119,22 +155,17 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 </button>
             </div>
             <!-- Modal body -->
-            {#if sourceDetailView &&
-                sourceDetailView.length}
+            {#if sourceDetailView && sourceDetailView.length}
                 <button
-                on:click={() => (showSourceDetail = !showSourceDetail)}
-                type="button"
-                class="text-gray-500 bg-white hover:bg-gray-100
+                    on:click={() => (showSourceDetail = !showSourceDetail)}
+                    type="button"
+                    class="text-gray-500 bg-white hover:bg-gray-100
                 fixed z-20 right-0 top-[10dvh]"
-                >{showSourceDetail
-                    ? "Cacher"
-                    : "Voir"}
+                    >{showSourceDetail ? "Cacher" : "Voir"}
                 </button>
             {/if}
 
-            {#if sourceDetailView &&
-                sourceDetailView.length &&
-                showSourceDetail}
+            {#if sourceDetailView && sourceDetailView.length && showSourceDetail}
                 <div
                     class="pt-12 p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[30dvw] h-[60dvh] top-[10dvh]"
                 >
@@ -144,10 +175,12 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 </div>
             {/if}
             <!-- Modal body -->
-            <div class="p-1 space-y-6 text-black text-left"
-            class:mr-[25dvw]={sourceDetailView &&
-                sourceDetailView.length &&
-                showSourceDetail}>
+            <div
+                class="p-1 space-y-6 text-black text-left"
+                class:mr-[25dvw]={sourceDetailView &&
+                    sourceDetailView.length &&
+                    showSourceDetail}
+            >
                 {@html mwsAddOfferForm}
             </div>
             <!-- Modal footer -->
@@ -155,9 +188,9 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600"
             >
                 <button
-                on:click={eltModal?.hide()}
-                type="button"
-                class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                    on:click={eltModal?.hide()}
+                    type="button"
+                    class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
                 >
                     Annuler
                 </button>
@@ -172,6 +205,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                             : "Voir les détails"}</button
                     >
                 {/if}
+                <Loader {isLoading} />
             </div>
         </div>
     </div>

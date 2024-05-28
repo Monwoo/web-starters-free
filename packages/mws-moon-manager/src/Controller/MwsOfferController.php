@@ -73,6 +73,110 @@ class MwsOfferController extends AbstractController
         );
     }
 
+    #[Route(
+        '/offer/sync/{viewTemplate<[^/]*>?}',
+        name: 'mws_offer_sync',
+        methods: ['POST'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function offerSync(
+        string|null $viewTemplate,
+        Request $request,
+        MwsOfferRepository $mwsOfferRepository,
+        // MwsTimeQualifRepository $mwsTimeQualifRepository,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth", []);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        $csrf = $request->request->get('_csrf_token');
+        if (!$this->isCsrfTokenValid('mws-csrf-offer-sync', $csrf)) {
+            $this->logger->debug("Fail csrf with", [$csrf]);
+            throw $this->createAccessDeniedException('CSRF Expired');
+        }
+        $offerInput = $request->request->get('offer');
+        // TODO : use serializer deserialize ?
+        $offerInput = json_decode($offerInput, true);
+        // dd($offerInput);
+
+        $criteria = [];
+        if ($offerInput['id'] ?? false) {
+            $criteria['id'] = $offerInput['id'];
+        }
+        $offer = count($criteria)
+            ? $mwsOfferRepository->findOneBy($criteria)
+            : null;
+        if (!$offer) {
+            $offer = new MwsOffer();
+        }
+        if ($offerInput['_shouldDelete'] ?? false) {
+            $this->em->remove($offer);
+            $this->em->flush();
+            return $this->json([
+                'sync' => null,
+                'didDelete' => true,
+                'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-sync')->getValue(),
+                'viewTemplate' => $viewTemplate,
+            ]);
+        }
+        $sync = function ($path) use (&$offer, &$offerInput) {
+            $get = 'get' . ucfirst($path);
+            $v =  $offerInput[$path] ?? null;
+            if (null !== $v) {
+                $set = 'set' . ucfirst($path);
+                if (!method_exists($offer, $set)) {
+                    // Is collection :
+                    $add = 'add' . ucfirst($path);
+                    if (!method_exists($offer, $add)) {
+                        $add = preg_replace('/s$/', '', $add);
+                    }
+                    $collection = $offer->$get();
+                    $collection->clear();
+                    foreach ($v as $subV) {
+                        $offer->$add($subV);
+                    }
+                } else {
+                    $offer->$set($v);
+                }
+            }
+        };
+
+        // if (is_array($qualifInput['primaryColorRgb'] ?? false)) {
+        //     $qualifInput['primaryColorRgb'] = implode(
+        //         ', ',
+        //         $qualifInput['primaryColorRgb']
+        //     );
+        // }
+        // if ($offerInput['leadStart']) {
+        //     $offerInput['leadStart'] = new DateTime();
+        // } else {
+        //     $offerInput['leadStart'] = new DateTime();
+        // }
+        $offerInput['leadStart'] = new DateTime(
+            $offerInput['leadStart']
+                ? $offerInput['leadStart']
+                : 'now'
+        );
+        $sync('leadStart');
+        $sync('slug');
+        $sync('clientUsername');
+
+        $this->em->persist($offer);
+        $this->em->flush();
+
+        return $this->json([
+            'sync' => $offer,
+            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-sync')->getValue(),
+            'viewTemplate' => $viewTemplate,
+        ]);
+    }
+
     #[Route('/lookup/{viewTemplate<[^/]*>?}', name: 'mws_offer_lookup')]
     public function lookup(
         $viewTemplate,
@@ -206,6 +310,40 @@ class MwsOfferController extends AbstractController
             }
         }
 
+        // TIPS : global form, better use api stuff instead of copy/past code inside each controllers...
+        // // $offer =
+        // $mwsAddOfferForm = $mwsOfferRepository->fetchMwsAddOfferForm(
+        //     /* TODO: init with offer id */);
+        // $mwsAddOfferForm->handleRequest($request);
+        // if ($mwsAddOfferForm->isSubmitted()) {
+        //     $this->logger->debug("Did submit add offer form");
+        //     if ($mwsAddOfferForm->isValid()) {
+        //         $this->logger->debug("add offer form ok");
+        //         $surveyAnswers = json_decode(
+        //             urldecode($mwsAddOfferForm->get('jsonResult')->getData()),
+        //             true
+        //         );
+        //         dd($surveyAnswers);
+        //         return $this->redirectToRoute(
+        //             'mws_offer_lookup',
+        //             array_merge($request->query->all(), [
+        //                 "viewTemplate" => $viewTemplate,
+        //                 "keyword" => $keyword,
+        //                 "searchBudgets" => $searchBudgets,
+        //                 "searchStart" => $searchStart,
+        //                 "searchEnd" => $searchEnd,
+        //                 "searchTags" => $searchTags,
+        //                 "searchTagsToInclude" => $searchTagsToInclude,
+        //                 "searchTagsToAvoid" => $searchTagsToAvoid,
+        //                 "customFilters" => $customFilters,
+        //                 "page" => 1,
+        //                 // "sourceRootLookupUrl" => $sourceRootLookupUrl,
+        //             ]),
+        //             Response::HTTP_SEE_OTHER
+        //         );
+        //     }
+        // }
+
         if ($keyword) {
             $qb
                 // LOWER(REPLACE(o.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
@@ -293,7 +431,7 @@ class MwsOfferController extends AbstractController
                     $criteria['slug'] = $slug;
                 }
                 $tags = $mwsOfferStatusRepository->findBy($criteria);
-                
+
                 // No meaning to force include of all tags for exclusive category,
                 // will only have one of it... ok for other category ?
                 // not tested yet, only exclusive category for now...
@@ -309,7 +447,7 @@ class MwsOfferController extends AbstractController
                     // dd($dql);
                 }
                 $dql .= ' )';
-                $qb = $qb->andWhere($dql);    
+                $qb = $qb->andWhere($dql);
             }
         }
 
