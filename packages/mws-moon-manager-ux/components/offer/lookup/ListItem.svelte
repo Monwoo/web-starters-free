@@ -39,6 +39,7 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
   export let yScrollable;
   export let reportScale = 100;
   export let newComment;
+  export let refreshKey = {};
 
   $: trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
 
@@ -254,6 +255,7 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
   };
 </script>
 
+{#key refreshKey}
 <tr>
   <td
     class="sticky left-0 w-[3em] z-10
@@ -273,7 +275,17 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
         alt={offer.contacts[0]?.username ?? ""}
       />
     </a>
-    <EditOfferTrigger {offer} />
+    <!-- // TODO : could use 'bind' instead of callback, really equal when assigning in child for parent reactivity ? -->
+      <!-- syncOfferOk={async (refreshedOffer) => {
+        offer = {...refreshedOffer};
+      }} -->
+    <EditOfferTrigger
+      bind:offer
+      syncOfferOk={async (refreshedOffer) => {
+        offer = {...refreshedOffer}; // TODO : why not refreshing UI ?
+        refreshKey = {};
+      }}
+    />
     <!-- <a href="#qualify">
       TIPS : short cuted by 'status' update, will qualify depending of logic
              linked to new status change
@@ -600,3 +612,4 @@ import EditOfferTrigger from "../EditOfferTrigger.svelte";
     {/if}
   </td>
 </tr>
+{/key}

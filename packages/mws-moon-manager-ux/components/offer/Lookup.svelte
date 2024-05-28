@@ -399,10 +399,10 @@
       />
     {:else}
       <List
+        bind:offers
         {reportScale}
         {locale}
         {isMobile} {isWide}
-        {offers}
         {offersHeaders}
         {viewTemplate}
         {addMessageForm}

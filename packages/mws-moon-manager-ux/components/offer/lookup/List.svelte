@@ -234,7 +234,7 @@ AND outside of sticky elements -->
         <!-- { JSON.stringify(offer) } -->
         <!-- {@debug offer} -->
         <ListItem
-          {offer}
+          bind:offer
           {reportScale}
           {locale}
           {viewTemplate}
