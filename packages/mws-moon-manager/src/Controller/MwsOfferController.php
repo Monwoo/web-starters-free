@@ -176,12 +176,12 @@ class MwsOfferController extends AbstractController
         $sync('sourceUrl');
         $sync('clientUrl');
         $sync('currentBillingNumber');
-        $offerInput['currentStatusSlug'] = ($offerInput['currentStatusSlug'] ?? false) 
+        $offerInput['currentStatusSlug'] = ($offerInput['currentStatusSlug'] ?? false)
             ? str_replace($tagSlugSep, '|', $offerInput['currentStatusSlug'])
             : null;
         $sync('currentStatusSlug');
         $offerInput['tags'] = $offerInput['tags'] ?? [];
-        foreach($offerInput['tags'] as $idx => $tag) {
+        foreach ($offerInput['tags'] as $idx => $tag) {
             if (is_string($tag)) {
                 [$categorySlug, $slug] = explode($tagSlugSep, $tag);
                 $offerInput['tags'][$idx] = $mwsOfferStatusRepository->findOneBy([
@@ -563,8 +563,7 @@ class MwsOfferController extends AbstractController
                     OR o.contact2 LIKE :seePhoneLookup
                     ");
                     $qb->setParameter('seeEmailLookup', "%Voir l'adresse email%")
-                    ->setParameter('seePhoneLookup', "%Voir le téléphone%");
-                    ;
+                        ->setParameter('seePhoneLookup', "%Voir le téléphone%");;
                 }
                 if ($customFilter === "Avec un contact ouvert") {
                     $qb = $qb->andWhere("
@@ -585,8 +584,7 @@ class MwsOfferController extends AbstractController
                     ");
 
                     $qb->setParameter('seeEmailLookup', "%Voir l'adresse email%")
-                    ->setParameter('seePhoneLookup', "%Voir le téléphone%");
-                    ;
+                        ->setParameter('seePhoneLookup', "%Voir le téléphone%");;
                     // dd($qb->getQuery()->getDQL());
                 }
                 if ($customFilter === "Avec un téléphone à ouvrir") {
@@ -602,8 +600,7 @@ class MwsOfferController extends AbstractController
                     o.contact1 LIKE :seePhoneLookup
                     OR o.contact2 LIKE :seePhoneLookup
                     ");
-                    $qb->setParameter('seePhoneLookup', "%Voir le téléphone%");
-                    ;
+                    $qb->setParameter('seePhoneLookup', "%Voir le téléphone%");;
                     // dd($qb->getQuery()->getDQL());
                 }
                 if ($customFilter === "Avec un téléphone ouvert") {
@@ -627,9 +624,9 @@ class MwsOfferController extends AbstractController
                     ");
 
                     $qb->setParameter('seeEmailLookup', "%Voir l'adresse email%")
-                    ->setParameter('seePhoneLookup', "%Voir le téléphone%");
-                    // $qb->setParameter('emailSign', "%@%");
-                    // $qb->setParameter('phoneSign', "%+%"); // Indicatif.
+                        ->setParameter('seePhoneLookup', "%Voir le téléphone%");
+                        // $qb->setParameter('emailSign', "%@%");
+                        // $qb->setParameter('phoneSign', "%+%"); // Indicatif.
                     ;
                     // dd($qb->getQuery()->getDQL());
                     // https://www.sqlite.org/lang_expr.html#regexp
@@ -1687,6 +1684,7 @@ class MwsOfferController extends AbstractController
                                 $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
                                 $inputOffer = $offer;
                                 // $offer = $allDuplicates[0];
+                                /** @var MwsOffer $offer */
                                 $offer = array_shift($allDuplicates);
                                 $sync = function ($path) use ($inputOffer, $offer) {
                                     $set = 'set' . ucfirst($path);
@@ -1748,6 +1746,21 @@ class MwsOfferController extends AbstractController
                                 $contacts = $inputOffer->getContacts();
                                 foreach ($contacts as $contact) {
                                     $offer->addContact($contact);
+                                    // Try to fill offer quick contact with contact details if available :
+                                    if ($contact->getPhone()) {
+                                        if (!$offer->getContact1()) {
+                                            $offer->setContact1($contact->getPhone());
+                                        } else if (!$offer->getContact2()) {
+                                            $offer->setContact2($contact->getPhone());
+                                        }
+                                    }
+                                    if ($contact->getEmail()) {
+                                        if (!$offer->getContact1()) {
+                                            $offer->setContact1($contact->getEmail());
+                                        } else if (!$offer->getContact2()) {
+                                            $offer->setContact2($contact->getEmail());
+                                        }
+                                    }
                                 }
 
                                 // dump($inputOffer);
