@@ -1793,8 +1793,8 @@ class MwsOfferController extends AbstractController
                         // Try to fill offer quick contact with contact details if available :
                         $contacts = $offer->getContacts();
                         foreach ($contacts as $contact) {
-                            // TODO : ensure no phone duplication not working... import duplicate phone if offer already define phone... ?
-                            //        or cache issue ? codeur-com-420626, JANTIER recherche des développeurs et gestionnaires E-commerc
+                            // TIPS : ensure no phone duplication not working... import duplicate phone if offer already define phone... ?
+                            //        check cache issue... codeur-com-420626, JANTIER recherche des développeurs et gestionnaires E-commerc
                             if ($contact->getPhone()
                             && $contact->getPhone() !== $offer->getContact1()
                             && $contact->getPhone() !== $offer->getContact2()) {
