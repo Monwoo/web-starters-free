@@ -1746,21 +1746,22 @@ class MwsOfferController extends AbstractController
                                 $contacts = $inputOffer->getContacts();
                                 foreach ($contacts as $contact) {
                                     $offer->addContact($contact);
+                                    // dd($contact);
                                     // Try to fill offer quick contact with contact details if available :
-                                    if ($contact->getPhone()) {
-                                        if (!$offer->getContact1()) {
-                                            $offer->setContact1($contact->getPhone());
-                                        } else if (!$offer->getContact2()) {
-                                            $offer->setContact2($contact->getPhone());
-                                        }
-                                    }
-                                    if ($contact->getEmail()) {
-                                        if (!$offer->getContact1()) {
-                                            $offer->setContact1($contact->getEmail());
-                                        } else if (!$offer->getContact2()) {
-                                            $offer->setContact2($contact->getEmail());
-                                        }
-                                    }
+                                    // if ($contact->getPhone()) {
+                                    //     if (!$offer->getContact1()) {
+                                    //         $offer->setContact1($contact->getPhone());
+                                    //     } else if (!$offer->getContact2()) {
+                                    //         $offer->setContact2($contact->getPhone());
+                                    //     }
+                                    // }
+                                    // if ($contact->getEmail()) {
+                                    //     if (!$offer->getContact1()) {
+                                    //         $offer->setContact1($contact->getEmail());
+                                    //     } else if (!$offer->getContact2()) {
+                                    //         $offer->setContact2($contact->getEmail());
+                                    //     }
+                                    // }
                                 }
 
                                 // dump($inputOffer);
@@ -1789,6 +1790,25 @@ class MwsOfferController extends AbstractController
                                 continue; // TODO : WHY BELOW counting one write when all is duplicated ?
                             }
                         }
+                        // Try to fill offer quick contact with contact details if available :
+                        $contacts = $offer->getContacts();
+                        foreach ($contacts as $contact) {
+                            if ($contact->getPhone()) {
+                                if (!$offer->getContact1()) {
+                                    $offer->setContact1($contact->getPhone());
+                                } else if (!$offer->getContact2()) {
+                                    $offer->setContact2($contact->getPhone());
+                                }
+                            }
+                            if ($contact->getEmail()) {
+                                if (!$offer->getContact1()) {
+                                    $offer->setContact1($contact->getEmail());
+                                } else if (!$offer->getContact2()) {
+                                    $offer->setContact2($contact->getEmail());
+                                }
+                            }
+                        }
+
                         $em->persist($offer);
                         $em->flush();
                         $savedCount++;
