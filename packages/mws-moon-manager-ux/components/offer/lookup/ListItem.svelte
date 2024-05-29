@@ -339,14 +339,14 @@
   </td>
   <td>
     <ContactLink
-    source={offer.slug}
+    source={offer.slug + ' ' + dayjs(offer.leadStart).format("YYYY-MM-DD")}
     name={offer.clientUsername}
     title={offer.title}
     contact={offer.contact1 ?? ""}
     ></ContactLink>
     <br />
     <ContactLink
-    source={offer.slug}
+    source={offer.slug + ' ' + dayjs(offer.leadStart).format("YYYY-MM-DD")}
     name={offer.clientUsername}
     title={offer.title}
     contact={offer.contact2 ?? ""}
