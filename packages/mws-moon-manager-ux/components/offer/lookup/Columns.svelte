@@ -244,6 +244,7 @@
   };
 
   let lastSelectedCategory;
+  let hiddenColumns = {};
   $: {
     selectedCategory = selectedCategory ?? urlParams.get(`selectedCategory`);
 
@@ -292,6 +293,9 @@
       // history.pushState({}, null, newUrl); // No redirect
       window.location = newUrl;
     }
+    if (lastSelectedCategory !== selectedCategory) {
+      hiddenColumns = {};
+    }
     lastSelectedCategory = selectedCategory;
   }
 
@@ -299,12 +303,16 @@
   $: selectedCategorySlug = selectedCategory.split(tagSlugSep).slice(-1)[0];
 
   let numberHoveredItem;
-
+  let selectedCategoryTags;
+  $: hiddenColumns, console.debug('hiddenColumns :', hiddenColumns);
   // TIPS : conditional 'selectedCategorySlug' for reactivity, inside subfunction, will not be detected
-  $: selectedCategoryTags = selectedCategorySlug
+  $: hiddenColumns, selectedCategoryTags = selectedCategorySlug
     ? Object.keys($state.offerTagsByCatSlugAndSlug).reduce((acc, tIdx) => {
         const t = $state.offerTagsByCatSlugAndSlug[tIdx];
-        if (selectedCategorySlug === t.categorySlug) {
+        if (selectedCategorySlug === t.categorySlug
+          && !(hiddenColumns[t.slug] ?? false)
+        ) {
+          // TODO : no need of postions anymore, since re-indexing array (this index is real one without hidden handings)
           const position = acc["__nextColumnIndex"] ?? 0;
           // acc.push(t);
           // TODO : ok to update tag source ?
@@ -321,7 +329,8 @@
 
   $: columns =
     selectedCategoryTags &&
-    offers.reduce((acc, o) => {
+    // https://stackoverflow.com/questions/4759745/reindexing-an-array
+    Object.values(offers.reduce((acc, o) => {
       console.debug("Offer :", o);
       const matchTags = Object.keys(selectedCategoryTags).reduce(
         (acc: any, matchTSlug) => {
@@ -347,17 +356,18 @@
         const selectedT = selectedCategoryTags[selectedTSlug];
         const pos = selectedT.columnIndex ?? 0;
         const lastColumn = (columns ?? {})[pos] ?? {};
-        selectedT._tagHidden = lastColumn._tableColumnHidden ?? false;
-        if (!(acc[pos] ?? false)) {
+        // selectedT._tagHidden = lastColumn._tableColumnHidden ?? false;
+        if (!(acc[pos] ?? false) && !(hiddenColumns[selectedTSlug] ?? false)) {
           acc[pos] = {
             ...lastColumn, // keep existing column props injections (for hidden columns status to be stay ok, etc...)
             // Id needed for https://dev.to/isaachagoel/drag-and-drop-with-svelte-using-svelte-dnd-action-4554 ?
-            id: lastColumn._tableColumnHidden
-              ? "hidden_column_" +
-                selectedT.categorySlug +
-                tagSlugSep +
-                selectedT.slug
-              : "column_" +
+            // id: lastColumn._tableColumnHidden
+            //   ? "hidden_column_" +
+            //     selectedT.categorySlug +
+            //     tagSlugSep +
+            //     selectedT.slug
+            //   : "column_" +
+            id: "column_" +
                 selectedT.categorySlug +
                 tagSlugSep +
                 selectedT.slug,
@@ -368,6 +378,10 @@
       }
       // Fill with matched offers :
       for (const matchTSlug in matchTags) {
+        if (hiddenColumns[matchTSlug] ?? false) {
+          continue;
+        }
+
         const matchT = matchTags[matchTSlug];
         const pos = matchT.columnIndex ?? 0;
         // if (matchT._tagHidden) {
@@ -377,7 +391,7 @@
       }
 
       return acc;
-    }, []);
+    }, []));
 
   $: console.debug("Columns : ", columns);
 
@@ -502,9 +516,12 @@
   };
   // column.offers
 
-  $: visibleColumnsCount = columns.filter((c) => {
-    return !c._tableColumnHidden;
-  }).length;
+  // $: visibleColumnsCount = columns.filter((c) => {
+  //   return !c._tableColumnHidden;
+  // }).length;
+  hiddenColumns = {};
+  $: visibleColumnsCount = columns.length;
+
 </script>
 
 <AddModal bind:this={addModal} {addMessageForm} />
@@ -562,15 +579,16 @@ TIPS : border for finger scroll under mobile done with : p-2
   >
     {#each columns as column, idx (column.id)}
       <div class="relative flex overflow-visible w-[0px] h-[0px]">
-        {#if column._tableColumnHidden ?? false}
+        {#if hiddenColumns[column.tag.slug] ?? false}
           <button
             class="m-2 z-30 opacity-40 hover:opacity-100 absolute top-0 -left-1"
             on:click={() => {
-              // TODO : re-think hidden system to avoid drag&drop in hidden column
+              // TIPS : re-think hidden system to avoid drag&drop in hidden column
               //       => css hide is not enough => MUST RE-build columns
               //       to avoid events on hidden columns (show widget on left
               //       with button expanded on hover to re-activate hidden columns...)
-              column._tableColumnHidden = !column._tableColumnHidden;
+              // column._tableColumnHidden = !column._tableColumnHidden;
+              hiddenColumns[column.tag.slug] = false;
               columns = columns.slice(); // Force refresh by new obj instance
             }}
           >
@@ -586,14 +604,16 @@ TIPS : border for finger scroll under mobile done with : p-2
         at handleDrop (index.mjs:1571:1)
         => sound like using sticky / fixed top element instead of hidden below dndZone target element
   -->
+
+  <!-- TIPS : no need to hide with CSS, data model already did wip out hidden colums
+  class:p-2={!hiddenColumns[column.tag.slug]}
+  class:h-[0px]={hiddenColumns[column.tag.slug]}
+  class:hidden={hiddenColumns[column.tag.slug]}
+  style="width: {hiddenColumns[column.tag.slug] -->
+
       <div
         class="flex overflow-hidden pointer-event-none"
-        class:p-2={!column._tableColumnHidden}
-        class:h-[0px]={column._tableColumnHidden}
-        class:hidden={column._tableColumnHidden}
-        style="width: {column._tableColumnHidden
-          ? 0
-          : (100 / visibleColumnsCount).toFixed(2)}%"
+        style="width: {(100 / visibleColumnsCount).toFixed(2)}%"
       >
         <div class="w-full p-2 bg-gray-200 rounded-md text-center">
           <!-- <div class="sticky top-0"> will not work since have parent xxx??? -->
@@ -603,12 +623,14 @@ TIPS : border for finger scroll under mobile done with : p-2
         </div>
       </div>
       <div class="relative flex overflow-visible w-[0px] h-[0px]">
-        {#if !(column._tableColumnHidden ?? false)}
+        {#if !(hiddenColumns[column.tag.slug] ?? false)}
           <button
             class="m-2 z-30 opacity-40 hover:opacity-100 absolute top-0 right-0"
             on:click={() => {
-              column._tableColumnHidden = !column._tableColumnHidden;
+              // column._tableColumnHidden = !column._tableColumnHidden;
+              hiddenColumns[column.tag.slug] = true;
               // columns = [...columns]; // Force refresh by new obj instance
+              hiddenColumns = {...hiddenColumns};
               columns = columns.slice(); // Force refresh by new obj instance
             }}
           >
@@ -636,14 +658,10 @@ TIPS : border for finger scroll under mobile done with : p-2
     {#each columns as column, idx (column.id)}
       <div
         class="flex overflow-hidden"
-        class:p-2={!column._tableColumnHidden}
         animate:flip={{
           duration: flipDurationMs,
         }}
-        class:hidden={column._tableColumnHidden}
-        style="width: {column._tableColumnHidden
-          ? 0
-          : (100 / visibleColumnsCount).toFixed(2)}%"
+        style="width: {(100 / visibleColumnsCount).toFixed(2)}%"
       >
         <div class="w-full h-full p-2 border-2 border-gray-400 rounded-md">
           <!-- <div class="sticky top-0"> will not work due to wrapped overflow parent -->
