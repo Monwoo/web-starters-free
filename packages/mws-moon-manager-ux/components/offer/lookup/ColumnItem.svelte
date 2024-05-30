@@ -103,7 +103,7 @@
   };
 
   // BELOW OK :
-  // let trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
+  let trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
 
   // TODO : BELOW FAIL : SINCE OFFER REFRESH to ORIGINAL non updated offer
   //         (reactive columns rebuild re-using not updated offers ?)
