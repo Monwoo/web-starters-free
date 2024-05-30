@@ -27,6 +27,7 @@
   import { EyeSlashOutline } from "flowbite-svelte-icons";
   import { EyeOutline } from "flowbite-svelte-icons";
   import Base from "../../layout/Base.svelte";
+import ColumnItem from "./ColumnItem.svelte";
 
   export let locale;
   export let offers = [];
@@ -335,6 +336,7 @@
         const pos = selectedT.columnIndex ?? 0;
         if (!(acc[pos] ?? false)) {
           acc[pos] = {
+            ...((columns ?? {})[pos] ?? {}), // keep existing column props injections (for hidden columns status to be stay ok, etc...)
             // Id needed for https://dev.to/isaachagoel/drag-and-drop-with-svelte-using-svelte-dnd-action-4554 ?
             id: 'column_' + selectedT.categorySlug + tagSlugSep + selectedT.slug,
             tag: selectedT,
@@ -389,7 +391,10 @@
       return; // Ignore drag and drop column inside tail list
     }
 
-    columns = e.detail.items;
+    // columns = e.detail.items; // TODO : async deep copy ?
+    // => column hidden status get reset on items moves...
+    columns = [...columns];
+    // columns = e.detail.items;
     // e.stopPropagation();
     // e.preventDefault();
   }
@@ -584,74 +589,12 @@ style={`
           on:consider="{(e) => handleOffersDndConsider(e, column)}"
           on:finalize="{(e) => handleOffersDndFinalize(e, column)}">
             {#each column.offers ?? [] as offer, idx (offer.id)}
-              {@const trackings = offer?.mwsOfferTrackings?.toReversed() ?? []}
-              <div
-              animate:flip="{{duration: flipDurationMs}}"
-              class="p-2">
-                <!-- // TIPS : avoid margin for % height compute to fit contents without overflows -->
-                <div
-                class="p-2 border-2 border-gray-700 rounded-md
-                flex flex-col items-center justify-center text-center">
-                  <EditOfferTrigger {offer} />
-                  <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>  
-                  <a
-                    href={Routing.generate("mws_offer_view", {
-                      _locale: locale ?? "fr",
-                      viewTemplate: viewTemplate ?? "",
-                      offerSlug: offer.slug,
-                    })}
-                    class="flex flex-col items-center justify-center text-center"
-                    target="_blank"
-                  >
-                    {#if offer.contacts[0]?.avatarUrl ?? false}
-                      <img
-                        width={64 - 50 * (1 - reportScale/100)}
-                        src={offer.contacts[0]?.avatarUrl}
-                        alt="Avatar"
-                      />
-                    {/if}
-                    {offer.clientUsername}
-                  </a>
-                  {offer.budget ?? ""} <br />
-
-                  <h1 class="font-bold text-lg">
-                    <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">
-                      {offer.sourceDetail?.title ?? "Voir l'offre"}
-                    </a>  
-                  </h1>
-
-                  <div class="offer-trackings">
-                    <div class="w-full font-bold text-gray-500">
-                      [{(trackings ?? [])[0]?.updatedAt
-                        ? dayjs(trackings[0].updatedAt).format("YYYY/MM/DD")
-                        : "--"}] {(trackings ?? [])[0]?.comment ?? "--"}
-                    </div>
-                    <textarea class="w-full" bind:value={offer.newComment} />
-                    <button
-                      on:click={debounce(async () => {
-                        await addComment(offer, offer.newComment);
-                      })}
-                      class=""
-                      style="--mws-primary-rgb: 0,200,0;"
-                    >
-                      Commenter
-                    </button>
-                    <Loader {isLoading} />
-                  </div>
-                  <ContactLink
-                  source={offer.slug + ' ' + dayjs(offer.leadStart).format("YYYY-MM-DD")}
-                  name={offer.clientUsername}
-                  title={offer.title}
-                  contact={offer.contact1 ?? ""}
-                  ></ContactLink>
-                  <ContactLink
-                  source={offer.slug + ' ' + dayjs(offer.leadStart).format("YYYY-MM-DD")}
-                  name={offer.clientUsername}
-                  title={offer.title}
-                  contact={offer.contact2 ?? ""}
-                  ></ContactLink>
-                </div>
-              </div>
+              <ColumnItem
+                bind:offer
+                bind:isLoading
+                {reportScale} {isMobile} {isWide}
+                {locale} {viewTemplate}
+              />
             {/each}
             <!-- {#each [{id:'TODO 1'}, {id:'TODO 2'}] as offer, idx (offer.id)}
               <! -- TODO : bind:propData={offer} fail on wird error ypeError: Cannot read properties of undefined (reading '0') in compiled js catch block...  - ->
