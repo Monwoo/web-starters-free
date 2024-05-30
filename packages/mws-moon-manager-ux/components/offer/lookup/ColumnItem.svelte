@@ -84,7 +84,7 @@
             // TIPS : sync trackings : done by reactivity, cf '$:'
             // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
             // trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
-            // TODO : BIND system not enough ? need to merge to update PARENT LIST
+            // TODO : BIND system not enough ? need to merge to update PARENT LIST. BAD to merge ?
             _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
             // TIPS : BAD IDEA to use _.merge, use bind: instead...
             offer = data.sync; // TIPS : only this one do not update source offer array...
@@ -133,7 +133,7 @@
     class="p-2 border-2 border-gray-700 rounded-md
           flex flex-col items-center justify-center text-center"
   >
-    <EditOfferTrigger {offer} />
+    <EditOfferTrigger bind:offer />
     <p>{dayjs(offer.leadStart).format("YYYY/MM/DD HH:mm")}</p>
     <a
       href={Routing.generate("mws_offer_view", {

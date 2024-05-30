@@ -1,32 +1,26 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // TODO : namespace
-  import ListItem from "./ListItem.svelte";
-  import dayjs from "dayjs";
+  import _ from "lodash";
   import AddModal from "../../message/AddModal.svelte";
-  import { MoveIcon, SortableItem } from "svelte-sortable-items";
+  // import { MoveIcon, SortableItem } from "svelte-sortable-items";
   // TODO : use svelte-dnd-action instead of "svelte-sortable-items" limited to one list ?
   // https://dev.to/isaachagoel/drag-and-drop-with-svelte-using-svelte-dnd-action-4554
   // https://dev.to/isaachagoel/svelte-now-has-an-accessible-drag-and-drop-library-15p
   // https://svelte.dev/repl/077cf720e2a6439caca5fb00d92d58a8?version=3.22.3
   // https://github.com/isaacHagoel/svelte-dnd-action
-  import newUniqueId from "locally-unique-id-generator";
   import { flip } from "svelte/animate";
   import {
     state,
     stateGet,
     stateUpdate,
   } from "../../../stores/reduxStorage.mjs";
-  import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import Routing from "fos-router";
   import {dndzone} from "svelte-dnd-action";
   import Loader from "../../layout/widgets/Loader.svelte";
   import { get } from "svelte/store";
-  import debounce from "lodash/debounce";
-  import EditOfferTrigger from "../EditOfferTrigger.svelte";
   import { EyeSlashOutline } from "flowbite-svelte-icons";
   import { EyeOutline } from "flowbite-svelte-icons";
-  import Base from "../../layout/Base.svelte";
 import ColumnItem from "./ColumnItem.svelte";
 
   export let locale;

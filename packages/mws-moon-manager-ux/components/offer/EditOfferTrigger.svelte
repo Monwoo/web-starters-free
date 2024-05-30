@@ -1,5 +1,6 @@
 <script context="module">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
+  import _ from "lodash";
   import dayjs from "dayjs";
 
   export const offerToSurveyJsTransformer = (offer) =>
@@ -79,11 +80,18 @@
         } else {
           // got the desired response
           const data = await resp.json();
-          offer = {
+
+          const newOffer = {
             ...offer, // TIPS : keep current frontend extra param injections
             ...data.sync, // sync with backend results
             // ...offerToSurveyJsTransformer(data.sync)
           };
+
+          // TODO : DOC : MUST bind:offer to _.merge to propagate to source list ? Not enough yet => need rebuild from change props on updated list like ColumnItem 'comment' service ?
+          // TODO : BIND system not enough ? need to merge to update PARENT LIST. BAD to merge ?
+          _.merge(offer, newOffer); // Svelte reactive done by other ways ok ? this one will not trigger refresh
+          offer = newOffer;
+
           $state.addOfferModal.surveyModel.data = offerToSurveyJsTransformer(offer);
 
           // if (data.didDelete) {
