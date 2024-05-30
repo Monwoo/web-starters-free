@@ -434,9 +434,16 @@ import ColumnItem from "./ColumnItem.svelte";
       // scrElement of event is dest drop target, not source item...
       return; // Ignore drag and drop column inside tail list
     }
-    const srcOffer = e.detail.items.filter((o) => {
+    // const srcOffer = e.detail.items.filter((o) => {
+    //   return o.id === id;
+    // })[0]; // TODO : was working, why having empty target list now ?
+    // Quick hack or real solution : fetch from initial data model instead of items
+    // => ++ avoid possible reactivity break from libs doing deep clones ?
+    // TODO : below ok to solve drop in another column, but not enough to update full UI...
+    const srcOffer = offers.filter((o) => {
       return o.id === id;
     })[0];
+
     // Update id state :
     // await removeTag(srcOffer.slug, ); // Should remove for non exclusive category ? or clone ? (but UI will note reflet cloning for now right ?)
     // In OUR CASE ONLY, below will work, since can't keep last tag of same category ;)
@@ -524,7 +531,15 @@ style={`
         </button>
       {/if}
     </div>
-    <div class="flex overflow-hidden"
+    <!-- // TODO : DROP with STICKY above target is BUGGY for dndZone lib :
+    // => should pointer-event-none all sticky / fixed element when drag did start...
+      index.mjs:357 Uncaught TypeError: Cannot read properties of undefined (reading 'getBoundingClientRect')
+        at getBoundingRectNoTransforms (index.mjs:357:1)
+        at animateDraggedToFinalPosition (index.mjs:1576:1)
+        at handleDrop (index.mjs:1571:1)
+        => sound like using sticky / fixed top element instead of hidden below dndZone target element
+  -->
+    <div class="flex overflow-hidden pointer-event-none"
       class:p-2={!column._tableHidden}
       class:h-[0px]={column._tableHidden}
       style="width: {column._tableHidden ? 0 : (100 / visibleColumnsCount).toFixed(2)}%">

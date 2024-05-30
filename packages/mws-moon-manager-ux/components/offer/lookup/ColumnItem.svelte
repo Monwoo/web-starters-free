@@ -1,6 +1,7 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
   // TODO : namespace
+  import _ from "lodash";
   import dayjs from "dayjs";
   import { flip } from "svelte/animate";
   import {
@@ -80,12 +81,13 @@
             throw new Error("Not 2xx response"); // , {cause: resp});
           } else {
             const data = await resp.json();
-            // TODO : sync trakings :
+            // TIPS : sync trackings : done by reactivity, cf '$:'
             // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
-            // _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
+            // trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
+            // TODO : BIND system not enough ? need to merge to update PARENT LIST
+            _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
             // TIPS : BAD IDEA to use _.merge, use bind: instead...
-            offer = data.sync;
-            trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
+            offer = data.sync; // TIPS : only this one do not update source offer array...
             stateUpdate(state, {
               csrfOfferAddComment: data.newCsrf,
             });
@@ -103,12 +105,12 @@
   };
 
   // BELOW OK :
-  let trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
+  // let trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
 
   // TODO : BELOW FAIL : SINCE OFFER REFRESH to ORIGINAL non updated offer
   //         (reactive columns rebuild re-using not updated offers ?)
   //          => SHOULD WORK with right offer selection
-  // $: trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
+  $: trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
 
   // let trackings;
   // $: offer, trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
