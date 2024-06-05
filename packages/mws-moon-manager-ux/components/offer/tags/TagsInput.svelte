@@ -16,7 +16,7 @@
   export let offer;
   export let tags;
   // export let modalId;
-  export let funnelModal;
+  // export let funnelModal;
 
   let addedTagKey;
   export let removeTag = async (tag, comment = null) => {
@@ -76,9 +76,9 @@
   export let addTag = async (tagSlug, tagCategorySlug, comment = null) => {
     // TODO : fetch modal response
     const $ = window.$;
-    const modalBtn = $(`[data-modal-target="${funnelModal.modalId}"]`);
-    console.log(modalBtn);
-    modalBtn.click();
+    // const modalBtn = $(`[data-modal-target="${funnelModal.modalId}"]`);
+    // console.log(modalBtn);
+    // modalBtn.click();
 
     const data = {
       _csrf_token: stateGet(get(state), 'csrfOfferTagAdd'),

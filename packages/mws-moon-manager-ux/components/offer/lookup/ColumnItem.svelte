@@ -15,6 +15,7 @@
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import EditOfferTrigger from "../EditOfferTrigger.svelte";
+  import TagsInput from "../tags/TagsInput.svelte";
 
   export let locale;
   export let viewTemplate;
@@ -153,7 +154,12 @@
       {/if}
       {offer.clientUsername}
     </a>
-    {offer.budget ?? ""} <br />
+    <div>
+      {offer.budget ?? ""}
+    </div>
+    <div class="flex flex-wrap justify-center">
+      <TagsInput bind:tags={offer.tags} {offer} {locale} />
+    </div>
 
     <h1 class="font-bold text-lg">
       <a href={`${offer.sourceUrl}`} target="_blank" rel="noreferrer">

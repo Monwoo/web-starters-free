@@ -328,7 +328,7 @@
     "
     class:opacity-0={isThirdColVisible}
   >
-    <TagsInput {funnelModal} bind:tags={offer.tags} {offer} {locale} />
+    <TagsInput bind:tags={offer.tags} {offer} {locale} />
   </td>
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>
