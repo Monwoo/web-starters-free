@@ -112,6 +112,8 @@
   //         (reactive columns rebuild re-using not updated offers ?)
   //          => SHOULD WORK with right offer selection
   $: trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
+  // $: offer = (offer.id === $state.newOffer.id) ? {...offer, ...$state.newOffer} : offer;
+  $: offer = (offer.id === $state.newOffer.id) ? $state.newOffer : offer;
 
   // let trackings;
   // $: offer, trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];

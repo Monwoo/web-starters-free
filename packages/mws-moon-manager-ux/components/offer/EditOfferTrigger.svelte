@@ -89,15 +89,23 @@
 
           // TODO : DOC : MUST bind:offer to _.merge to propagate to source list ? Not enough yet => need rebuild from change props on updated list like ColumnItem 'comment' service ?
           // TODO : BIND system not enough ? need to merge to update PARENT LIST. BAD to merge ?
-          _.merge(offer, newOffer); // Svelte reactive done by other ways ok ? this one will not trigger refresh
-          offer = newOffer;
+          // _.merge(offer, newOffer); // Svelte reactive done by other ways ok ? this one will not trigger refresh
+          // TIPS : prefer to listen to reactive store for other components update
+          // => avoid _.merge to avoid svelte reactivity breackups...
+          $state.newOffer = newOffer;
+
+          // Self component update
+          // TIPS : DO it in REACTIVITY statement, in case of multiple updates ?
+          // offer = newOffer;
 
           $state.addOfferModal.surveyModel.data = offerToSurveyJsTransformer(offer);
 
           // if (data.didDelete) {
           // } else {
           // }
-
+          
+          // TODO or TIPS : below is same as ? :
+          // $state.csrfOfferSync = data.newCsrf ?
           stateUpdate(state, {
             csrfOfferSync: data.newCsrf,
           });
@@ -120,6 +128,9 @@
   };
 
   $: $state.addOfferModal?.syncOfferWithBackend = syncOfferWithBackend;
+  // $: offer = $state.newOffer;
+  $: offer = (offer.id === $state.newOffer?.id) ? $state.newOffer : offer;
+
 </script>
 
 <button
