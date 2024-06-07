@@ -3,8 +3,10 @@
 
 namespace MWS\MoonManagerBundle\Controller;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use IntlDateFormatter;
 use MWS\MoonManagerBundle\Entity\MwsMessageTchatUpload;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
@@ -631,6 +633,36 @@ class MwsConfigController extends AbstractController
         $internalName = implode('_', array_map(
             [$this->slugger, 'slug'], explode('_', $rawName))
         );
+        $internalParts = explode('-', $internalName, 2);
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+
+        $srcName = $this->slugger->slug($request->getHost().'.'.$request->getPort());
+        // $zipName = "$internalName.$packageVersion.$srcName";
+
+        // $time = (new DateTime())->getTimestamp();
+        // TIPS : FOLDER time is GMT TIME, using London as TIME ZONE
+        //        will only work in WINTER (they add 1hr in summer)
+        //        => use 'UTC' timezone to get UTC right time...
+        $formatter = new IntlDateFormatter(
+            "fr_FR",
+            IntlDateFormatter::NONE,
+            IntlDateFormatter::NONE,
+            'UTC', // 'Europe/London', // 'Europe/Paris',
+            IntlDateFormatter::TRADITIONAL,
+            // https://bugs.php.net/bug.php?id=53939
+            // https://www.the-art-of-web.com/php/intl-date-formatter/
+            // https://unicode-org.github.io/icu/userguide/format_parse/datetime/
+            // "d MMMM yyyy 'à' HH'h'mm", // 'Ymd_His'
+            'yyyyMMdd_HHmmss'
+        );
+
+        $time = $formatter->parse($internalParts[0]);
+        // dump($internalParts[0]);
+        // dd((new DateTime())->setTimestamp($time));
+        $backupName = ($internalParts[1] ?? null) ? '-' . $internalParts[1] : '';
+        $zipName = "backup$time.$packageVersion.$srcName$backupName";
+        $zipFilename = "$zipName.zip";
 
         // dd($internalName);
         if (!$internalName) {
@@ -659,7 +691,8 @@ class MwsConfigController extends AbstractController
         $tmp = "$projectDir/var/cache/tmp.zip";
         try {
             // dd($path);
-            $zipFile->addDirRecursive($path, "/$internalName");
+            $zipFile->addDirRecursive($path, "/$zipName");
+            // $zipFile->addDirRecursive($path); // TIPS : let zip filename do init ?
             // $zipFile->close();
             // var_dump($zipFile->count()); exit;
             // var_dump("Fail to build zip backup"); exit();
@@ -684,7 +717,7 @@ class MwsConfigController extends AbstractController
         $response = new Response(file_get_contents($tmp));
         $filesystem->remove($tmp);
         $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', 'attachment;filename="'.$internalName.'.zip"');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'.$zipFilename.'"');
 
         return $response;
     }
