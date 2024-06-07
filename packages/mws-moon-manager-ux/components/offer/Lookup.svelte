@@ -39,6 +39,12 @@
   console.debug(viewTemplate);
   console.debug(lookupForm);
 
+  $: offers = $state.newOffer?.id ? offers.filter(o => {
+    return !($state.newOffer?.id === o.id && $state.newOffer._haveBeenDeleted);
+    // && !o._haveBeenDeleted;
+  }) : offers, console.debug("Testing state.newOffer filter with : ", $state.newOffer, offers);
+
+
   const searchLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
   console.debug("searchLookup :", searchLookup);
   // TODO : basehref ? => NOP, use Routing from fos-routing instead...
@@ -391,7 +397,7 @@
         {locale}
         {isMobile} {isWide}
         {searchLookup}
-        bind:offers
+        {offers}
         {offersHeaders}
         {viewTemplate}
         {addMessageForm}
@@ -399,7 +405,7 @@
       />
     {:else}
       <List
-        bind:offers
+        {offers}
         {reportScale}
         {locale}
         {isMobile} {isWide}

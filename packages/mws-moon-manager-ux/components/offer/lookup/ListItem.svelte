@@ -45,6 +45,7 @@
   // $: console.debug('Did update offer to :', offer);
   $: offer, refreshKey;
   // $: console.debug('Did update offer to :', offer);
+  $: offer = (offer.id === $state.newOffer?.id) ? $state.newOffer : offer;
 
   // console.debug('Did update offer to :', offer);
   // TODO : centralize sanitizer inside service or lib or...

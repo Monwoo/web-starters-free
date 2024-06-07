@@ -34,7 +34,14 @@
   }
 
   // console.debug(backup);
-  let backupName;
+  let backupRawName;
+  let backupName = null;
+
+  // TIPS : do backupRawName ?? '', otherwise slugify will
+  //        return 'undefined' as RAW string.
+  //        in JS, '' is FALSE while string with content is TRUE...
+  $: backupName = slugify(backupRawName ?? '')
+  , console.debug("Did update backupName :", backupName);
 
   const jsonBackup = JSON.parse(decodeURIComponent(backup.jsonResult));
   console.debug("jsonBackup :", jsonBackup);
@@ -58,7 +65,7 @@
     csrfBackupDelete = stateGet(get(state), "csrfBackupDelete");
     const data = {
       _csrf_token: csrfBackupDelete,
-      backupName,
+      backupRawName: backupName,
     };
     const formData = new FormData();
     for (const name in data) {
@@ -181,19 +188,22 @@
         on:submit={() => setTimeout(() => window.location.reload(), 30000)}
       >
         <div class="w-full text-center">
-          <label class="p-2" for="backupName">Nom du backup :</label>
+          <label class="p-2" for="backupRawName">Nom du backup :</label>
           <input
             class="text-black opacity-30 hover:opacity-100 max-w-[12rem] w-4/5"
-            value={backupName ?? ""}
+            value={backupRawName ?? ""}
             type="text"
-            name="backupName"
+            name="backupRawName"
             on:input={debounce(async (e) => {
-              backupName = slugify(e.target.value);
-              e.target.value = backupName;
+              // TIPS UX : too much position reset is wrong for end user
+              //          => avoid edit update and SHOW result instead of live update...
+              // backupName = slugify(e.target.value);
+              // e.target.value = backupName;
+              backupRawName = e.target.value;
               console.debug(
-                "Update backup name : ",
+                "Update backup raw name : ",
                 e.target.value,
-                backupName
+                backupRawName
               );
             }, 300)}
             on:keydown={debounce(async (e) => {

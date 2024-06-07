@@ -112,8 +112,8 @@
   //         (reactive columns rebuild re-using not updated offers ?)
   //          => SHOULD WORK with right offer selection
   $: trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
-  // $: offer = (offer.id === $state.newOffer.id) ? {...offer, ...$state.newOffer} : offer;
-  $: offer = (offer.id === $state.newOffer.id) ? $state.newOffer : offer;
+  // $: offer = (offer.id === $state.newOffer?.id) ? {...offer, ...$state.newOffer} : offer;
+  $: offer = (offer.id === $state.newOffer?.id) ? $state.newOffer : offer;
 
   // let trackings;
   // $: offer, trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
@@ -146,6 +146,7 @@
       })}
       class="flex flex-col items-center justify-center text-center"
       target="_blank"
+      title={offer.description ?? ""}
     >
       {#if offer.contacts[0]?.avatarUrl ?? false}
         <img

@@ -477,9 +477,9 @@ class MwsConfigController extends AbstractController
         $rootPackage = \Composer\InstalledVersions::getRootPackage();
         $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
 
-        $backupName = $request->get('backupName', null);
+        $backupRawName = $request->get('backupRawName', null);
         // $backupName = trim($this->slugger->slug($backupName, '-'));
-        $backupName = $this->slugger->slug($backupName, '-');
+        $backupName = $this->slugger->slug($backupRawName ?? '', '-');
         $backupName = strlen($backupName) ? "-$backupName" : '';
 
         $this->logger->debug("Will backup $backupName");
@@ -504,8 +504,9 @@ class MwsConfigController extends AbstractController
         $projectDir = $this->params->get('kernel.project_dir');
         $dbSrc = "$projectDir/var/data.db.sqlite";
 
-        $filename = "data$backupName.$packageVersion." . time() . ".sqlite";
-        $zipName = "backup$backupName.$packageVersion." . time();
+        $srcName = $this->slugger->slug($request->getHost().'.'.$request->getPort());
+        $filename = "data" . time() . ".$packageVersion.$srcName$backupName.sqlite";
+        $zipName = "backup" . time(). ".$packageVersion.$srcName$backupName";
         $zipFilename = "$zipName.zip";
 
         $respData = file_get_contents($dbSrc);

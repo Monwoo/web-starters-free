@@ -233,8 +233,13 @@ AND outside of sticky elements -->
       {#each offers as offer}
         <!-- { JSON.stringify(offer) } -->
         <!-- {@debug offer} -->
+         <!-- TIPS : bind:offer IS BUGGY for offer DELETE, sound
+        like replacing last item of offers With sync 
+        WRONG values instead of targeted one...
+        It's updating last items with first item ID when deleting first offers item...
+         => AVOID BIND in foreach loops ? -->
         <ListItem
-          bind:offer
+          {offer}
           {reportScale}
           {locale}
           {viewTemplate}

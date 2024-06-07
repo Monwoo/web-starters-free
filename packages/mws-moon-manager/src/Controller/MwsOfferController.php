@@ -121,7 +121,10 @@ class MwsOfferController extends AbstractController
             $this->em->remove($offer);
             $this->em->flush();
             return $this->json([
-                'sync' => null,
+                'sync' => [
+                    'id' => $offerInput['id'] ?? null,
+                    '_haveBeenDeleted' => true,
+                ],
                 'didDelete' => true,
                 'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-sync')->getValue(),
                 'viewTemplate' => $viewTemplate,
@@ -183,7 +186,7 @@ class MwsOfferController extends AbstractController
         $offerInput['tags'] = $offerInput['tags'] ?? [];
         foreach ($offerInput['tags'] as $idx => $tag) {
             if (is_string($tag)) {
-                [$categorySlug, $slug] = explode($tagSlugSep, $tag);
+                [$categorySlug, $slug] = explode($tagSlugSep, str_replace('|', $tagSlugSep, $tag));
                 $offerInput['tags'][$idx] = $mwsOfferStatusRepository->findOneBy([
                     "categorySlug" => $categorySlug,
                     "slug" => $slug,
