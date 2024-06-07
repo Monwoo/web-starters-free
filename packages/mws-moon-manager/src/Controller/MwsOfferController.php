@@ -86,7 +86,7 @@ class MwsOfferController extends AbstractController
         Request $request,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
-        // MwsTimeQualifRepository $mwsTimeQualifRepository,
+        MwsContactRepository $mwsContactRepository,
         CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
@@ -244,6 +244,45 @@ class MwsOfferController extends AbstractController
         foreach ($offerInput['contacts'] as $idx => $c) {
             if (! $c instanceof MwsContact) {
                 // TODO : fetch / sync or add contacts ?
+                // dd($c);
+                $contact = null;
+                if ($c['id'] ?? false) {
+                    $contact = $mwsContactRepository->findOneBy([
+                        'id' => $c['id'],
+                    ]);
+                }
+                if (!$contact) {
+                    $contact = new MwsContact();
+                }
+                $contactSync = function ($path, $setter = null) use (&$contact, &$c) {
+                    $v =  $c[$path] ?? null;
+                    if (null !== $v) {
+                        $set = 'set' . ucfirst($path);
+                        if ($setter) {
+                            $setter($contact, $v);
+                        } else {
+                            $contact->$set($v);
+                        }
+                    }
+                };
+                $contactSync('username');
+                $contactSync('status');
+                $contactSync('postalCode');
+                $contactSync('city');
+                $contactSync('avatarUrl');
+                $contactSync('email');
+                $contactSync('phone');
+                $contactSync('sourceDetail');
+                $contactSync('sourceName');
+                $contactSync('businessUrl');
+
+                // TODO : ensure mwsOffers OK or have duplicates ?
+                $contact->addMwsOffer($offer);
+                
+                // TODO : update mwsContactTrackings ? or useless if not used for business purpose, heavy data for nothing ? all already tracked at offer levels with human comment enough ? 
+                // TODO : update mwsUsers ? or useless if not used for business purpose, heavy data for nothing ? all already tracked at offer levels with human comment enough ? 
+                // dd($contact);
+                $this->em->persist($contact);
             }
         }
         // $sync('contacts');
