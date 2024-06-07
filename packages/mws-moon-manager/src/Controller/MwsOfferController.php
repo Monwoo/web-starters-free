@@ -130,7 +130,7 @@ class MwsOfferController extends AbstractController
                 'viewTemplate' => $viewTemplate,
             ]);
         }
-        $sync = function ($path) use (&$offer, &$offerInput) {
+        $sync = function ($path, $setter = null) use (&$offer, &$offerInput) {
             $get = 'get' . ucfirst($path);
             $v =  $offerInput[$path] ?? null;
             if (null !== $v) {
@@ -144,10 +144,18 @@ class MwsOfferController extends AbstractController
                     $collection = $offer->$get();
                     $collection->clear();
                     foreach ($v as $subV) {
-                        $offer->$add($subV);
+                        if ($setter) {
+                            $setter($offer, $subV);
+                        } else {
+                            $offer->$add($subV);                            
+                        }
                     }
                 } else {
-                    $offer->$set($v);
+                    if ($setter) {
+                        $setter($offer, $v);
+                    } else {
+                        $offer->$set($v);
+                    }
                 }
             }
         };
@@ -179,11 +187,19 @@ class MwsOfferController extends AbstractController
         $sync('sourceUrl');
         $sync('clientUrl');
         $sync('currentBillingNumber');
-        $offerInput['currentStatusSlug'] = ($offerInput['currentStatusSlug'] ?? false)
-            ? str_replace($tagSlugSep, '|', $offerInput['currentStatusSlug'])
-            : null;
-        $sync('currentStatusSlug');
+        // $offerInput['currentStatusSlug'] = ($offerInput['currentStatusSlug'] ?? false)
+        //     ? str_replace($tagSlugSep, '|', $offerInput['currentStatusSlug'])
+        //     : null;
+        // $sync('currentStatusSlug');
         $offerInput['tags'] = $offerInput['tags'] ?? [];
+        if ($offerInput['currentStatusSlug'] ?? false) {
+            $offerInput['currentStatusSlug'] = 
+            str_replace($tagSlugSep, '|', $offerInput['currentStatusSlug']);
+            // $sync('currentStatusSlug');
+            $offerInput['tags'][] = str_replace('|', $tagSlugSep, $offerInput['currentStatusSlug']);
+        }
+        $sync('currentStatusSlug');
+
         foreach ($offerInput['tags'] as $idx => $tag) {
             if (is_string($tag)) {
                 [$categorySlug, $slug] = explode($tagSlugSep, str_replace('|', $tagSlugSep, $tag));
@@ -194,7 +210,43 @@ class MwsOfferController extends AbstractController
             }
         }
         // dd($offerInput['tags']);
-        // $sync('tags'); // TODO : sync issue, removing existing tags
+        $sync('tags', function($o, $v) use($mwsOfferRepository) {
+            $mwsOfferRepository->addTag($o, $v);
+            // dd($o);
+        });
+        // TODO : ensure tags have ARRAY serialization,  
+        // $mwsOfferRepository->addTag is giving OBJECT instead of array 
+        // when editing tags from offer edit popup
+        // (PHP indexed array will be exported as object instead of array ?):
+        $tags = $offer->getTags()->toArray();
+        $offer->getTags()->clear();
+        foreach ($tags as $idx => $tag) {
+            # code...
+            $offer->addTag($tag);
+        }
+        // dd($offer);
+        if (($offerInput['sourceDetail'] ?? false)
+        && $offerInput['sourceDetail'][0])  {
+            // TODO : using paneldynamic in surveyJS, need array as input, other way to avoid array wrapings
+            $offerInput['sourceDetail'] = $offerInput['sourceDetail'][0];
+        }
+
+        if (($offerInput['sourceDetail'] ?? false) 
+        && ($offerInput['sourceDetail']['messages'] ?? false)) {
+            // Re-map format used by SurveyJS to allow list of items...
+            $offerInput['sourceDetail']['messages'] = array_map(function($m) {
+                return $m['msg'] ?? $m;
+            }, $offerInput['sourceDetail']['messages']);
+        }
+        $sync('sourceDetail');
+        // dd($offer);
+
+        foreach ($offerInput['contacts'] as $idx => $c) {
+            if (! $c instanceof MwsContact) {
+                // TODO : fetch / sync or add contacts ?
+            }
+        }
+        // $sync('contacts');
 
         $this->em->persist($offer);
         $this->em->flush();
