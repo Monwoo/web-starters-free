@@ -128,6 +128,33 @@
   // => lose column hidden status due to REBUILD or Dnd-zone lib doing deep copy not in sync with update columns after dndZone inits ?
   // TIPS : avoid reactivity refresh by using components props instead of target obj property triggering reactivity...
   export let newComment; 
+
+  // TODO : remove code duplication :
+  Number.prototype.toPrettyNum = function (
+    this: Number,
+    length: number,
+    maxLength = null
+  ) {
+    if (maxLength === null) maxLength = length;
+    var s = this;
+    const splited = s
+      .toFixed(maxLength)
+      .replace(new RegExp(`0{0,${maxLength - length}}$`), "")
+      // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
+      // .replace(/0{0,2}$/, "")
+      // .toLocaleString('en-US', { // TODO : centralize toPrettyNum and use locals formatings ?
+      //   minimumFractionDigits: 2,
+      //   maximumFractionDigits: 4
+      // })
+      .replace(".", ",")
+      .split(",");
+    return (
+      (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+      (length >= 1 ? "," : "") +
+      (splited[1] ?? "")
+    );
+  };
+
 </script>
 
 <div class="p-2">
@@ -148,10 +175,10 @@
       target="_blank"
       title={offer.description ?? ""}
     >
-      {#if offer.contacts[0]?.avatarUrl ?? false}
+      {#if (offer.contacts ?? [])[0]?.avatarUrl ?? false}
         <img
           width={64 - 50 * (1 - reportScale / 100)}
-          src={offer.contacts[0]?.avatarUrl}
+          src={(offer.contacts ?? [])[0]?.avatarUrl}
           alt="Avatar"
         />
       {/if}

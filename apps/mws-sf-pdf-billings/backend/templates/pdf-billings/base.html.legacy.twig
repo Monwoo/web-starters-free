@@ -1,0 +1,69 @@
+{# 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo (service@monwoo.com) #}
+{# // TODO : {% extends 'base.html.twig' %} #}
+
+{% set route = app.request.attributes.get('_route') %}
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- srsly plz dont cache this page kthxbye -->
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<title>
+			{%  if title is defined %}
+				{% block title %}
+					{{ title }}
+				{% endblock %}
+			{% endif %}
+		</title>
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('mwsMoonManager') }}
+			{{ encore_entry_link_tags('app') }}
+			{{ HAVE_MWS_DEMO ? encore_entry_link_tags('mwsDemo') : '' }}
+			
+			{# <link type="text/css" rel="stylesheet" href="{{ asset('pdf-views/sheet.css') }}" > #}
+			{# https://www.javatpoint.com/css-transition-opacity
+			transition: opacity 0.3s linear 2s; // effect on 0.3 millisecond   #}
+
+			<style>
+			a:hover {
+				opacity: 0.75;
+				transition: opacity 0.1s;
+			}
+			</style>
+		{% endblock %}
+	</head>
+
+	<body>
+		{% block storesInit %}
+			<div
+			class="hidden"
+			{{ svelte_component('MwsReduxSync', {
+				'stateUpdate': {
+					'user': app.user,
+					'gdprLastCleanDate': gdprLastCleanDate ?? null,
+					'gdprNextCleanDate': gdprNextCleanDate ?? null,
+					'packageName': packageName,
+					'packageVersion': packageVersion,
+				}|serialize('json')|e('html_attr'),
+			}) }}></div>
+		{% endblock %}
+		{% block body %}{% endblock %}
+
+		{% block javascript %}
+			<script>
+				window.baseHref = "{{ app.request.getBaseURL()|e('js') }}";
+			</script>
+	    {{ encore_entry_script_tags('mwsMoonManager') }}
+	    {{ encore_entry_script_tags('app') }}
+			{{ HAVE_MWS_DEMO ? encore_entry_script_tags('mwsDemo') : '' }}
+
+			{# {% if app.request.attributes.get('_route') in ['app_pdf_billings'] %}
+				<script src="{{ asset('libs/pdfjs-3.7.107/pdf.js') }}"></script>
+			{% endif %} #}
+		{% endblock %}
+	</body>
+</html>

@@ -44,22 +44,26 @@
   // }) : offers, console.debug("Testing state.newOffer filter with : ", $state.newOffer, offers);
 
   // delete or add or ignore null resets
-  let _newOfferNoFound = true;
+  let _newOfferNoFound = true; // TIPS : ONLY on FIRST load, not on each
   $: (offers = $state.newOffer?.id
-    ? offers.reduce((acc, o, idx) => {
-        if (
-          !($state.newOffer?.id === o.id && $state.newOffer._haveBeenDeleted)
-        ) {
-          acc.push(o);
+    ? (_newOfferNoFound = true) &&
+      offers.reduce((acc, o, idx) => {
+        if ($state.newOffer?.id === o.id) {
           _newOfferNoFound = false;
+          if (!$state.newOffer._haveBeenDeleted) {
+            acc.push(o);
+          }
         } else if (
           _newOfferNoFound &&
-          idx === offers.length &&
-          ($state.newOffer ?? null)
+          idx === offers.length - 1 &&
+          ($state.newOffer ?? null) &&
+          !$state.newOffer._haveBeenDeleted
         ) {
           acc.push($state.newOffer);
+        } else {
+          acc.push(o);
         }
-        // && !o._haveBeenDeleted;
+          // && !o._haveBeenDeleted;
         return acc;
       }, [])
     : offers),

@@ -266,6 +266,33 @@
     }
     isLoading = false;
   };
+
+  // TODO : remove code duplication : 
+  Number.prototype.toPrettyNum = function (
+    this: Number,
+    length: number,
+    maxLength = null
+  ) {
+    if (maxLength === null) maxLength = length;
+    var s = this;
+    const splited = s
+      .toFixed(maxLength)
+      .replace(new RegExp(`0{0,${maxLength - length}}$`), "")
+      // https://stackoverflow.com/questions/5025166/javascript-number-formatting-min-max-decimals
+      // .replace(/0{0,2}$/, "")
+      // .toLocaleString('en-US', { // TODO : centralize toPrettyNum and use locals formatings ?
+      //   minimumFractionDigits: 2,
+      //   maximumFractionDigits: 4
+      // })
+      .replace(".", ",")
+      .split(",");
+    return (
+      (splited[0] ?? "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+      (length >= 1 ? "," : "") +
+      (splited[1] ?? "")
+    );
+  };
+
 </script>
 
 {#key refreshKey}
@@ -284,8 +311,8 @@
     >
       <img
         width="64"
-        src={offer.contacts[0]?.avatarUrl ?? ""}
-        alt={offer.contacts[0]?.username ?? ""}
+        src={(offer.contacts ?? [])[0]?.avatarUrl ?? ""}
+        alt={(offer.contacts ?? [])[0]?.username ?? ""}
       />
     </a>
     <!-- // TODO : could use 'bind' instead of callback, really equal when assigning in child for parent reactivity ? -->
@@ -359,14 +386,14 @@
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>
     {offer.clientUsername} <br />
-    {#if offer.contacts[0]?.sourceDetail?.status}
-      {offer.contacts[0]?.sourceDetail?.status} <br />
+    {#if (offer.contacts ?? [])[0]?.sourceDetail?.status}
+      {(offer.contacts ?? [])[0]?.sourceDetail?.status} <br />
     {/if}
-    {#if offer.contacts[0]?.sourceDetail?.nbProjects}
-      {offer.contacts[0]?.sourceDetail?.nbProjects} projet(s) <br />
+    {#if (offer.contacts ?? [])[0]?.sourceDetail?.nbProjects}
+      {(offer.contacts ?? [])[0]?.sourceDetail?.nbProjects} projet(s) <br />
     {/if}
-    {#if offer.contacts[0]?.sourceDetail?.membershipStart}
-      depuis : {offer.contacts[0]?.sourceDetail?.membershipStart} <br />
+    {#if (offer.contacts ?? [])[0]?.sourceDetail?.membershipStart}
+      depuis : {(offer.contacts ?? [])[0]?.sourceDetail?.membershipStart} <br />
     {/if}
     </td>
   <td>
