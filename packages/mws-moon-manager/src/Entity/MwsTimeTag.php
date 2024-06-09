@@ -120,12 +120,16 @@ class MwsTimeTag
     #[Serializer\Ignore] // TODO: advanced serializer for only id, or slug ? avoid deep serialization loops
     private Collection $mwsTimeSlotsForMax;
 
+    #[ORM\ManyToMany(targetEntity: MwsOffer::class, mappedBy: 'timingTags')]
+    private Collection $mwsOffers;
+
     public function __construct()
     {
         $this->mwsTimeTags = new ArrayCollection();
         $this->mwsTimeSlots = new ArrayCollection();
         $this->mwsTimeQualifs = new ArrayCollection();
         $this->mwsTimeSlotsForMax = new ArrayCollection();
+        $this->mwsOffers = new ArrayCollection();
     }
 
     public function __toString()
@@ -319,6 +323,33 @@ class MwsTimeTag
             if ($mwsTimeSlotsForMax->getMaxPriceTag() === $this) {
                 $mwsTimeSlotsForMax->setMaxPriceTag(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsOffer>
+     */
+    public function getMwsOffers(): Collection
+    {
+        return $this->mwsOffers;
+    }
+
+    public function addMwsOffer(MwsOffer $mwsOffer): static
+    {
+        if (!$this->mwsOffers->contains($mwsOffer)) {
+            $this->mwsOffers->add($mwsOffer);
+            $mwsOffer->addTimingTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMwsOffer(MwsOffer $mwsOffer): static
+    {
+        if ($this->mwsOffers->removeElement($mwsOffer)) {
+            $mwsOffer->removeTimingTag($this);
         }
 
         return $this;

@@ -25,7 +25,7 @@
     // export let locale;
     export let eltModal;
 
-    export let surveyModel;
+    export let surveyModel = {};
     export let sourceDetailView; // HTML view of source to help fill form....
     export let showSourceDetail = true;
 
@@ -62,10 +62,13 @@
             // TODO : wait for surveyJs on load event instead of empiric timings
             const jQuery = window.$; // TODO : no missing 'window' with SF controllers ways ?
             let surveyWrapper = jQuery(".survey-js-wrapper", htmlModalRoot);
-            surveyModel = surveyWrapper.data("surveyModel");
+            surveyModel = {
+                ...surveyWrapper.data("surveyModel"),
+                ...surveyModel
+            };
 
             console.debug("Add Modal onMount surveyModel : ", surveyModel);
-        }, 500);
+        }, 400);
 
         const modalElement = document.querySelector(`#${modalId}`);
 
@@ -91,7 +94,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
             >
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    {surveyModel?.data.destId ? "Edit Message" : "Add Message"}
+                    {surveyModel?.data?.destId ? "Edit Message" : "Add Message"}
                 </h3>
                 <button
                     type="button"

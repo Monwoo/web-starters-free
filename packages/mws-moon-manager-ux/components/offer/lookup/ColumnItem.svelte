@@ -85,9 +85,9 @@
             // TIPS : sync trackings : done by reactivity, cf '$:'
             // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
             // trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
-            // TODO : BIND system not enough ? need to merge to update PARENT LIST. BAD to merge ?
+            // TODO : BIND system not enough ? avoid _.merge that might break reactivity... need to merge to update PARENT LIST. BAD to merge ?
             _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
-            // TIPS : BAD IDEA to use _.merge, use bind: instead...
+            // TIPS : BAD IDEA to use _.merge, use bind: instead, triky too, use REDUX pattern with writables at minimum ?...
             offer = data.sync; // TIPS : only this one do not update source offer array...
             stateUpdate(state, {
               csrfOfferAddComment: data.newCsrf,
@@ -169,6 +169,24 @@
         {offer.sourceDetail?.title ?? "Voir l'offre"}
       </a>
     </h1>
+    <div>
+      {#each offer.timingTags ?? [] as tag}
+        <!-- TODO : componentize tag button, code factorization... -->
+        <a
+          href={Routing.generate("mws_timings_report", {
+            _locale: locale ?? "fr",
+            searchTagsToInclude: [ tag.slug ],
+          })}
+          class="inline-flex
+          text-xs font-medium p-1 text-center
+          border border-blue-800 "
+        >
+          {tag.label} {
+            tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
+          }
+        </a>
+      {/each}  
+    </div>
 
     <div class="offer-trackings">
       <textarea class="w-full" bind:value={newComment} />

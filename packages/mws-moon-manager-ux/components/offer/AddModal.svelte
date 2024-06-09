@@ -15,6 +15,7 @@
     import newUniqueId from "locally-unique-id-generator";
     import { tick } from "svelte";
     import { Modal } from "flowbite";
+    import _ from "lodash";
     import Routing from "fos-router";
     import Loader from "../layout/widgets/Loader.svelte";
     const UID = newUniqueId();
@@ -23,7 +24,7 @@
     export let isOpen = false;
     export let eltModal;
 
-    export let surveyModel;
+    export let surveyModel = {};
     export let sourceDetailView; // HTML view of source to help fill form....
     export let showSourceDetail = true;
     export let syncOfferWithBackend; // If defined, will ajax call instead of html submit refresh
@@ -52,6 +53,7 @@
                 // (since set surveyModel.data inside it instead of re-assign)
                 // window.jQuery('html, body, main').scrollTop( 0 );
                 window.jQuery(".mws-add-modal").scrollTop(0);
+                // surveyModel = {...surveyModel};
                 surveyModel = surveyModel;
                 console.log("modal is shown");
             },
@@ -64,7 +66,13 @@
             // TODO : wait for surveyJs on load event instead of empiric timings
             const jQuery = window.$; // TODO : no missing 'window' with SF controllers ways ?
             let surveyWrapper = jQuery(".survey-js-wrapper", htmlModalRoot);
-            surveyModel = surveyWrapper.data("surveyModel");
+            // surveyModel = {
+            //     ...surveyWrapper.data("surveyModel"),
+            //     ...surveyModel
+            // };
+
+            // TIPS : surveyWrapper.data("surveyModel") hold model instance, should be keep for reactivity with SurveyJs...            
+            surveyModel = _.merge(surveyWrapper.data("surveyModel"), surveyModel);
             console.debug("Add Modal onMount surveyModel : ", surveyModel);
             if (syncOfferWithBackend) {
                 jQuery('.mws-offer-add-modal form[name="mws_survey_js"]').on(
@@ -97,7 +105,7 @@
                     }
                 );
             }
-        }, 500); // TODO : timeout for quick hack, find right event position for this code to run instead...
+        }, 400); // TODO : timeout for quick hack, find right event position for this code to run instead...
 
         const modalElement = document.querySelector(`#${modalId}`);
 
@@ -122,8 +130,8 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
             >
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    {surveyModel?.data.id
-                        ? "Éditer l'offre " + surveyModel?.data.id
+                    {surveyModel?.data?.id
+                        ? "Éditer l'offre " + surveyModel?.data?.id
                         : "Ajouter une offre"}
                 </h3>
                 <Loader {isLoading} />

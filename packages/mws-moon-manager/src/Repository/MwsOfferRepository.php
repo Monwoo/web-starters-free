@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsOffer;
 use MWS\MoonManagerBundle\Entity\MwsOfferStatus;
+use MWS\MoonManagerBundle\Entity\MwsTimeTag;
 use MWS\MoonManagerBundle\Form\MwsSurveyJsType;
 use Symfony\Component\Form\FormInterface;
 use Twig\Environment as TwigEnv;
@@ -26,7 +27,8 @@ class MwsOfferRepository extends ServiceEntityRepository
         protected TwigEnv $twig,
         protected FormFactoryInterface $formFactory,
         protected MwsOfferStatusRepository $mwsOfferStatusRepository,
-        ) {
+        protected MwsTimeTagRepository $mwsTimeTagRepository,
+    ) {
         parent::__construct($registry, MwsOffer::class);
     }
 
@@ -88,6 +90,16 @@ class MwsOfferRepository extends ServiceEntityRepository
             ->orderBy('o.budget', 'ASC')
             ->getQuery()->getResult();
 
+        $tagQb = $this->mwsTimeTagRepository->createQueryBuilder("t")
+            ->orderBy('LOWER(t.slug)');
+        $timingTags = $tagQb->getQuery()->getResult();
+        $allTimingTags = array_map(
+            function (MwsTimeTag $tag) {
+                return $tag->getSlug();
+            },
+            $timingTags
+        );
+
         $mwsAddOfferConfig = [
             // TODO : serialize offer ?
             "jsonResult" => rawurlencode($offer ? json_encode($offer) : '{}'),
@@ -98,6 +110,7 @@ class MwsOfferRepository extends ServiceEntityRepository
                     'allClientNames' => $allClientNames,
                     'allOfferTags' => $allOfferTags,
                     'allOfferBudgets' => $allOfferBudgets,
+                    'allTimingTags' => $allTimingTags,
                 ]
             )),
         ]; // TODO : save in session or similar ? or keep GET system data transfert system ?

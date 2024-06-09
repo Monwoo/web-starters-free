@@ -130,6 +130,15 @@
             isRequired: false,
             choices: allOfferTags,
         }, {
+            name: "timingTags",
+            title: "Tags temporels",
+            description: "Tags de suivi des temps",
+            type: "tagbox",
+            validators: [],
+            minWidth: "20%",
+            isRequired: false,
+            choices: allTimingTags,
+        }, {
             "type": "paneldynamic",
             "minPanelCount": 1,
             "maxPanelCount": 1,

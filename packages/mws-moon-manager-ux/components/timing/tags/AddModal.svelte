@@ -217,7 +217,12 @@
                 ],
             };
 
-            surveyModel = new Survey.Model(surveyDataModel);
+            // surveyModel = new Survey.Model(surveyDataModel);
+            surveyModel = {
+                ...(new Survey.Model(surveyDataModel)),
+                ...surveyModel
+            };
+
             surveyModel.locale = "fr";
             surveyModel.showCompletedPage = false;
             surveyModel.onComplete.add(async (sender, options) => {
@@ -238,7 +243,7 @@
             surveyWrapper.Survey({
                 model: surveyModel,
             });
-        }, 500);
+        }, 400);
 
         const modalElement = document.querySelector(`#${modalId}`);
 
@@ -264,7 +269,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
             >
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    {surveyModel?.data.destId ? "Edit Message" : "Add Message"}
+                    {surveyModel?.data?.destId ? "Edit Message" : "Add Message"}
                 </h3>
                 <button
                     type="button"

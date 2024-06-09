@@ -28,12 +28,13 @@
   import ContactLink from "../../layout/widgets/ContactLink.svelte";
   import { flip } from "svelte/animate";
   import EditOfferTrigger from "../EditOfferTrigger.svelte";
+  import _ from "lodash";
 
   export let locale;
   export let viewTemplate;
   export let offer;
   export let messages;
-  export let trackings;
+  // export let trackings;
   export let addModal;
   export let funnelModal;
   export let yScrollable;
@@ -41,6 +42,7 @@
   export let newComment;
   export let refreshKey = {};
 
+  // $: offer, trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
   $: trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
   // $: console.debug('Did update offer to :', offer);
   $: offer, refreshKey;
@@ -127,7 +129,7 @@
 
   let isLoading = false;
 
-  export let addComment = async (comment, offerStatusSlug = null) => {
+  export let addComment = async (offer, comment, offerStatusSlug = null) => {
     if (!comment || !comment.length) {
       console.debug("addComment is missing comment");
       return;
@@ -179,7 +181,13 @@
             const data = await resp.json();
             // TODO : sync trakings :
             // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
-            offer = data.sync; // Svelte reactive will take care of 'trackings'
+            // TIPS : ok ONLY if offer is also used as param or call function ?...
+            // offer = data.sync; // Svelte reactive will take care of 'trackings'
+            // TODO : BIND system not enough ? avoid _.merge that might break reactivity... need to merge to update PARENT LIST. BAD to merge ?
+            _.merge(offer, data.sync); // Svelte reactive done by other ways ok ? this one will not trigger refresh
+            // TIPS : BAD IDEA to use _.merge, use bind: instead, triky too, use REDUX pattern with writables at minimum ?...
+            offer = data.sync; // TIPS : only this one do not update source offer array...
+
             stateUpdate(state, {
               csrfOfferAddComment: data.newCsrf,
             });
@@ -303,24 +311,41 @@
     hover:bg-white/90 hover:opacity-100"
     class:opacity-0={isSecondColVisible}
   >
+  <a
+    href={Routing.generate("mws_offer_view", {
+      _locale: locale ?? "fr",
+      viewTemplate: viewTemplate ?? "",
+      offerSlug: offer.slug,
+    })}
+  >
     [{offer.slug}]
-    <div
-      class="p-2 m-1 rounded"
-      style:color={offerTagsByKey($state, offer.currentStatusSlug)?.textColor ||
-        "black"}
-      style:background-color={offerTagsByKey($state, offer.currentStatusSlug)
-        ?.bgColor || "lightgrey"}
-    >
-      <!-- {JSON.stringify($state)}
-      {JSON.stringify(offer.currentStatusSlug)}
-      {JSON.stringify(offerTagsByCatSlugAndSlug($state, offer.currentStatusSlug))} -->
-      {offerTagsByKey($state, offer.currentStatusSlug)?.label ||
-        offer.currentStatusSlug}
-    </div>
-    [{offer.sourceDetail?.projectOffersAnswered}
+  </a>
+    {#if offer.currentStatusSlug}
+      <div
+        class="p-2 m-1 rounded"
+        style:color={offerTagsByKey($state, offer.currentStatusSlug)?.textColor ||
+          "black"}
+        style:background-color={offerTagsByKey($state, offer.currentStatusSlug)
+          ?.bgColor || "lightgrey"}
+      >
+        <!-- {JSON.stringify($state)}
+        {JSON.stringify(offer.currentStatusSlug)}
+        {JSON.stringify(offerTagsByCatSlugAndSlug($state, offer.currentStatusSlug))} -->
+        {offerTagsByKey($state, offer.currentStatusSlug)?.label ||
+          offer.currentStatusSlug}
+      </div>            
+    {/if}
+
+    [<object class="inline cursor-help" title="Concurrents contactés par le client">
+      {offer.sourceDetail?.projectOffersAnswered ?? '--'}
+    </object>
     ..
-    {offer.sourceDetail?.projectOffersViewed}] /
-    {offer.sourceDetail?.projectOffers}
+    <object class="inline cursor-help" title="Concurrents vus par le client">
+      {offer.sourceDetail?.projectOffersViewed ?? '--'}]
+    </object> /
+    <object class="inline cursor-help" title="Nombre d'offres en concurrences">
+      {offer.sourceDetail?.projectOffers ?? '--'}
+    </object>
   </th>
   <td
     class="sticky left-[9em] w-[6em] z-10
@@ -334,10 +359,16 @@
   <!-- TODO : ? <td>{(offer.sourceDetail?.projectStatus || '').trim()}</td> -->
   <td>
     {offer.clientUsername} <br />
-    {offer.contacts[0]?.sourceDetail?.status} <br />
-    {offer.contacts[0]?.sourceDetail?.nbProjects} projet(s) <br />
-    depuis : {offer.contacts[0]?.sourceDetail?.membershipStart} <br />
-  </td>
+    {#if offer.contacts[0]?.sourceDetail?.status}
+      {offer.contacts[0]?.sourceDetail?.status} <br />
+    {/if}
+    {#if offer.contacts[0]?.sourceDetail?.nbProjects}
+      {offer.contacts[0]?.sourceDetail?.nbProjects} projet(s) <br />
+    {/if}
+    {#if offer.contacts[0]?.sourceDetail?.membershipStart}
+      depuis : {offer.contacts[0]?.sourceDetail?.membershipStart} <br />
+    {/if}
+    </td>
   <td>
     <ContactLink
     source={offer.slug + ' ' + dayjs(offer.leadStart).format("YYYY-MM-DD")}
@@ -358,7 +389,7 @@
       <textarea class="w-full" bind:value={newComment} />
       <button
         on:click={debounce(async () => {
-          await addComment(newComment);
+          await addComment(offer, newComment);
         })}
         class=""
         style="--mws-primary-rgb: 0,200,0;"
@@ -446,7 +477,7 @@
           <button class="">Publié par : ${offer.clientUsername}</button>
         </a>
         <div class="mws-last-trakings p-3">
-          ${(offer.mwsOfferTrackings.toReversed().slice(0,3) ?? []).reduce(
+          ${(offer.mwsOfferTrackings?.toReversed().slice(0) ?? []).reduce(
             (acc, traking) => {
               acc += `
               <div class="w-full">
@@ -512,7 +543,7 @@
                 <button class="">Publié par : ${offer.clientUsername}</button>
               </a>
               <div class="mws-last-trakings p-3">
-                ${(offer.mwsOfferTrackings.toReversed().slice(0,3) ?? []).reduce(
+                ${(offer.mwsOfferTrackings?.toReversed().slice(0) ?? []).reduce(
                   (acc, traking) => {
                     acc += `
                     <div class="w-full">
@@ -592,7 +623,27 @@
   <td>{offer.budget ?? ""}</td>
   <td>
     <div class="overflow-auto max-h-[20em]">
-      {offer.sourceDetail?.description ?? ""}
+      <div>
+        {#each offer.timingTags ?? [] as tag}
+          <!-- TODO : componentize tag button, code factorization... -->
+          <a
+            href={Routing.generate("mws_timings_report", {
+              _locale: locale ?? "fr",
+              searchTagsToInclude: [ tag.slug ],
+            })}
+            class="inline-flex
+            text-xs font-medium p-1 text-center
+            border border-blue-800 "
+          >
+            {tag.label} {
+              tag.pricePerHr ? `[${tag.pricePerHr.toPrettyNum(2)} €/hr]` : ''
+            }
+          </a>
+        {/each}  
+      </div>
+      <div>
+        {offer.sourceDetail?.description ?? ""}
+      </div>
     </div>
   </td>
   <td>

@@ -12,6 +12,7 @@
             ? dayjs(offer.leadStart).format("YYYY-MM-DDTHH:mm")
             : null,
           tags: offer.tags?.map((t) => t.categorySlug + tagSlugSep + t.slug),
+          timingTags: offer.timingTags?.map((t) => t.slug),
           // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
           currentStatusSlug: offer.currentStatusSlug?.replace("|", " > "),
           sourceDetail: [
@@ -98,12 +99,13 @@
           // TIPS : DO it in REACTIVITY statement, in case of multiple updates ?
           // offer = newOffer;
 
-          $state.addOfferModal.surveyModel.data = offerToSurveyJsTransformer(offer);
+          $state.addOfferModal.surveyModel.data =
+            offerToSurveyJsTransformer(offer);
 
           // if (data.didDelete) {
           // } else {
           // }
-          
+
           // TODO or TIPS : below is same as ? :
           // $state.csrfOfferSync = data.newCsrf ?
           stateUpdate(state, {
@@ -129,8 +131,7 @@
 
   $: $state.addOfferModal?.syncOfferWithBackend = syncOfferWithBackend;
   // $: offer = $state.newOffer;
-  $: offer = (offer.id === $state.newOffer?.id) ? $state.newOffer : offer;
-
+  $: offer = offer.id === $state.newOffer?.id ? $state.newOffer : offer;
 </script>
 
 <button

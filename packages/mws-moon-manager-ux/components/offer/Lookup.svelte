@@ -10,9 +10,7 @@
   import { state, stateGet, stateUpdate } from "../../stores/reduxStorage.mjs";
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
-  import {
-    BarsOutline, ColumnSolid
-  } from "flowbite-svelte-icons";
+  import { BarsOutline, ColumnSolid } from "flowbite-svelte-icons";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -39,11 +37,37 @@
   console.debug(viewTemplate);
   console.debug(lookupForm);
 
-  $: offers = $state.newOffer?.id ? offers.filter(o => {
-    return !($state.newOffer?.id === o.id && $state.newOffer._haveBeenDeleted);
-    // && !o._haveBeenDeleted;
-  }) : offers, console.debug("Testing state.newOffer filter with : ", $state.newOffer, offers);
+  // TIPS : below ok for delete only :
+  // $: offers = $state.newOffer?.id ? offers.filter(o => {
+  //   return !($state.newOffer?.id === o.id && $state.newOffer._haveBeenDeleted);
+  //   // && !o._haveBeenDeleted;
+  // }) : offers, console.debug("Testing state.newOffer filter with : ", $state.newOffer, offers);
 
+  // delete or add or ignore null resets
+  let _newOfferNoFound = true;
+  $: (offers = $state.newOffer?.id
+    ? offers.reduce((acc, o, idx) => {
+        if (
+          !($state.newOffer?.id === o.id && $state.newOffer._haveBeenDeleted)
+        ) {
+          acc.push(o);
+          _newOfferNoFound = false;
+        } else if (
+          _newOfferNoFound &&
+          idx === offers.length &&
+          ($state.newOffer ?? null)
+        ) {
+          acc.push($state.newOffer);
+        }
+        // && !o._haveBeenDeleted;
+        return acc;
+      }, [])
+    : offers),
+    console.debug(
+      "Testing state.newOffer filter with : ",
+      $state.newOffer,
+      offers
+    );
 
   const searchLookup = JSON.parse(decodeURIComponent(lookup.jsonResult));
   console.debug("searchLookup :", searchLookup);
@@ -56,24 +80,24 @@
   const urlParams = new URLSearchParams(window.location.search);
   $: showTableView = Number(urlParams.get(`showTableView`));
 
-  $: viewMode = showTableView ? 'table-view' : 'list-view';
+  $: viewMode = showTableView ? "table-view" : "list-view";
 
   $: {
     const urlParams = new URLSearchParams(window.location.search);
     // showTableView = Number(urlParams.get(`showTableView`)); // ValidationError: Cyclical dependency detected: viewMode → showTableView → viewMode
     const showTableView = Number(urlParams.get(`showTableView`));
-    if (viewMode == 'list-view' && showTableView) {
+    if (viewMode == "list-view" && showTableView) {
       urlParams.delete(`showTableView`);
       // showTableView = 0; // ValidationError: Cyclical dependency detected: viewMode → showTableView → viewMode
       const newUrl =
-      window.location.origin + window.location.pathname + "?" + urlParams;
+        window.location.origin + window.location.pathname + "?" + urlParams;
       history.pushState({}, null, newUrl); // No redirect
       // window.location = newUrl; // Force redirect
     }
-    if (viewMode == 'table-view' && !showTableView) {
-      urlParams.set(`showTableView`, '1');
+    if (viewMode == "table-view" && !showTableView) {
+      urlParams.set(`showTableView`, "1");
       const newUrl =
-      window.location.origin + window.location.pathname + "?" + urlParams;
+        window.location.origin + window.location.pathname + "?" + urlParams;
       history.pushState({}, null, newUrl); // No redirect
       // window.location = newUrl; // Force redirect
     }
@@ -178,9 +202,9 @@
       <button class="">Importer des offres.</button>
     </a>
     <span on:click={deleteAllOffers}>
-      <button class="mx-2"
-      style="--mws-primary-rgb: 255, 0, 0"
-      >Supprimer toutes les offres.</button>
+      <button class="mx-2" style="--mws-primary-rgb: 255, 0, 0"
+        >Supprimer toutes les offres.</button
+      >
     </span>
   </div>
   <div class="p-3 flex flex-wrap">
@@ -202,7 +226,7 @@
   <div class="summary">
     {@html searchLookup.customFilters && searchLookup.customFilters.length
       ? "<strong>Filtres personnalisés actifs : </strong>" +
-      searchLookup.customFilters.reduce(
+        searchLookup.customFilters.reduce(
           (acc, f) => `
           ${acc} [${f}]
         `,
@@ -279,7 +303,7 @@
         viewTemplate: viewTemplate ?? "",
         pageLimit,
         ...urlParams,
-        page: '1',
+        page: "1",
       })}
       bind:this={pageLimitForm}
       name="pageLimitForm"
@@ -300,21 +324,24 @@
           }}
         />
         <!-- <button type="submit" class="m-1"> -->
-        <button class="m-1"
+        <button
+          class="m-1"
           on:click|stopPropagation={(e) => {
-              if (Number(pageLimit) <= 0) {
+            if (Number(pageLimit) <= 0) {
               pageLimit = "1";
             }
             pageLimitForm.submit();
           }}
         >
-            Définir la limite de pages
+          Définir la limite de pages
         </button>
       </span>
     </form>
   </div>
   <!-- { JSON.stringify(offers) } -->
-  <div class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden">
+  <div
+    class="flex items-start w-full pt-3 pb-4 md:opacity-10 hover:opacity-100 print:hidden"
+  >
     <div class="fill-white/70 text-white/70 w-full">
       <!-- // TODO : userDelay instead of 400 ? not same for all situation,
       //         might need bigDelay or short or medium ?
@@ -335,15 +362,21 @@
   </div>
   <ul class="flex flex-wrap">
     <li>
-        <input type="radio"
+      <input
+        type="radio"
         id="mws-offer-list-radio"
         name="mws-offer-lookup-view"
-        value="list-view" class="hidden peer" required
+        value="list-view"
+        class="hidden peer"
+        required
         checked={viewMode == "list-view"}
-        on:change={ (e) => {
+        on:change={(e) => {
           viewMode = e.target.value;
-        } } />
-        <label for="mws-offer-list-radio" class="
+        }}
+      />
+      <label
+        for="mws-offer-list-radio"
+        class="
         inline-flex items-center justify-between w-full
         p-1
         text-gray-500 bg-white border border-gray-200 
@@ -354,24 +387,28 @@
         hover:text-gray-600 hover:bg-gray-100
         dark:text-gray-400 dark:bg-gray-800
         dark:hover:bg-gray-700"
-        >
-          <BarsOutline />
-          <div class="ps-1">
-              <div class="">Liste</div>
-          </div>
-        </label>
+      >
+        <BarsOutline />
+        <div class="ps-1">
+          <div class="">Liste</div>
+        </div>
+      </label>
     </li>
     <li>
-        <input type="radio"
+      <input
+        type="radio"
         id="mws-offer-table-radio"
         name="mws-offer-lookup-view"
         value="table-view"
         class="hidden peer"
         checked={viewMode == "table-view"}
-        on:change={ (e) => {
+        on:change={(e) => {
           viewMode = e.target.value;
-        } } />
-        <label for="mws-offer-table-radio" class="
+        }}
+      />
+      <label
+        for="mws-offer-table-radio"
+        class="
         inline-flex items-center justify-between w-full
         p-1
         text-gray-500 bg-white border border-gray-200 
@@ -381,21 +418,23 @@
         peer-checked:text-blue-600
         hover:text-gray-600 hover:bg-gray-100
         dark:text-gray-400 dark:bg-gray-800
-        dark:hover:bg-gray-700">
-          <ColumnSolid />
-          <div class="ps-1">
-            <div class="">Tableau</div>
-          </div>
-        </label>
+        dark:hover:bg-gray-700"
+      >
+        <ColumnSolid />
+        <div class="ps-1">
+          <div class="">Tableau</div>
+        </div>
+      </label>
     </li>
   </ul>
 
   <div class="mws-offer-lookup">
-    {#if viewMode == "table-view" }
+    {#if viewMode == "table-view"}
       <Columns
         {reportScale}
         {locale}
-        {isMobile} {isWide}
+        {isMobile}
+        {isWide}
         {searchLookup}
         {offers}
         {offersHeaders}
@@ -408,7 +447,8 @@
         {offers}
         {reportScale}
         {locale}
-        {isMobile} {isWide}
+        {isMobile}
+        {isWide}
         {offersHeaders}
         {viewTemplate}
         {addMessageForm}

@@ -86,6 +86,9 @@ class MwsOffer
     #[ORM\ManyToMany(targetEntity: MwsOfferStatus::class, inversedBy: 'mwsOffers', cascade: ['persist'])]
     private Collection $tags;
 
+    #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsOffers')]
+    private Collection $timingTags;
+
     use TimestampableEntity;
 
     public function __construct()
@@ -93,6 +96,7 @@ class MwsOffer
         $this->mwsOfferTrackings = new ArrayCollection();
         $this->contacts = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->timingTags = new ArrayCollection();
     }
 
     public function __toString()
@@ -365,6 +369,30 @@ class MwsOffer
             return $this; // TODO : doc : will ignore removal of tag used as current status
         }
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MwsTimeTag>
+     */
+    public function getTimingTags(): Collection
+    {
+        return $this->timingTags;
+    }
+
+    public function addTimingTag(MwsTimeTag $timingTag): static
+    {
+        if (!$this->timingTags->contains($timingTag)) {
+            $this->timingTags->add($timingTag);
+        }
+
+        return $this;
+    }
+
+    public function removeTimingTag(MwsTimeTag $timingTag): static
+    {
+        $this->timingTags->removeElement($timingTag);
 
         return $this;
     }

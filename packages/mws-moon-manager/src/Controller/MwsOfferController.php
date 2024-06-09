@@ -23,6 +23,7 @@ use MWS\MoonManagerBundle\Repository\MwsMessageRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferTrackingRepository;
+use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -87,6 +88,7 @@ class MwsOfferController extends AbstractController
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
         MwsContactRepository $mwsContactRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
         CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
@@ -225,6 +227,25 @@ class MwsOfferController extends AbstractController
             $offer->addTag($tag);
         }
         // dd($offer);
+
+        // TIMING TAGS :
+        // dd($offerInput['timingTags']);
+        $offerInput['timingTags'] = $offerInput['timingTags'] ?? [];
+        foreach ($offerInput['timingTags'] as $idx => $tTagSlug) {
+            $tTag = $mwsTimeTagRepository->findOneBy([
+                'slug' => $tTagSlug
+            ]);
+            $offerInput['timingTags'][$idx] = $tTag;
+            // if (!$tTag) {
+            //     // TODO : create non existent timing TAGS ? ignore for now if not exist...
+            //     continue; // NO need, null value are already ignored
+            // }
+            // $offer->addTimingTag($tTag);
+        }
+        // dd($offerInput['timingTags']);
+        $sync('timingTags');
+        // dd($offer);
+
         if (($offerInput['sourceDetail'] ?? false)
         && $offerInput['sourceDetail'][0])  {
             // TODO : using paneldynamic in surveyJS, need array as input, other way to avoid array wrapings
@@ -241,7 +262,7 @@ class MwsOfferController extends AbstractController
         $sync('sourceDetail');
         // dd($offer);
 
-        foreach ($offerInput['contacts'] as $idx => $c) {
+        foreach ($offerInput['contacts'] ?? [] as $idx => $c) {
             if (! $c instanceof MwsContact) {
                 // TODO : fetch / sync or add contacts ?
                 // dd($c);
@@ -1145,10 +1166,11 @@ class MwsOfferController extends AbstractController
         $offerStatusSlug = $request->request->get('offerStatusSlug', '--');
         if ($offerStatusSlug && strlen($offerStatusSlug && 'null' !== $offerStatusSlug)) {
             $offer->setCurrentStatusSlug($offerStatusSlug);
-            $this->em->persist($offer);
+            $this->em->persist($offer); // will not reflet changes in offer returned if created from modal with minimum info... ? nop, sound ok this way, ORM links take care of it...
             $traking->setOfferStatusSlug($offerStatusSlug);
         }
 
+        // $this->em->persist($offer);
         $this->em->persist($traking);
         $this->em->flush(); // TIPS : Sync Generated ID in DB for new traking
 

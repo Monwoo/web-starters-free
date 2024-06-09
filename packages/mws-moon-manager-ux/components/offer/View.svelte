@@ -87,7 +87,7 @@
   break-words whitespace-break-spaces">
     <h1 class="font-bold p-6 text-center">
       <a href={ offer.sourceUrl ?? "#not-found"} target="_blank" rel="noreferrer">
-        {offer.title}
+        {offer.title ?? ""}
       </a>
     </h1>
     <div class="w-full">
