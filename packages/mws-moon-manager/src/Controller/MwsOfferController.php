@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -1776,23 +1777,50 @@ class MwsOfferController extends AbstractController
                 ],
                 // ObjectNormalizer::IGNORED_ATTRIBUTES => ['tags']
                 AbstractNormalizer::CALLBACKS => [
-                    // 'tags' => function ($objects) {
-                    //     if (is_string($objects)) {
-                    //         // Denormalize (cf timing import, not used by export)
-                    //         throw new Exception("Should not happen for : " . $objects);
-                    //     } else {
-                    //         // Normalise
-                    //         $norm = array_map(
-                    //             function (MwsOfferStatus $o) {
-                    //                 // return $o->getSlug();
-                    //                 return ['slug'  => $o?->getSlug()] ?? null;
-                    //             },
-                    //             $objects->toArray() ?? []
-                    //         );
-                    //         sort($norm);
-                    //         return $norm;
-                    //     }
-                    // },
+                    'tags' => function ($objects) {
+                        if (is_string($objects)) {
+                            // Denormalize (cf timing import, not used by export)
+                            throw new Exception("Should not happen for : " . $objects);
+                        } else {
+                            // Normalise
+                            $norm = array_map(
+                                function (MwsOfferStatus $o) {
+                                    // return $o->getSlug();
+                                    return [
+                                        'slug'  => $o?->getSlug(),
+                                        'categorySlug'  => $o?->getcategorySlug(),
+                                    ] ?? null;
+                                },
+                                $objects->toArray() ?? []
+                            );
+                            sort($norm);
+                            return $norm;
+                        }
+                    },
+                    // 'timingTags' ?
+                    'mwsOfferTrackings' => function ($objects) {
+                        if (is_string($objects)) {
+                            // Denormalize (cf timing import, not used by export)
+                            throw new Exception("Should not happen for : " . $objects);
+                        } else {
+                            // Normalise
+                            $norm = array_map(
+                                function (MwsOfferTracking $t) {
+                                    // return $o->getSlug();
+                                    return [
+                                        'owner'  => $t?->getOwner()?->getUserIdentifier(),
+                                        'offerStatusSlug'  => $t?->getOfferStatusSlug(),
+                                        'comment' => $t?->getComment(),
+                                        'updatedAt' => $t?->getUpdatedAt(),
+                                        'createdAt' => $t?->getCreatedAt(),
+                                    ] ?? null;
+                                },
+                                $objects->toArray() ?? []
+                            );
+                            // sort($norm);
+                            return $norm;
+                        }
+                    },
                 ]
             ],
         );
@@ -2302,12 +2330,82 @@ class MwsOfferController extends AbstractController
                 }
             }
         } else {
+            // $out = $this->serializer->deserialize(
+            //     $data,
+            //     MwsOffer::class . "[]",
+            //     $format,
+            //     // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            // );
+
+            $em = $this->em;
+            $self = $this;
+            // dd($shouldOverwritePriceRules);
+            /** @var MwsTimeSlot[] $importSlots */
             $out = $this->serializer->deserialize(
                 $data,
                 MwsOffer::class . "[]",
                 $format,
-                // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+                [
+                    // TODO : transform class load instead of type ignore ?
+                    ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                    AbstractNormalizer::CALLBACKS => [
+                        'tags' => function (
+                            $innerObject,
+                            $outerObject,
+                            string $attributeName,
+                            string $format = null,
+                            array $context = []
+                        ) use ($mwsOfferStatusRepository, &$importReport, &$pendingNewTags, $em) {
+                            // dump($context['deserialization_path']);
+                            // if (is_array($innerObject)) {
+                            if ($context['deserialization_path'] ?? null) {
+                                // dd($innerObject); // TODO ; can't have raw input string ?
+                                // throw new Exception("TODO : ");
+                                return array_filter(
+                                    array_map(function ($tagSlug)
+                                    use ($mwsOfferStatusRepository, &$importReport, &$pendingNewTags, &$context, $em) {
+                                        $tag = $mwsOfferStatusRepository->findOneBy([
+                                            'slug' => $tagSlug->getSlug(),
+                                            'categorySlug' => $tagSlug->getCategorySlug(),
+                                        ]);
+                                        // dd($tag);
+                                        // TODO ; if null tag ?
+                                        if (!$tag) {
+                                            if ($tagSlug->getSlug() && strlen($tagSlug->getSlug())) {
+                                                $importReport .= "Missing tag for slug {$tagSlug->getSlug()} for {$context['deserialization_path']} <br/>";
+
+                                                // TODO : Adding missing tags ? nop ? too hard to guess with slug only ? cat slug etc ?
+                                                // $pendingNewTags[$tagSlug->getSlug()] = true;
+                                                // $tag = new MwsTimeTag();
+                                                // $tag->setSlug($tagSlug->getSlug());
+                                                // $tag->setLabel("#{$tagSlug->getSlug()}#");
+                                                // // TIPS : even if will be saved with 'cascade persiste' attribute
+                                                // // save it now to see it on others imports lookups instead of at
+                                                // // end of full import query builds...
+                                                // $em->persist($tag);
+                                                // $em->flush();
+                                            } else {
+                                                // TIPS : no need to warn, for CSV emoty row will be null...
+                                                // $importReport .= "WARNING : null tag for {$context['deserialization_path']} <br/>";
+                                                // $this->logger->warning("WARNING : null tag for {$context['deserialization_path']}");
+                                            }
+                                        }
+                                        return $tag;
+                                    }, $innerObject),
+                                    function ($t) {
+                                        // filter null
+                                        return !!$t;
+                                    }
+                                );
+                            } else {
+                                // Normalise (cf timing export, not used by import)
+                                throw new Exception("Should not happen");
+                            }
+                        },
+                    ],
+                ]
             );
+    
         }
         return $out;
     }
