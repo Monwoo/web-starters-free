@@ -1416,6 +1416,10 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
+        $maxTime = 60 * 600; // 600 minutes max // TODO : from crm config and/or user config ?
+        set_time_limit($maxTime);
+        ini_set('max_execution_time', $maxTime);
+
         // format
         $format = $request->get('format');
         $shouldOverwrite = $request->get('shouldOverwrite');
@@ -1424,6 +1428,14 @@ class MwsTimingController extends AbstractController
         $shouldRecomputeAllOtherTags = $request->get('shouldRecomputeAllOtherTags');
         $importFile = $request->files->get('importFile');
         $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
+        // $importContent = file_get_contents($importFile->getPathname());
+        // https://www.php.net/manual/fr/function.iconv.php
+        // https://www.php.net/manual/en/function.mb-detect-encoding.php
+        // $importContent = iconv("ISO-8859-1", "UTF-8", $importContent);
+        $importContentEncoding = mb_detect_encoding($importContent);
+        // dd($importContentEncoding);
+        $importContent = iconv($importContentEncoding, "UTF-8", $importContent);
+
         $importReport = '';
 
         $pendingNewTags = [];
@@ -1800,6 +1812,7 @@ class MwsTimingController extends AbstractController
             // dd($newThumb);
 
             if (!$importSlot->getSourceStamp()) {
+                // TODO : avoid dd ? will break all import, throw custom error ?
                 dd('TODO: generate sourceStamp or fail on wrong import format ?');
             }
             $this->em->persist($importSlot);

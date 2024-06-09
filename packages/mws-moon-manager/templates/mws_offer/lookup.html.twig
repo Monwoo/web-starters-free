@@ -11,6 +11,7 @@
 	{{ svelte_component('MwsReduxSync', {
 		'stateUpdate': {
 			'offerTagsByCatSlugAndSlug': offerTagsByCatSlugAndSlug,
+			'csrfOfferImport': csrf_token('mws-csrf-offer-import'),
 			'csrfOfferAddComment': csrf_token('mws-csrf-offer-add-comment'),
 			'csrfOfferDeleteTracking': csrf_token('mws-csrf-offer-delete-tracking'),
 			'csrfOfferTagDelete': csrf_token('mws-csrf-offer-tag-delete'),

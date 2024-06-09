@@ -11,6 +11,7 @@
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import { BarsOutline, ColumnSolid } from "flowbite-svelte-icons";
+import ImportOffers from "./ImportOffers.svelte";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -196,19 +197,12 @@
 <Base bind:isMobile bind:isWide {copyright} {locale} {viewTemplate}>
   <div class="p-3 flex flex-wrap">
     <Loader {isLoading} />
-    <a
-      class="pb-2"
-      href={Routing.generate("mws_offer_import", {
-        _locale: locale ?? "",
-        viewTemplate: viewTemplate ?? "",
-      })}
-    >
-      <button class="">Importer des offres.</button>
-    </a>
+    <ImportOffers {locale} format="monwoo-extractor-export" />
+
     <span on:click={deleteAllOffers}>
-      <button class="mx-2" style="--mws-primary-rgb: 255, 0, 0"
-        >Supprimer toutes les offres.</button
-      >
+      <button class="mx-2" style="--mws-primary-rgb: 255, 0, 0">
+        Supprimer toutes les offres.
+      </button>
     </span>
   </div>
   <div class="p-3 flex flex-wrap">
@@ -337,7 +331,7 @@
             pageLimitForm.submit();
           }}
         >
-          Définir la limite de pages
+          Nombre d'éléments par page
         </button>
       </span>
     </form>

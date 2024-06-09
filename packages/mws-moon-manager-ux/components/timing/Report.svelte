@@ -1011,7 +1011,7 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
     <button>Liste des tags</button>
   </a>
   <div class="p-3 w-full">
-    <ImportTimings {locale} timingLookup={searchLookup} format="csv" />
+    <ImportTimings {locale} format="csv" />
     <ExportTimings {locale} timingLookup={searchLookup} format="csv" />
     <ExportTags {locale} timingLookup={searchLookup} format="csv" />
     <button

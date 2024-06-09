@@ -149,7 +149,7 @@ class MwsOfferController extends AbstractController
                         if ($setter) {
                             $setter($offer, $subV);
                         } else {
-                            $offer->$add($subV);
+                            $offer->$add($subV);                            
                         }
                     }
                 } else {
@@ -195,8 +195,8 @@ class MwsOfferController extends AbstractController
         // $sync('currentStatusSlug');
         $offerInput['tags'] = $offerInput['tags'] ?? [];
         if ($offerInput['currentStatusSlug'] ?? false) {
-            $offerInput['currentStatusSlug'] =
-                str_replace($tagSlugSep, '|', $offerInput['currentStatusSlug']);
+            $offerInput['currentStatusSlug'] = 
+            str_replace($tagSlugSep, '|', $offerInput['currentStatusSlug']);
             // $sync('currentStatusSlug');
             $offerInput['tags'][] = str_replace('|', $tagSlugSep, $offerInput['currentStatusSlug']);
         }
@@ -212,7 +212,7 @@ class MwsOfferController extends AbstractController
             }
         }
         // dd($offerInput['tags']);
-        $sync('tags', function ($o, $v) use ($mwsOfferRepository) {
+        $sync('tags', function($o, $v) use($mwsOfferRepository) {
             $mwsOfferRepository->addTag($o, $v);
             // dd($o);
         });
@@ -247,17 +247,15 @@ class MwsOfferController extends AbstractController
         // dd($offer);
 
         if (($offerInput['sourceDetail'] ?? false)
-            && $offerInput['sourceDetail'][0]
-        ) {
+        && $offerInput['sourceDetail'][0])  {
             // TODO : using paneldynamic in surveyJS, need array as input, other way to avoid array wrapings
             $offerInput['sourceDetail'] = $offerInput['sourceDetail'][0];
         }
 
-        if (($offerInput['sourceDetail'] ?? false)
-            && ($offerInput['sourceDetail']['messages'] ?? false)
-        ) {
+        if (($offerInput['sourceDetail'] ?? false) 
+        && ($offerInput['sourceDetail']['messages'] ?? false)) {
             // Re-map format used by SurveyJS to allow list of items...
-            $offerInput['sourceDetail']['messages'] = array_map(function ($m) {
+            $offerInput['sourceDetail']['messages'] = array_map(function($m) {
                 return $m['msg'] ?? $m;
             }, $offerInput['sourceDetail']['messages']);
         }
@@ -265,7 +263,7 @@ class MwsOfferController extends AbstractController
         // dd($offer);
 
         foreach ($offerInput['contacts'] ?? [] as $idx => $c) {
-            if (!$c instanceof MwsContact) {
+            if (! $c instanceof MwsContact) {
                 // TODO : fetch / sync or add contacts ?
                 // dd($c);
                 $contact = null;
@@ -301,7 +299,7 @@ class MwsOfferController extends AbstractController
 
                 // TODO : ensure mwsOffers OK or have duplicates ?
                 $contact->addMwsOffer($offer);
-
+                
                 // TODO : update mwsContactTrackings ? or useless if not used for business purpose, heavy data for nothing ? all already tracked at offer levels with human comment enough ? 
                 // TODO : update mwsUsers ? or useless if not used for business purpose, heavy data for nothing ? all already tracked at offer levels with human comment enough ? 
                 // dd($contact);
@@ -1686,7 +1684,7 @@ class MwsOfferController extends AbstractController
     #[Route(
         '/import/{viewTemplate<[^/]*>?}/{format}',
         name: 'mws_offer_import',
-        methods: ['POST'],
+        methods: ['GET', 'POST'],
         defaults: [
             'viewTemplate' => null,
             'format' => 'monwoo-extractor-export',
@@ -1701,255 +1699,259 @@ class MwsOfferController extends AbstractController
         MwsContactRepository $mwsContactRepository,
         SluggerInterface $slugger,
         EntityManagerInterface $em,
-        CsrfTokenManagerInterface $csrfTokenManager
     ): Response {
         $user = $this->getUser();
-        // TIPS : firewall, middleware or security guard can also
-        //        do the job. Double secu prefered ? :
-        if (!$user) {
-            $this->logger->debug("Fail auth", []);
-            throw $this->createAccessDeniedException('Only for logged users');
-        }
-        $csrf = $request->request->get('_csrf_token');
-        // dd($csrf);
-        if (!$this->isCsrfTokenValid('mws-csrf-offer-import', $csrf)) {
-            $this->logger->debug("Fail csrf with", [$csrf]);
-            throw $this->createAccessDeniedException('CSRF Expired');
+        if (!$user || !$this->security->isGranted(MwsUser::ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Only for admins');
         }
 
-        $maxTime = 60 * 600; // 600 minutes max // TODO : from crm config and/or user config ?
+        $maxTime = 60 * 30; // 30 minutes max
         set_time_limit($maxTime);
         ini_set('max_execution_time', $maxTime);
-
-        $shouldOverwrite = $request->get('shouldOverwrite');
-        $importFile = $request->files->get('importFile');
-        // $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
-        $importReport = '';
 
         $forceRewrite = $request->query->get('forceRewrite', false);
         $forceStatusRewrite = $request->query->get('forceStatusRewrite', false);
         $forceCleanTags = $request->query->get('forceCleanTags', false);
         $forceCleanContacts = $request->query->get('forceCleanContacts', false);
 
-        if ($importFile) {
-            $originalFilename = $importFile->getClientOriginalName();
-            // TIPS : $importFile->guessExtension() is based on mime type and may fail
-            // to be .yaml if text detected... (will be .txt instead of .yaml...)
-            // $extension = $importFile->guessExtension();
-            $extension = array_slice(explode(".", $originalFilename), -1)[0];
-            $originalName = implode(".", array_slice(explode(".", $originalFilename), 0, -1));
-            // this is needed to safely include the file name as part of the URL
-            $safeFilename = $slugger->slug($originalName);
+        $uploadData = null;
+        $form = $this->createForm(MwsOfferImportType::class, $uploadData);
+        $form->handleRequest($request);
+        $reportSummary = "";
 
-            $newFilename = $safeFilename . '_' . uniqid() . '.' . $extension;
+        $this->logger->debug("Succeed to handle Request");
+        if ($form->isSubmitted()) {
+            $this->logger->debug("Succeed to submit form");
 
-            $importContent = file_get_contents($importFile->getPathname());
-            // https://www.php.net/manual/fr/function.iconv.php
-            // https://www.php.net/manual/en/function.mb-detect-encoding.php
-            // $importContent = iconv("ISO-8859-1", "UTF-8", $importContent);
-            $importContentEncoding = mb_detect_encoding($importContent);
-            // dd($importContentEncoding);
-            $importContent = iconv($importContentEncoding, "UTF-8", $importContent);
-            // dd($importContent);
-            // TIPS : clean as soon as we can...
-            unlink($importFile->getPathname());
-            // $importReport = $importContent;
-            /** @var MwsOffer[] */
-            $offersDeserialized = $this->deserializeOffers(
-                $user,
-                $importContent,
-                $format,
-                $newFilename,
-                $mwsOfferRepository,
-                $mwsOfferStatusRepository,
-                $mwsContactRepository,
-            );
-            // dd($offersDeserialized);
+            if ($form->isValid()) {
+                $this->logger->debug("Form is valid : ok");
+                // https://github.com/symfony/symfony/blob/6.3/src/Symfony/Component/HttpFoundation/File/UploadedFile.php
+                // https://stackoverflow.com/questions/14462390/how-to-declare-the-type-for-local-variables-using-phpdoc-notation
+                /** @var UploadedFile $importedUpload */
+                $importedUpload = $form->get('importedUpload')->getData();
+                if ($importedUpload) {
+                    $originalFilename = $importedUpload->getClientOriginalName();
+                    // TIPS : $importedUpload->guessExtension() is based on mime type and may fail
+                    // to be .yaml if text detected... (will be .txt instead of .yaml...)
+                    // $extension = $importedUpload->guessExtension();
+                    $extension = array_slice(explode(".", $originalFilename), -1)[0];
+                    $originalName = implode(".", array_slice(explode(".", $originalFilename), 0, -1));
+                    // this is needed to safely include the file name as part of the URL
+                    $safeFilename = $slugger->slug($originalName);
 
-            $savedCount = 0;
-            /** @var MwsOffer $offer */
-            foreach ($offersDeserialized as $idx => $offer) {
-                $sourceName = $offer->getSourceName();
-                $slug = $offer->getSlug();
-                // $email = $offer->getContact1();
-                // $phone = $offer->getContact2();
+                    $newFilename = $safeFilename . '_' . uniqid() . '.' . $extension;
 
-                // TODO : add as repository method ?
-                $qb = $mwsOfferRepository
-                    ->createQueryBuilder('o')
-                    ->where('o.slug = :slug')
-                    ->andWhere('o.sourceName = :sourceName')
-                    ->setParameter('slug', $slug)
-                    ->setParameter('sourceName', $sourceName);
-                // if ($email && strlen($email)) {
-                //     $qb->andWhere('p.email = :email')
-                //     ->setParameter('email', trim(strtolower($email)));
-                // }
-                // if ($phone && strlen($phone)) {
-                //     $qb->andWhere('p.phone = :phone')
-                //     ->setParameter('phone', trim(strtolower($phone)));
-                // }
-                $query = $qb->getQuery();
+                    $importContent = file_get_contents($importedUpload->getPathname());
+                    // https://www.php.net/manual/fr/function.iconv.php
+                    // https://www.php.net/manual/en/function.mb-detect-encoding.php
+                    // $importContent = iconv("ISO-8859-1", "UTF-8", $importContent);
+                    $importContentEncoding = mb_detect_encoding($importContent);
+                    // dd($importContentEncoding);
+                    $importContent = iconv($importContentEncoding, "UTF-8", $importContent);
+                    // dd($importContent);
+                    // TIPS : clean as soon as we can...
+                    unlink($importedUpload->getPathname());
+                    // $reportSummary = $importContent;
+                    /** @var MwsOffer[] */
+                    $offersDeserialized = $this->deserializeOffers(
+                        $user,
+                        $importContent,
+                        $format,
+                        $newFilename,
+                        $mwsOfferRepository,
+                        $mwsOfferStatusRepository,
+                        $mwsContactRepository,
+                    );
+                    // dd($offersDeserialized);
 
-                // dd($query->getDQL());
-                // dd($query);
-                $allDuplicates = $query->execute();
+                    $savedCount = 0;
+                    /** @var MwsOffer $offer */
+                    foreach ($offersDeserialized as $idx => $offer) {
+                        $sourceName = $offer->getSourceName();
+                        $slug = $offer->getSlug();
+                        // $email = $offer->getContact1();
+                        // $phone = $offer->getContact2();
 
-                // dd($allDuplicates);
-                // var_dump($allDuplicates);exit;
-                if ($allDuplicates && count($allDuplicates)) {
-                    if ($forceRewrite) {
-                        $importReport .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
-                        $inputOffer = $offer;
-                        // $offer = $allDuplicates[0];
-                        /** @var MwsOffer $offer */
-                        $offer = array_shift($allDuplicates);
-                        $sync = function ($path) use ($inputOffer, $offer) {
-                            $set = 'set' . ucfirst($path);
-                            $get = 'get' . ucfirst($path);
-                            $v =  $inputOffer->$get();
-                            if (
-                                null !== $v &&
-                                ((!is_string($v)) || strlen($v))
-                            ) {
-                                $offer->$set($v);
-                            }
-                        };
-                        // TODO : factorize code with serializer service ? factorize to same location...
-                        $sync('clientUsername');
-                        $sync('contact1');
-                        $sync('contact2');
-                        $sync('contact3');
-                        $sync('title');
-                        $sync('description');
-                        $sync('budget');
-                        $sync('leadStart');
-                        $sync('sourceUrl');
-                        $sync('clientUrl');
-                        $sync('currentBillingNumber');
-                        $sync('sourceDetail');
-                        if ($forceCleanTags) {
-                            $offer->getTags()->clear();
-                        }
-                        if ($forceStatusRewrite) {
-                            $sync('currentStatusSlug');
-                            $slugs = explode('|', $offer->getCurrentStatusSlug());
-                            $currentStatusTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
-                                $slugs[1],
-                                $slugs[0]
-                            );
-                            // TODO : if currentStatusTag not found ? wrong slug ? etc ...
-                            // TODO : refactor to : slug / nameSlug / categorySlug
-                            // since slug is now used for name and full slug key...
-
-                            // TIPS : add to ensure tag list ok without duplicata :
-                            // $offer->addTag($currentStatusTag); // WARNING : refactor or warn ? this one to not check category exclusivity etc...
-                            // $offer->addTag($currentStatusTag);
-                            $mwsOfferRepository->addTag($offer, $currentStatusTag);
-                        }
-
-                        $tags = $inputOffer->getTags();
-                        foreach ($tags as $tag) {
-                            // TIPS : inside addTag, only one by specific only one choice category type ?
-                            // OK to copy all, clone src use
-                            // $mwsOfferRepository->addTag($offer, $tag);
-                            // $offer->addTag($tag); // TODO : clean up script in case someone use the add without category dups check ?
-                            // But still safer to use repo algo :
-                            $mwsOfferRepository->addTag($offer, $tag);
-                        }
-
-                        if ($forceCleanContacts) {
-                            $offer->getContacts()->clear();
-                        }
-                        $contacts = $inputOffer->getContacts();
-                        foreach ($contacts as $contact) {
-                            $offer->addContact($contact);
-                            // dd($contact);
-                            // Try to fill offer quick contact with contact details if available :
-                            // if ($contact->getPhone()) {
-                            //     if (!$offer->getContact1()) {
-                            //         $offer->setContact1($contact->getPhone());
-                            //     } else if (!$offer->getContact2()) {
-                            //         $offer->setContact2($contact->getPhone());
-                            //     }
-                            // }
-                            // if ($contact->getEmail()) {
-                            //     if (!$offer->getContact1()) {
-                            //         $offer->setContact1($contact->getEmail());
-                            //     } else if (!$offer->getContact2()) {
-                            //         $offer->setContact2($contact->getEmail());
-                            //     }
-                            // }
-                        }
-
-                        // dump($inputOffer);
-                        // dd($offer);
-                        // CLEAN all possible other duplicates :
-                        foreach ($allDuplicates as $otherDups) {
-                            $em->remove($otherDups);
-                        }
-                        // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
-
-                        // if (!$offer->getSourceFile()
-                        // || !strlen($offer->getSourceFile())) {
-                        //     $offer->setSourceFile('unknown');
+                        // TODO : add as repository method ?
+                        $qb = $mwsOfferRepository
+                            ->createQueryBuilder('o')
+                            ->where('o.slug = :slug')
+                            ->andWhere('o.sourceName = :sourceName')
+                            ->setParameter('slug', $slug)
+                            ->setParameter('sourceName', $sourceName);
+                        // if ($email && strlen($email)) {
+                        //     $qb->andWhere('p.email = :email')
+                        //     ->setParameter('email', trim(strtolower($email)));
                         // }
+                        // if ($phone && strlen($phone)) {
+                        //     $qb->andWhere('p.phone = :phone')
+                        //     ->setParameter('phone', trim(strtolower($phone)));
+                        // }
+                        $query = $qb->getQuery();
 
-                        // Default auto compute values :
-                        /** @var MwsOffer $offer */
-                        if (!$offer->getCurrentStatusSlug()) {
-                            // TODO : from .env config file ? or from DB ? (status with tags for default selections ?)
-                            $offerStatusSlug = "mws-offer-tags-category-src-import|a-relancer"; // TODO : load from status DB or config DB...
-                            $offer->setCurrentStatusSlug($offerStatusSlug);
-                            // dd($offer);    
-                        }
-                    } else {
-                        $importReport .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
-                        continue; // TODO : WHY BELOW counting one write when all is duplicated ?
-                    }
-                }
-                // Try to fill offer quick contact with contact details if available :
-                $contacts = $offer->getContacts();
-                foreach ($contacts as $contact) {
-                    // TIPS : ensure no phone duplication not working... import duplicate phone if offer already define phone... ?
-                    //        check cache issue... codeur-com-420626, JANTIER recherche des développeurs et gestionnaires E-commerc
-                    if (
-                        $contact->getPhone()
-                        && $contact->getPhone() !== $offer->getContact1()
-                        && $contact->getPhone() !== $offer->getContact2()
-                    ) {
-                        if (!$offer->getContact1()) {
-                            $offer->setContact1($contact->getPhone());
-                        } else if (!$offer->getContact2()) {
-                            $offer->setContact2($contact->getPhone());
-                        }
-                    }
-                    if (
-                        $contact->getEmail()
-                        && $contact->getEmail() !== $offer->getContact1()
-                        && $contact->getEmail() !== $offer->getContact2()
-                    ) {
-                        if (!$offer->getContact1()) {
-                            $offer->setContact1($contact->getEmail());
-                        } else if (!$offer->getContact2()) {
-                            $offer->setContact2($contact->getEmail());
-                        }
-                    }
-                }
+                        // dd($query->getDQL());
+                        // dd($query);
+                        $allDuplicates = $query->execute();
 
-                $em->persist($offer);
-                $em->flush();
-                $savedCount++;
+                        // dd($allDuplicates);
+                        // var_dump($allDuplicates);exit;
+                        if ($allDuplicates && count($allDuplicates)) {
+                            if ($forceRewrite) {
+                                $reportSummary .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
+                                $inputOffer = $offer;
+                                // $offer = $allDuplicates[0];
+                                /** @var MwsOffer $offer */
+                                $offer = array_shift($allDuplicates);
+                                $sync = function ($path) use ($inputOffer, $offer) {
+                                    $set = 'set' . ucfirst($path);
+                                    $get = 'get' . ucfirst($path);
+                                    $v =  $inputOffer->$get();
+                                    if (
+                                        null !== $v &&
+                                        ((!is_string($v)) || strlen($v))
+                                    ) {
+                                        $offer->$set($v);
+                                    }
+                                };
+                                // TODO : factorize code with serializer service ? factorize to same location...
+                                $sync('clientUsername');
+                                $sync('contact1');
+                                $sync('contact2');
+                                $sync('contact3');
+                                $sync('title');
+                                $sync('description');
+                                $sync('budget');
+                                $sync('leadStart');
+                                $sync('sourceUrl');
+                                $sync('clientUrl');
+                                $sync('currentBillingNumber');
+                                $sync('sourceDetail');
+                                if ($forceCleanTags) {
+                                    $offer->getTags()->clear();
+                                }
+                                if ($forceStatusRewrite) {
+                                    $sync('currentStatusSlug');
+                                    $slugs = explode('|', $offer->getCurrentStatusSlug());
+                                    $currentStatusTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
+                                        $slugs[1],
+                                        $slugs[0]
+                                    );
+                                    // TODO : if currentStatusTag not found ? wrong slug ? etc ...
+                                    // TODO : refactor to : slug / nameSlug / categorySlug
+                                    // since slug is now used for name and full slug key...
+
+                                    // TIPS : add to ensure tag list ok without duplicata :
+                                    // $offer->addTag($currentStatusTag); // WARNING : refactor or warn ? this one to not check category exclusivity etc...
+                                    // $offer->addTag($currentStatusTag);
+                                    $mwsOfferRepository->addTag($offer, $currentStatusTag);
+                                }
+
+                                $tags = $inputOffer->getTags();
+                                foreach ($tags as $tag) {
+                                    // TIPS : inside addTag, only one by specific only one choice category type ?
+                                    // OK to copy all, clone src use
+                                    // $mwsOfferRepository->addTag($offer, $tag);
+                                    // $offer->addTag($tag); // TODO : clean up script in case someone use the add without category dups check ?
+                                    // But still safer to use repo algo :
+                                    $mwsOfferRepository->addTag($offer, $tag);
+                                }
+
+                                if ($forceCleanContacts) {
+                                    $offer->getContacts()->clear();
+                                }
+                                $contacts = $inputOffer->getContacts();
+                                foreach ($contacts as $contact) {
+                                    $offer->addContact($contact);
+                                    // dd($contact);
+                                    // Try to fill offer quick contact with contact details if available :
+                                    // if ($contact->getPhone()) {
+                                    //     if (!$offer->getContact1()) {
+                                    //         $offer->setContact1($contact->getPhone());
+                                    //     } else if (!$offer->getContact2()) {
+                                    //         $offer->setContact2($contact->getPhone());
+                                    //     }
+                                    // }
+                                    // if ($contact->getEmail()) {
+                                    //     if (!$offer->getContact1()) {
+                                    //         $offer->setContact1($contact->getEmail());
+                                    //     } else if (!$offer->getContact2()) {
+                                    //         $offer->setContact2($contact->getEmail());
+                                    //     }
+                                    // }
+                                }
+
+                                // dump($inputOffer);
+                                // dd($offer);
+                                // CLEAN all possible other duplicates :
+                                foreach ($allDuplicates as $otherDups) {
+                                    $em->remove($otherDups);
+                                }
+                                // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
+
+                                // if (!$offer->getSourceFile()
+                                // || !strlen($offer->getSourceFile())) {
+                                //     $offer->setSourceFile('unknown');
+                                // }
+
+                                // Default auto compute values :
+                                /** @var MwsOffer $offer */
+                                if (!$offer->getCurrentStatusSlug()) {
+                                    // TODO : from .env config file ? or from DB ? (status with tags for default selections ?)
+                                    $offerStatusSlug = "mws-offer-tags-category-src-import|a-relancer"; // TODO : load from status DB or config DB...
+                                    $offer->setCurrentStatusSlug($offerStatusSlug);
+                                    // dd($offer);    
+                                }
+                            } else {
+                                $reportSummary .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
+                                continue; // TODO : WHY BELOW counting one write when all is duplicated ?
+                            }
+                        }
+                        // Try to fill offer quick contact with contact details if available :
+                        $contacts = $offer->getContacts();
+                        foreach ($contacts as $contact) {
+                            // TIPS : ensure no phone duplication not working... import duplicate phone if offer already define phone... ?
+                            //        check cache issue... codeur-com-420626, JANTIER recherche des développeurs et gestionnaires E-commerc
+                            if ($contact->getPhone()
+                            && $contact->getPhone() !== $offer->getContact1()
+                            && $contact->getPhone() !== $offer->getContact2()) {
+                                if (!$offer->getContact1()) {
+                                    $offer->setContact1($contact->getPhone());
+                                } else if (!$offer->getContact2()) {
+                                    $offer->setContact2($contact->getPhone());
+                                }
+                            }
+                            if ($contact->getEmail()
+                            && $contact->getEmail() !== $offer->getContact1()
+                            && $contact->getEmail() !== $offer->getContact2()) {
+                                if (!$offer->getContact1()) {
+                                    $offer->setContact1($contact->getEmail());
+                                } else if (!$offer->getContact2()) {
+                                    $offer->setContact2($contact->getEmail());
+                                }
+                            }
+                        }
+
+                        $em->persist($offer);
+                        $em->flush();
+                        $savedCount++;
+                    }
+                    $reportSummary .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
+
+                    // var_dump($extension);var_dump($importContent);var_dump($offersDeserialized); exit;
+                }
             }
-            $importReport .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
-
-            // var_dump($extension);var_dump($importContent);var_dump($offersDeserialized); exit;
         }
-
-        return $this->json([
-            'importReport' => $importReport,
-            'newCsrf' => $csrfTokenManager->getToken('mws-csrf-offer-import')->getValue(),
+        $formatToText = [
+            // 'tsv' => "Tab-separated values (TSV)",
+            'csv' => "Comma-separated values (CSV)",
+            'json' => "JavaScript Object Notation (JSON)",
+        ];
+        return $this->render('@MoonManager/mws_offer/import.html.twig', [
+            'reportSummary' => $reportSummary,
+            'format' => $format,
+            'uploadForm' => $form,
             'viewTemplate' => $viewTemplate,
+            'title' => 'Importer les offres via ' . ($formatToText[$format] ?? $format)
         ]);
     }
 

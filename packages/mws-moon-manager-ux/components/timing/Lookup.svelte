@@ -413,7 +413,7 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
                 }}
               />
               <button type="submit" class="m-1">
-                Définir la limite de pages
+                Nombre d'éléments par page
               </button>
             </span>
           </form>
