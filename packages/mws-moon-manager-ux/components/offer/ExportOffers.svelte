@@ -1,9 +1,10 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-  import ListItem from "./tags/ListItem.svelte";
-  import AddModal from "./tags/AddModal.svelte";
   import Routing from "fos-router";
   import Loader from "../layout/widgets/Loader.svelte";
+
+  let cssClass = "";
+  export {cssClass as class};
 
   export let locale;
   export let availableFormat = [
@@ -23,14 +24,14 @@
 
     const formData = new FormData(e.target);
     if (offerLookup) {
-      console.debug('Will export timings with timing filters :', offerLookup);
+      console.debug('Will export offers with filters :', offerLookup);
       formData.append(`offerLookup`, JSON.stringify(offerLookup));
     }
 
     const formJson = Object.fromEntries(formData.entries());
-    console.log('Should export timings : ', formJson);
+    console.log('Should export offers : ', formJson);
 
-    var file_path = Routing.generate("mws_timing_export", {
+    var file_path = Routing.generate("mws_offer_export", {
         _locale: locale,
         ...formJson,
     });
@@ -84,7 +85,9 @@
 }
 </script>
 
-<form on:submit|preventDefault={submit} class="mws-export-timings-form">
+<form on:submit|preventDefault={submit}
+class="mws-export-offers-form {cssClass}">
+  <!-- {format} -->
   <select
     bind:value={format}
     name="format"
@@ -95,22 +98,22 @@
   dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
   dark:focus:border-blue-500"
   >
-    <option value="null" selected>Format d'export</option>
+    <!-- <option value="null" selected>Format d'export</option> -->
     {#each availableFormat as fmt}
       <option value={`${fmt.format}`}>{fmt.label}</option>
     {/each}
   </select>
-  <span>
+  <!-- <span>
     <input type="checkbox" name="attachThumbnails" />
     <label for="attachThumbnails">Joindre les miniatures</label>
   </span>
   <span>
     <input type="number" name="thumbnailsSize" />
     <label for="thumbnailsSize">Taille des miniatures</label>
-  </span>
+  </span> -->
 
   <button type="submit" class=" m-1">
-    Exporter les temps
+    Exporter les offres
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->
 

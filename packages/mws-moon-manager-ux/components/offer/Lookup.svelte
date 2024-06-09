@@ -11,7 +11,8 @@
   import { get } from "svelte/store";
   import debounce from "lodash/debounce";
   import { BarsOutline, ColumnSolid } from "flowbite-svelte-icons";
-import ImportOffers from "./ImportOffers.svelte";
+  import ImportOffers from "./ImportOffers.svelte";
+  import ExportOffers from "./ExportOffers.svelte";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -197,9 +198,10 @@ import ImportOffers from "./ImportOffers.svelte";
 <Base bind:isMobile bind:isWide {copyright} {locale} {viewTemplate}>
   <div class="p-3 flex flex-wrap">
     <Loader {isLoading} />
-    <ImportOffers {locale} format="monwoo-extractor-export" />
+    <ImportOffers class="w-full" {locale} format="monwoo-extractor-export" />
+    <ExportOffers class="w-full" {locale} offerLookup={searchLookup} format="yaml" />
 
-    <span on:click={deleteAllOffers}>
+    <span class="w-full" on:click={deleteAllOffers}>
       <button class="mx-2" style="--mws-primary-rgb: 255, 0, 0">
         Supprimer toutes les offres.
       </button>

@@ -1,7 +1,5 @@
 <script lang="ts">
   // 🌖🌖 Copyright Monwoo 2023 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-  import ListItem from "./tags/ListItem.svelte";
-  import AddModal from "./tags/AddModal.svelte";
   import Routing from "fos-router";
   import Loader from "../layout/widgets/Loader.svelte";
 

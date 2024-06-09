@@ -11,6 +11,8 @@
   // import { CameraFotoOutline } from 'flowbite-svelte-icons';
 
   let importReport;
+  let cssClass = "";
+  export {cssClass as class};
   export let importedTags;
   export let importedTagsGrouped;
   export let locale;
@@ -88,10 +90,10 @@
           // got the desired response
           const data = await resp.json();
           console.debug("Did import", data);
-          // timings = Object.values(data.newTags); // A stringified obj with '1' as index...
+          // offers = Object.values(data.newTags); // A stringified obj with '1' as index...
           // TODO : force reload, but should recompute ?
-          // importedTags = data.timings;
-          // importedTagsGrouped = data.timingsGrouped;
+          // importedTags = data.offers;
+          // importedTagsGrouped = data.offersGrouped;
           importReport = data.importReport;
           reportModal.eltModal.show();
           stateUpdate(state, {
@@ -114,7 +116,7 @@
 
     const formData = new FormData(e.target);
     const formJson = Object.fromEntries(formData.entries());
-    console.log("Should import timings : ", formJson);
+    console.log("Should import offers : ", formJson);
     await importTags(formJson);
     isLoading = false;
   };
@@ -135,7 +137,8 @@
 
 </script>
 
-<form on:submit|preventDefault={submit} class="mws-import-timings-form">
+<form on:submit|preventDefault={submit}
+class="mws-import-offers-form {cssClass}">
   {#if format}
     <input
       type="file"
@@ -167,7 +170,7 @@
       <input type="checkbox" 
       bind:checked={shouldOverwrite}
       name="shouldOverwrite" />
-      <label for="shouldOverwrite">Forcer la surcharge des temps</label>
+      <label for="shouldOverwrite">Forcer la surcharge des offres</label>
     </span>
     <span class:opacity-70={!shouldOverwrite}>
       <input type="checkbox" name="forceCurrentStatusSlugRewrite" checked
@@ -193,7 +196,7 @@
   </span>
 
   <button type="submit" class=" m-1">
-    Importer les temps
+    Importer les offres
   </button>
   <!-- <input type="submit" class="btn btn-outline-primary p-1 m-1"/>     -->
   <Loader {isLoading} />
