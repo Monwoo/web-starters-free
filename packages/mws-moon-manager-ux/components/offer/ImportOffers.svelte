@@ -15,6 +15,7 @@
   export let importedTagsGrouped;
   export let locale;
   export let availableFormat = [
+    { format: "monwoo-extractor-export", label: "Monwoo Extractor" },
     { format: "json", label: "JSON" },
     { format: "yaml", label: "YAML" },
     { format: "csv", label: "CSV" },
@@ -26,6 +27,7 @@
   // 'application/csv',
   // 'text/csv',
   export let formatToMime = {
+    "monwoo-extractor-export": "application/json,text/plain",
     json: "application/json,text/plain",
     yaml: "application/yaml,text/plain,application/x-yaml",
     csv: "application/csv,text/csv",
@@ -33,6 +35,8 @@
 
   export let reportModal;
   export let isLoading = false;
+
+  export let shouldOverwrite;
 
   export let importTags = async (
     inputData = {
@@ -122,7 +126,8 @@
     for (let f of files) {
       const ext = f.name.split('.').slice(-1)[0];
       console.log(f, ext);
-      if (format != ext && (formatToMime[ext] ?? null)) {
+      if (format != 'monwoo-extractor-export'
+        && format != ext && (formatToMime[ext] ?? null)) {
         format = ext;
       }
     }
@@ -150,7 +155,7 @@
   dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 
   dark:focus:border-blue-500"
   >
-    <option value="null" selected>Format d'import</option>
+    <!-- <option value="null" selected>Format d'import</option> -->
     {#each availableFormat as fmt}
       <option value={`${fmt.format}`}>{fmt.label}</option>
     {/each}
@@ -158,25 +163,31 @@
   <!-- <input type="checkbox" name="shouldOverwrite" checked /> -->
   <span class="inline-flex flex-col">
     <span>
-      <input type="checkbox" name="shouldOverwrite" />
+      <!-- https://learn.svelte.dev/tutorial/checkbox-inputs -->
+      <input type="checkbox" 
+      bind:checked={shouldOverwrite}
+      name="shouldOverwrite" />
       <label for="shouldOverwrite">Forcer la surcharge des temps</label>
     </span>
-    <span>
-      <input type="checkbox" name="shouldOverwritePriceRules" />
-      <label for="shouldOverwritePriceRules">Forcer la surcharge des règles de prix</label
+    <span class:opacity-70={!shouldOverwrite}>
+      <input type="checkbox" name="forceCurrentStatusSlugRewrite" checked
+      disabled={!shouldOverwrite}
+      />
+      <label
+      for="forceCurrentStatusSlugRewrite">Forcer la surcharge du statut principal</label
       >
     </span>
   </span>
   <span class="inline-flex flex-col">
     <span>
-      <input type="checkbox" name="shouldRecomputeAllOtherTags" />
-      <label for="shouldRecomputeAllOtherTags"
-        >Mettre à jour les tags des autres temps</label
+      <input type="checkbox" name="forceCleanTags" />
+      <label for="forceCleanTags"
+        >Effacer les tags existant avant import</label
       >
     </span>
     <span>
-      <input type="checkbox" name="shouldIdentifyByFilename" />
-      <label for="shouldIdentifyByFilename">Identifier par nom de fichier</label
+      <input type="checkbox" name="forceCleanContacts" />
+      <label for="forceCleanContacts">Effacer les contacts existant avant import</label
       >
     </span>
   </span>

@@ -1684,17 +1684,15 @@ class MwsOfferController extends AbstractController
     // }
 
     #[Route(
-        '/import/{viewTemplate<[^/]*>?}/{format}',
+        '/import/{viewTemplate<[^/]*>?}',
         name: 'mws_offer_import',
         methods: ['POST'],
         defaults: [
             'viewTemplate' => null,
-            'format' => 'monwoo-extractor-export',
         ],
     )]
     public function import(
         string|null $viewTemplate,
-        string $format,
         Request $request,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
@@ -1721,13 +1719,13 @@ class MwsOfferController extends AbstractController
         set_time_limit($maxTime);
         ini_set('max_execution_time', $maxTime);
 
+        $format = $request->get('format', 'monwoo-extractor-export');
         $shouldOverwrite = $request->get('shouldOverwrite');
         $importFile = $request->files->get('importFile');
         // $importContent = $importFile ? file_get_contents($importFile->getPathname()) : '[]';
         $importReport = '';
 
-        $forceRewrite = $request->query->get('forceRewrite', false);
-        $forceStatusRewrite = $request->query->get('forceStatusRewrite', false);
+        $forceCurrentStatusSlugRewrite = $request->query->get('forceCurrentStatusSlugRewrite', false);
         $forceCleanTags = $request->query->get('forceCleanTags', false);
         $forceCleanContacts = $request->query->get('forceCleanContacts', false);
 
@@ -1798,7 +1796,7 @@ class MwsOfferController extends AbstractController
                 // dd($allDuplicates);
                 // var_dump($allDuplicates);exit;
                 if ($allDuplicates && count($allDuplicates)) {
-                    if ($forceRewrite) {
+                    if ($shouldOverwrite) {
                         $importReport .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
                         $inputOffer = $offer;
                         // $offer = $allDuplicates[0];
@@ -1831,7 +1829,7 @@ class MwsOfferController extends AbstractController
                         if ($forceCleanTags) {
                             $offer->getTags()->clear();
                         }
-                        if ($forceStatusRewrite) {
+                        if ($forceCurrentStatusSlugRewrite) {
                             $sync('currentStatusSlug');
                             $slugs = explode('|', $offer->getCurrentStatusSlug());
                             $currentStatusTag = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
@@ -1944,6 +1942,8 @@ class MwsOfferController extends AbstractController
             $importReport .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
 
             // var_dump($extension);var_dump($importContent);var_dump($offersDeserialized); exit;
+        } else {
+            $importReport .= "<strong>Missing import file.</strong><br/>";
         }
 
         return $this->json([
@@ -1989,6 +1989,7 @@ class MwsOfferController extends AbstractController
     ) {
         /** @param MwsOffer[] **/
         $out = null;
+        // dd($format);
         // TODO : add custom serializer format instead of if switch ?
         if ($format === 'monwoo-extractor-export') {
             $data = json_decode($data, true);
