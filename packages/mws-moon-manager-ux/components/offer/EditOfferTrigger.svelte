@@ -7,18 +7,18 @@
     offer
       ? {
           ...offer,
-          // leadStart: dayjs(offer.leadStart).format("DD/MM/YYYY HH:mm"),
-          leadStart: offer.leadStart
-            ? dayjs(offer.leadStart).format("YYYY-MM-DDTHH:mm")
+          // leadStart: dayjs(offer?.leadStart).format("DD/MM/YYYY HH:mm"),
+          leadStart: offer?.leadStart
+            ? dayjs(offer?.leadStart).format("YYYY-MM-DDTHH:mm")
             : null,
-          tags: offer.tags?.map((t) => t.categorySlug + tagSlugSep + t.slug),
-          timingTags: offer.timingTags?.map((t) => t.slug),
+          tags: offer?.tags?.map((t) => t.categorySlug + tagSlugSep + t.slug),
+          timingTags: offer?.timingTags?.map((t) => t.slug),
           // TODO : why using | inside dropdown label forbidden ? need escape ? solved by using replace for now.
-          currentStatusSlug: offer.currentStatusSlug?.replace("|", " > "),
+          currentStatusSlug: offer?.currentStatusSlug?.replace("|", " > "),
           sourceDetail: [
             {
-              ...(offer.sourceDetail ?? {}),
-              messages: (offer.sourceDetail?.messages ?? []).map((m) => ({
+              ...(offer?.sourceDetail ?? {}),
+              messages: (offer?.sourceDetail?.messages ?? []).map((m) => ({
                 msg: m,
               })),
             },
@@ -52,6 +52,7 @@
     syncOfferOkCallback,
     syncOfferKoCallback
   ) => {
+    !offer && console.debug("WRONG syncOfferWithBackend, null offer");
     const data = {
       _csrf_token: stateGet(get(state), "csrfOfferSync"),
       offer: JSON.stringify(offer),
@@ -131,7 +132,13 @@
 
   $: $state.addOfferModal?.syncOfferWithBackend = syncOfferWithBackend;
   // $: offer = $state.newOffer;
-  $: offer = offer.id === $state.newOffer?.id ? $state.newOffer : offer;
+  // offer should ensure object for SurveyJs binds to work...
+  $: (offer = offer
+    ? offer?.id === $state.newOffer?.id
+      ? $state.newOffer
+      : offer
+    : {}),
+    console.debug("EditOfferTrigger offer :", offer);
 </script>
 
 <button
@@ -146,5 +153,7 @@
     $state.addOfferModal.eltModal.show();
   }}
 >
-  <EditOutline class="text-2xl" />
+  <slot>
+    <EditOutline class="text-2xl" />
+  </slot>
 </button>

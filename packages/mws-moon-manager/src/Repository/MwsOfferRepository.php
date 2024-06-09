@@ -58,6 +58,18 @@ class MwsOfferRepository extends ServiceEntityRepository
             ->where("o.clientUsername IS NOT NULL")
             ->orderBy('o.clientUsername', 'ASC')
             ->getQuery()->getResult();
+
+            $allOfferSlugs = $this
+            ->createQueryBuilder("o")
+            ->select("
+                DISTINCT
+                o.slug as value,
+                o.slug as label
+            ")
+            ->where("o.slug IS NOT NULL")
+            ->orderBy('o.slug', 'ASC')
+            ->getQuery()->getResult();
+            
         $allOfferTags = array_map(
             function (array $tagResp) use ($tagSlugSep) {
                 $tag = $tagResp[0];
@@ -108,6 +120,7 @@ class MwsOfferRepository extends ServiceEntityRepository
                 [
                     'allSourceNames' => $allSourceNames,
                     'allClientNames' => $allClientNames,
+                    'allOfferSlugs' => $allOfferSlugs,
                     'allOfferTags' => $allOfferTags,
                     'allOfferBudgets' => $allOfferBudgets,
                     'allTimingTags' => $allTimingTags,

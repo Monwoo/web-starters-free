@@ -14,6 +14,7 @@
   import {
     CirclePlusSolid
   } from "flowbite-svelte-icons";
+  import EditOfferTrigger from "../offer/EditOfferTrigger.svelte";
   export let locale;
   export let viewTemplate;
   export let inlineOpener = false;
@@ -42,6 +43,7 @@
 
   let uniqueKey = {};
 
+  // TODO : domain for bg components ? inside layout instead navbar can reuse multiple times... ?
   $: $state.addOfferModal = addOfferModal;
 </script>
 
@@ -92,17 +94,16 @@
         </span>
       </span>
       <span>
-        <button
-        class=""
-        on:click={() => {
-          if (addOfferModal.surveyModel) {
-            addOfferModal.surveyModel.data = null; // Ensure data is empty before show...
-            addOfferModal.eltModal.show();
-          } // Otherwise, ignore click, still loading, user will have to retry...
-        }}
-        >
-          <CirclePlusSolid class="text-2xl" />
-        </button>      
+        <!-- // TODO : else close ? lighter webservice open to add offers ONLY from outside ? (add email user field to track non connected user source as hints...) -->
+        {#if $state.user}
+          <EditOfferTrigger
+            syncOfferOk={async (o) => {
+              alert(`Ajout de l'offre ok pour ${o.clientUsername}. [${o.slug}]`)
+            }}
+          >
+            <CirclePlusSolid class="text-2xl" />        
+          </EditOfferTrigger>
+        {/if}
       </span>
     </span>
     <!-- focus:ring-2
