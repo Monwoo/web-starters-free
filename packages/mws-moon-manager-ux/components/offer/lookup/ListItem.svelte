@@ -535,7 +535,7 @@
           `
             : ``
         }
-        ${(offer.sourceDetail?.messages ?? []).reduce(
+        ${((offer.sourceDetail?.messages || null) ?? []).reduce(
           (html, msg) =>
             html + // TODO : factorise code duplication
             msg
@@ -601,7 +601,7 @@
               `
                   : ``
               }
-              ${(offer.sourceDetail?.messages ?? []).reduce(
+              ${((offer.sourceDetail?.messages || null) ?? []).reduce(
                 (html, msg) =>
                   html + // TODO : factorise code duplication
                   msg
@@ -624,11 +624,11 @@
         Délais : {offer.sourceDetail?.monwooOfferDelay ?? ""}<br />
 
         <!-- TODO : .reverse() not working with reduce ?
-          {@html (offer.sourceDetail?.messages ?? []).reverse().reduce( FAIL
+          {@html ((offer.sourceDetail?.messages || null) ?? []).reverse().reduce( FAIL
           did change order of reduce function for now
         -->
         {@html sanitizeClientHtml(
-          (offer.sourceDetail?.messages ?? []).reduce(
+          ((offer.sourceDetail?.messages || null) ?? []).reduce(
             (html, msg) =>
               `` + // TODO : factorise code duplication
               msg

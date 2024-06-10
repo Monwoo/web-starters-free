@@ -128,7 +128,7 @@
       {/if}
     </div>
     <div class="offer-messages w-full break-words whitespace-break-spaces">
-      {#each offer.sourceDetail?.messages ?? [] as msg}
+      {#each (offer.sourceDetail?.messages || null) ?? [] as msg}
         {@html sanitizeClientHtml(msg.replaceAll('src="/', `src="https://${offer.sourceName}/`)
           .replaceAll('href="/', `href="https://${offer.sourceName}/`)
           .replaceAll(`https://${offer.sourceName}/http`, `http`))

@@ -18,7 +18,7 @@
           sourceDetail: [
             {
               ...(offer?.sourceDetail ?? {}),
-              messages: (offer?.sourceDetail?.messages ?? []).map((m) => ({
+              messages: ((offer?.sourceDetail?.messages || null) ?? []).map((m) => ({
                 msg: m,
               })),
             },
