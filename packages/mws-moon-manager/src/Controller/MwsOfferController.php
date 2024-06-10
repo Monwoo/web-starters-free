@@ -14,6 +14,7 @@ use MWS\MoonManagerBundle\Entity\MwsMessage;
 use MWS\MoonManagerBundle\Entity\MwsOffer;
 use MWS\MoonManagerBundle\Entity\MwsOfferStatus;
 use MWS\MoonManagerBundle\Entity\MwsOfferTracking;
+use MWS\MoonManagerBundle\Entity\MwsTimeTag;
 use MWS\MoonManagerBundle\Entity\MwsUser;
 use MWS\MoonManagerBundle\Form\MwsOfferImportType;
 use MWS\MoonManagerBundle\Form\MwsOfferStatusType;
@@ -25,6 +26,7 @@ use MWS\MoonManagerBundle\Repository\MwsOfferRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferStatusRepository;
 use MWS\MoonManagerBundle\Repository\MwsOfferTrackingRepository;
 use MWS\MoonManagerBundle\Repository\MwsTimeTagRepository;
+use MWS\MoonManagerBundle\Repository\MwsUserRepository;
 use MWS\MoonManagerBundle\Security\MwsLoginFormAuthenticator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -1158,29 +1160,29 @@ class MwsOfferController extends AbstractController
             throw $this->createNotFoundException("Unknow offer slug [$offerSlug]");
         }
 
-        $traking = new MwsOfferTracking();
-        $traking->setOffer($offer);
-        $traking->setOwner($user);
+        $tracking = new MwsOfferTracking();
+        $tracking->setOffer($offer);
+        $tracking->setOwner($user);
 
         $comment = $request->request->get('comment', '--');
         // if (!$comment) {
         //     throw $this->createNotFoundException("Missing comment");
         // }
-        $traking->setComment($comment);
+        $tracking->setComment($comment);
 
         $offerStatusSlug = $request->request->get('offerStatusSlug', '--');
         if ($offerStatusSlug && strlen($offerStatusSlug && 'null' !== $offerStatusSlug)) {
             $offer->setCurrentStatusSlug($offerStatusSlug);
             $this->em->persist($offer); // will not reflet changes in offer returned if created from modal with minimum info... ? nop, sound ok this way, ORM links take care of it...
-            $traking->setOfferStatusSlug($offerStatusSlug);
+            $tracking->setOfferStatusSlug($offerStatusSlug);
         }
 
         // $this->em->persist($offer);
-        $this->em->persist($traking);
-        $this->em->flush(); // TIPS : Sync Generated ID in DB for new traking
+        $this->em->persist($tracking);
+        $this->em->flush(); // TIPS : Sync Generated ID in DB for new tracking
 
         // No need of below, inverse relationship of setOffer take care of it
-        // $offer->addMwsOfferTracking($traking);
+        // $offer->addMwsOfferTracking($tracking);
         // $this->em->persist($offer);
         // $this->em->flush();
 
@@ -1231,17 +1233,17 @@ class MwsOfferController extends AbstractController
             throw $this->createAccessDeniedException('Missing trackingId');
         }
 
-        /** @var MwsOfferTracking $traking */
-        $traking = $mwsOfferTrackingRepository->findOneBy([
+        /** @var MwsOfferTracking $tracking */
+        $tracking = $mwsOfferTrackingRepository->findOneBy([
             'id' => $trackingId
         ]);
-        if (!$traking) {
-            throw $this->createAccessDeniedException("Unknown traking id [$trackingId]");
+        if (!$tracking) {
+            throw $this->createAccessDeniedException("Unknown tracking id [$trackingId]");
         }
-        $offer = $traking->getOffer();
+        $offer = $tracking->getOffer();
 
-        $this->em->remove($traking);
-        $this->em->flush(); // TIPS : Sync Generated ID in DB for new traking
+        $this->em->remove($tracking);
+        $this->em->flush(); // TIPS : Sync Generated ID in DB for new tracking
 
         if (in_array('application/json', $request->getAcceptableContentTypes())) {
             return $this->json([
@@ -1797,7 +1799,25 @@ class MwsOfferController extends AbstractController
                             return $norm;
                         }
                     },
-                    // 'timingTags' ?
+                    'timingTags' => function ($objects) {
+                        if (is_string($objects)) {
+                            // Denormalize (cf timing import, not used by export)
+                            throw new Exception("Should not happen for : " . $objects);
+                        } else {
+                            // Normalise
+                            $norm = array_map(
+                                function (MwsTimeTag $t) {
+                                    // return $o->getSlug();
+                                    return [
+                                        'slug'  => $t?->getSlug(),
+                                    ] ?? null;
+                                },
+                                $objects->toArray() ?? []
+                            );
+                            sort($norm);
+                            return $norm;
+                        }
+                    },
                     'mwsOfferTrackings' => function ($objects) {
                         if (is_string($objects)) {
                             // Denormalize (cf timing import, not used by export)
@@ -1807,8 +1827,21 @@ class MwsOfferController extends AbstractController
                             $norm = array_map(
                                 function (MwsOfferTracking $t) {
                                     // return $o->getSlug();
+                                    // return $t;
+
                                     return [
-                                        'owner'  => $t?->getOwner()?->getUserIdentifier(),
+                                        // TODO : discrimintant to link offer => slug + cat slug ? need query if so...
+                                        // 'offer'  => [
+                                        //     // tips : username from Class constant ? used by getUserIdentifier in our case...
+                                        //     'id' => $t?->getOffer()?->getId(),
+                                        //     'slug' => $t?->getOffer()?->getSlug(),
+                                        // ],
+                                        // 'owner'  => $t?->getOwner()?->getUserIdentifier(),
+                                        'owner'  => [
+                                            // TODO : username from Class constant ? used by getUserIdentifier in our case...
+                                            'username' =>
+                                            $t?->getOwner()?->getUserIdentifier()
+                                        ],
                                         'offerStatusSlug'  => $t?->getOfferStatusSlug(),
                                         'comment' => $t?->getComment(),
                                         'updatedAt' => $t?->getUpdatedAt(),
@@ -1863,8 +1896,11 @@ class MwsOfferController extends AbstractController
         string|null $viewTemplate,
         Request $request,
         MwsOfferRepository $mwsOfferRepository,
+        MwsOfferTrackingRepository $mwsOfferTrackingRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
         MwsContactRepository $mwsContactRepository,
+        MwsUserRepository $mwsUserRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
         SluggerInterface $slugger,
         EntityManagerInterface $em,
         CsrfTokenManagerInterface $csrfTokenManager
@@ -1928,7 +1964,10 @@ class MwsOfferController extends AbstractController
                 $newFilename,
                 $mwsOfferRepository,
                 $mwsOfferStatusRepository,
+                $mwsOfferTrackingRepository,
                 $mwsContactRepository,
+                $mwsUserRepository,
+                $mwsTimeTagRepository,
             );
             // dd($offersDeserialized);
 
@@ -1944,7 +1983,7 @@ class MwsOfferController extends AbstractController
                 $qb = $mwsOfferRepository
                     ->createQueryBuilder('o')
                     ->where('o.slug = :slug')
-                    ->andWhere('o.sourceName = :sourceName')
+                    ->andWhere('o.sourceName = :sourceName OR o.sourceName IS NULL')
                     ->setParameter('slug', $slug)
                     ->setParameter('sourceName', $sourceName);
                 // if ($email && strlen($email)) {
@@ -1966,21 +2005,52 @@ class MwsOfferController extends AbstractController
                 if ($allDuplicates && count($allDuplicates)) {
                     if ($shouldOverwrite) {
                         $importReport .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
-                        $inputOffer = $offer;
+                        $offerInput = $offer;
                         // $offer = $allDuplicates[0];
                         /** @var MwsOffer $offer */
                         $offer = array_shift($allDuplicates);
-                        $sync = function ($path) use ($inputOffer, $offer) {
-                            $set = 'set' . ucfirst($path);
+                        // $sync = function ($path) use ($inputOffer, $offer) {
+                        //     $set = 'set' . ucfirst($path);
+                        //     $get = 'get' . ucfirst($path);
+                        //     $v =  $inputOffer->$get();
+                        //     if (
+                        //         null !== $v &&
+                        //         ((!is_string($v)) || strlen($v))
+                        //     ) {
+                        //         $offer->$set($v);
+                        //     }
+                        // };
+                        $sync = function ($path, $setter = null) use (&$offer, &$offerInput) {
                             $get = 'get' . ucfirst($path);
-                            $v =  $inputOffer->$get();
-                            if (
-                                null !== $v &&
-                                ((!is_string($v)) || strlen($v))
-                            ) {
-                                $offer->$set($v);
+                            // $v =  $offerInput[$path] ?? null;
+                            $v =  $offerInput->$get();
+                            if (null !== $v) {
+                                $set = 'set' . ucfirst($path);
+                                if (!method_exists($offer, $set)) {
+                                    // Is collection :
+                                    $add = 'add' . ucfirst($path);
+                                    if (!method_exists($offer, $add)) {
+                                        $add = preg_replace('/s$/', '', $add);
+                                    }
+                                    $collection = $offer->$get();
+                                    $collection->clear();
+                                    foreach ($v as $subV) {
+                                        if ($setter) {
+                                            $setter($offer, $subV);
+                                        } else {
+                                            $offer->$add($subV);
+                                        }
+                                    }
+                                } else {
+                                    if ($setter) {
+                                        $setter($offer, $v);
+                                    } else {
+                                        $offer->$set($v);
+                                    }
+                                }
                             }
                         };
+
                         // TODO : factorize code with serializer service ? factorize to same location...
                         $sync('clientUsername');
                         $sync('contact1');
@@ -2014,7 +2084,8 @@ class MwsOfferController extends AbstractController
                             $mwsOfferRepository->addTag($offer, $currentStatusTag);
                         }
 
-                        $tags = $inputOffer->getTags();
+                        // $tags = $inputOffer->getTags();
+                        $tags = $offerInput->getTags();
                         foreach ($tags as $tag) {
                             // TIPS : inside addTag, only one by specific only one choice category type ?
                             // OK to copy all, clone src use
@@ -2023,11 +2094,12 @@ class MwsOfferController extends AbstractController
                             // But still safer to use repo algo :
                             $mwsOfferRepository->addTag($offer, $tag);
                         }
+                        // $sync('mwsOfferTrackings');
 
                         if ($forceCleanContacts) {
                             $offer->getContacts()->clear();
                         }
-                        $contacts = $inputOffer->getContacts();
+                        $contacts = $offerInput->getContacts();
                         foreach ($contacts as $contact) {
                             $offer->addContact($contact);
                             // dd($contact);
@@ -2054,7 +2126,7 @@ class MwsOfferController extends AbstractController
                         foreach ($allDuplicates as $otherDups) {
                             $em->remove($otherDups);
                         }
-                        // TODO : add comment to some traking entities, column 'Observations...' or too huge for nothing ?
+                        // TODO : add comment to some tracking entities, column 'Observations...' or too huge for nothing ?
 
                         // if (!$offer->getSourceFile()
                         // || !strlen($offer->getSourceFile())) {
@@ -2102,6 +2174,64 @@ class MwsOfferController extends AbstractController
                         }
                     }
                 }
+                // TODO : clean tag option before import
+                $tTags = $offer->getTimingTags();
+                foreach ($tTags as $tTag) {
+                    // $tTag->removeMwsOffer($offer); // TO hard to know non percisetent, delete before add instead...
+                    $tTag->addMwsOffer($offer);
+                }
+
+                $trackings = $offer->getMwsOfferTrackings();
+                // dd($trackings);
+                // $trackings = $offerInput->getMwsOfferTrackings();
+                // $offer->getMwsOfferTrackings()->clear();
+                foreach ($trackings as $tracking) {
+                    if ($tracking->getOffer()->getId()
+                    !== $offer->getId()) {
+                        dd($tracking);
+                    }
+                    $tracking->setOffer($offer);
+                    // $offer->addMwsOfferTracking($tracking);
+                    // $em->persist($tracking);
+                }
+                // TIPS : below avoided by sending offer id in export files, even if guessable from parent, desizeializer might not know id Yet
+                // $validTrackings = []; // TODO : cf extract, offers check not done, done below:
+                // foreach ($trackings as $tracking) {
+                //     // dump($tracking);
+                //     if ($tracking->getOffer()->getId()
+                //     != $offer->getId()) {
+                //         // TODO : strange : below not called ? offer id already ok ? buggy from somewhere, need code clean up to track bug...
+                //         // dump($offer->getId());
+                //         // dd($tracking->getOffer()->getId());
+                //             // DID mismatch lookup, should have instanciate new obj :
+                //         // TODO : clone without cloning ID ? or reflexion to force remove ID to create new entity is enough ?
+                //         $t = new MwsOfferTracking();
+                //         $t->setOwner($tracking->getOwner());
+                //         $t->setOfferStatusSlug($tracking->getOfferStatusSlug());
+                //         $t->setComment($tracking->getComment());
+                //         $t->setCreatedAt($tracking->getCreatedAt());
+                //         $tracking = $t;
+                //     }
+                //     $tracking->setOffer($offer);
+                //     $validTrackings[] = $tracking;
+                // }
+                // // dd($offer);
+                // $offer->getMwsOfferTrackings()->clear();
+                // foreach ($validTrackings as $t) {
+                //     $offer->addMwsOfferTracking($t);
+                // }
+
+                // TODO : multiple SAME trakings is BUGGy, cf test case
+                
+                // $offer->getMwsOfferTrackings()->clear();
+                // $offer->getContacts()->clear();
+                // dd($offer);
+                // if ($offer->getSlug() !== 'source-test-localhost-336397') {
+                //     dd($offer);
+                // }
+                // if ($offer->getSlug() == 'source-test-localhost-404632') {
+                //     dd($offer);
+                // }
 
                 $em->persist($offer);
                 $em->flush();
@@ -2153,7 +2283,10 @@ class MwsOfferController extends AbstractController
         String $sourceFile,
         MwsOfferRepository $mwsOfferRepository,
         MwsOfferStatusRepository $mwsOfferStatusRepository,
-        MwsContactRepository $mwsContactRepository
+        MwsOfferTrackingRepository $mwsOfferTrackingRepository,
+        MwsContactRepository $mwsContactRepository,
+        MwsUserRepository $mwsUserRepository,
+        MwsTimeTagRepository $mwsTimeTagRepository,
     ) {
         /** @param MwsOffer[] **/
         $out = null;
@@ -2293,13 +2426,6 @@ class MwsOfferController extends AbstractController
                         $contact = new MwsContact();
                     }
 
-                    // TODO : from ORM update listeners instead of hard coded ? but how to inject comments etc... ?
-                    $traking = new MwsContactTracking();
-                    $traking->setContact($contact);
-                    $traking->setOwner($user);
-                    $traking->setComment("Imported from : $sourceFile");
-                    $contact->addMwsContactTracking($traking);
-
                     $contact->setUsername($userId);
                     $contact->setStatus($c['status']);
                     $contact->setPostalCode($c['adresseL2_CP']);
@@ -2319,12 +2445,12 @@ class MwsOfferController extends AbstractController
                     $offer->addContact($contact);
 
                     // TODO : from ORM update listeners instead of hard coded ?
-                    $traking = new MwsOfferTracking();
-                    $traking->setOffer($offer);
-                    $traking->setOwner($user);
-                    $traking->setComment("Imported from : $sourceFile");
-                    $traking->setOfferStatusSlug($offerStatusSlug);
-                    $offer->addMwsOfferTracking($traking);
+                    $tracking = new MwsOfferTracking();
+                    $tracking->setOffer($offer);
+                    $tracking->setOwner($user);
+                    $tracking->setComment("Imported from : $sourceFile");
+                    $tracking->setOfferStatusSlug($offerStatusSlug);
+                    $offer->addMwsOfferTracking($tracking);
 
                     $out[] = $offer;
                 }
@@ -2339,7 +2465,7 @@ class MwsOfferController extends AbstractController
 
             $em = $this->em;
             $self = $this;
-            // dd($shouldOverwritePriceRules);
+            // dd("ok");
             /** @var MwsTimeSlot[] $importSlots */
             $out = $this->serializer->deserialize(
                 $data,
@@ -2355,7 +2481,7 @@ class MwsOfferController extends AbstractController
                             string $attributeName,
                             string $format = null,
                             array $context = []
-                        ) use ($mwsOfferStatusRepository, &$importReport, &$pendingNewTags, $em) {
+                        ) use ($mwsOfferStatusRepository, &$importReport, $em) {
                             // dump($context['deserialization_path']);
                             // if (is_array($innerObject)) {
                             if ($context['deserialization_path'] ?? null) {
@@ -2363,7 +2489,7 @@ class MwsOfferController extends AbstractController
                                 // throw new Exception("TODO : ");
                                 return array_filter(
                                     array_map(function ($tagSlug)
-                                    use ($mwsOfferStatusRepository, &$importReport, &$pendingNewTags, &$context, $em) {
+                                    use ($mwsOfferStatusRepository, &$importReport, &$context, $em) {
                                         $tag = $mwsOfferStatusRepository->findOneBy([
                                             'slug' => $tagSlug->getSlug(),
                                             'categorySlug' => $tagSlug->getCategorySlug(),
@@ -2402,15 +2528,234 @@ class MwsOfferController extends AbstractController
                                 throw new Exception("Should not happen");
                             }
                         },
+                        'timingTags' => function (
+                            $innerObject,
+                            $outerObject,
+                            string $attributeName,
+                            string $format = null,
+                            array $context = []
+                        ) use ($mwsTimeTagRepository, &$importReport, $em) {
+                            // dump($context['deserialization_path']);
+                            // if (is_array($innerObject)) {
+                            if ($context['deserialization_path'] ?? null) {
+                                // dd($innerObject); // TODO ; can't have raw input string ?
+                                // throw new Exception("TODO : ");
+                                return array_filter(
+                                    array_map(function ($timingTagSlug)
+                                    use ($mwsTimeTagRepository, &$importReport, &$context, $em) {
+                                        $tag = $mwsTimeTagRepository->findOneBy([
+                                            'slug' => $timingTagSlug->getSlug(),
+                                        ]);
+                                        // dd($tag);
+                                        // TODO ; if null tag ?
+                                        if (!$tag) {
+                                            if ($timingTagSlug->getSlug() && strlen($timingTagSlug->getSlug())) {
+                                                $importReport .= "Missing timing tag for slug {$timingTagSlug->getSlug()} for {$context['deserialization_path']} <br/>";
+
+                                                // TODO : Adding missing tags ? nop ? too hard to guess with slug only ? cat slug etc ?
+                                                // $pendingNewTags[$tagSlug->getSlug()] = true;
+                                                // $tag = new MwsTimeTag();
+                                                // $tag->setSlug($tagSlug->getSlug());
+                                                // $tag->setLabel("#{$tagSlug->getSlug()}#");
+                                                // // TIPS : even if will be saved with 'cascade persiste' attribute
+                                                // // save it now to see it on others imports lookups instead of at
+                                                // // end of full import query builds...
+                                                // $em->persist($tag);
+                                                // $em->flush();
+                                            } else {
+                                                // TIPS : no need to warn, for CSV emoty row will be null...
+                                                // $importReport .= "WARNING : null tag for {$context['deserialization_path']} <br/>";
+                                                // $this->logger->warning("WARNING : null tag for {$context['deserialization_path']}");
+                                            }
+                                        }
+                                        return $tag;
+                                    }, $innerObject),
+                                    function ($t) {
+                                        // filter null
+                                        return !!$t;
+                                    }
+                                );
+                            } else {
+                                // Normalise (cf timing export, not used by import)
+                                throw new Exception("Should not happen");
+                            }
+                        },
+                        'offer' => function (
+                            $innerObject,
+                            $outerObject,
+                            string $attributeName,
+                            string $format = null,
+                            array $context = []
+                        ) use ($mwsOfferTrackingRepository, $mwsUserRepository, &$importReport, $em) {
+                            // dd($innerObject); // TIPS : MUST not be blacklisted from attribute to work... 
+                            // TODO : can't blacklist in model and wight list back on serializer usage ? Need custom Rev-Ing or re-codes ?
+                            if ($context['deserialization_path'] ?? null) {
+                                // dd($innerObject); // TODO ; can't have raw input string ?
+                                // throw new Exception("TODO : ");
+                                return [ 'slug' => $innerObject->getSlug() ];
+                            } else {
+                                // Normalise (cf timing export, not used by import)
+                                throw new Exception("Should not happen");
+                            }
+                        },  
+                        'mwsOfferTrackings' => function (
+                            $innerObject,
+                            $outerObject,
+                            string $attributeName,
+                            string $format = null,
+                            array $context = []
+                        ) use ($mwsOfferTrackingRepository, $mwsOfferRepository, $mwsUserRepository, &$importReport, $em) {
+                            // dump($context['deserialization_path']);
+                            // if (is_array($innerObject)) {
+                            // dd($outerObject);
+                            if ($context['deserialization_path'] ?? null) {
+                                // dd($innerObject); // TODO ; can't have raw input string ?
+                                // throw new Exception("TODO : ");
+                                // return [];
+                                // dd($innerObject);
+                                // dd($outerObject);
+                                return array_filter(
+                                    array_map(function ($trackingInput)
+                                    use ($mwsOfferTrackingRepository, $mwsOfferRepository, $mwsUserRepository, &$importReport, &$context, $em) {
+                                        // dd($trackingInput);
+                                        $criteria = [
+                                            // 'owner.username' => $trackingInput->getOwner()->getUsername(),
+                                            'offerStatusSlug' => $trackingInput->getOfferStatusSlug(),
+                                            'comment' => $trackingInput->getComment(),
+                                            'createdAt' => $trackingInput->getCreatedAt(),
+                                            // TODO : don't know yet linked offer..., cf next line, will clone if not tracking from offer ?
+                                            // 'offer' => [ 'slug' => $trackingInput->getOffer()->getSlug() ],
+                                        ];
+
+                                        // if ($trackingInput->getOffer()) {
+                                        //     // TODO : why null even if Slug defined in input src ? ok for Owner but not for Offer ? why ?
+                                        //     $criteria['offer'] = [
+                                        //         'slug' => $trackingInput->getOffer()->getSlug(),
+                                        //     ];
+                                        // }
+                                        // $offer = $mwsOfferRepository->findOneBy([
+                                        //     'slug' => $trackingInput->getOffer()->getSlug()
+                                        // ]);
+                                        // dd($offer);
+
+                                        // TODO : using $tracking from repository let NotSaved Entity issue... 
+                                        // Try without tracking null to see buggy imort to solve :
+                                        // $tracking = $mwsOfferTrackingRepository->findOneBy($criteria);
+                                        // dd($trackingInput);
+                                        // dd($tag);
+                                        // TODO ; if null tag ?
+                                        $tracking = null;
+                                        if (!$tracking) {
+                                            $tracking = new MwsOfferTracking();
+                                        }
+                                        // $tracking = new MwsOfferTracking();
+                                        // dd($trackingInput->getOwner());
+                                        $uName = $trackingInput->getOwner()->getUserIdentifier();
+                                        $u = $mwsUserRepository->findOneBy([
+                                            "username" => $uName, // TODO : 'username' from class const userIdentifierKey stuff ? but for user identifier as computed values, will not work... => custom Query builder or crieteria or ???
+                                        ]) ?? null; // TODO : no user or user importing stuff as replacement or re-create new user on email behalf ?
+                                        // dd($u);
+                                        $tracking->setOwner($u);
+                                        // $tracking->setOffer($offer);
+                                        $tracking->setOfferStatusSlug($trackingInput->getOfferStatusSlug());
+                                        $tracking->setComment($trackingInput->getComment());
+                                        $tracking->setCreatedAt($trackingInput->getCreatedAt());
+                                        // $importReport .= "Missing tag for slug {$trackingInput->getSlug()} for {$context['deserialization_path']} <br/>";
+
+                                        // TIPS : DO NOT persist below since missing offer link, will be done later and 'cascade:persist' will to save of trackings from offer persist...
+                                        // $em->persist($tracking);
+                                        // $em->flush();
+                                        return $tracking;
+                                    }, $innerObject),
+                                    function ($t) {
+                                        // filter null
+                                        return !!$t;
+                                    }
+                                );
+                            } else {
+                                // Normalise (cf timing export, not used by import)
+                                throw new Exception("Should not happen");
+                            }
+                        },
+                        'contacts' => function (
+                            $innerObject,
+                            $outerObject,
+                            string $attributeName,
+                            string $format = null,
+                            array $context = []
+                        ) use ($mwsContactRepository) {
+                            // dump($context['deserialization_path']);
+                            // if (is_array($innerObject)) {
+                            if ($context['deserialization_path'] ?? null) {
+                                // dd($innerObject); // TODO ; can't have raw input string ?
+                                // throw new Exception("TODO : ");
+                                return array_filter(
+                                    array_map(function ($contactInput)
+                                    use ($mwsContactRepository) {
+                                        $contact = $mwsContactRepository->findOneBy([
+                                            'username' => $contactInput->getUserName(),
+                                            'sourceName' => $contactInput->getSourceName(),
+                                            // TODO : which key to overwrite contacts ? + what if email was missing but import have new info ? => will duplicate => so have contact duplicate or merge algo page ? that will ajust in offers links etc...
+                                            'email' => $contactInput->getEmail(),
+                                        ]);
+                                        // dd($tracking);
+                                        // dd($tag);
+                                        // TODO ; if null tag ?
+                                        if (!$contact) {
+                                            $contact = new MwsContact();
+                                        }
+                                        $cSync = function ($path) use ($contactInput, $contact) {
+                                            $set = 'set' . ucfirst($path);
+                                            $get = 'get' . ucfirst($path);
+                                            $v =  $contactInput->$get();
+                                            // if (
+                                            //     null !== $v && // TODO : check sync restriction to not reset empty or null inputs as cleaned...
+                                            //     ((!is_string($v)) || strlen($v))
+                                            // ) {
+                                            if (
+                                                null !== $v &&
+                                                ((!is_string($v)) || strlen($v))
+                                            ) {
+                                                $contact->$set($v);
+                                            }
+                                        };
+                                        // TODO : generic for ORM props ? or PHP class refelctions ?
+                                        $cSync('username');
+                                        $cSync('status');
+                                        $cSync('postalCode');
+                                        $cSync('city');
+                                        $cSync('avatarUrl');
+                                        $cSync('email');
+                                        $cSync('phone');
+                                        $cSync('sourceDetail');
+                                        $cSync('sourceName');
+                                        $cSync('businessUrl');
+                                        $cSync('createdAt');
+                                        // TIPS : DO NOT persist below since missing offer link, will be done later and 'cascade:persist' will to save of trackings from offer persist...
+                                        // $em->persist($contact);
+                                        // $em->flush();
+                                        return $contact;
+                                    }, $innerObject),
+                                    function ($t) {
+                                        // filter null
+                                        return !!$t;
+                                    }
+                                );
+                            } else {
+                                // Normalise (cf timing export, not used by import)
+                                throw new Exception("Should not happen");
+                            }
+                        },
                     ],
                 ]
             );
-    
         }
+        // dd("ok");
+
         return $out;
     }
 
-    /** @param MwsOffer[] $offers */
+    /** @param MwsOffer[] $offers */ // TODO : not used, use or keep above code...
     public function serializeOffers($offers, $format)
     {
         $out = null;

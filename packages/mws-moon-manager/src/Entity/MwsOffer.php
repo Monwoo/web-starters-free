@@ -86,7 +86,7 @@ class MwsOffer
     #[ORM\ManyToMany(targetEntity: MwsOfferStatus::class, inversedBy: 'mwsOffers', cascade: ['persist'])]
     private Collection $tags;
 
-    #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsOffers')]
+    #[ORM\ManyToMany(targetEntity: MwsTimeTag::class, inversedBy: 'mwsOffers', cascade: ['persist'])]
     private Collection $timingTags;
 
     use TimestampableEntity;
@@ -101,7 +101,7 @@ class MwsOffer
 
     public function __toString()
     {
-        return $this->slug;
+        return $this->slug ?? '--';
     }
 
     public function getId(): ?int

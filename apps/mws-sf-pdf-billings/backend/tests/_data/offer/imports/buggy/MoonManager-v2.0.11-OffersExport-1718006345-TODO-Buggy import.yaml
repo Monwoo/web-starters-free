@@ -1,0 +1,521 @@
+-
+    clientUsername: 'someUserName Modified OK'
+    contact1: someUserEmail@test.localhost
+    contact2: ''
+    contact3: null
+    sourceUrl: 'http://source.test.localhost/offers/336397'
+    clientUrl: 'http://source.test.localhost/-someUserName'
+    currentBillingNumber: null
+    currentStatusSlug: mws-offer-tags-category-src-import|ferme
+    mwsOfferTrackings:
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: null
+            comment: "hello\r\n"
+            updatedAt: '2024-06-10T07:57:44+00:00'
+            createdAt: '2024-06-10T06:08:51+00:00'
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: null
+            comment: oui
+            updatedAt: '2024-06-10T07:58:26+00:00'
+            createdAt: '2024-06-10T07:58:26+00:00'
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: null
+            comment: 'multi- messages'
+            updatedAt: '2024-06-10T07:58:35+00:00'
+            createdAt: '2024-06-10T07:58:35+00:00'
+    contacts:
+        -
+            username: someUserName
+            status: ''
+            postalCode: null
+            city: '  Paris'
+            avatarUrl: ''
+            email: someUserEmail@test.localhost
+            phone: null
+            sourceDetail:
+                userName: someUserName
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  Paris'
+                photoUrl: ''
+                nbProjects: ' 1  projet'
+                membershipStart: 'Mai  2023'
+                email: someUserEmail@test.localhost
+                tel: null
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-someUserName'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+    sourceName: source.test.localhost
+    sourceDetail:
+        uId: someUserName
+        title: 'Création, enregistrement de tutoriels vidéos'
+        description: "2000 €\_HT la formation en vidéos de 2h minimum, 4h maximum. \n(la formation est composée de vidéos qui doivent durer 3 min en moyenne sur la totalité de la formation)\n\nVous avez une expertise reconnue sur un logiciel précis ? (suites Microsoft, Adobe, Autodesk, Nemetschek, Avid, Steinberg, etc.... ) \n\n- vous nous proposer le sujet avec un court extrait \n- on travaille ensemble un plan qui détaille les différents étapes\n- vous nous livrer les vidéos \n- si conforme à l'attendu -> 2000 € HT (TVA selon votre statut) sous 15 jours "
+        projectStatus: "\_Fermé"
+        projectViews: 619
+        projectOffers: 24
+        projectInteractions: 47
+        projectBudget: "1\_000 € à 10\_000 €"
+        projectPublicationDate: '12 avril 2022 à 09h02'
+        projectOffersViewed: 22
+        projectOffersAnswered: 16
+        projectOffersProfileViewed: 7
+        monwooOfferId: offer_xxxxx
+        monwooMsgViewedAt: 'Le client a vu votre message le 05 juil. à 15:57.'
+        monwooClientAnswerAt: null
+        monwooProfileViewedAt: null
+        monwooOfferAmount: "124,80\_€ TTC"
+        monwooOfferDelay: '  3 jours'
+        projectIsUrgent: 0
+        email: null
+        tel: null
+        messages:
+            - "<div class=\"flex\"><div><div class=\"relative inline-block no-underline group w-11 h-11\"><div class=\"overflow-hidden h-full w-full flex items-center justify-center rounded-full border-2 border-white shadow-md\"><img width=\"44\" height=\"44\" src=\"\"> </div></div></div><div class=\"ml-3\"><div><span class=\"font-bold\">Moi</span><span class=\"text-gray-500 ml-1\" data-controller=\"from-now-tooltip\" data-from-now-tooltip-date-value=\"2023-06-29T23:17:26+02:00\"><span data-v-beb22c1d=\"\"><span data-v-beb22c1d=\"\" data-controller=\"tooltip\" title=\"\" class=\"from-now mb-0\" data-bs-original-title=\"29 juin 2023 à 23:17\"> 19 jours </span></span></span><span class=\"ml-2 read-status read\"><span title=\"\" data-controller=\"tooltip\" data-bs-original-title=\"Message lu par someUserName le 05/07/23 à 15:57\" aria-label=\"Message lu par someUserName le 05/07/23 à 15:57\"><svg class=\"svg-inline--fa fa-check-circle fa-w-16 fa-xs text-gray-500\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"check-circle\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" data-fa-i2svg=\"\"><path fill=\"currentColor\" d=\"M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z\"></path></svg><!-- <i class=\"fas fa-check-circle fa-xs text-gray-500\"></i> Font Awesome fontawesome.com --></span></span></div><div><p>Bonsoir,</p>\n\n<p>Expert fullstack polyvalent depuis plus de 10 ans, j'ai plusieurs solutions pour vos besoins.</p>\n\n<p>Nous pouvons commencer par une étude analytique de projet(s) par sessions de 20 minutes en distanciels dès 124,80 € (en analysant vos besoins et devis reçus par exemple).</p>\n\n<p>Vous pouvez modifier ce devis et/ou voir certains autre des devis type que nous pouvons mettre en œuvre immédiatement via :\n<br>- <a href=\"http://mws.monwoo.com/demos/sf-pdf-billings/public/?billing_config_submitable%5BclientSlug%5D=--&amp;billing_config_submitable%5BquotationTemplate%5D=monwoo-06-analytical-study\" target=\"_blank\" rel=\"ugc\">http://mws.monwoo.com/demos/sf-pdf-billings/public/?billing_config_submitable%5BclientSlug%5D=--&amp;billing_config_submitable%5BquotationTemplate%5D=monwoo-06-analytical-study</a></p>\n\n<p>Discutons-en pour un devis plus affiné.\n<br>Souhaitant une agréable semaine à tous.</p>\n\n<p>--\n<br>Miguel Monwoo\n<br><a href=\"mailto:service@monwoo.com\" target=\"_blank\" rel=\"ugc\">service@monwoo.com</a></p></div></div></div>"
+            - '<div class="flex"><div><div class="message-block"><div class="bg-warning w-11 h-11 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl text-white"><svg class="svg-inline--fa fa-times fa-w-10 fa-xs" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z"></path></svg><!-- <i class="fal fa-xs fa-times"></i> Font Awesome fontawesome.com --></div></div></div><div class="ml-3"><div><span class="font-bold"><span class="text-warning">Projet fermé</span></span><span class="text-gray-500 ml-1" data-controller="from-now-tooltip" data-from-now-tooltip-date-value="2023-07-15T05:00:09+02:00"><span data-v-beb22c1d=""><span data-v-beb22c1d="" data-controller="tooltip" title="" class="from-now mb-0" data-bs-original-title="15 juillet 2023 à 05:00"> 4 jours </span></span></span></div><div><p>Le projet est maintenant fermé</p></div></div></div>'
+        failUserImport: null
+    slug: source-test-localhost-336397
+    title: 'Création, enregistrement de tutoriels vidéos'
+    description: "2000 € HT la formation en vidéos de 2h minimum, 4h maximum. \n(la formation est composée de vidéos qui doivent durer 3 min en moyenne sur la totalité de la formation)\n\nVous avez une expertise reconnue sur un logiciel précis ? (suites Microsoft, Adobe, Autodesk, Nemetschek, Avid, Steinberg, etc.... ) \n\n- vous nous proposer le sujet avec un court extrait \n- on travaille ensemble un plan qui détaille les différents étapes\n- vous nous livrer les vidéos \n- si conforme à l'attendu -> 2000 € HT (TVA selon votre statut) sous 15 jours"
+    budget: '1 000 € à 10 000 €'
+    leadStart: '2022-04-12T09:02:00+00:00'
+    tags:
+        -
+            slug: ferme
+            categorySlug: mws-offer-tags-category-src-import
+        -
+            slug: marche
+            categorySlug: kanban
+    timingTags: {  }
+    createdAt: '2024-04-09T02:03:05+00:00'
+    updatedAt: '2024-06-10T07:57:44+00:00'
+-
+    clientUsername: 'Another User'
+    contact1: ggg.test@test.localhost
+    contact2: ''
+    contact3: null
+    sourceUrl: 'http://source.test.localhost/offers/404629'
+    clientUrl: 'http://source.test.localhost/-Another User'
+    currentBillingNumber: null
+    currentStatusSlug: mws-offer-tags-category-src-import|ferme
+    mwsOfferTrackings:
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: mws-offer-tags-category-src-import|ferme
+            comment: 'Imported from : crm_6614a1d8eee7d.json'
+            updatedAt: '2024-04-09T02:03:05+00:00'
+            createdAt: '2024-04-09T02:03:05+00:00'
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: null
+            comment: 'add msg'
+            updatedAt: '2024-06-10T07:58:57+00:00'
+            createdAt: '2024-06-10T07:58:57+00:00'
+    contacts:
+        -
+            username: 'Another User'
+            status: ''
+            postalCode: null
+            city: '  France'
+            avatarUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+            email: null
+            phone: ggg.test@test.localhost
+            sourceDetail:
+                userName: 'Another User'
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  France'
+                photoUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+                nbProjects: ' 1  projet'
+                membershipStart: 'Jan.  2024'
+                tel: ggg.test@test.localhost
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-Another User'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+        -
+            username: 'Mon 2éme contact'
+            status: null
+            postalCode: null
+            city: null
+            avatarUrl: null
+            email: null
+            phone: null
+            sourceDetail: null
+            sourceName: test.human
+            businessUrl: null
+            createdAt: '2024-06-10T06:09:59+00:00'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+    sourceName: source.test.localhost
+    sourceDetail:
+        uId: 'Another User'
+        title: 'Voitures, rc, antennes, roues, maps, items.'
+        description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+        isBookmark: false
+        projectStatus: "\_Fermé"
+        projectViews: 216
+        projectOffers: 5
+        projectInteractions: 12
+        projectBudget: 'Moins de 500 €'
+        projectPublicationDate: '04 janvier 2024 à 21h01'
+        projectOffersViewed: 4
+        projectOffersAnswered: 3
+        projectOffersProfileViewed: 3
+        monwooOfferId: offer_5016879
+        monwooMsgViewedAt: 'Le client a vu votre message le 24 jan. à 11:54.'
+        monwooClientAnswerAt: 'Le client a visité votre profil le 24 jan. à 11:55.'
+        monwooProfileViewedAt: null
+        monwooOfferAmount: "120,00\_€"
+        monwooOfferDelay: '  3 jours'
+        projectIsUrgent: 0
+        email: null
+        tel: null
+        messages:
+            - "<div class=\"flex\"><div><div class=\"relative inline-block no-underline group w-11 h-11\"><div class=\"overflow-hidden h-full w-full flex items-center justify-center rounded-full border-2 border-white shadow-md\"><img width=\"44\" height=\"44\" src=\"\"> </div></div></div><div class=\"ml-3\"><div><span class=\"font-bold\">Moi</span><span class=\"text-gray-500 ml-1\" data-controller=\"from-now-tooltip\" data-from-now-tooltip-date-value=\"2024-01-20T00:09:58+01:00\"><span data-v-beb22c1d=\"\"><span data-v-beb22c1d=\"\" data-controller=\"tooltip\" title=\"\" class=\"from-now mb-0\" data-bs-original-title=\"20 janvier 2024 à 00:09\"> 2 mois </span></span></span><span class=\"ml-2 read-status read\"><span title=\"\" data-controller=\"tooltip\" data-bs-original-title=\"Message lu par Another User le 24/01/24 à 11:54\" aria-label=\"Message lu par Another User le 24/01/24 à 11:54\"><svg class=\"svg-inline--fa fa-check-circle fa-w-16 fa-xs text-gray-500\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"check-circle\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" data-fa-i2svg=\"\"><path fill=\"currentColor\" d=\"M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z\"></path></svg><!-- <i class=\"fas fa-check-circle fa-xs text-gray-500\"></i> Font Awesome fontawesome.com --></span></span></div><div><p>Bonsoir,</p>\n\n<p>C'est un plaisir de pouvoir répondre à votre demande.</p>\n\n<p>Expert fullstack polyvalent depuis plus de 10 ans, j'ai plusieurs solutions pour vos besoins.</p>\n\n<p>Nous pouvons commencer par une étude de projet via sessions de 20 minutes en distanciel dès 125,76 € TTC.</p>\n\n<p>--------------------\n<br>Lot 1 : Analyse et comparatifs sur les besoins et devis existants.\n<br>Lot 2 : Mise en avant des choix les plus adaptées suivant vos demandes ou\n<br>des possibilités existantes sur le marché.\n<br>Lot 3 : Ajustements des fonctions de décisions, synthèse pour livrable\n<br>spreadsheet ou visioconférence.\n<br>--------------------</p>\n\n<p>Certains de mes autres services web et mobile :\n<br>☀️ <a href=\"https://moonkiosk.monwoo.com/boutique\" target=\"_blank\" rel=\"ugc\">https://moonkiosk.monwoo.com/boutique</a></p>\n\n<p>Pour la totalité de mes possibilités, parlons en de vive voix.\n<br>Souhaitant une agréable soirée à tous.</p>\n\n<p>PS : Pour des échanges plus rapides, merci de me contacter également par téléphone, WhatsApp et/ou email.</p>\n\n<p>--\n<br>🌔 Miguel Monwoo\n<br>(+33) 7 51 33 58 20\n<br><a href=\"mailto:service@monwoo.com\" target=\"_blank\" rel=\"ugc\">service@monwoo.com</a></p></div></div></div>"
+            - '<div class="flex"><div><div class="message-block"><div class="bg-warning w-11 h-11 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl text-white"><svg class="svg-inline--fa fa-times fa-w-10 fa-xs" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z"></path></svg><!-- <i class="fal fa-xs fa-times"></i> Font Awesome fontawesome.com --></div></div></div><div class="ml-3"><div><span class="font-bold"><span class="text-warning">Projet fermé</span></span><span class="text-gray-500 ml-1" data-controller="from-now-tooltip" data-from-now-tooltip-date-value="2024-02-04T05:00:24+01:00"><span data-v-beb22c1d=""><span data-v-beb22c1d="" data-controller="tooltip" title="" class="from-now mb-0" data-bs-original-title="04 février 2024 à 05:00"> 2 mois </span></span></span></div><div><p>Le projet est maintenant fermé</p></div></div></div>'
+        failUserImport: null
+    slug: source-test-localhost-404629
+    title: 'Voitures, rc, antennes, roues, maps, items.'
+    description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+    budget: 'Moins de 500 €'
+    leadStart: '2024-01-04T21:01:00+00:00'
+    tags:
+        -
+            slug: devis-ok
+            categorySlug: kanban
+        -
+            slug: ferme
+            categorySlug: mws-offer-tags-category-src-import
+        -
+            slug: monwoo-2-5
+            categorySlug: meilleur-choix-monwoo
+    timingTags: {  }
+    createdAt: '2024-04-09T02:03:05+00:00'
+    updatedAt: '2024-06-10T07:57:44+00:00'
+-
+    clientUsername: 'Another User'
+    contact1: ggg.test@test.localhost
+    contact2: ''
+    contact3: null
+    sourceUrl: 'http://source.test.localhost/offers/404630'
+    clientUrl: 'http://source.test.localhost/-Another User'
+    currentBillingNumber: null
+    currentStatusSlug: mws-offer-tags-category-src-import|ferme
+    mwsOfferTrackings:
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: mws-offer-tags-category-src-import|ferme
+            comment: 'Imported from : crm_6614a1d8eee7d.json'
+            updatedAt: '2024-04-09T02:03:05+00:00'
+            createdAt: '2024-04-09T02:03:05+00:00'
+    contacts:
+        -
+            username: 'Another User'
+            status: ''
+            postalCode: null
+            city: '  France'
+            avatarUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+            email: null
+            phone: ggg.test@test.localhost
+            sourceDetail:
+                userName: 'Another User'
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  France'
+                photoUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+                nbProjects: ' 1  projet'
+                membershipStart: 'Jan.  2024'
+                tel: ggg.test@test.localhost
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-Another User'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+        -
+            username: 'Another User'
+            status: ''
+            postalCode: null
+            city: '  France'
+            avatarUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+            email: null
+            phone: ggg.test@test.localhost
+            sourceDetail:
+                userName: 'Another User'
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  France'
+                photoUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+                nbProjects: ' 1  projet'
+                membershipStart: 'Jan.  2024'
+                tel: ggg.test@test.localhost
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-Another User'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-04-09T02:03:05+00:00'
+    sourceName: source.test.localhost
+    sourceDetail:
+        uId: 'Another User'
+        title: 'Une autre demande de game développeur'
+        description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+        isBookmark: false
+        projectStatus: "\_Fermé"
+        projectViews: 216
+        projectOffers: 5
+        projectInteractions: 12
+        projectBudget: 'Moins de 500 €'
+        projectPublicationDate: '04 janvier 2024 à 21h01'
+        projectOffersViewed: 4
+        projectOffersAnswered: 3
+        projectOffersProfileViewed: 3
+        monwooOfferId: offer_5016879
+        monwooMsgViewedAt: 'Le client a vu votre message le 24 jan. à 11:54.'
+        monwooClientAnswerAt: 'Le client a visité votre profil le 24 jan. à 11:55.'
+        monwooProfileViewedAt: null
+        monwooOfferAmount: "120,00\_€"
+        monwooOfferDelay: '  3 jours'
+        projectIsUrgent: 0
+        email: null
+        tel: null
+        messages:
+            - "<div class=\"flex\"><div><div class=\"relative inline-block no-underline group w-11 h-11\"><div class=\"overflow-hidden h-full w-full flex items-center justify-center rounded-full border-2 border-white shadow-md\"><img width=\"44\" height=\"44\" src=\"\"> </div></div></div><div class=\"ml-3\"><div><span class=\"font-bold\">Moi</span><span class=\"text-gray-500 ml-1\" data-controller=\"from-now-tooltip\" data-from-now-tooltip-date-value=\"2024-01-20T00:09:58+01:00\"><span data-v-beb22c1d=\"\"><span data-v-beb22c1d=\"\" data-controller=\"tooltip\" title=\"\" class=\"from-now mb-0\" data-bs-original-title=\"20 janvier 2024 à 00:09\"> 2 mois </span></span></span><span class=\"ml-2 read-status read\"><span title=\"\" data-controller=\"tooltip\" data-bs-original-title=\"Message lu par Another User le 24/01/24 à 11:54\" aria-label=\"Message lu par Another User le 24/01/24 à 11:54\"><svg class=\"svg-inline--fa fa-check-circle fa-w-16 fa-xs text-gray-500\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"check-circle\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" data-fa-i2svg=\"\"><path fill=\"currentColor\" d=\"M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z\"></path></svg><!-- <i class=\"fas fa-check-circle fa-xs text-gray-500\"></i> Font Awesome fontawesome.com --></span></span></div><div><p>Bonsoir,</p>\n\n<p>C'est un plaisir de pouvoir répondre à votre demande.</p>\n\n<p>Expert fullstack polyvalent depuis plus de 10 ans, j'ai plusieurs solutions pour vos besoins.</p>\n\n<p>Nous pouvons commencer par une étude de projet via sessions de 20 minutes en distanciel dès 125,76 € TTC.</p>\n\n<p>--------------------\n<br>Lot 1 : Analyse et comparatifs sur les besoins et devis existants.\n<br>Lot 2 : Mise en avant des choix les plus adaptées suivant vos demandes ou\n<br>des possibilités existantes sur le marché.\n<br>Lot 3 : Ajustements des fonctions de décisions, synthèse pour livrable\n<br>spreadsheet ou visioconférence.\n<br>--------------------</p>\n\n<p>Certains de mes autres services web et mobile :\n<br>☀️ <a href=\"https://moonkiosk.monwoo.com/boutique\" target=\"_blank\" rel=\"ugc\">https://moonkiosk.monwoo.com/boutique</a></p>\n\n<p>Pour la totalité de mes possibilités, parlons en de vive voix.\n<br>Souhaitant une agréable soirée à tous.</p>\n\n<p>PS : Pour des échanges plus rapides, merci de me contacter également par téléphone, WhatsApp et/ou email.</p>\n\n<p>--\n<br>🌔 Miguel Monwoo\n<br>(+33) 7 51 33 58 20\n<br><a href=\"mailto:service@monwoo.com\" target=\"_blank\" rel=\"ugc\">service@monwoo.com</a></p></div></div></div>"
+            - '<div class="flex"><div><div class="message-block"><div class="bg-warning w-11 h-11 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl text-white"><svg class="svg-inline--fa fa-times fa-w-10 fa-xs" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z"></path></svg><!-- <i class="fal fa-xs fa-times"></i> Font Awesome fontawesome.com --></div></div></div><div class="ml-3"><div><span class="font-bold"><span class="text-warning">Projet fermé</span></span><span class="text-gray-500 ml-1" data-controller="from-now-tooltip" data-from-now-tooltip-date-value="2024-02-04T05:00:24+01:00"><span data-v-beb22c1d=""><span data-v-beb22c1d="" data-controller="tooltip" title="" class="from-now mb-0" data-bs-original-title="04 février 2024 à 05:00"> 2 mois </span></span></span></div><div><p>Le projet est maintenant fermé</p></div></div></div>'
+        failUserImport: null
+    slug: source-test-localhost-404630
+    title: 'Une autre demande de game développeur'
+    description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+    budget: 'Moins de 500 €'
+    leadStart: '2024-01-04T20:01:00+00:00'
+    tags:
+        -
+            slug: ferme
+            categorySlug: mws-offer-tags-category-src-import
+    timingTags: {  }
+    createdAt: '2024-04-09T02:03:05+00:00'
+    updatedAt: '2024-06-10T07:57:44+00:00'
+-
+    clientUsername: 'Another User'
+    contact1: ggg.test@test.localhost
+    contact2: ''
+    contact3: null
+    sourceUrl: 'http://source.test.localhost/offers/404631'
+    clientUrl: 'http://source.test.localhost/-Another User'
+    currentBillingNumber: null
+    currentStatusSlug: mws-offer-tags-category-src-import|ferme
+    mwsOfferTrackings:
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: mws-offer-tags-category-src-import|ferme
+            comment: 'Imported from : crm_6614a1d8eee7d.json'
+            updatedAt: '2024-04-09T02:03:05+00:00'
+            createdAt: '2024-04-09T02:03:05+00:00'
+    contacts:
+        -
+            username: 'Another User'
+            status: ''
+            postalCode: null
+            city: '  France'
+            avatarUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+            email: null
+            phone: ggg.test@test.localhost
+            sourceDetail:
+                userName: 'Another User'
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  France'
+                photoUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+                nbProjects: ' 1  projet'
+                membershipStart: 'Jan.  2024'
+                tel: ggg.test@test.localhost
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-Another User'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+        -
+            username: 'Another User'
+            status: ''
+            postalCode: null
+            city: '  France'
+            avatarUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+            email: null
+            phone: ggg.test@test.localhost
+            sourceDetail:
+                userName: 'Another User'
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  France'
+                photoUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+                nbProjects: ' 1  projet'
+                membershipStart: 'Jan.  2024'
+                tel: ggg.test@test.localhost
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-Another User'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-04-09T02:03:05+00:00'
+    sourceName: source.test.localhost
+    sourceDetail:
+        uId: 'Another User'
+        title: '3D Design et interactions utilisateurs (UX) développer'
+        description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+        isBookmark: false
+        projectStatus: "\_Fermé"
+        projectViews: 216
+        projectOffers: 5
+        projectInteractions: 12
+        projectBudget: 'Moins de 500 €'
+        projectPublicationDate: '04 janvier 2024 à 21h01'
+        projectOffersViewed: 4
+        projectOffersAnswered: 3
+        projectOffersProfileViewed: 3
+        monwooOfferId: offer_5016879
+        monwooMsgViewedAt: 'Le client a vu votre message le 24 jan. à 11:54.'
+        monwooClientAnswerAt: 'Le client a visité votre profil le 24 jan. à 11:55.'
+        monwooProfileViewedAt: null
+        monwooOfferAmount: "120,00\_€"
+        monwooOfferDelay: '  3 jours'
+        projectIsUrgent: 0
+        email: null
+        tel: null
+        messages:
+            - "<div class=\"flex\"><div><div class=\"relative inline-block no-underline group w-11 h-11\"><div class=\"overflow-hidden h-full w-full flex items-center justify-center rounded-full border-2 border-white shadow-md\"><img width=\"44\" height=\"44\" src=\"\"> </div></div></div><div class=\"ml-3\"><div><span class=\"font-bold\">Moi</span><span class=\"text-gray-500 ml-1\" data-controller=\"from-now-tooltip\" data-from-now-tooltip-date-value=\"2024-01-20T00:09:58+01:00\"><span data-v-beb22c1d=\"\"><span data-v-beb22c1d=\"\" data-controller=\"tooltip\" title=\"\" class=\"from-now mb-0\" data-bs-original-title=\"20 janvier 2024 à 00:09\"> 2 mois </span></span></span><span class=\"ml-2 read-status read\"><span title=\"\" data-controller=\"tooltip\" data-bs-original-title=\"Message lu par Another User le 24/01/24 à 11:54\" aria-label=\"Message lu par Another User le 24/01/24 à 11:54\"><svg class=\"svg-inline--fa fa-check-circle fa-w-16 fa-xs text-gray-500\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"check-circle\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" data-fa-i2svg=\"\"><path fill=\"currentColor\" d=\"M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z\"></path></svg><!-- <i class=\"fas fa-check-circle fa-xs text-gray-500\"></i> Font Awesome fontawesome.com --></span></span></div><div><p>Bonsoir,</p>\n\n<p>C'est un plaisir de pouvoir répondre à votre demande.</p>\n\n<p>Expert fullstack polyvalent depuis plus de 10 ans, j'ai plusieurs solutions pour vos besoins.</p>\n\n<p>Nous pouvons commencer par une étude de projet via sessions de 20 minutes en distanciel dès 125,76 € TTC.</p>\n\n<p>--------------------\n<br>Lot 1 : Analyse et comparatifs sur les besoins et devis existants.\n<br>Lot 2 : Mise en avant des choix les plus adaptées suivant vos demandes ou\n<br>des possibilités existantes sur le marché.\n<br>Lot 3 : Ajustements des fonctions de décisions, synthèse pour livrable\n<br>spreadsheet ou visioconférence.\n<br>--------------------</p>\n\n<p>Certains de mes autres services web et mobile :\n<br>☀️ <a href=\"https://moonkiosk.monwoo.com/boutique\" target=\"_blank\" rel=\"ugc\">https://moonkiosk.monwoo.com/boutique</a></p>\n\n<p>Pour la totalité de mes possibilités, parlons en de vive voix.\n<br>Souhaitant une agréable soirée à tous.</p>\n\n<p>PS : Pour des échanges plus rapides, merci de me contacter également par téléphone, WhatsApp et/ou email.</p>\n\n<p>--\n<br>🌔 Miguel Monwoo\n<br>(+33) 7 51 33 58 20\n<br><a href=\"mailto:service@monwoo.com\" target=\"_blank\" rel=\"ugc\">service@monwoo.com</a></p></div></div></div>"
+            - '<div class="flex"><div><div class="message-block"><div class="bg-warning w-11 h-11 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl text-white"><svg class="svg-inline--fa fa-times fa-w-10 fa-xs" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z"></path></svg><!-- <i class="fal fa-xs fa-times"></i> Font Awesome fontawesome.com --></div></div></div><div class="ml-3"><div><span class="font-bold"><span class="text-warning">Projet fermé</span></span><span class="text-gray-500 ml-1" data-controller="from-now-tooltip" data-from-now-tooltip-date-value="2024-02-04T05:00:24+01:00"><span data-v-beb22c1d=""><span data-v-beb22c1d="" data-controller="tooltip" title="" class="from-now mb-0" data-bs-original-title="04 février 2024 à 05:00"> 2 mois </span></span></span></div><div><p>Le projet est maintenant fermé</p></div></div></div>'
+        failUserImport: null
+    slug: source-test-localhost-404631
+    title: '3D Design et interactions utilisateurs (UX) développer'
+    description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+    budget: 'Moins de 500 €'
+    leadStart: '2024-01-04T20:01:00+00:00'
+    tags:
+        -
+            slug: ferme
+            categorySlug: mws-offer-tags-category-src-import
+    timingTags: {  }
+    createdAt: '2024-04-09T02:03:05+00:00'
+    updatedAt: '2024-06-10T07:57:44+00:00'
+-
+    clientUsername: 'Another User'
+    contact1: ggg.test@test.localhost
+    contact2: '09'
+    contact3: null
+    sourceUrl: 'http://source.test.localhost/offers/404632'
+    clientUrl: 'http://source.test.localhost/-Another User'
+    currentBillingNumber: null
+    currentStatusSlug: mws-offer-tags-category-src-import|ferme
+    mwsOfferTrackings:
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: mws-offer-tags-category-src-import|ferme
+            comment: 'Imported from : crm_6614a1d8eee7d.json'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+            createdAt: '2024-04-09T02:03:05+00:00'
+        -
+            owner:
+                username: e2e-user@test.localhost
+            offerStatusSlug: mws-offer-tags-category-src-import|ferme
+            comment: 'Imported from : crm_6614a1d8eee7d.json'
+            updatedAt: '2024-04-09T02:03:05+00:00'
+            createdAt: '2024-04-09T02:03:05+00:00'
+    contacts:
+        -
+            username: 'Another User'
+            status: ''
+            postalCode: null
+            city: '  France'
+            avatarUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+            email: null
+            phone: ggg.test@test.localhost
+            sourceDetail:
+                userName: 'Another User'
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  France'
+                photoUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+                nbProjects: ' 1  projet'
+                membershipStart: 'Jan.  2024'
+                tel: ggg.test@test.localhost
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-Another User'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+        -
+            username: 'Another User'
+            status: ''
+            postalCode: null
+            city: '  France'
+            avatarUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+            email: null
+            phone: ggg.test@test.localhost
+            sourceDetail:
+                userName: 'Another User'
+                status: ''
+                adresseL2_CP: null
+                adresseL2_ville: '  France'
+                photoUrl: /bundles/moonmanager/medias/MoonManagerLogo.png
+                nbProjects: ' 1  projet'
+                membershipStart: 'Jan.  2024'
+                tel: ggg.test@test.localhost
+            sourceName: source.test.localhost
+            businessUrl: 'http://source.test.localhost/-Another User'
+            createdAt: '2024-04-09T02:03:05+00:00'
+            updatedAt: '2024-04-09T02:03:05+00:00'
+        -
+            username: bbb
+            status: null
+            postalCode: null
+            city: null
+            avatarUrl: null
+            email: null
+            phone: '09'
+            sourceDetail: null
+            sourceName: null
+            businessUrl: null
+            createdAt: '2024-06-10T06:37:47+00:00'
+            updatedAt: '2024-06-10T07:57:44+00:00'
+    sourceName: source.test.localhost
+    sourceDetail:
+        uId: 'Another User'
+        title: 'Une demande de dev Svp'
+        description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+        isBookmark: false
+        projectStatus: "\_Fermé"
+        projectViews: 216
+        projectOffers: 5
+        projectInteractions: 12
+        projectBudget: 'Moins de 500 €'
+        projectPublicationDate: '04 janvier 2024 à 21h01'
+        projectOffersViewed: 4
+        projectOffersAnswered: 3
+        projectOffersProfileViewed: 3
+        monwooOfferId: offer_5016879
+        monwooMsgViewedAt: 'Le client a vu votre message le 24 jan. à 11:54.'
+        monwooClientAnswerAt: 'Le client a visité votre profil le 24 jan. à 11:55.'
+        monwooProfileViewedAt: null
+        monwooOfferAmount: "120,00\_€"
+        monwooOfferDelay: '  3 jours'
+        projectIsUrgent: 0
+        email: null
+        tel: null
+        messages:
+            - "<div class=\"flex\"><div><div class=\"relative inline-block no-underline group w-11 h-11\"><div class=\"overflow-hidden h-full w-full flex items-center justify-center rounded-full border-2 border-white shadow-md\"><img width=\"44\" height=\"44\" src=\"\"> </div></div></div><div class=\"ml-3\"><div><span class=\"font-bold\">Moi</span><span class=\"text-gray-500 ml-1\" data-controller=\"from-now-tooltip\" data-from-now-tooltip-date-value=\"2024-01-20T00:09:58+01:00\"><span data-v-beb22c1d=\"\"><span data-v-beb22c1d=\"\" data-controller=\"tooltip\" title=\"\" class=\"from-now mb-0\" data-bs-original-title=\"20 janvier 2024 à 00:09\"> 2 mois </span></span></span><span class=\"ml-2 read-status read\"><span title=\"\" data-controller=\"tooltip\" data-bs-original-title=\"Message lu par Another User le 24/01/24 à 11:54\" aria-label=\"Message lu par Another User le 24/01/24 à 11:54\"><svg class=\"svg-inline--fa fa-check-circle fa-w-16 fa-xs text-gray-500\" aria-hidden=\"true\" focusable=\"false\" data-prefix=\"fas\" data-icon=\"check-circle\" role=\"img\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" data-fa-i2svg=\"\"><path fill=\"currentColor\" d=\"M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z\"></path></svg><!-- <i class=\"fas fa-check-circle fa-xs text-gray-500\"></i> Font Awesome fontawesome.com --></span></span></div><div><p>Bonsoir,</p>\n\n<p>C'est un plaisir de pouvoir répondre à votre demande.</p>\n\n<p>Expert fullstack polyvalent depuis plus de 10 ans, j'ai plusieurs solutions pour vos besoins.</p>\n\n<p>Nous pouvons commencer par une étude de projet via sessions de 20 minutes en distanciel dès 125,76 € TTC.</p>\n\n<p>--------------------\n<br>Lot 1 : Analyse et comparatifs sur les besoins et devis existants.\n<br>Lot 2 : Mise en avant des choix les plus adaptées suivant vos demandes ou\n<br>des possibilités existantes sur le marché.\n<br>Lot 3 : Ajustements des fonctions de décisions, synthèse pour livrable\n<br>spreadsheet ou visioconférence.\n<br>--------------------</p>\n\n<p>Certains de mes autres services web et mobile :\n<br>☀️ <a href=\"https://moonkiosk.monwoo.com/boutique\" target=\"_blank\" rel=\"ugc\">https://moonkiosk.monwoo.com/boutique</a></p>\n\n<p>Pour la totalité de mes possibilités, parlons en de vive voix.\n<br>Souhaitant une agréable soirée à tous.</p>\n\n<p>PS : Pour des échanges plus rapides, merci de me contacter également par téléphone, WhatsApp et/ou email.</p>\n\n<p>--\n<br>🌔 Miguel Monwoo\n<br>(+33) 7 51 33 58 20\n<br><a href=\"mailto:service@monwoo.com\" target=\"_blank\" rel=\"ugc\">service@monwoo.com</a></p></div></div></div>"
+            - '<div class="flex"><div><div class="message-block"><div class="bg-warning w-11 h-11 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl text-white"><svg class="svg-inline--fa fa-times fa-w-10 fa-xs" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z"></path></svg><!-- <i class="fal fa-xs fa-times"></i> Font Awesome fontawesome.com --></div></div></div><div class="ml-3"><div><span class="font-bold"><span class="text-warning">Projet fermé</span></span><span class="text-gray-500 ml-1" data-controller="from-now-tooltip" data-from-now-tooltip-date-value="2024-02-04T05:00:24+01:00"><span data-v-beb22c1d=""><span data-v-beb22c1d="" data-controller="tooltip" title="" class="from-now mb-0" data-bs-original-title="04 février 2024 à 05:00"> 2 mois </span></span></span></div><div><p>Le projet est maintenant fermé</p></div></div></div>'
+        failUserImport: null
+    slug: source-test-localhost-404632
+    title: 'Une demande de dev Svp'
+    description: "Salut,\n\nJe suis actuellement à la recherche d'un Game Designer pour un projet de jeu. Il s'agit d'un jeu de voitures RC en 3D développé sur le moteur Unreal Engine 5.\n\nJe recherche une personne habituée à la conception de véhicules, car l'objectif principal est de créer une variété de véhicules, de roues et d'antennes avec des styles différents, axés principalement sur l'aspect cosmétique. Je suis convaincu que la diversité visuelle apportera une dimension unique à l'expérience du jeu.\n\nSi vous avez de l'expérience dans la création de modèles de véhicules et que vous êtes passionné par le design, je serais ravi de discuter plus en détail de notre projet et de la façon dont vous pourriez contribuer. De plus, si votre style artistique correspond à la vision que nous avons, il y a la possibilité d'une collaboration à long terme sur ce projet.\n\nN'hésitez pas à me contacter si vous êtes intéressé(e) ou si vous avez des questions supplémentaires. J'attends avec impatience de collaborer avec un talentueux Game Designer pour faire de notre jeu de voitures RC une expérience mémorable !\n\nEdit: Budget à déterminer...\n\nÀ bientôt,\n\nGuillaume."
+    budget: 'Moins de 500 €'
+    leadStart: '2024-01-04T21:01:00+00:00'
+    tags:
+        -
+            slug: ferme
+            categorySlug: mws-offer-tags-category-src-import
+    timingTags: {  }
+    createdAt: '2024-04-09T02:03:05+00:00'
+    updatedAt: '2024-06-10T07:57:44+00:00'

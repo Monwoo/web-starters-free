@@ -136,6 +136,25 @@
       {/each}
     </div>
   </div>
+  {#each offer.contacts ?? [] as c, idx}
+    <h1 class="text-lg font-bold p-3">Contact ({idx + 1} / {offer.contacts.length})</h1>
+    <div class="mws-contact w-full max-w-[100dvw] flex flex-wrap
+    p-2
+    ">
+      {#each Object.keys(c) ?? [] as cProp}
+        <div class="w-1/2 p-2 whitespace-break-spaces">
+          <div class="w-full border border-gray-700 p-2 flex flex-wrap">
+            <div class="w-1/2 whitespace-break-spaces text-right">
+              <strong>{cProp} :</strong>
+            </div>
+            <div class="w-1/2 whitespace-break-spaces overflow-scroll">
+              {c[cProp]}
+          </div>
+        </div>
+      </div>
+      {/each}
+    </div>
+  {/each}
   <div class="mws-offer-detail w-full overflow-auto">
     <List {locale} offers={[offer]} {viewTemplate} {addMessageForm}
     {messagesByProjectId}

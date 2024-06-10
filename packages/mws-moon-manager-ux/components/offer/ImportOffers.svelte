@@ -29,10 +29,15 @@
   // 'application/csv',
   // 'text/csv',
   export let formatToMime = {
-    "monwoo-extractor-export": "application/json,text/plain",
-    json: "application/json,text/plain",
-    yaml: "application/yaml,text/plain,application/x-yaml",
-    csv: "application/csv,text/csv",
+    // "monwoo-extractor-export": "application/json,text/plain",
+    // json: "application/json,text/plain",
+    // yaml: "application/yaml,text/plain,application/x-yaml",
+    // csv: "application/csv,text/csv",
+    // TIPS : non restrictive filter, any available will re-change format input if not json stuff... might fail detect for custom json format...
+    "monwoo-extractor-export": "application/json,text/plain,application/yaml,application/x-yaml,application/csv,text/csv",
+    json: "application/json,text/plain,application/yaml,application/x-yaml,application/csv,text/csv",
+    yaml: "application/json,text/plain,application/yaml,application/x-yaml,application/csv,text/csv",
+    csv: "application/json,text/plain,application/yaml,application/x-yaml,application/csv,text/csv",
   };
 
   export let reportModal;
@@ -128,7 +133,7 @@
     for (let f of files) {
       const ext = f.name.split('.').slice(-1)[0];
       console.log(f, ext);
-      if (format != 'monwoo-extractor-export'
+      if ((format != 'monwoo-extractor-export' || ext != 'json')
         && format != ext && (formatToMime[ext] ?? null)) {
         format = ext;
       }
