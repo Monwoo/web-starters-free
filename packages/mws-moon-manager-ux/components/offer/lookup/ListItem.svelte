@@ -464,7 +464,7 @@
 
               [{dayjs(tracking.updatedAt).format(
                 "YYYY/MM/DD HH:mm"
-              )}][{$state.user?.userIdentifier}][{tracking.id ?? "--"}]
+              )}][{tracking.owner?.userIdentifier}][{tracking.id ?? "--"}]
               {#if tracking.offerStatusSlug && "null" != tracking.offerStatusSlug}
                 [{tracking.offerStatusSlug}]
               {/if}
