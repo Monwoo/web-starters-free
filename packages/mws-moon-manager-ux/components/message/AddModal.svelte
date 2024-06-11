@@ -14,6 +14,7 @@
     import { onMount } from "svelte";
     import newUniqueId from "locally-unique-id-generator";
     import { tick } from "svelte";
+    import _ from "lodash";
     import { Modal } from "flowbite";
     import Routing from "fos-router";
     //   import { Modal } from 'flowbite-svelte'; // TODO : still having issue with typescript...
@@ -50,7 +51,8 @@
                 // TIPS : force refresh, since public accessor
                 // update the value but do not trigger reactive refresh...
                 // (since set surveyModel.data inside it instead of re-assign)
-                surveyModel = surveyModel;
+                // surveyModel = {...surveyModel}; // PB with survey js that will miss auto refresh then....
+                surveyModel = surveyModel; // TODO : no effect right ? no change no update ? better use writable design patterns...
                 console.log("modal is shown");
             },
             onToggle: () => {
@@ -61,11 +63,14 @@
         setTimeout(() => {
             // TODO : wait for surveyJs on load event instead of empiric timings
             const jQuery = window.$; // TODO : no missing 'window' with SF controllers ways ?
+
+            // TIPS : surveyWrapper.data("surveyModel") hold model instance, should be keep for reactivity with SurveyJs...            
             let surveyWrapper = jQuery(".survey-js-wrapper", htmlModalRoot);
-            surveyModel = {
-                ...surveyWrapper.data("surveyModel"),
-                ...surveyModel
-            };
+            // surveyModel = {
+            //     ...surveyWrapper.data("surveyModel"),
+            //     ...surveyModel
+            // };
+            surveyModel = _.merge(surveyWrapper.data("surveyModel"), surveyModel);
 
             console.debug("Add Modal onMount surveyModel : ", surveyModel);
         }, 400);
