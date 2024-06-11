@@ -142,12 +142,12 @@
     p-2
     ">
       {#each Object.keys(c) ?? [] as cProp}
-        <div class="w-1/2 p-2 whitespace-break-spaces">
+        <div class="w-full md:w-1/2 p-2 whitespace-break-spaces">
           <div class="w-full border border-gray-700 p-2 flex flex-wrap">
-            <div class="w-1/2 whitespace-break-spaces text-right">
+            <div class="w-full md:w-1/2 whitespace-break-spaces text-right">
               <strong>{cProp} :</strong>
             </div>
-            <div class="w-1/2 whitespace-break-spaces overflow-scroll">
+            <div class="w-full md:w-1/2 whitespace-break-spaces overflow-scroll  text-right md:text-left">
               {c[cProp]}
           </div>
         </div>
