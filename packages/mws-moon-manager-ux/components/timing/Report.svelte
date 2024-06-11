@@ -1019,7 +1019,7 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
       class=" m-1"
       style="--mws-primary-rgb: 255, 0, 0"
     >
-      Supprimer tous les temps
+      Supprimer tous les temps affichés
     </button>
   </div>
   <button on:click={() => (showDetails = !showDetails)}>
