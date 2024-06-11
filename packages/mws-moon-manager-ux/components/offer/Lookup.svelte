@@ -121,6 +121,8 @@
     if (confirm("Are you sure you want to delete all offers ?")) {
       const data = {
         _csrf_token: stateGet(get(state), "csrfOfferDeleteAll"),
+        // TODO : only delete FILTERED offers :
+        // ...searchLookupState cf timings 
       };
       const formData = new FormData();
       for (const name in data) {
