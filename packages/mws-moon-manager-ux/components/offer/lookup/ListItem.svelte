@@ -530,7 +530,7 @@
           }/${myOfferId}" target="_blank" rel="noreferrer">
             <button class="">Source des messages</button>
           </a><br/>
-          Proposition : ${offer.sourceDetail?.monwooOfferAmount ?? ""}<br/>
+          Proposition : ${offer.sourceDetail?.monwooOfferAmount ?? ""} ${ offer?.monwooAmountType ?? '' }<br/>
           Délais : ${offer.sourceDetail?.monwooOfferDelay ?? ""}<br/>
           `
             : ``
@@ -596,7 +596,7 @@
                 }/${myOfferId}" target="_blank" rel="noreferrer">
                   <button class="">Source des messages</button>
                 </a><br/>
-                Proposition : ${offer.sourceDetail?.monwooOfferAmount ?? ""}<br/>
+                Proposition : ${offer.sourceDetail?.monwooOfferAmount ?? ""} ${ offer?.monwooAmountType ?? '' }<br/>
                 Délais : ${offer.sourceDetail?.monwooOfferDelay ?? ""}<br/>
               `
                   : ``
@@ -620,7 +620,7 @@
     </div>
     <div class="overflow-auto max-h-[8em]">
       <div class="sended-messages">
-        Proposition : {offer.sourceDetail?.monwooOfferAmount ?? ""}<br />
+        Proposition : {offer.sourceDetail?.monwooOfferAmount ?? ""} { offer.sourceDetail?.monwooAmountType ?? '' }<br />
         Délais : {offer.sourceDetail?.monwooOfferDelay ?? ""}<br />
 
         <!-- TODO : .reverse() not working with reduce ?

@@ -13,7 +13,7 @@ parameters:
             defaultTags:
               - label: Prospection
                 categoryOkWithMultiplesTags: false
-              - label: A relancer
+              - label: Prospect à relancer
                 categorySlug: prospection
               - label: Investir pour relancer
                 categorySlug: prospection
@@ -23,7 +23,7 @@ parameters:
                 categorySlug: prospection
               - label: Ne veut pas être dérangé
                 categorySlug: prospection
-              - label: Devis à négocier
+              - label: Prospect à négocier
                 categorySlug: prospection
               - label: En attente de paiement
                 categorySlug: prospection

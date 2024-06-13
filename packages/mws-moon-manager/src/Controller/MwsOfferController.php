@@ -999,6 +999,11 @@ class MwsOfferController extends AbstractController
         $offerParams = $moonManagerParams['offer'];
         $defaultTags = $offerParams['defaultTags'];
         // dd($defaultTags);
+        if ($request->get('cleanAllTags', false)) {
+            $qb = $this->em->createQueryBuilder()
+            ->delete(MwsOfferStatus::class, 's');
+            $qb->getQuery()->execute();
+        }
 
         foreach ($defaultTags as $tag) {
             // TODO : user serializer format instead of custom extract ?

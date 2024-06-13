@@ -198,7 +198,7 @@ class MwsOfferRepository extends ServiceEntityRepository
             return;
         }
         [
-            "keyword" => $keyword,
+            "searchKeyword" => $searchKeyword,
             "searchBudgets" => $searchBudgets,
             "searchStart" => $searchStart,
             "searchEnd" => $searchEnd,
@@ -209,7 +209,7 @@ class MwsOfferRepository extends ServiceEntityRepository
         ] = [
             ...[
                 // TODO : dynamic from surveyJS json fields instead of ram list + reuse for twig... ?
-                "keyword" => null,
+                "searchKeyword" => null,
                 "searchBudgets" => null,
                 "searchStart" => null,
                 "searchEnd" => null,
@@ -222,8 +222,8 @@ class MwsOfferRepository extends ServiceEntityRepository
         ];
 
         $tagSlugSep = ' > '; // TODO :load objects and trick display/value function of surveyJS instead...
-
-        if ($keyword) {
+        // dd($offerLookup);
+        if ($searchKeyword) {
             $qb
                 // LOWER(REPLACE($slotName.clientUsername, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
                 // OR LOWER(REPLACE($slotName.contact1, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
@@ -236,7 +236,7 @@ class MwsOfferRepository extends ServiceEntityRepository
                 OR LOWER(REPLACE($slotName.description, ' ', '')) LIKE :keyword
                 OR LOWER(REPLACE($slotName.budget, ' ', '')) LIKE :keyword
             ")
-                ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $keyword)) . '%');
+                ->setParameter('keyword', '%' . strtolower(str_replace(" ", "", $searchKeyword)) . '%');
         }
 
         if (count($searchBudgets ?? [])) {

@@ -57,6 +57,13 @@
     }) }>
       <button class="">Réinitialiser les tags par défaut</button>
     </a>    
+    <a href={ Routing.generate('mws_offer_tags_reset_to_default', {
+      '_locale': locale ?? '',
+      'viewTemplate': viewTemplate ?? null,
+      'cleanAllTags': true,
+    }) }>
+      <button class="">Effacer et réinitialiser les tags par défaut</button>
+    </a>    
   </div>
   <div class="flex flex-wrap">
     <div class="label">
