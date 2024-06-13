@@ -1736,28 +1736,32 @@ class MwsOfferController extends AbstractController
                 }
                 // Try to fill offer quick contact with contact details if available :
                 $contacts = $offer->getContacts();
+                $isWaitingForData = function($test) {
+                    return [
+                        `Voir l'adresse email` => true,
+                        `Voir le téléphone` => true,
+                    ][$test] ?? !$test;
+                }; // TODO (if isWaitingForData in phone and phone comme with null or empty ? => overwritte, was empty phone data stuff...)
                 foreach ($contacts as $contact) {
                     // TIPS : ensure no phone duplication not working... import duplicate phone if offer already define phone... ?
                     //        check cache issue... codeur-com-420626, JANTIER recherche des développeurs et gestionnaires E-commerc
                     if (
-                        $contact->getPhone()
-                        && $contact->getPhone() !== $offer->getContact1()
+                        $contact->getPhone() !== $offer->getContact1()
                         && $contact->getPhone() !== $offer->getContact2()
                     ) {
-                        if (!$offer->getContact1()) {
+                        if ($isWaitingForData($offer->getContact1())) {
                             $offer->setContact1($contact->getPhone());
-                        } else if (!$offer->getContact2()) {
+                        } else if ($isWaitingForData($offer->getContact2())) {
                             $offer->setContact2($contact->getPhone());
                         }
                     }
                     if (
-                        $contact->getEmail()
-                        && $contact->getEmail() !== $offer->getContact1()
+                        $contact->getEmail() !== $offer->getContact1()
                         && $contact->getEmail() !== $offer->getContact2()
                     ) {
-                        if (!$offer->getContact1()) {
+                        if ($isWaitingForData($offer->getContact1())) {
                             $offer->setContact1($contact->getEmail());
-                        } else if (!$offer->getContact2()) {
+                        } else if ($isWaitingForData($offer->getContact2())) {
                             $offer->setContact2($contact->getEmail());
                         }
                     }
