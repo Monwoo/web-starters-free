@@ -73,7 +73,7 @@ class MwsOfferController extends AbstractController
             array_merge($request->query->all(), [
                 "page" => 1,
                 // "filterTags" => $filterTags,
-                // "keyword" => $keyword
+                // "searchKeyword" => $searchKeyword
             ]),
             Response::HTTP_SEE_OTHER
         );
@@ -345,7 +345,7 @@ class MwsOfferController extends AbstractController
         // dd($requestData);
         // After symfony 6, get will not return array anymore
         // $searchTags = $request->query->get('tags', null); // []);
-        $keyword = $requestData['keyword'] ?? null;
+        $searchKeyword = $requestData['searchKeyword'] ?? null;
         $searchBudgets = $requestData['searchBudgets'] ?? null;
         $searchStart = $requestData['searchStart'] ?? null;
         $searchEnd = $requestData['searchEnd'] ?? null;
@@ -365,7 +365,7 @@ class MwsOfferController extends AbstractController
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
-                "searchKeyword" => $keyword,
+                "searchKeyword" => $searchKeyword,
                 "searchBudgets" => $searchBudgets,
                 "searchStart" => $searchStart,
                 "searchEnd" => $searchEnd,
@@ -426,7 +426,7 @@ class MwsOfferController extends AbstractController
                     urldecode($filterForm->get('jsonResult')->getData()),
                     true
                 );
-                $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchKeyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchBudgets = $surveyAnswers['searchBudgets'] ?? null;
                 $searchStart = $surveyAnswers['searchStart'] ?? null;
                 $searchEnd = $surveyAnswers['searchEnd'] ?? null;
@@ -442,7 +442,7 @@ class MwsOfferController extends AbstractController
                     'mws_offer_lookup',
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
-                        "keyword" => $keyword,
+                        "searchKeyword" => $searchKeyword,
                         "searchBudgets" => $searchBudgets,
                         "searchStart" => $searchStart,
                         "searchEnd" => $searchEnd,
@@ -476,7 +476,7 @@ class MwsOfferController extends AbstractController
         //             'mws_offer_lookup',
         //             array_merge($request->query->all(), [
         //                 "viewTemplate" => $viewTemplate,
-        //                 "keyword" => $keyword,
+        //                 "searchKeyword" => $searchKeyword,
         //                 "searchBudgets" => $searchBudgets,
         //                 "searchStart" => $searchStart,
         //                 "searchEnd" => $searchEnd,
@@ -493,7 +493,7 @@ class MwsOfferController extends AbstractController
         // }
 
         $mwsOfferRepository->applyOfferLokup($qb, [
-            "keyword" => $keyword,
+            "searchKeyword" => $searchKeyword,
             "searchBudgets" => $searchBudgets,
             "searchStart" => $searchStart,
             "searchEnd" => $searchEnd,
@@ -905,14 +905,14 @@ class MwsOfferController extends AbstractController
             throw $this->createAccessDeniedException('Only for admins');
         }
 
-        $keyword = $request->query->get('keyword', null);
+        $searchKeyword = $request->query->get('searchKeyword', null);
 
         $qb = $mwsOfferStatusRepository->createQueryBuilder('t');
 
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
-                "searchKeyword" => $keyword,
+                "searchKeyword" => $searchKeyword,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsOfferStatusLookupType.json.twig"
@@ -932,7 +932,7 @@ class MwsOfferController extends AbstractController
                     urldecode($filtersForm->get('jsonResult')->getData()),
                     true
                 );
-                $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchKeyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchTags = $surveyAnswers['searchTags'] ?? [];
                 $searchTagsToAvoid = $surveyAnswers['searchTagsToAvoid'] ?? [];
 
@@ -940,7 +940,7 @@ class MwsOfferController extends AbstractController
                     'mws_offer_tags',
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
-                        "keyword" => $keyword,
+                        "searchKeyword" => $searchKeyword,
                         "searchTags" => $searchTags,
                         "searchTagsToAvoid" => $searchTagsToAvoid,
                         "page" => 1,
@@ -950,13 +950,13 @@ class MwsOfferController extends AbstractController
             }
         }
 
-        if ($keyword) {
+        if ($searchKeyword) {
             $qb
                 ->andWhere("
-                LOWER(REPLACE(t.slug, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(t.label, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                LOWER(REPLACE(t.slug, ' ', '')) LIKE LOWER(REPLACE(:searchKeyword, ' ', ''))
+                OR LOWER(REPLACE(t.label, ' ', '')) LIKE LOWER(REPLACE(:searchKeyword, ' ', ''))
             ")
-                ->setParameter('keyword', '%' . $keyword . '%');
+                ->setParameter('searchKeyword', '%' . $searchKeyword . '%');
         }
 
         $query = $qb->getQuery();
@@ -1151,7 +1151,7 @@ class MwsOfferController extends AbstractController
         }
         $tagSlug = $request->request->get('tagSlug');
         $tagCategorySlug = $request->request->get('tagCategorySlug');
-        // TODO : DOC + validation, no tag category slug could use the 'null' keyword, now RESERVED...
+        // TODO : DOC + validation, no tag category slug could use the 'null' searchKeyword, now RESERVED...
         if ('null' === $tagCategorySlug) {
             $tagCategorySlug = null; // Form data deserialisation stuff ? extracting as string instead of null...
         }
@@ -1225,7 +1225,7 @@ class MwsOfferController extends AbstractController
         }
         $tagSlug = $request->request->get('tagSlug');
         $tagCategorySlug = $request->request->get('tagCategorySlug');
-        // TODO : DOC + validation, no tag category slug could use the 'null' keyword, now RESERVED...
+        // TODO : DOC + validation, no tag category slug could use the 'null' searchKeyword, now RESERVED...
         if ('null' === $tagCategorySlug) {
             $tagCategorySlug = null; // Form data deserialisation stuff ? extracting as string instead of null...
         }

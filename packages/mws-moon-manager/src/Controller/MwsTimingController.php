@@ -119,7 +119,7 @@ class MwsTimingController extends AbstractController
         }
 
         $requestData = $request->query->all();
-        $keyword = $requestData['keyword'] ?? null;
+        $searchKeyword = $requestData['searchKeyword'] ?? null;
         $searchStart = $requestData['searchStart'] ?? null;
         $searchEnd = $requestData['searchEnd'] ?? null;
 
@@ -133,7 +133,7 @@ class MwsTimingController extends AbstractController
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
-                "searchKeyword" => $keyword,
+                "searchKeyword" => $searchKeyword,
                 "searchStart" => $searchStart,
                 "searchEnd" => $searchEnd,
                 "searchTags" => $searchTags,
@@ -172,7 +172,7 @@ class MwsTimingController extends AbstractController
                     urldecode($filterForm->get('jsonResult')->getData()),
                     true
                 );
-                $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchKeyword = $surveyAnswers['searchKeyword'] ?? null;
                 $searchStart = $surveyAnswers['searchStart'] ?? null;
                 $searchEnd = $surveyAnswers['searchEnd'] ?? null;
                 $searchTags = $surveyAnswers['searchTags'] ?? [];
@@ -184,7 +184,7 @@ class MwsTimingController extends AbstractController
                     'mws_timings_qualif',
                     array_merge($request->query->all(), [
                         "viewTemplate" => $viewTemplate,
-                        "keyword" => $keyword,
+                        "searchKeyword" => $searchKeyword,
                         "searchStart" => $searchStart,
                         "searchEnd" => $searchEnd,
                         "searchTags" => $searchTags,
@@ -199,7 +199,7 @@ class MwsTimingController extends AbstractController
 
         $qb = $mwsTimeSlotRepository->createQueryBuilder('s');
         $mwsTimeSlotRepository->applyTimingLokup($qb, [
-            'searchKeyword' => $keyword,
+            'searchKeyword' => $searchKeyword,
             "searchStart" => $searchStart,
             "searchEnd" => $searchEnd,
             'searchTags' => $searchTags,
@@ -289,7 +289,7 @@ class MwsTimingController extends AbstractController
         }
 
         $requestData = $request->query->all();
-        $keyword = $requestData['keyword'] ?? null;
+        $searchKeyword = $requestData['searchKeyword'] ?? null;
         // TIPS : default start date minus 1 month
         // To AVOID huge dataset computing (one year
         // is like 7 sec server side + 40 sec load client side
@@ -354,7 +354,7 @@ class MwsTimingController extends AbstractController
                 // or : https://stackoverflow.com/questions/37005899/symfony3-is-it-possible-to-change-the-name-of-a-form
                 // add public function getBlockPrefix() in form type....
                 "MwsTimingLookupType" => true,
-                "searchKeyword" => $keyword,
+                "searchKeyword" => $searchKeyword,
                 "searchStart" => $searchStart,
                 "searchEnd" => $searchEnd,
                 "searchTags" => $searchTags,
@@ -389,7 +389,7 @@ class MwsTimingController extends AbstractController
                     true
                 );
                 if ($surveyAnswers['MwsTimingLookupType'] ?? false) {
-                    $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                    $searchKeyword = $surveyAnswers['searchKeyword'] ?? null;
                     $searchStart = $surveyAnswers['searchStart'] ?? null;
                     $searchEnd = $surveyAnswers['searchEnd'] ?? null;
                     $searchTags = $surveyAnswers['searchTags'] ?? [];
@@ -401,7 +401,7 @@ class MwsTimingController extends AbstractController
                         'mws_timings_report',
                         array_merge($request->query->all(), [
                             "viewTemplate" => $viewTemplate,
-                            "keyword" => $keyword,
+                            "searchKeyword" => $searchKeyword,
                             "searchStart" => $searchStart,
                             "searchEnd" => $searchEnd,
                             "searchTags" => $searchTags,
@@ -487,7 +487,7 @@ class MwsTimingController extends AbstractController
         // strftime('%W', s.sourceTimeGMT) as sourceWeekOfYear,
 
         $mwsTimeSlotRepository->applyTimingLokup($qb, [
-            'searchKeyword' => $keyword,
+            'searchKeyword' => $searchKeyword,
             "searchStart" => $searchStart,
             "searchEnd" => $searchEnd,
             'searchTags' => $searchTags,
@@ -815,7 +815,7 @@ class MwsTimingController extends AbstractController
             throw $this->createAccessDeniedException('CSRF Expired');
         }
 
-        $keyword = $request->get('keyword', null);
+        $searchKeyword = $request->get('searchKeyword', null);
         $searchStart = $request->get('searchStart', null);
         $searchEnd = $request->get('searchEnd', null);
         $searchTags = $request->get('searchTags', []); // []);
@@ -825,7 +825,7 @@ class MwsTimingController extends AbstractController
         $qb = $this->em->createQueryBuilder('s')
         ->delete(MwsTimeSlot::class, 's');
         $mwsTimeSlotRepository->applyTimingLokup($qb, [
-            'searchKeyword' => $keyword,
+            'searchKeyword' => $searchKeyword,
             "searchStart" => $searchStart,
             "searchEnd" => $searchEnd,
             'searchTags' => $searchTags,

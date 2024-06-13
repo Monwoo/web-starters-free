@@ -51,7 +51,7 @@ class MwsUserController extends AbstractController
             'mws_user_list',
             array_merge($request->query->all(), [
                 // "filterTags" => $filterTags,
-                // "keyword" => $keyword
+                // "searchKeyword" => $searchKeyword
                 "page" => 1,
             ]),
             Response::HTTP_SEE_OTHER
@@ -92,7 +92,7 @@ class MwsUserController extends AbstractController
 
         $userRolesByTag = array_unique($userRolesByTag);
 
-        $keyword = $request->query->get('keyword', null);
+        $searchKeyword = $request->query->get('searchKeyword', null);
 
         $qb = $mwsUserRepository->createQueryBuilder('u');
         // USE CUSTOM form filters instead of knp simple ones
@@ -100,7 +100,7 @@ class MwsUserController extends AbstractController
         $lastSearch = [
             // TIPS urlencode() will use '+' to replace ' ', rawurlencode is RFC one
             "jsonResult" => rawurlencode(json_encode([
-                "searchKeyword" => $keyword,
+                "searchKeyword" => $searchKeyword,
             ])),
             "surveyJsModel" => rawurlencode($this->renderView(
                 "@MoonManager/survey_js_models/MwsUserFilterType.json.twig"
@@ -120,12 +120,12 @@ class MwsUserController extends AbstractController
                     urldecode($filterForm->get('jsonResult')->getData()),
                     true
                 );
-                $keyword = $surveyAnswers['searchKeyword'] ?? null;
+                $searchKeyword = $surveyAnswers['searchKeyword'] ?? null;
                 return $this->redirectToRoute(
                     'mws_user_list',
                     array_merge($request->query->all(), [
                         "filterTags" => $filterTags,
-                        "keyword" => $keyword,
+                        "searchKeyword" => $searchKeyword,
                         "page" => 1,
                     ]),
                     Response::HTTP_SEE_OTHER
@@ -133,13 +133,13 @@ class MwsUserController extends AbstractController
             }
         }
 
-        if ($keyword) {
+        if ($searchKeyword) {
             $qb
             ->andWhere("
-                LOWER(REPLACE(u.username, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
-                OR LOWER(REPLACE(u.email, ' ', '')) LIKE LOWER(REPLACE(:keyword, ' ', ''))
+                LOWER(REPLACE(u.username, ' ', '')) LIKE LOWER(REPLACE(:searchKeyword, ' ', ''))
+                OR LOWER(REPLACE(u.email, ' ', '')) LIKE LOWER(REPLACE(:searchKeyword, ' ', ''))
             ")
-            ->setParameter('keyword', '%' . $keyword . '%');
+            ->setParameter('searchKeyword', '%' . $searchKeyword . '%');
         }
         $qb->select("
             u,
