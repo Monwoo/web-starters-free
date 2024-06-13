@@ -105,6 +105,69 @@
     isLoading = false;
   };
 
+  export let deleteTracking = async (trackingId) => {
+    isLoading = true;
+    try {
+      const data = {
+        _csrf_token: stateGet(get(state), "csrfOfferDeleteTracking"),
+        trackingId,
+      };
+      // let headers:any = {}; // { 'Content-Type': 'application/octet-stream', 'Authorization': '' };
+      let headers = {
+        Accept: "application/json",
+      };
+
+      // https://stackoverflow.com/questions/35192841/how-do-i-post-with-multipart-form-data-using-fetch
+      // https://muffinman.io/uploading-files-using-fetch-multipart-form-data/
+      // Per this article make sure to NOT set the Content-Type header.
+      // headers['Content-Type'] = 'application/json';
+      const formData = new FormData();
+      for (const name in data) {
+        formData.append(name, data[name]);
+      }
+      const resp = await fetch(
+        // TODO : build back Api, will return new csrf to use on success, will error othewise,
+        // if error, warn user with 'Fail to remove tag. You are disconnected, please refresh the page...'
+        Routing.generate("mws_offer_delete_tracking", {
+          _locale: locale,
+        }),
+        {
+          method: "POST",
+          headers,
+          // body: JSON.stringify(data), // TODO : no automatic for SF to extract json in ->request ?
+          body: formData,
+          // https://stackoverflow.com/questions/34558264/fetch-api-with-cookie
+          credentials: "same-origin",
+          // https://javascript.info/fetch-api
+          redirect: "error",
+        }
+      )
+        .then(async (resp) => {
+          console.log(resp.url, resp.ok, resp.status, resp.statusText);
+          if (!resp.ok) {
+            // make the promise be rejected if we didn't get a 2xx response
+            throw new Error("Not 2xx response"); // , {cause: resp});
+          } else {
+            const data = await resp.json();
+            // TODO : sync trakings :
+            // trackings = data.sync?.mwsOfferTrackings?.toReversed() ?? [];
+            offer = data.sync; // Svelte reactive will take care of 'trackings'
+            stateUpdate(state, {
+              csrfOfferDeleteTracking: data.newCsrf,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          // TODO : in secure mode, should force redirect to login without message ?, and flush all client side data...
+          const shouldWait = confirm("Echec de l'enregistrement.");
+        });
+    } catch (e) {
+      console.error(e);
+    }
+    isLoading = false;
+  };
+
   // BELOW OK :
   // let trackings = offer?.mwsOfferTrackings?.toReversed() ?? [];
 

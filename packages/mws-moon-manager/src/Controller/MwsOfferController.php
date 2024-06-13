@@ -1736,6 +1736,7 @@ class MwsOfferController extends AbstractController
                 }
                 // Try to fill offer quick contact with contact details if available :
                 $contacts = $offer->getContacts();
+                // TODO : functionnal tests on contact refresh (need to be seen, then overwrite with user adding empty phone, should remove 'check for phone/mail needed' stuff...)
                 $isWaitingForData = function($test) {
                     return [
                         `Voir l'adresse email` => true,
