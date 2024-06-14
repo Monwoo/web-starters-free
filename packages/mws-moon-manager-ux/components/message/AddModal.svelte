@@ -17,6 +17,9 @@
     import _ from "lodash";
     import { Modal } from "flowbite";
     import Routing from "fos-router";
+    import dayjs from "dayjs";
+    import { writable } from "svelte/store";
+
     //   import { Modal } from 'flowbite-svelte'; // TODO : still having issue with typescript...
     const UID = newUniqueId();
     export let addMessageForm;
@@ -26,9 +29,34 @@
     // export let locale;
     export let eltModal;
 
-    export let surveyModel = {};
+    export let surveyModel = {} as any;
     export let sourceDetailView; // HTML view of source to help fill form....
     export let showSourceDetail = true;
+    export let histories = writable([]); // Keep local data history
+    export let historiesLimit = 21;
+    // TODO : sync with backend to keep history over multiples sessions ?
+    // TODO : sync locally in local storage or db to keep over page refresh ?
+    export let saveDataInHistories = () => {
+        // $histories.push({
+        //     time: dayjs(),
+        //     data: surveyModel.data,
+        // });
+        histories.update((state) => {
+            state.unshift({
+                time: dayjs(),
+                data: surveyModel.data,
+            });
+            state = state.slice(0, historiesLimit)
+            return state;
+        });
+    };
+    export let loadHistory = (history) => {
+        // Keep current changes if some :
+        if (history.data !== surveyModel.data) {
+            saveDataInHistories();
+        }
+        surveyModel.data = history.data;
+    };
 
     let htmlModalRoot;
 
@@ -45,6 +73,7 @@
             backdropClasses:
                 "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
             onHide: () => {
+                saveDataInHistories();
                 console.log("modal is hidden");
             },
             onShow: () => {
@@ -64,13 +93,34 @@
             // TODO : wait for surveyJs on load event instead of empiric timings
             const jQuery = window.$; // TODO : no missing 'window' with SF controllers ways ?
 
-            // TIPS : surveyWrapper.data("surveyModel") hold model instance, should be keep for reactivity with SurveyJs...            
+            // TIPS : surveyWrapper.data("surveyModel") hold model instance, should be keep for reactivity with SurveyJs...
             let surveyWrapper = jQuery(".survey-js-wrapper", htmlModalRoot);
             // surveyModel = {
             //     ...surveyWrapper.data("surveyModel"),
             //     ...surveyModel
             // };
-            surveyModel = _.merge(surveyWrapper.data("surveyModel"), surveyModel);
+            surveyModel = _.merge(
+                surveyWrapper.data("surveyModel"),
+                surveyModel
+            );
+
+            jQuery(htmlModalRoot, 'form[name="mws_survey_js"]').on(
+                "submit",
+                async (e) => {
+                    console.debug(
+                        "Will submit add message :",
+                        e,
+                        surveyModel.data
+                    );
+                    // TODO : backend submit to keep history... (will also need full frontend ui refresh...)
+                    // TODO : or save histories to local storage to keep over multiples page reloads ?
+                    saveDataInHistories(); 
+
+                    // We want classique POST submit, ignore stops etc, no :
+                    // e.stopPropagation();
+                    // e.preventDefault();
+                }
+            );
 
             console.debug("Add Modal onMount surveyModel : ", surveyModel);
         }, 400);
@@ -80,7 +130,6 @@
         eltModal = eltModal || new Modal(modalElement, modalOptions);
         return;
     });
-
 </script>
 
 <div
@@ -130,19 +179,15 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
             <!-- Modal body -->
             {#if sourceDetailView}
                 <button
-                on:click={() => (showSourceDetail = !showSourceDetail)}
-                type="button"
-                class="text-gray-500 bg-white hover:bg-gray-100
+                    on:click={() => (showSourceDetail = !showSourceDetail)}
+                    type="button"
+                    class="text-gray-500 bg-white hover:bg-gray-100
                 fixed z-20 right-0 top-[10dvh]"
-                >{showSourceDetail
-                    ? "Cacher"
-                    : "Voir"}
+                    >{showSourceDetail ? "Cacher" : "Voir"}
                 </button>
             {/if}
 
-            {#if sourceDetailView &&
-                sourceDetailView.length &&
-                showSourceDetail}
+            {#if sourceDetailView && sourceDetailView.length && showSourceDetail}
                 <div
                     class="pt-12 p-6 bg-sky-200 overflow-scroll rounded-md space-y-6 fixed z-10 right-0 w-[30dvw] h-[60dvh] top-[10dvh]"
                 >
@@ -152,11 +197,40 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 </div>
             {/if}
             <!-- Modal body -->
-            <div class="p-1 space-y-6"
-            class:mr-[25dvw]={sourceDetailView &&
-                sourceDetailView.length &&
-                showSourceDetail}>
-                {@html addMessageForm}
+            <div
+                class="p-1 space-y-6 flex flex-wrap"
+                class:mr-[25dvw]={sourceDetailView &&
+                    sourceDetailView.length &&
+                    showSourceDetail}
+            >
+                <div class="w-full">
+                    {@html addMessageForm}
+                </div>
+                <div class="w-full flex flex-wrap p-3 justify-center items-center">
+                    <h1 class="w-full text-center font-bold">
+                        Historique locale :
+                    </h1>
+                    <div class="w-full flex justify-center">
+                        <button
+                        on:click={() => saveDataInHistories()}
+                        type="button"
+                        class="text-gray-500 bg-white hover:bg-gray-100"
+                        >
+                            Sauvegarder
+                        </button>    
+                    </div>
+                    {#each $histories as history}
+                        <object 
+                        title={(history.data.messages ?? {})[0]?.text ?? ''}
+                        class="cursor-pointer p-2 opacity-60 hover:opacity-100"
+                        on:click={(e) => loadHistory(history)}>
+                            {dayjs(history.time).format("YYYY/MM/DD HH:mm:ss")} -
+                            {history.data.destId} -
+                            {history.data.projectId} -
+                            {history.data.monwooAmount ?? '--'} €
+                        </object>
+                    {/each}
+                </div>
             </div>
             <!-- Modal footer -->
             <div

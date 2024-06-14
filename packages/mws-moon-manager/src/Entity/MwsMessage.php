@@ -56,6 +56,7 @@ class MwsMessage
     #[ORM\Column(nullable: true)]
     private ?float $projectDelayInOpenDays = null;
 
+    // TODO : asSuperOffer ? or use specific tags instead of changing base model ?
     #[ORM\Column(nullable: true)]
     private ?bool $asNewOffer = null;
 

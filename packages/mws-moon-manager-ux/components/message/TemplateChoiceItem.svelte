@@ -115,6 +115,8 @@
               // id: null, // force new id creation ? NOP, based on projectId lookup...
               // Keep existing id fields
               id: question.survey.data?.id ?? null,
+              destId: question.survey.data?.destId ?? null,
+              sourceId: question.survey.data?.sourceId ?? null,
               projectId: question.survey.data?.projectId,
               isDraft: question.survey.data?.isDraft,
               isTemplate: question.survey.data?.isTemplate,
@@ -145,14 +147,15 @@
   </span>
   {#if itemData}
     <div class="mws-choice-detail">
-      <div class="relative">
+      <div class="relative w-full flex flex-wrap justify-start items-start">
+        <div>{itemData.templateNameSlug}</div>
         <div>Proposition : { itemData?.monwooAmount ?? '' } { itemData?.monwooAmountType ?? '' }</div>
         <div>Délais : { itemData?.projectDelayInOpenDays ?? '' } jour(s) ouvrés</div>
         {@html (itemData?.messages ?? []).reduce(
           // <pre>${msg.text}</pre>
           (html, msg) => `
               <div>${ msg.billingSourceFile ? msg.billingSourceFile[0]?.name : 'No billings'}</div>
-              <div class="max-w-full whitespace-break-spaces">${msg.text?.replaceAll('\n', '<br/>')}</div>
+              <div class="max-w-full">${msg.text?.replaceAll('\n', '<br/>')}</div>
             `
             + html,
           ``
@@ -166,6 +169,7 @@
   .mws-choice-item {
     position: relative;
     overflow: visible;
+    @apply p-2;
 
     .mws-choice-detail {
       // position: fixed;
@@ -175,23 +179,44 @@
       pointer-events: none;
       flex-direction: column;
       flex-wrap: wrap;
+      font-size: 9pt;
+      line-height: 9pt;
+      // z-index: 2;
+      // overflow: hidden;
+      // word-wrap: break-word !important;
+      // word-wrap: break-word !important;
+      // word-wrap: break-word !important;
+
+      // http://stylescss.free.fr/v2-properties/word-break-wrap.php
+      // word-wrap: anywhere;
+      // word-break: break-all;
+      word-wrap: break-word;
+      word-break: break-word;
+      white-space: break-spaces;
+      // @apply  whitespace-break-spaces;
 
       @apply p-6;
-      @apply bg-gray-300;
+      @apply bg-gray-200;
       @apply text-black;
       @apply overflow-scroll; // No effect since no pointer events...
       @apply rounded-md;
       @apply space-y-6;
       @apply fixed;
       @apply z-50; // TODO hierarchy issue, do not go over detail view... => service to open menu detail popup instantiated in parent ?
-      @apply left-0;
+      @apply right-[2dvh];
       @apply w-[30dvw];
-      @apply h-[30dvh];
-      @apply top-[10dvh];
+      @apply h-[42dvh];
+      @apply bottom-[2dvh];
+      @apply justify-start;
+      @apply items-start;
+
+      // &:hover {
+      //     opacity: 0.8;
+      // }
     }
     &:hover {
       .mws-choice-detail {
-        opacity: 0.8;
+        opacity: 0.9;
       }
     }
   }
