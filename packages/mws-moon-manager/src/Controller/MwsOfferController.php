@@ -692,7 +692,7 @@ class MwsOfferController extends AbstractController
             // ensure query param 
             'action' => $this->generateUrl('mws_message_list', [
                 'viewTemplate' => $viewTemplate,
-                'backUrl' => $this->generateUrl('mws_offer_lookup', array_merge($request->query->all(), [
+                'backUrl' => $this->generateUrl('mws_offer_view', array_merge($request->query->all(), [
                     'viewTemplate' => $viewTemplate,
                 ])),
             ])
