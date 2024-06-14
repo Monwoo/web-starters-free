@@ -35,6 +35,33 @@ parameters:
                 categorySlug: prospection
               - label: Hors cible business
                 categorySlug: prospection
+              - label: Analyse
+              - label: Test via téléphone
+                categorySlug: analyse
+              - label: Test via email
+                categorySlug: analyse
+              - label: Test via WhatsApp
+                categorySlug: analyse
+              - label: Test via tchat de l'offre
+                categorySlug: analyse
+              - label: Test via oral
+                categorySlug: analyse
+              - label: Ok via téléphone
+                categorySlug: analyse
+              - label: Ok via email
+                categorySlug: analyse
+              - label: Ok via WhatsApp
+                categorySlug: analyse
+              - label: Ok via tchat de l'offre
+                categorySlug: analyse
+              - label: Ok via oral
+                categorySlug: analyse
+              - label: Signé par écrit papier
+                categorySlug: analyse
+              - label: Signé par premier paiement
+                categorySlug: analyse
+              - label: Signé par acceptation email
+                categorySlug: analyse
               - label: Kanban
                 categoryOkWithMultiplesTags: false
               - label: Marché
@@ -42,6 +69,8 @@ parameters:
               - label: Backlog
                 categorySlug: kanban
               - label: A relancer
+                categorySlug: kanban
+              - label: VIP
                 categorySlug: kanban
               - label: Devis à négocier
                 categorySlug: kanban
