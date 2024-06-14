@@ -36,6 +36,7 @@ parameters:
               - label: Hors cible business
                 categorySlug: prospection
               - label: Analyse
+                categoryOkWithMultiplesTags: true
               - label: Test via téléphone
                 categorySlug: analyse
               - label: Test via email
