@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f19da5c7bee6e8d7ecc13eaede9b9b67",
+    "content-hash": "14d61ca840c2459806a2faf5a89fb3b7",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2899,7 +2899,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../../packages/mws-moon-manager",
-                "reference": "8c0413d221aef8c2ca7ab03ca6e440dc607678e5"
+                "reference": "0049c850d7f02277a5fdb6f3e34d8e1030f5e112"
             },
             "require": {
                 "beberlei/doctrineextensions": "^1.4",
@@ -2923,7 +2923,7 @@
                 "symfony/stimulus-bundle": "^2.12",
                 "symfony/translation": "6.3.*",
                 "symfony/twig-bundle": "6.3.*",
-                "symfony/ux-svelte": "^2.12",
+                "symfony/ux-svelte": "2.*",
                 "symfony/validator": "6.3.*",
                 "symfony/webpack-encore-bundle": "^2.1",
                 "symfony/yaml": "6.3.*",

@@ -84,6 +84,13 @@ services:
     # MWS\MoonManagerBundle\Routing\ExtraLoader:
     #     tags: [routing.loader]
 
+    # https://symfony.com/doc/current/service_container/factories.html#non-static-factories
+    # MWS\MoonManagerBundle\Services\CacheFactory: ~ # OK, already auto-wired by psr4 norm
+    # Psr\SimpleCache\CacheInterface:
+    Symfony\Contracts\Cache\CacheInterface:
+        factory: ['@MWS\MoonManagerBundle\Services\CacheFactory', 'create']
+        arguments: ['%kernel.environment%']
+
 # controllers:
 #   resource: ../src/src/Controller/
 #   type: annotation
