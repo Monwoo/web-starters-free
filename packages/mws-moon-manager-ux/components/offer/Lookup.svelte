@@ -304,6 +304,8 @@
         _locale: locale ?? "",
         viewTemplate: viewTemplate ?? "",
         ...([...urlParams.entries()].reduce((acc,e)=>({
+          // TODO : still redirecting to first page without filters,
+          //     had some code for that in back or front ? Js disabled dose it still... backend check of page limit or request size ?
           [e[0]]:e[1],
           ...acc,
         }), {})),
