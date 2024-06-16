@@ -1561,6 +1561,7 @@ class MwsOfferController extends AbstractController
             // dd($offersDeserialized);
 
             $savedCount = 0;
+            $overwriteCount = 0;
             /** @var MwsOffer $offer */
             foreach ($offersDeserialized as $idx => $offer) {
                 $sourceName = $offer->getSourceName();
@@ -1730,6 +1731,7 @@ class MwsOfferController extends AbstractController
                             $offer->setCurrentStatusSlug($offerStatusSlug);
                             // dd($offer);    
                         }
+                        $overwriteCount += 1;
                     } else {
                         $importReport .= "<strong>Ignore le doublon : </strong> [$sourceName,  $slug]<br/>";
                         continue; // TODO : WHY BELOW counting one write when all is duplicated ?
@@ -1831,7 +1833,8 @@ class MwsOfferController extends AbstractController
                 $em->flush();
                 $savedCount++;
             }
-            $importReport .= "<br/><br/>Enregistrement de $savedCount offres OK <br/>";
+            $newCount = $savedCount - $overwriteCount;
+            $importReport .= "<br/><br/>Enregistrement de $newCount offres OK ($overwriteCount surcharges / $savedCount) <br/>";
 
             // var_dump($extension);var_dump($importContent);var_dump($offersDeserialized); exit;
         } else {

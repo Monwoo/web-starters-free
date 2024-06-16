@@ -1673,6 +1673,7 @@ class MwsTimingController extends AbstractController
 
         // dd($importSlots);
         $importNewCount = 0;
+        $overwriteCount = 0;
         /** @var MwsTimeSlot $importSlot */
         foreach ($importSlots as $idx => $importSlot) {
             // $slot = $mwsTimeSlotRepository->findOneBy([
@@ -1753,6 +1754,7 @@ class MwsTimingController extends AbstractController
                     $importReport .= "Ignore duplicata [$idx] {$importSlot->getSourceStamp()} <br/>";
                     continue;
                 }
+                $overwriteCount++;
             } else {
                 $importNewCount++;
             }
@@ -1818,7 +1820,10 @@ class MwsTimingController extends AbstractController
             $this->em->persist($importSlot);
             $this->em->flush();
         }
-        $importReport .= "Did import <strong>$importNewCount new timings </strong> <br/>";
+        // $newCount = $savedCount - $overwriteCount;
+        // $importReport .= "<br/><br/>Enregistrement de $newCount offres OK ($overwriteCount surcharges / $savedCount) <br/>";
+        $allCount = $overwriteCount + $importNewCount;
+        $importReport .= "Did import <strong>$importNewCount new timings </strong> ($overwriteCount surcharges / $allCount) <br/>";
 
         if ($shouldRecomputeAllOtherTags) {
             $this->forceTimingsPriceRecompute();
