@@ -51,14 +51,15 @@ class MigrateDatabaseCommand extends CommandDoctrineCommand
       ->addOption('shard', null, InputOption::VALUE_REQUIRED, 'The shard connection to use for this command.');
   }
 
-  const MIGRATE_KEY = 'mws.isMigrating';
-  const MAINTENANCE_KEY = 'maintenance'; // mws. prefix ?
+  const MIGRATE_KEY = 'mws.migrationInProgress';
+  // const MIGRATE_KEY = 'mws.maintenanceInProgress';
+  const MAINTENANCE_KEY = 'mws.maintenanceInProgress'; // mws. prefix ?
   public function execute(InputInterface $input, OutputInterface $output)
   {
     $io = new SymfonyStyle($input, $output);
 
     // $productsCount = $this->cache->getItem(self::MIGRATE_KEY);
-    $this->cache->delete(self::MIGRATE_KEY); // TODO : option to force lock release in case of buggy command missing release...
+    // $this->cache->delete(self::MIGRATE_KEY); // TODO : option to force lock release in case of buggy command missing release...
 
     if ($this->cache->get(self::MIGRATE_KEY, function ($item) {
       return false;
@@ -82,6 +83,8 @@ class MigrateDatabaseCommand extends CommandDoctrineCommand
     $io->text('Loading migrations');
 
     $app = $this->getApplication();
+    // TODO : replacement for legacy ? or missing package ?
+    // "Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand not found...
     DoctrineCommand::setApplicationHelper($app, $input);
 
     DoctrineCommand::configureMigrations(
