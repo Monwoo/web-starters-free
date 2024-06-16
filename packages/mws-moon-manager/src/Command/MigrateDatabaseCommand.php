@@ -67,8 +67,8 @@ class MigrateDatabaseCommand extends DoctrineCommand // MigrateCommand is final,
   const MAINTENANCE_KEY = 'mws.maintenanceInProgress'; // mws. prefix ?
   public function execute(InputInterface $input, OutputInterface $output): int
   {
-    $migratorConfigurationFactory = $this->getDependencyFactory()->getConsoleInputMigratorConfigurationFactory();
-    dd('OK'); // TODO : solve error '  It was not possible to locate any configuration file.  ' on previous line...
+    // $migratorConfigurationFactory = $this->getDependencyFactory()->getConsoleInputMigratorConfigurationFactory();
+    // dd('OK'); // TODO : solve error '  It was not possible to locate any configuration file.  ' on previous line...
 
     $io = new SymfonyStyle($input, $output);
 
@@ -114,23 +114,24 @@ class MigrateDatabaseCommand extends DoctrineCommand // MigrateCommand is final,
     // $df = ConsoleRunner::findDependencyFactory();
     $df = $this->getDependencyFactory();
 
-    $migratorConfigurationFactory = $df->getConsoleInputMigratorConfigurationFactory();
-    $migratorConfiguration        = $migratorConfigurationFactory->getMigratorConfiguration($input);
-    $migratorConfiguration->isDryRun();
-    $databaseName = (string) $df->getConnection()->getDatabase();
-    $df->getMetadataStorage()->ensureInitialized();
-    $migrationRepository = $df->getMigrationRepository();
-    if (count($migrationRepository->getMigrations()) === 0) {
-      $message = sprintf(
-        'The version "%s" couldn\'t be reached, there are no registered migrations.',
-        $versionAlias
-      );
-      $this->io->warning($message);
-      return Command::FAILURE;
-    }
+    // $migratorConfigurationFactory = $df->getConsoleInputMigratorConfigurationFactory();
+    // $migratorConfiguration        = $migratorConfigurationFactory->getMigratorConfiguration($input);
+    // $migratorConfiguration->isDryRun();
+    // $databaseName = (string) $df->getConnection()->getDatabase();
+    // $df->getMetadataStorage()->ensureInitialized();
+    // $migrationRepository = $df->getMigrationRepository();
+    // if (count($migrationRepository->getMigrations()) === 0) {
+    //   $message = sprintf(
+    //     'The version "%s" couldn\'t be reached, there are no registered migrations.',
+    //     $versionAlias
+    //   );
+    //   $this->io->warning($message);
+    //   return Command::FAILURE;
+    // }
 
     // https://vscode.dev/github/Monwoo/web-starters-free/blob/main/packages/mws-moon-manager/vendor/doctrine/migrations/lib/Doctrine/Migrations/Tools/Console/Command/MigrateCommand.php#L261
     try {
+      // TODO : solve error '  It was not possible to locate any configuration file.  ' on previous line...
       $version = $df->getVersionAliasResolver()->resolveVersionAlias($versionAlias);
     } catch (UnknownMigrationVersion $e) {
       $this->io->error(sprintf(
@@ -146,7 +147,7 @@ class MigrateDatabaseCommand extends DoctrineCommand // MigrateCommand is final,
     if ($version) {
       $planCalculator = $df->getMigrationPlanCalculator();
       $plan = $planCalculator->getPlanUntilVersion($version);
-      $toExecute = count($plan) === 0;
+      $toExecute = count($plan) !== 0;
     }
 
     if (!$toExecute) {
