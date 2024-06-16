@@ -67,6 +67,9 @@ class MigrateDatabaseCommand extends DoctrineCommand // MigrateCommand is final,
   const MAINTENANCE_KEY = 'mws.maintenanceInProgress'; // mws. prefix ?
   public function execute(InputInterface $input, OutputInterface $output): int
   {
+    $migratorConfigurationFactory = $this->getDependencyFactory()->getConsoleInputMigratorConfigurationFactory();
+    dd('OK'); // TODO : solve error '  It was not possible to locate any configuration file.  ' on previous line...
+
     $io = new SymfonyStyle($input, $output);
 
     // $productsCount = $this->cache->getItem(self::MIGRATE_KEY);
