@@ -303,8 +303,11 @@
       action={Routing.generate("mws_offer_lookup", {
         _locale: locale ?? "",
         viewTemplate: viewTemplate ?? "",
+        ...([...urlParams.entries()].reduce((acc,e)=>({
+          [e[0]]:e[1],
+          ...acc,
+        }), {})),
         pageLimit,
-        ...urlParams,
         page: "1",
       })}
       bind:this={pageLimitForm}

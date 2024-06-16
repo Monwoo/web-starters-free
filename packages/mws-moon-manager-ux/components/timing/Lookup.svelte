@@ -20,7 +20,7 @@
   import { Collapse } from "flowbite";
   import debounce from "lodash/debounce";
   import dayjs from "dayjs";
-import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelte";
+  import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelte";
 
   export let locale;
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -83,11 +83,10 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
       delta < 0 ? Number(pageLimit) - 1 : 0 === delta ? lastSelectedIndex : 0;
     urlParams.set("lastSelectedIndex", "" + newSelectedIndex);
     urlParams.delete("selectionStartIndex");
-    window.location.search = urlParams; // TODO : will refresh page, ok instead of : 
+    window.location.search = urlParams; // TODO : will refresh page, ok instead of :
     // const newUrl =
     //   window.location.origin + window.location.pathname + "?" + urlParams;
     // history.pushState({}, null, newUrl);
-
   };
   // dayjs.locale("fr"); // Fr locale // TODO : global config instead of per module ?
 
@@ -272,7 +271,7 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
       ? `${selectionStartIndex}..`
       : ""}{lastSelectedIndex}]|{pageLimit}
     {timingSearchSummary(searchLookup)}
-</title>
+  </title>
 </svelte:head>
 
 <Base
@@ -372,12 +371,12 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
             href={Routing.generate("mws_timings_report", {
               _locale: locale ?? "fr",
               ...Object.keys($state.mwsTimingLookupFields ?? [])
-              .filter(lf => $state.mwsTimingLookupFields[lf])
-              .reduce((acc, lf) => {
-                console.debug('Search qualif link', searchLookup[lf], lf);
-                acc[lf] = searchLookup[lf] ?? null;
-                return acc;
-              }, {})
+                .filter((lf) => $state.mwsTimingLookupFields[lf])
+                .reduce((acc, lf) => {
+                  console.debug("Search qualif link", searchLookup[lf], lf);
+                  acc[lf] = searchLookup[lf] ?? null;
+                  return acc;
+                }, {}),
             })}
             class="pb-2 pr-2"
           >
@@ -390,9 +389,15 @@ import { timingSearchSummary } from "../layout/widgets/TimingSearchSummary.svelt
             action={Routing.generate("mws_timings_qualif", {
               _locale: locale ?? "",
               viewTemplate: viewTemplate ?? "",
+              ...[...urlParams.entries()].reduce(
+                (acc, e) => ({
+                  [e[0]]: e[1],
+                  ...acc,
+                }),
+                {}
+              ),
               pageLimit,
-              ...urlParams,
-              page: '1',
+              page: "1",
             })}
             bind:this={pageLimitForm}
             name="pageLimitForm"
