@@ -1010,6 +1010,7 @@ class MwsOfferController extends AbstractController
             // TODO : user serializer format instead of custom extract ?
             $sourceStatusLabel = $tag['label'] ?? null;
             $sourceCategorySlug = $tag['categorySlug'] ?? null;
+            $categoryOkWithMultiplesTags = $tag['categoryOkWithMultiplesTags'] ?? false;
 
             $sourceStatusSlug = $sourceStatusLabel ? strtolower($this->slugger->slug($sourceStatusLabel)) : null;
             if ($sourceCategorySlug) {
@@ -1034,6 +1035,7 @@ class MwsOfferController extends AbstractController
             $sourceTag->setSlug($sourceStatusSlug);
             $sourceTag->setLabel($sourceStatusLabel);
             $sourceTag->setCategorySlug($sourceCategorySlug);
+            $sourceTag->setCategoryOkWithMultiplesTags($categoryOkWithMultiplesTags);
             $this->em->persist($sourceTag);
             $this->em->flush();
         }
