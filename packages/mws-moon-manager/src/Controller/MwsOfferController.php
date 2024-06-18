@@ -1562,7 +1562,7 @@ class MwsOfferController extends AbstractController
             [
                 AbstractNormalizer::IGNORED_ATTRIBUTES => [
                     // ...($attachThumbnails ? [] : ['thumbnailJpeg']),
-                    'id'
+                    'id', 'createdAt', 'updatedAt'
                 ],
                 // ObjectNormalizer::IGNORED_ATTRIBUTES => ['tags']
                 // AbstractNormalizer::CALLBACKS => [
