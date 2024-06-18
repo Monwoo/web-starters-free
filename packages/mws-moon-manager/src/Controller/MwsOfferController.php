@@ -1592,15 +1592,17 @@ class MwsOfferController extends AbstractController
                 // dd($query);
                 $allDuplicates = $query->execute();
 
-                // dd($allDuplicates);
+                // dd(count($allDuplicates));
                 // var_dump($allDuplicates);exit;
                 if ($allDuplicates && count($allDuplicates)) {
                     if ($shouldOverwrite) {
                         $importReport .= "<strong>Surcharge le doublon : </strong> [$sourceName , $slug]<br/>";
                         $offerInput = $offer;
+                        // dump(count($offer->getMwsOfferTrackings()));
                         // $offer = $allDuplicates[0];
                         /** @var MwsOffer $offer */
                         $offer = array_shift($allDuplicates);
+                        // dd(count($offer->getMwsOfferTrackings()));
                         // $sync = function ($path) use ($inputOffer, $offer) {
                         //     $set = 'set' . ucfirst($path);
                         //     $get = 'get' . ucfirst($path);
@@ -1612,7 +1614,7 @@ class MwsOfferController extends AbstractController
                         //         $offer->$set($v);
                         //     }
                         // };
-                        $sync = function ($path, $setter = null) use (&$offer, &$offerInput) {
+                        $sync = function ($path, $setter = null, $clearBeforeSync = false) use (&$offer, &$offerInput) {
                             $get = 'get' . ucfirst($path);
                             // $v =  $offerInput[$path] ?? null;
                             $v =  $offerInput->$get();
@@ -1625,7 +1627,9 @@ class MwsOfferController extends AbstractController
                                         $add = preg_replace('/s$/', '', $add);
                                     }
                                     $collection = $offer->$get();
-                                    $collection->clear();
+                                    if ($clearBeforeSync) {
+                                        $collection->clear();
+                                    }
                                     foreach ($v as $subV) {
                                         if ($setter) {
                                             $setter($offer, $subV);
@@ -1686,7 +1690,9 @@ class MwsOfferController extends AbstractController
                             // But still safer to use repo algo :
                             $mwsOfferRepository->addTag($offer, $tag);
                         }
-                        // $sync('mwsOfferTrackings');
+                        // dump(count($offer->getMwsOfferTrackings()));
+                        $sync('mwsOfferTrackings');
+                        // dd(count($offer->getMwsOfferTrackings()));
 
                         if ($forceCleanContacts) {
                             $offer->getContacts()->clear();
@@ -1779,19 +1785,60 @@ class MwsOfferController extends AbstractController
                     $tTag->addMwsOffer($offer);
                 }
 
+                // Clean duplicated trackings :
+                /** @var MwsOfferTracking[] $trackings */
                 $trackings = $offer->getMwsOfferTrackings();
                 // dd($trackings);
-                // $trackings = $offerInput->getMwsOfferTrackings();
+                $normalizedKeys = [];
+                $trackings = $offer->getMwsOfferTrackings()->toArray();
+                // dump(count($offer->getMwsOfferTrackings()));
                 // $offer->getMwsOfferTrackings()->clear();
+
+                // dump(count($trackings));
+                // dd(count($offer->getMwsOfferTrackings()));
+                /** @var MwsOfferTracking $tracking */
                 foreach ($trackings as $tracking) {
+
                     if ($tracking->getOffer()->getId()
                     !== $offer->getId()) {
-                        dd($tracking);
+                        // dd($tracking);
+                        $this->logger->error("Offer tracking not similar to offer, // TODO : ok ?");
                     }
                     $tracking->setOffer($offer);
-                    // $offer->addMwsOfferTracking($tracking);
+                    // dump($tracking->getCreatedAt()); // will be re-computed by post-updates listeners ?
                     // $em->persist($tracking);
+                    // $em->flush();
+                    // dd($tracking->getCreatedAt()); // OK : real loaded time
+                    // $key = $tracking->getCreatedAt()->format(\DateTime::ISO8601)
+                    // $fullKey = $tracking->getCreatedAt()->format(\DateTime::ATOM)
+                    $fullKey = '' // TODO : getCreatedAt missmatch on import... ok to do without it ?
+                    . $tracking->getComment()
+                    . $tracking->getOfferStatusSlug()
+                    . $tracking->getOwner()->getUserIdentifier()
+                    . $tracking->getOffer()->getSlug();
+                    // dd($key);
+                    // Compress the key to avoid possible huge comment spaces taken for key system by end user comment...
+                    // https://medium.com/@jm_rodrigues/optimizing-php-application-efficient-json-compression-for-enhanced-performance-8e6ba6e5e7e5
+                    // Just now I can only refer you to bzcompress, bzip has usually highter compression rates than gzip.
+                    // https://stackoverflow.com/questions/10991035/best-way-to-compress-string-in-php
+                    // https://www.php.net/manual/en/function.bzcompress.php
+                    $key = base64_encode(bzcompress($fullKey));
+                    // dd($key);
+
+                    if ($normalizedKeys[$key] ?? false) {
+                        // Already registered, do nothing, do not add duplicates (will also filter existing duplicates...)
+                        // dd('remove ok ');
+                        $offer->removeMwsOfferTracking($tracking);
+                        $em->remove($tracking); // TODO : not enough to do first $offer->getMwsOfferTrackings()->clear(); ? cascade persiste issue ? or normal stuff ?
+                    } else {
+                        // $tracking->setOffer($offer);
+                        $normalizedKeys[$key] = $fullKey;
+                        // $offer->addMwsOfferTracking($tracking);
+                        // $em->persist($tracking);
+                    }
                 }
+                // dump(count($offer->getMwsOfferTrackings()));
+                // dd($normalizedKeys);
                 // TIPS : below avoided by sending offer id in export files, even if guessable from parent, desizeializer might not know id Yet
                 // $validTrackings = []; // TODO : cf extract, offers check not done, done below:
                 // foreach ($trackings as $tracking) {
@@ -2225,6 +2272,7 @@ class MwsOfferController extends AbstractController
                                             // TODO : don't know yet linked offer..., cf next line, will clone if not tracking from offer ?
                                             // 'offer' => [ 'slug' => $trackingInput->getOffer()->getSlug() ],
                                         ];
+                                        // dd($trackingInput->getCreatedAt()); // OK : real loaded time
 
                                         // if ($trackingInput->getOffer()) {
                                         //     // TODO : why null even if Slug defined in input src ? ok for Owner but not for Offer ? why ?
@@ -2259,7 +2307,10 @@ class MwsOfferController extends AbstractController
                                         $tracking->setOfferStatusSlug($trackingInput->getOfferStatusSlug());
                                         $tracking->setComment($trackingInput->getComment());
                                         $tracking->setCreatedAt($trackingInput->getCreatedAt());
+                                        // $em->persist($tracking);
+                                        // $em->flush(); // Compute post update listeners, that will update 'Created At' date... but no offer linked if new one...
                                         // $importReport .= "Missing tag for slug {$trackingInput->getSlug()} for {$context['deserialization_path']} <br/>";
+                                        // dd($tracking->getCreatedAt()); // OK : real loaded time
 
                                         // TIPS : DO NOT persist below since missing offer link, will be done later and 'cascade:persist' will to save of trackings from offer persist...
                                         // $em->persist($tracking);
