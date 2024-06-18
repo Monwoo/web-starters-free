@@ -5,6 +5,7 @@
   import Base from "../layout/Base.svelte";
   import ListItem from "./tags/ListItem.svelte";
   import { onMount } from "svelte";
+import ExportTags from "./tags/ExportTags.svelte";
 
   // export let users:any[] = []; // TODO : not Typescript ?
   export let copyright = "© Monwoo 2017-2024 (service@monwoo.com)";
@@ -63,7 +64,8 @@
       'cleanAllTags': true,
     }) }>
       <button class="">Effacer et réinitialiser les tags par défaut</button>
-    </a>    
+    </a>
+    <ExportTags {locale} />
   </div>
   <div class="flex flex-wrap">
     <div class="label">

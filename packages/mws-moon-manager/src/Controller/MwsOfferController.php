@@ -1476,6 +1476,147 @@ class MwsOfferController extends AbstractController
     }
 
     #[Route(
+        // TIPS : /export/tags/ might failback on previous url rule...
+        '/export-tags/{viewTemplate<[^/]*>?}',
+        name: 'mws_offer_tags_export',
+        methods: ['POST', 'GET'],
+        defaults: [
+            'viewTemplate' => null,
+        ],
+    )]
+    public function exportTags(
+        string|null $viewTemplate,
+        Request $request,
+        MwsOfferStatusRepository $mwsOfferStatusRepository,
+        // UploaderHelper $uploaderHelper,
+        // CsrfTokenManagerInterface $csrfTokenManager
+    ): Response {
+        $user = $this->getUser();
+        // TIPS : firewall, middleware or security guard can also
+        //        do the job. Double secu prefered ? :
+        if (!$user) {
+            $this->logger->debug("Fail auth", []);
+            throw $this->createAccessDeniedException('Only for logged users');
+        }
+        // TIPS : no csrf renew ? only check user logged is ok ?
+        // TODO : or add async CSRF token manager notif route
+        //         to sync new redux token to frontend ?
+        // $csrf = $request->request->get('_csrf_token');
+        // if (!$this->isCsrfTokenValid('mws-csrf-timing-export', $csrf)) {
+        //     $this->logger->debug("Fail csrf with", [$csrf]);
+        //     throw $this->createAccessDeniedException('CSRF Expired');
+        // }
+
+        $format = $request->get('format') ?? 'yaml';
+        $tagsLookup = $request->get('tagsLookup');
+        // $attachThumbnails = $request->get('attachThumbnails');
+
+        $qb = $mwsOfferStatusRepository->createQueryBuilder('o');
+
+        if ($tagsLookup) {
+            $tagsLookup = json_decode($tagsLookup, true);
+            // TODO : $mwsOfferStatusRepository->applyOfferLokup($qb, $tagsLookup);
+        }
+
+        $tSlots = $qb->getQuery()->getResult();
+        $em = $this->em;
+        $self = $this;
+
+        // TODO : bulk process instead of quick hack :
+        $nbRefreshPerBulks = 5;
+        $slotsCount = count($tSlots);
+        $flushTriggerMaxCount = $slotsCount / $nbRefreshPerBulks;
+        $flushForseen = $flushTriggerMaxCount;
+        $progressLogMax = 500;
+        $progressCount = 0;
+
+        $tryFlush = function () use (
+            &$flushForseen,
+            $flushTriggerMaxCount,
+            $em,
+            &$progressCount,
+            $progressLogMax,
+            $self,
+            $slotsCount,
+        ) {
+            $progressCount++;
+            if (0 === ($progressCount % $progressLogMax)) {
+                $self->logger->warning(
+                    "MwsOfferController did process "
+                        . "$progressCount offer tags /  $slotsCount"
+                );
+            }
+            if ($flushForseen <= 1) {
+                $flushForseen = $flushTriggerMaxCount;
+                $em->flush();
+                // dump($flushForseen);
+            }
+            $flushForseen--;
+        };
+        // $tmpDir = $this->createTmpDir();
+
+        $tagsSerialized = $this->serializer->serialize(
+            $tSlots,
+            $format,
+            // TIPS : [CsvEncoder::DELIMITER_KEY => ';'] for csv format...
+            [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => [
+                    // ...($attachThumbnails ? [] : ['thumbnailJpeg']),
+                    'id'
+                ],
+                // ObjectNormalizer::IGNORED_ATTRIBUTES => ['tags']
+                // AbstractNormalizer::CALLBACKS => [
+                //     'tags' => function ($objects) {
+                //         if (is_string($objects)) {
+                //             // Denormalize (cf timing import, not used by export)
+                //             throw new Exception("Should not happen for : " . $objects);
+                //         } else {
+                //             // Normalise
+                //             $norm = array_map(
+                //                 function (MwsOfferStatus $o) {
+                //                     // return $o->getSlug();
+                //                     return [
+                //                         'slug'  => $o?->getSlug(),
+                //                         'categorySlug'  => $o?->getcategorySlug(),
+                //                     ] ?? null;
+                //                 },
+                //                 $objects->toArray() ?? []
+                //             );
+                //             sort($norm);
+                //             return $norm;
+                //         }
+                //     },
+                // ]
+            ],
+        );
+        // dd('ok');
+        $em->flush();
+
+        $rootPackage = \Composer\InstalledVersions::getRootPackage();
+        $packageVersion = $rootPackage['pretty_version'] ?? $rootPackage['version'];
+
+        $filename = "MoonManager-v" . $packageVersion
+            . "-OffersTagsExport-" . time() . ".{$format}"; // . '.pdf';
+
+        $response = new Response();
+
+        //set headers
+        $mime = [
+            'json' => 'application/json',
+            'csv' => 'text/comma-separated-values',
+            'xml' => 'application/x-xml', // TODO : x-xml or xml ?
+            'yaml' => 'application/x-yaml', // TODO : x-yaml or yaml ?
+        ][$format] ?? 'text/plain';
+        if ($mime) {
+            $response->headers->set('Content-Type', $mime);
+        }
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
+
+        $response->setContent($tagsSerialized);
+        return $response;
+    }
+
+    #[Route(
         '/import/{viewTemplate<[^/]*>?}',
         name: 'mws_offer_import',
         methods: ['POST'],
