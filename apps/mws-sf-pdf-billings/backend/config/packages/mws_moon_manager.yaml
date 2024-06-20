@@ -11,113 +11,369 @@ parameters:
         # uploadSubFolder: xxx
         offer:
             defaultTags:
-              - label: Prospection
+              - slug: mws-offer-tags-category-src-import
+                label: mws.offer.tags.category.src-import
+                categorySlug: null
+                categoryOkWithMultiplesTags: null
+                bgColor: null
+                textColor: null
+              - slug: ferme
+                label: Fermé
+                categorySlug: mws-offer-tags-category-src-import
                 categoryOkWithMultiplesTags: false
-              - label: Prospect à relancer
+                bgColor: '#ffffff'
+                textColor: '#da0707'
+              - slug: prospection
+                label: Prospection
+                categorySlug: null
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: a-relancer
+                label: 'A relancer'
                 categorySlug: prospection
-              - label: Investir pour relancer
+                categoryOkWithMultiplesTags: null
+                bgColor: null
+                textColor: null
+              - slug: investir-pour-relancer
+                label: 'Investir pour relancer'
                 categorySlug: prospection
-              - label: Risque de non-rentabilité
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: risque-de-non-rentabilite
+                label: 'Risque de non-rentabilité'
                 categorySlug: prospection
-              - label: Pas de réponse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: pas-de-reponse
+                label: 'Pas de réponse'
                 categorySlug: prospection
-              - label: Ne veut pas être dérangé
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: ne-veut-pas-etre-derange
+                label: 'Ne veut pas être dérangé'
                 categorySlug: prospection
-              - label: Prospect à négocier
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: devis-a-negocier
+                label: 'Devis à négocier'
                 categorySlug: prospection
-              - label: En attente de paiement
+                categoryOkWithMultiplesTags: null
+                bgColor: null
+                textColor: null
+              - slug: en-attente-de-paiement
+                label: 'En attente de paiement'
                 categorySlug: prospection
-              - label: Synthèse à faire
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: synthese-a-faire
+                label: 'Synthèse à faire'
                 categorySlug: prospection
-              - label: Validation des suivis
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: validation-des-suivis
+                label: 'Validation des suivis'
                 categorySlug: prospection
-              - label: Livraison OK
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: livraison-ok
+                label: 'Livraison OK'
                 categorySlug: prospection
-              - label: Hors cible business
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: hors-cible-business
+                label: 'Hors cible business'
                 categorySlug: prospection
-              - label: Analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: ouvert
+                label: Ouvert
+                categorySlug: mws-offer-tags-category-src-import
+                categoryOkWithMultiplesTags: false
+                bgColor: '#ffffff'
+                textColor: '#19c516'
+              - slug: kanban
+                label: Kanban
+                categorySlug: null
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: marche
+                label: Marché
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: backlog
+                label: Backlog
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: appele
+                label: Appelé
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: null
+                bgColor: null
+                textColor: null
+              - slug: devis-ok
+                label: 'Devis OK'
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: devis-ko
+                label: 'Devis KO'
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: meilleur-choix-monwoo
+                label: 'Meilleur choix Monwoo'
+                categorySlug: null
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: monwoo-1-5
+                label: 'Monwoo 1/5'
+                categorySlug: meilleur-choix-monwoo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: monwoo-2-5
+                label: 'Monwoo 2/5'
+                categorySlug: meilleur-choix-monwoo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: monwoo-3-5
+                label: 'Monwoo 3/5'
+                categorySlug: meilleur-choix-monwoo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: monwoo-4-5
+                label: 'Monwoo 4/5'
+                categorySlug: meilleur-choix-monwoo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: monwoo-5-5
+                label: 'Monwoo 5/5'
+                categorySlug: meilleur-choix-monwoo
+                categoryOkWithMultiplesTags: false
+                bgColor: '#f0f0f0'
+                textColor: '#6246af'
+              - slug: meilleur-choix-axelo
+                label: 'Meilleur choix Axelo'
+                categorySlug: null
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: axelo-1-5
+                label: 'Axelo 1/5'
+                categorySlug: meilleur-choix-axelo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: axelo-2-5
+                label: 'Axelo 2/5'
+                categorySlug: meilleur-choix-axelo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: axelo-3-5
+                label: 'Axelo 3/5'
+                categorySlug: meilleur-choix-axelo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: axelo-4-5
+                label: 'Axelo 4/5'
+                categorySlug: meilleur-choix-axelo
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: axelo-5-5
+                label: 'Axelo 5/5'
+                categorySlug: meilleur-choix-axelo
+                categoryOkWithMultiplesTags: false
+                bgColor: '#f0f0f0'
+                textColor: '#df9a9a'
+              - slug: prospect-a-relancer
+                label: 'Prospect à relancer'
+                categorySlug: prospection
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: prospect-a-negocier
+                label: 'Prospect à négocier'
+                categorySlug: prospection
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: analyse
+                label: Analyse
+                categorySlug: null
                 categoryOkWithMultiplesTags: true
-              - label: Pour un partenaire
+                bgColor: null
+                textColor: null
+              - slug: pour-un-partenaire
+                label: 'Pour un partenaire'
                 categorySlug: analyse
-              - label: Nécessite un partenaire
-                categorySlug: analyse
-              - label: Urgent
-                categorySlug: analyse
-              - label: Test via téléphone
-                categorySlug: analyse
-              - label: Test via email
-                categorySlug: analyse
-              - label: Test via WhatsApp
-                categorySlug: analyse
-              - label: Test via tchat de l'offre
-                categorySlug: analyse
-              - label: Test via oral
-                categorySlug: analyse
-              - label: Ok via téléphone
-                categorySlug: analyse
-              - label: Ok via email
-                categorySlug: analyse
-              - label: Ok via WhatsApp
-                categorySlug: analyse
-              - label: Ok via tchat de l'offre
-                categorySlug: analyse
-              - label: Ok via oral
-                categorySlug: analyse
-              - label: Signé par écrit papier
-                categorySlug: analyse
-              - label: Signé par premier paiement
-                categorySlug: analyse
-              - label: Signé par acceptation email
-                categorySlug: analyse
-              - label: Kanban
                 categoryOkWithMultiplesTags: false
-              - label: Marché
-                categorySlug: kanban
-              - label: Backlog
-                categorySlug: kanban
-              - label: A relancer
-                categorySlug: kanban
-              - label: VIP
-                categorySlug: kanban
-              - label: Devis à négocier
-                categorySlug: kanban
-              - label: Devis OK
-                categorySlug: kanban
-              - label: Devis KO
-                categorySlug: kanban
-              - label: Meilleur choix Monwoo
+                bgColor: null
+                textColor: null
+              - slug: necessite-un-partenaire
+                label: 'Nécessite un partenaire'
+                categorySlug: analyse
                 categoryOkWithMultiplesTags: false
-              - label: Monwoo 1/5
-                categorySlug: meilleur-choix-monwoo
-              - label: Monwoo 2/5
-                categorySlug: meilleur-choix-monwoo
-              - label: Monwoo 3/5
-                categorySlug: meilleur-choix-monwoo
-              - label: Monwoo 4/5
-                categorySlug: meilleur-choix-monwoo
-              - label: Monwoo 5/5
-                categorySlug: meilleur-choix-monwoo
-              - label: Meilleur choix Axelo
+                bgColor: null
+                textColor: null
+              - slug: urgent
+                label: Urgent
+                categorySlug: analyse
                 categoryOkWithMultiplesTags: false
-              - label: Axelo 1/5
-                categorySlug: meilleur-choix-axelo
-              - label: Axelo 2/5
-                categorySlug: meilleur-choix-axelo
-              - label: Axelo 3/5
-                categorySlug: meilleur-choix-axelo
-              - label: Axelo 4/5
-                categorySlug: meilleur-choix-axelo
-              - label: Axelo 5/5
-                categorySlug: meilleur-choix-axelo
-              - label: Meilleur choix Jpsy
+                bgColor: '#330000'
+                textColor: '#e00000'
+              - slug: test-via-telephone
+                label: 'Test via téléphone'
+                categorySlug: analyse
                 categoryOkWithMultiplesTags: false
-              - label: Jpsy 1/5
+                bgColor: null
+                textColor: null
+              - slug: test-via-email
+                label: 'Test via email'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: test-via-whatsapp
+                label: 'Test via WhatsApp'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: test-via-tchat-de-l-offre
+                label: "Test via tchat de l'offre"
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: test-via-oral
+                label: 'Test via oral'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: ok-via-telephone
+                label: 'Ok via téléphone'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: ok-via-email
+                label: 'Ok via email'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: ok-via-whatsapp
+                label: 'Ok via WhatsApp'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: ok-via-tchat-de-l-offre
+                label: "Ok via tchat de l'offre"
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: ok-via-oral
+                label: 'Ok via oral'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: signe-par-ecrit-papier
+                label: 'Signé par écrit papier'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: '#c3dffe'
+                textColor: '#000000'
+              - slug: signe-par-premier-paiement
+                label: 'Signé par premier paiement'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: '#c3dffe'
+                textColor: '#000000'
+              - slug: signe-par-acceptation-email
+                label: 'Signé par acceptation email'
+                categorySlug: analyse
+                categoryOkWithMultiplesTags: false
+                bgColor: '#c3dffe'
+                textColor: '#000000'
+              - slug: a-relancer
+                label: 'A relancer'
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: vip
+                label: VIP
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: false
+                bgColor: '#ffea00'
+                textColor: '#3d2a00'
+              - slug: devis-a-negocier
+                label: 'Devis à négocier'
+                categorySlug: kanban
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: meilleur-choix-jpsy
+                label: 'Meilleur choix Jpsy'
+                categorySlug: null
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: jpsy-1-5
+                label: 'Jpsy 1/5'
                 categorySlug: meilleur-choix-jpsy
-              - label: Jpsy 2/5
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: jpsy-2-5
+                label: 'Jpsy 2/5'
                 categorySlug: meilleur-choix-jpsy
-              - label: Jpsy 3/5
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: jpsy-3-5
+                label: 'Jpsy 3/5'
                 categorySlug: meilleur-choix-jpsy
-              - label: Jpsy 4/5
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: jpsy-4-5
+                label: 'Jpsy 4/5'
                 categorySlug: meilleur-choix-jpsy
-              - label: Jpsy 5/5
+                categoryOkWithMultiplesTags: false
+                bgColor: null
+                textColor: null
+              - slug: jpsy-5-5
+                label: 'Jpsy 5/5'
                 categorySlug: meilleur-choix-jpsy
+                categoryOkWithMultiplesTags: false
+                bgColor: '#f0f0f0'
+                textColor: '#edc912'

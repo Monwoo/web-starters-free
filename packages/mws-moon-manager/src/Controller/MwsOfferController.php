@@ -1002,7 +1002,7 @@ class MwsOfferController extends AbstractController
         // dd($defaultTags);
         if ($request->get('cleanAllTags', false)) {
             $qb = $this->em->createQueryBuilder()
-            ->delete(MwsOfferStatus::class, 's');
+                ->delete(MwsOfferStatus::class, 's');
             $qb->getQuery()->execute();
         }
 
@@ -1011,8 +1011,15 @@ class MwsOfferController extends AbstractController
             $sourceStatusLabel = $tag['label'] ?? null;
             $sourceCategorySlug = $tag['categorySlug'] ?? null;
             $categoryOkWithMultiplesTags = $tag['categoryOkWithMultiplesTags'] ?? false;
+            $bgColor = $tag['bgColor'] ?? false;
+            $textColor = $tag['textColor'] ?? false;
 
-            $sourceStatusSlug = $sourceStatusLabel ? strtolower($this->slugger->slug($sourceStatusLabel)) : null;
+            // TODO : ignore custom slug on import ? $tag['slug'] ?? null;
+            $sourceStatusSlug = $tag['slug'] ?? (
+                $sourceStatusLabel
+                ? strtolower($this->slugger->slug($sourceStatusLabel))
+                : null
+            );
             if ($sourceCategorySlug) {
                 $sourceCategory = $mwsOfferStatusRepository->findOneWithSlugAndCategory(
                     $sourceCategorySlug,
@@ -1036,6 +1043,9 @@ class MwsOfferController extends AbstractController
             $sourceTag->setLabel($sourceStatusLabel);
             $sourceTag->setCategorySlug($sourceCategorySlug);
             $sourceTag->setCategoryOkWithMultiplesTags($categoryOkWithMultiplesTags);
+            $sourceTag->setBgColor($bgColor);
+            $sourceTag->setTextColor($textColor);
+            
             $this->em->persist($sourceTag);
             $this->em->flush();
         }
@@ -1889,7 +1899,7 @@ class MwsOfferController extends AbstractController
                 // Try to fill offer quick contact with contact details if available :
                 $contacts = $offer->getContacts();
                 // TODO : functionnal tests on contact refresh (need to be seen, then overwrite with user adding empty phone, should remove 'check for phone/mail needed' stuff...)
-                $isWaitingForData = function($test) {
+                $isWaitingForData = function ($test) {
                     return [
                         `Voir l'adresse email` => true,
                         `Voir le téléphone` => true,
@@ -1940,8 +1950,10 @@ class MwsOfferController extends AbstractController
                 /** @var MwsOfferTracking $tracking */
                 foreach ($trackings as $tracking) {
 
-                    if ($tracking->getOffer()->getId()
-                    !== $offer->getId()) {
+                    if (
+                        $tracking->getOffer()->getId()
+                        !== $offer->getId()
+                    ) {
                         // dd($tracking);
                         $this->logger->error("Offer tracking not similar to offer, // TODO : ok ?");
                     }
@@ -1953,10 +1965,10 @@ class MwsOfferController extends AbstractController
                     // $key = $tracking->getCreatedAt()->format(\DateTime::ISO8601)
                     // $fullKey = $tracking->getCreatedAt()->format(\DateTime::ATOM)
                     $fullKey = '' // TODO : getCreatedAt missmatch on import... ok to do without it ?
-                    . $tracking->getComment()
-                    . $tracking->getOfferStatusSlug()
-                    . $tracking->getOwner()->getUserIdentifier()
-                    . $tracking->getOffer()->getSlug();
+                        . $tracking->getComment()
+                        . $tracking->getOfferStatusSlug()
+                        . $tracking->getOwner()->getUserIdentifier()
+                        . $tracking->getOffer()->getSlug();
                     // dd($key);
                     // Compress the key to avoid possible huge comment spaces taken for key system by end user comment...
                     // https://medium.com/@jm_rodrigues/optimizing-php-application-efficient-json-compression-for-enhanced-performance-8e6ba6e5e7e5
@@ -2008,7 +2020,7 @@ class MwsOfferController extends AbstractController
                 // }
 
                 // TODO : multiple SAME trakings is BUGGy, cf test case
-                
+
                 // $offer->getMwsOfferTrackings()->clear();
                 // $offer->getContacts()->clear();
                 // dd($offer);
@@ -2379,12 +2391,12 @@ class MwsOfferController extends AbstractController
                             if ($context['deserialization_path'] ?? null) {
                                 // dd($innerObject); // TODO ; can't have raw input string ?
                                 // throw new Exception("TODO : ");
-                                return [ 'slug' => $innerObject->getSlug() ];
+                                return ['slug' => $innerObject->getSlug()];
                             } else {
                                 // Normalise (cf timing export, not used by import)
                                 throw new Exception("Should not happen");
                             }
-                        },  
+                        },
                         'mwsOfferTrackings' => function (
                             $innerObject,
                             $outerObject,
