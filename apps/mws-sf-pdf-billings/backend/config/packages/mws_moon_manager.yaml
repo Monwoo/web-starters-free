@@ -29,12 +29,6 @@ parameters:
                 categoryOkWithMultiplesTags: false
                 bgColor: null
                 textColor: null
-              - slug: a-relancer
-                label: 'A relancer'
-                categorySlug: prospection
-                categoryOkWithMultiplesTags: null
-                bgColor: null
-                textColor: null
               - slug: investir-pour-relancer
                 label: 'Investir pour relancer'
                 categorySlug: prospection
@@ -119,8 +113,8 @@ parameters:
                 categoryOkWithMultiplesTags: false
                 bgColor: null
                 textColor: null
-              - slug: appele
-                label: Appelé
+              - slug: a-relancer
+                label: A relancer
                 categorySlug: kanban
                 categoryOkWithMultiplesTags: null
                 bgColor: null
