@@ -225,7 +225,7 @@
             // };
 
             // TIPS : surveyWrapper.data("surveyModel") hold model instance, should be keep for reactivity with SurveyJs...            
-            surveyModel = _.merge(surveyModel, surveyDataModel);
+            surveyModel = _.merge(surveyModel || new Survey.Model(surveyDataModel), surveyDataModel);
 
             surveyModel.locale = "fr";
             surveyModel.showCompletedPage = false;
