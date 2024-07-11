@@ -14,6 +14,7 @@
     import { onMount } from "svelte";
     import newUniqueId from "locally-unique-id-generator";
     import { tick } from "svelte";
+    import _ from "lodash";
     import { Modal } from "flowbite";
     import Routing from "fos-router";
     import {
@@ -218,10 +219,13 @@
             };
 
             // surveyModel = new Survey.Model(surveyDataModel);
-            surveyModel = {
-                ...(new Survey.Model(surveyDataModel)),
-                ...surveyModel
-            };
+            // surveyModel = {
+            //     ...(new Survey.Model(surveyDataModel)),
+            //     ...surveyModel
+            // };
+
+            // TIPS : surveyWrapper.data("surveyModel") hold model instance, should be keep for reactivity with SurveyJs...            
+            surveyModel = _.merge(surveyDataModel, surveyModel);
 
             surveyModel.locale = "fr";
             surveyModel.showCompletedPage = false;
@@ -269,7 +273,7 @@ overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full mws-add-modal"
                 class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600"
             >
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    {surveyModel?.data?.destId ? "Edit Message" : "Add Message"}
+                    {surveyModel?.data?.destId ? "Edit timing tag" : "Add timing tag"}
                 </h3>
                 <button
                     type="button"
