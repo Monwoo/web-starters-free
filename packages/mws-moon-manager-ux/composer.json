@@ -1,0 +1,29 @@
+{
+    "name": "monwoo/mws-moon-manager-ux-bundle",
+    "version": "2.0.0",
+    "description": "Open Source Monwoo MoonManager time tracking UX Svelte frontend components (No PHP, for assets re-builds only)",
+    "type": "symfony-bundle",
+    "license": "Apache-2.0_monwoo",
+    "authors": [
+        {
+            "name": "Miguel Monwoo",
+            "email": "service@monwoo.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+    },
+    "extra": {
+        "thanks": {
+            "name": "Monwoo/web-starters-free",
+            "url": "https://github.com/Monwoo/web-starters-free"
+        },
+        "symfony": {
+            "allow-contrib": false,
+            "require": "6.3.*"
+        }
+    },
+    "require-dev": {
+    }
+}

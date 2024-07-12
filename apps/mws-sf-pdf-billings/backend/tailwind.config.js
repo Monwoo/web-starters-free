@@ -8,20 +8,23 @@ module.exports = {
 
     // TODO : inject with bundle recipe ? or webpack bundle local build ?
     // Symfony Bundle
-    "../../../packages/mws-moon-manager/assets/**/*.scss",
-    "../../../packages/mws-moon-manager/assets/**/*.js",
-    "../../../packages/mws-moon-manager/assets/**/*.svelte",
-    "../../../packages/mws-moon-manager/assets/**/*.ts",
-    "../../../packages/mws-moon-manager/templates/**/*.html.twig",
-    "../../../packages/mws-moon-manager/src/**/*.php",
-    "../../../packages/mws-moon-manager/src/**/*.php",
+    // TODO : better to use link inside VENDOR instead of DEV structure for prod build and keeping stuff locally inside root folder
+    // "../../../packages/mws-moon-manager/assets/**/*.scss", 
+    // ../../../packages/mws-moon-manager to replace with ./vendor/monwoo/mws-moon-manager-bundle
+    "./vendor/monwoo/mws-moon-manager-bundle/assets/**/*.scss",
+    "./vendor/monwoo/mws-moon-manager-bundle/assets/**/*.js",
+    "./vendor/monwoo/mws-moon-manager-bundle/assets/**/*.svelte",
+    "./vendor/monwoo/mws-moon-manager-bundle/assets/**/*.ts",
+    "./vendor/monwoo/mws-moon-manager-bundle/templates/**/*.html.twig",
+    "./vendor/monwoo/mws-moon-manager-bundle/src/**/*.php",
+    "./vendor/monwoo/mws-moon-manager-bundle/src/**/*.php",
     // TODO : integrate preline ? done svelte + jQuery way for now
-    // '../../../packages/mws-moon-manager/node_modules/@preline/dist/*.js',
-    // '../../../packages/mws-moon-manager/node_modules/@preline/scrollspy/*.js',
+    // './vendor/monwoo/mws-moon-manager-bundle/node_modules/@preline/dist/*.js',
+    // './vendor/monwoo/mws-moon-manager-bundle/node_modules/@preline/scrollspy/*.js',
     // Svelte UX package
-    "../../../packages/mws-moon-manager-ux/components/**/*.{js,svelte,ts}",
-    "../../../../mws-demo/{assets,src,templates}/**/*.{js,svelte,ts,php,twig}",
-    "../../../../mws-google-photo-reader/{assets,src,templates}/**/*.{js,svelte,ts,php,twig}",
+    "./vendor/monwoo/mws-moon-manager-ux-bundle/components/**/*.{js,svelte,ts}",
+    "./vendor/monwoo/mws-demo-bundle/{assets,src,templates}/**/*.{js,svelte,ts,php,twig}",
+    "./vendor/monwoo/mws-google-photo-reader-bundle/{assets,src,templates}/**/*.{js,svelte,ts,php,twig}",
     // https://flowbite.com/docs/getting-started/quickstart/
     "./node_modules/flowbite/**/*.js",
     // https://flowbite-svelte.com/docs/pages/introduction
@@ -81,9 +84,9 @@ module.exports = {
     require('flowbite/plugin')({
       charts: true,
     }),
-    // require('../../../packages/mws-moon-manager/node_modules/@preline/plugin')
+    // require('./vendor/monwoo/mws-moon-manager-bundle/node_modules/@preline/plugin')
     // TODO : ReferenceError: self is not defined @preline/scrollspy/index.js:1:299 :
     //        Why post css going up to this file ? tailwind check ? but ok on svelte file ?
-    // require('../../../packages/mws-moon-manager/node_modules/@preline/scrollspy')
+    // require('./vendor/monwoo/mws-moon-manager-bundle/node_modules/@preline/scrollspy')
   ],
 }

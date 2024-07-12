@@ -2,7 +2,8 @@
 
 # controllers:
 #     # https://symfony.com/doc/current/bundles/override.html
-#     resource: ../../../../../packages/mws-moon-manager/src/Controller/
+# TIPS : wrong, look inside 'vendor' instead of project dev structure ...
+#     resource: ../../../../../packages/mws-moon-manager/src/Controller/ 
 #     # resource: 'MoonManagerBundle/src/Controller'
 #     type: annotation
 # https://symfonycasts.com/screencast/micro-symfony/app-bundle-annotations
