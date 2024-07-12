@@ -1,4 +1,7 @@
 {
+    "name": "mws-moon-manager",
+    "version": "0.0.0",
+    "description": "Symfony Builds and backend to use in Monwoo MoonManager frontends",
     "devDependencies": {
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
@@ -17,7 +20,7 @@
         "inputmask": "^5.0.8",
         "jquery": "^3.7.1",
         "mark.js": "^8.11.1",
-        "mws-moon-manager-ux": "workspace:^",
+        "mws-moon-manager-ux": "workspace:*",
         "regenerator-runtime": "^0.13.9",
         "select2": "4.1.0-rc.0",
         "survey-core": "^1.9.112",

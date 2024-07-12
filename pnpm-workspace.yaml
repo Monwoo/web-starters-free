@@ -12,6 +12,7 @@ packages:
   - "apps/mws-sf-pdf-billings/backend"
   - "packages/*"
   - "../mws-demo"
+  # - "../mws-demo" NO need + cyclic imports with current state...
   # Configure the target apps for SF builds (Should change if app target build did change :) :
   # to avoid app dependencies in packages like :
   #  "fos-router": "link:../../apps/mws-sf-pdf-billings/backend/vendor/friendsofsymfony/jsrouting-bundle/Resources",

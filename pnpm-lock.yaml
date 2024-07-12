@@ -53,8 +53,8 @@ importers:
         specifier: ^3.2.0
         version: 3.2.2(@hotwired/stimulus@3.2.2)
       '@symfony/ux-svelte':
-        specifier: workspace:*
-        version: link:vendor/symfony/ux-svelte/assets
+        specifier: file:vendor/symfony/ux-svelte/assets
+        version: file:apps/mws-sf-pdf-billings/backend/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.2.2)(svelte@4.2.18)
       '@symfony/webpack-encore':
         specifier: ^4.4.0
         version: 4.6.1(@babel/core@7.24.8)(@babel/preset-env@7.24.8)(@symfony/stimulus-bridge@3.2.2)(file-loader@6.2.0)(fork-ts-checker-webpack-plugin@7.3.0)(postcss-loader@7.3.4)(postcss@8.4.39)(sass-loader@13.3.3)(ts-loader@9.5.1)(typescript@5.5.3)(webpack-cli@4.10.0)(webpack-notifier@1.15.0)(webpack@5.93.0)
@@ -454,7 +454,7 @@ importers:
         specifier: ^8.11.1
         version: 8.11.1
       mws-moon-manager-ux:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../mws-moon-manager-ux
       regenerator-runtime:
         specifier: ^0.13.9
@@ -13749,6 +13749,18 @@ packages:
   /yocto-queue@1.1.1:
     resolution: {integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==}
     engines: {node: '>=12.20'}
+    dev: true
+
+  file:apps/mws-sf-pdf-billings/backend/vendor/symfony/ux-svelte/assets(@hotwired/stimulus@3.2.2)(svelte@4.2.18):
+    resolution: {directory: apps/mws-sf-pdf-billings/backend/vendor/symfony/ux-svelte/assets, type: directory}
+    id: file:apps/mws-sf-pdf-billings/backend/vendor/symfony/ux-svelte/assets
+    name: '@symfony/ux-svelte'
+    peerDependencies:
+      '@hotwired/stimulus': ^3.0.0
+      svelte: ^3.0 || ^4.0
+    dependencies:
+      '@hotwired/stimulus': 3.2.2
+      svelte: 4.2.18
     dev: true
 
   github.com/dimsemenov/PhotoSwipe/008338268efddc55d36cfc3a8fbbb3940a6ddd23:

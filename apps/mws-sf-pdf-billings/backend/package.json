@@ -1,4 +1,7 @@
 {
+    "name": "mws-sf-pdf-billings",
+    "version": "0.0.0",
+    "description": "Symfony assets for pdf billings",
     "devDependencies": {
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
