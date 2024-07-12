@@ -11431,7 +11431,7 @@ packages:
     name: '@symfony/ux-svelte'
     peerDependencies:
       '@hotwired/stimulus': ^3.0.0
-      svelte: ^3.0
+      svelte: ^3.0 || ^4.0
     dependencies:
       '@hotwired/stimulus': 3.2.2
       svelte: 3.59.2
