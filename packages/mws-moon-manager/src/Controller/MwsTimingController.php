@@ -1769,7 +1769,7 @@ class MwsTimingController extends AbstractController
                 // $outerObject->setThumbnailJpeg($innerObject);
             } else {
                 // TODO : code factorisation with export
-                $data = $newThumb;
+                $data = $newThumb ?? "";
                 if (starts_with($data, 'data:image')) {
                     $b64Parts = explode(';base64,', $data);
                     $data = base64_decode($b64Parts[1]) ?? null;
@@ -1809,7 +1809,9 @@ class MwsTimingController extends AbstractController
                     $newThumb = $uploadUrl;
                 }
             }
-            $importSlot->setThumbnailJpeg($newThumb);
+            if (strlen($newThumb)) {
+                $importSlot->setThumbnailJpeg($newThumb);
+            }
 
             // dd($newThumb);
 
