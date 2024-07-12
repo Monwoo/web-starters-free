@@ -21,7 +21,7 @@
         "flowbite-svelte": "^0.44.18",
         "flowbite-svelte-icons": "^1.4.3",
         "fork-ts-checker-webpack-plugin": "^7.0.0",
-        "fos-router": "file:vendor/friendsofsymfony/jsrouting-bundle/Resources",
+        "fos-router": "workspace:*",
         "locally-unique-id-generator": "^0.1.5",
         "lodash": "^4.17.21",
         "mws-demo": "workspace:*",
