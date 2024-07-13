@@ -27,6 +27,7 @@
         "fos-router": "file:vendor/friendsofsymfony/jsrouting-bundle/Resources",
         "locally-unique-id-generator": "^0.1.5",
         "lodash": "^4.17.21",
+        "mws-demo": "workspace:*",
         "mws-moon-manager-ux": "workspace:*",
         "node-sass": "^9.0.0",
         "postcss": "^8.4.31",

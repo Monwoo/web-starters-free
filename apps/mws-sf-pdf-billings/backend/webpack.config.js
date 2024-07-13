@@ -90,10 +90,10 @@ Encore
     if (HAVE_MWS_DEMO) {
         console.warn("HAVE_MWS_DEMO enabled");
         // TODO : If file exist ?
-        Encore.addEntry('mwsDemo', '../../../../mws-demo/assets/app.js')
+        Encore.addEntry('mwsDemo', 'vendor/monwoo/mws-demo/assets/app.js')
     }
     // TIPS : use mwsGooglePhotoDevAsset
-    const mwsGooglePhotoDevAsset = `../../../../mws-google-photo-reader/assets/app.js`;
+    const mwsGooglePhotoDevAsset = `vendor/monwoo/mws-google-photo-reader/assets/app.js`;
     // const mwsGooglePhotoDevAsset = null; // TODO : not OK : having wrong style + wrong constructor for GPhotoList with build bundle...
     if (mwsGooglePhotoDevAsset && fs.existsSync(mwsGooglePhotoDevAsset)) {
         // TODO : need twig widget edit for entry points changes to work ... or empty script fill...
@@ -106,12 +106,12 @@ Encore
         // Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle0`, './assets/empty.css')
         // Encore.addEntry(`mwsGooglePhotoReaderWidgetStyle1`, './assets/empty.css')
     } else {
-        const mwsGooglePhotoPublicFolder = `../../../../mws-google-photo-reader/public`;
-        // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/manifest.json';
+        const mwsGooglePhotoPublicFolder = `vendor/monwoo/mws-google-photo-reader/public`;
+        // const mwsGooglePhotoReaderWidget = 'vendor/monwoo/mws-google-photo-reader/public/build/manifest.json';
         const mwsGooglePhotoReaderWidgetEntries = `${mwsGooglePhotoPublicFolder}/build/entrypoints.json`;
-        // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build';
-        // const mwsGooglePhotoReaderWidget = '../../../../mws-google-photo-reader/public/build/runtime.fd462291.js';
-        // const mwsGooglePhotoReaderWidget2 = '../../../../mws-google-photo-reader/public/build/mwsGooglePhotoReaderWidget.3eac92b5';
+        // const mwsGooglePhotoReaderWidget = 'vendor/monwoo/mws-google-photo-reader/public/build';
+        // const mwsGooglePhotoReaderWidget = 'vendor/monwoo/mws-google-photo-reader/public/build/runtime.fd462291.js';
+        // const mwsGooglePhotoReaderWidget2 = 'vendor/monwoo/mws-google-photo-reader/public/build/mwsGooglePhotoReaderWidget.3eac92b5';
         if (fs.existsSync(mwsGooglePhotoReaderWidgetEntries)) {
             console.warn("mwsGooglePhotoReaderWidget enabled from : ", mwsGooglePhotoReaderWidgetEntries);
             const entries = JSON.parse(
@@ -132,11 +132,11 @@ Encore
     }
 
     Encore
-    // .addEntry('mwsDemo', '../../../../mws-demo/public/build/entrypoints.json')
+    // .addEntry('mwsDemo', 'vendor/monwoo/mws-demo/public/build/entrypoints.json')
 
     /// TODO err : Error: Svelte controller "MwsDemoWidget" does not exist
     //              quick hack by copy inside root app...
-    // .addEntry('mwsDemo', '../../../../mws-demo/assets/controllers.json')
+    // .addEntry('mwsDemo', 'vendor/monwoo/mws-demo/assets/controllers.json')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

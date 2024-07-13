@@ -8,7 +8,7 @@ export const app = startStimulusApp(require.context(
 ));
 // // register any custom, 3rd party controllers here
 // // app.register('some_controller_name', SomeImportedController);
-// window.app = app;
+window.app = app;
 // TODO : config vite to use typescript and scss
 // import { startStimulusApp, registerControllers } from "vite-plugin-symfony/stimulus/helpers" 
 // const app = startStimulusApp();

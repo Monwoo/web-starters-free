@@ -52,7 +52,11 @@ import {
 } from '@symfony/ux-svelte';
 import './bootstrap.js';
 
-registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));
+window.registerSvelteControllerComponents = 
+window.registerSvelteControllerComponents ??
+registerSvelteControllerComponents;
+
+window.registerSvelteControllerComponents(require.context('./svelte/controllers', true, /\.svelte$/));
 
 // // TODO : remove code duplication and put this in some 'mws-utils' package ?
 // // https://stackoverflow.com/questions/5796718/html-entity-decode

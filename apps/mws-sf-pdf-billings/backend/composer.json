@@ -17,6 +17,10 @@
         {
             "type": "path",
             "url": "../../../packages/mws-moon-manager"
+        },
+        {
+            "type": "path",
+            "url": "../../../packages/mws-moon-manager-ux"
         }
     ],
     "require": {

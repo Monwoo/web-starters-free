@@ -1073,6 +1073,9 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
+<!-- class:opacity-80={isLoading}
+  style:pointer-events={isLoading ? "none" : "auto"}
+  style:opacity={isLoading ? 0.8 : 1} -->
 <div
   bind:this={htmlRoot}
   class="mws-timing-slot-view overflow-y-auto
@@ -1082,11 +1085,13 @@
   style={sizeStyle}
   class:pointer-events-none={isLoading}
 >
+  <!-- {JSON.stringify(timingSlot)} -->
   <div class="pr-2 sticky top-0 left-0 bg-white/95 z-20">
     {dayjs(timingSlot?.sourceTimeGMT)
       .tz("Europe/Paris")
       .format("YYYY-MM-DD HH:mm:ss")}
     [{timingSlot?.rangeDayIdxBy10Min ?? "--"}]
+    <!-- // TODO : strange : tags are reactive, but not the maxPath etc ? -->
     {#if timingSlot}
       <span
         class="border"
@@ -1106,6 +1111,11 @@
     {timingSlot?.sourceStamp?.split("/").slice(-1) ?? "--"}
   </div>
 
+  <!-- {timingSlot?.sourceStamp}
+      class:z-20={!isFullScreen}
+      class:z-40={isFullScreen}
+      // z-20 TOO low for side list (absolut of it will go over inside modals...)
+  -->
   <div
     class="full-screen-container bg-black text-white fill-white
     rounded-se-lg overflow-scroll z-[51] md:z-40
@@ -1116,6 +1126,8 @@
     class:left-0={isFullScreen}
     class:right-0={isFullScreen}
   >
+    <!-- <div class="max-h-[7rem] overflow-hidden
+  hover:max-h-fit hover:overflow-scroll"> -->
     <div
       on:click|stopPropagation
       bind:this={slotHeader}
@@ -1170,6 +1182,8 @@
           </span>
         {/each}
       </span>
+      <!-- <span class="float-right right-0 top-0 m-1 sticky
+    pointer-events-none opacity-75 hover:opacity-100"> -->
       <span
         class="float-right m-1 mt-2 cursor-context-menu hover:opacity-90"
         on:click|stopPropagation={() => {
@@ -1180,6 +1194,14 @@
         }}
       >
         <!-- TIPS : why $timer is tweended and will have FLOAT values : -->
+        <!-- {$timer} -->
+        <!--
+          https://tr.javascript.info/bubbling-and-capturing#capturing
+          https://svelte.dev/repl/1ff9d07bc2fc45349874b1b1b2c013e4?version=3.29.4
+          https://stackoverflow.com/questions/1369035/how-do-i-prevent-a-parents-onclick-event-from-firing-when-a-child-anchor-is-cli
+          on:click|capture|stopPropagation // Will stop the event, not clicking elt below
+          TODO : any way to do same like pointer-event-none with hover allowed ?
+        -->
         <ProgressIndicator
           percent={1 - $timer / timerStart}
           textRenderer={(percent) => `${$timer.toFixed(0)}`}
@@ -1229,6 +1251,39 @@
       {#if isFullScreen}
         <!-- // TIPS : no need, z-index for lookup page more higher
         text-xs md:text-base float-right -->
+        <!-- <span class="right-14 top-0 z-40 fixed flex">
+          {#if moveResp.isFirst && pageNumber > 1}
+            <button
+              class="float-right m-1"
+              on:click|stopPropagation={() => movePageIndex(-1)}
+            >
+              Prev. Page
+            </button>
+          {/if}
+          <button
+            class="float-right m-1"
+            style:opacity={!moveResp.isFirst ? 1 : 0.7}
+            on:click|stopPropagation={() => (moveResp = moveSelectedIndex(-1))}
+          >
+            Prev.
+          </button>
+          <button
+            class="float-right m-1"
+            style:opacity={!moveResp.isLast ? 1 : 0.7}
+            on:click|stopPropagation={() => (moveResp = moveSelectedIndex(1))}
+          >
+            Next.
+          </button>
+          {#if moveResp.isLast}
+            <button
+              class="float-right m-1"
+              on:click|stopPropagation={() => movePageIndex(1)}
+            >
+              Next. Page
+            </button>
+          {/if}
+        </span>
+        <span class="float-right w-[14rem] h-7" /> -->
       {/if}
       <span class="float-right flex flex-wrap justify-end items-start p-2">
         <TagsInput 
@@ -1237,6 +1292,14 @@
         bind:selectionStartIndex
         bind:tags={timingSlot.tags} timing={timingSlot} {locale} />
       </span>
+      <!-- {#each qualifTemplates ?? [] as qt, idx}
+        <button
+          class="float-right m-1"
+          on:click|stopPropagation={qt.toggleQualif}
+        >
+          [{String.fromCharCode(qt.shortcut)}] {qt.label}
+        </button>
+      {/each} -->
       <QuickList
         bind:timingSlot
         bind:lastSelectedIndex
@@ -1256,8 +1319,29 @@
         Supprimer tous les tags
       </button>
       <Loader {isLoading} />
-    </div>
 
+      <!-- 
+        class:hidden={!isHeaderExpanded}
+      -->
+      <!-- 
+        TOO tricky with inner auto scroll at bottom ?
+        <div class="draggable absolute bottom-0 left-0
+       fill-white text-white bg-black/50 z-40 p-2"
+      use:draggable={{
+        helper:'clone', revert:true
+      }}
+        on:drag:move={onDragMove} on:drag:stop={onDragStop}
+      >
+        <svg class="w-7 h-7" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"/>
+        </svg>      
+      </div>   -->
+    </div>
+    <!-- TODO : solve clone or elmt get crasy, for now hide to hide bug with :
+    class:hidden={resizing}
+
+    class:bg-red-500={resizing}  
+    -->
     <div
       class="overflow-visible sticky top-0 flex items-end h-[0px] 
     fill-white/70 text-white/70 bg-black/50 z-40"
@@ -1303,6 +1387,19 @@
         </svg>
       </div>
     </div>
+    <!-- // TODO : remove max-h-[85%]={isFullScreen} + work with flex grow ?
+    + https://stackoverflow.com/questions/15999760/load-image-asynchronous
+    (but load this one first...)
+
+      class:h-[95dvh]={isFullScreen && isHeaderExpanded}
+      class:mb-[1rem]={isFullScreen} // bp : will add double scroll
+
+      // => not needed any more, use full width for image
+      // user can resize part of screen if want to fit part of it...
+      class:h-[95dvh]={isFullScreen && isHeaderExpanded}
+
+      use:panzoom={{ render, width: image.width, height: image.height }}
+    -->
     <div
       class="overflow-visible flex items-end sticky top-0
     z-30 w-full"
@@ -1322,6 +1419,7 @@
            "
         />
       </div>
+      <!-- {#if !isFullScreen } -->
       <div class="sticky z-40 bottom-16
       inline-flex right-0 bg-white overflow-visible min-h-[2.4rem]"
       class:p-1={currentTimeSlotQualifs?.length}
@@ -1343,7 +1441,26 @@
           </div>
         {/each}
       </div>
+      <!-- {/if} -->
     </div>
+    <!-- class:h-[80dvh]={!slotHeight &&
+      zoomRange == zoomStartRange &&
+      isFullScreen &&
+      !isHeaderExpanded}
+    
+    
+    https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action
+    https://tailwindcss.com/docs/touch-action
+    https://www.npmjs.com/package/svelte-gestures
+      // TODO : swipe stop propagation events or css events none
+      is blocking click ?
+      use:swipe={{ timeframe: 300, minSwipeDistance: 42, touchAction: 'touch-pan-y' }}
+      on:swipe={swipeImage}
+
+      TIPS : on:dblclick will be useful with pan since click is used by pan too...
+      TIPS :  w-max => width: max-content; will size to fit
+      content and place absolut at end instead of allowed end
+    -->
     <div class="relative flex"
       bind:this={viewWrapper}
       style:--tw-shadow-color="#000000"
@@ -1359,10 +1476,36 @@
         flex items-center justify-start"
           on:click={() => moveSelectedIndex(-1)}
         >
-
+          <!-- <CaretLeft></CaretLeft> -->
+          <!-- <img scr={caretLeft} /> -->
+          <!-- <object data={caretLeft}></object> -->
+          <!-- https://dev.to/hasantezcan/how-to-colorize-svg-image-1kc8 -->
+          <!-- <div class="svg-icon bg-[var(--tw-shadow-color)]
+          "
+          style={`
+            mask-image: url(${caretLeft});
+            -webkit-mask-image: url(${caretLeft});
+          ` } />
+          <div class="svg-icon bg-white absolute
+          hover:bg-gray-500 !w-[2.8rem]
+          "
+          style={`
+            mask-image: url(${caretLeft});
+            -webkit-mask-image: url(${caretLeft});
+          ` } /> -->
           <Svg url={caretLeft}></Svg>
         </button>  
       </div>
+      <!-- // TODO : if fullscreen, scrollable list from right to left since
+      //        SCROLL is more efficient than click to go prev/next current
+      //        qualifs in progress... -->
+
+      <!-- 
+        loading="lazy"
+                type="image/png"
+
+        // TODO : load handlers for list of objects and imgs to trigger at end of all loads
+      // https://svelte.dev/repl/d7680b8f5aee4d86846b0982e6c0c01d?version=3.31.0 -->
       {#key timingSlot}
       <object
         use:pan="{{delay:imagePanDelayMs}}"
@@ -1460,12 +1603,48 @@
       </div>
     </div>
 
+
+    <!-- <div
+      class="overflow-visible flex items-end
+    z-40 w-full"
+    >
+      <div class="fill-white text-white bg-black w-full">
+        <label for="default-range" class="block mb-2 text-sm font-medium"
+          >Zoom range {zoomRange}</label
+        >
+      </div>
+    </div> -->
+
     <!-- TIPS : add bottom margin to allow height size increase
      (other wise, no bottom space to scroll up to...) -->
     <div class:mb-[5rem]={!isFullScreen} />
+
+    <!-- <div
+    class="object-contain border-solid border-4"
+    class:w-full={isFullScreen}
+    class:max-h-[85%]={isFullScreen && !isHeaderExpanded}
+    class:border-gray-600={!timingSlot?.tags?.length}
+    class:border-green-400={timingSlot?.tags?.length}
+    >
+      <! -- https://mvolfik.github.io/svelte-photoswipe/ -- >
+      <PhotoSwipeGallery images={[
+        {
+          src: "screenshot" == timingSlot?.source?.type ? slotPath : "",
+          // width: 3000,
+          // height: 4000,
+          alt: "Screenshot", // optional
+          cropped: false, // optional, default=false; see https://photoswipe.com/v5/docs/ 
+          // thumbnail: { src: slotPath, width: 300, height: 400 },
+        }
+      ]} styling="flex" />    
+    </div> -->
   </div>
 </div>
 
+<!-- // TODO : <style global lang="scss">
+       working or just request feature ?
+       https://github.com/sveltejs/svelte/issues/6186
+       https://github.com/sveltejs/svelte/issues/5492 -->
 <style lang="scss">
   :global(object) {
     transition: transform 0.2s;

@@ -16,6 +16,10 @@
         },
         {
             "type": "path",
+            "url": "../../../packages/mws-moon-manager-ux"
+        },
+        {
+            "type": "path",
             "url": "../../../packages/mws-sf-pdf-billings-lvl1"
         },
         {

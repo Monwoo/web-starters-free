@@ -11,4 +11,4 @@ packages:
   - "apps/*"
   - "apps/mws-sf-pdf-billings/backend"
   - "packages/*"
-  - "../mws-demo"
+  # - "../mws-demo"
