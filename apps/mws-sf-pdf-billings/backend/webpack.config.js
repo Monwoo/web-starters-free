@@ -90,7 +90,7 @@ Encore
     if (HAVE_MWS_DEMO) {
         console.warn("HAVE_MWS_DEMO enabled");
         // TODO : If file exist ?
-        Encore.addEntry('mwsDemo', 'vendor/monwoo/mws-demo-bundleassets/app.js')
+        Encore.addEntry('mwsDemo', 'vendor/monwoo/mws-demo-bundle/assets/app.js')
     }
     // TIPS : use mwsGooglePhotoDevAsset
     const mwsGooglePhotoDevAsset = `vendor/monwoo/mws-google-photo-reader/assets/app.js`;
@@ -132,11 +132,11 @@ Encore
     }
 
     Encore
-    // .addEntry('mwsDemo', 'vendor/monwoo/mws-demo-bundlepublic/build/entrypoints.json')
+    // .addEntry('mwsDemo', 'vendor/monwoo/mws-demo-bundle/public/build/entrypoints.json')
 
     /// TODO err : Error: Svelte controller "MwsDemoWidget" does not exist
     //              quick hack by copy inside root app...
-    // .addEntry('mwsDemo', 'vendor/monwoo/mws-demo-bundleassets/controllers.json')
+    // .addEntry('mwsDemo', 'vendor/monwoo/mws-demo-bundle/assets/controllers.json')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
