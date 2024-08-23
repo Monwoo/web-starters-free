@@ -10,6 +10,9 @@ Bonus : Basic controller ok for simple JWT authentification if needed.
 ## Demonstration
 [@demo mws.monwoo.com/demos/sf-pdf-billings/](https://mws.monwoo.com/demos/sf-pdf-billings/)
 
+## TODO
+ - clean the doc, remove useless cmd, narrow quick start / dev / tests / prod
+
 ## Build
 
 ```bash
@@ -492,16 +495,22 @@ composer require symfony/panther --dev # required for e2e scenarios
 # https://codeception.com/docs/modules/WebDriver#usage
 # https://chromedriver.storage.googleapis.com/index.html?path=108.0.5359.71/
 # In my case, for my chrome : 
-wget https://chromedriver.storage.googleapis.com/112.0.5615.49/chromedriver_mac64.zip
-rm chromedriver
-unzip chromedriver_mac64.zip
-rm chromedriver_mac64.zip 
+# wget https://chromedriver.storage.googleapis.com/112.0.5615.49/chromedriver_mac64.zip
+# https://chromedriver.storage.googleapis.com/index.html
+# rm chromedriver
+# unzip chromedriver_mac64.zip
+# rm chromedriver_mac64.zip 
+# https://github.com/symfony/panther
+# On all systems, you can use dbrekelmans/browser-driver-installer to install ChromeDriver and geckodriver locally:
+composer require --dev dbrekelmans/bdi
+COMPOSER=composer.private.json composer require --dev dbrekelmans/bdi
+vendor/bin/bdi detect drivers
+
+composer require codeception/module-phpbrowser --dev  
+COMPOSER=composer.private.json composer require codeception/module-phpbrowser --dev  
 
 # launch the chrome webdriver (in background) :
-./chromedriver --url-base=/wd/hub &
-
-composer require --dev dbrekelmans/bdi
-vendor/bin/bdi detect drivers
+./drivers/chromedriver./drivers/chromedriver --url-base=/wd/hub --port=9515 &
 
 # install test tools :
 composer require --dev phpunit/phpunit symfony/test-pack
@@ -583,6 +592,45 @@ bin/console fos:js-routing:dump --format=json --target=assets/fos-routes.json
 # bootstrap one user ONLY to let it be change and do wiziwig updates :
 php bin/console mws:add-user -c 1
 
+```
+
+# TESTS
+
+```bash
+alias symfony="~/.symfony5/bin/symfony"
+alias codecept="php '$PWD/vendor/codeception/codeception/codecept'"
+
+# quick commands (unit test and dev) :
+# ./drivers/chromedriver --url-base=/wd/hub &
+# php -S localhost:8000 -t public/ &
+# # run in some other terminal, to show our custom test dumps
+# # (APP_ENV NEED to be 'dev' in your .env file to be launched) :
+# php bin/console server:dump
+./drivers/chromedriver --url-base=/wd/hub --port=9515 &
+php -S localhost:8000 -t public/ &
+
+codecept clean
+
+codecept run 'acceptance' --html && open tests/_output/report.html
+
+codecept run --html 'acceptance.html' 'acceptance' \
+'tests/acceptance/E2E_v1_KpiCommercialCest.php:specification05Test'
+
+codecept run --html 'acceptance.html' 'acceptance' \
+'tests/acceptance/E2E_v1_KpiCommercialCest.php:specification0[1-4]Test'
+
+# Clean and regenerate database for tests data to be re-generated from first test launch
+# BE CARFULL if saved data in it, do a backup :
+cp var/data.sqlite var/data.bckup.db
+rm var/data.sqlite
+php bin/console doctrine:migrations:migrate -n
+codecept run
+
+# Re-build Actor if you update test helpers :
+codecept build
+
+# Clean cache
+php bin/console cache:clear
 ```
 
 ## Useful Links
