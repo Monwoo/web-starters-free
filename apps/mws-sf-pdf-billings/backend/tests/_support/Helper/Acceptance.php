@@ -10,6 +10,7 @@ use ReflectionMethod;
 
 class Acceptance extends \Codeception\Module
 {
+  protected $currentTest = null;
   /**
    * @see \Codeception\Module\WebDriver::makeScreenshot()
    */
@@ -81,7 +82,7 @@ class Acceptance extends \Codeception\Module
     if ($testInfo) {
       $this->testInfo = $testInfo;
     }
-    $this->debug('addCustomTestsInformations with :');
+    $this->debug('setCustomTestsInformations with :');
     $this->debug($testInfo);
     $this->debug($this->testInfo);
     $I = $this->getModule('WebDriver');
@@ -145,5 +146,46 @@ class Acceptance extends \Codeception\Module
     $I->wait(
       $minTime // TODO : add random time for more stress tests ?
     );
+  }
+
+  // HOOK: before test
+  public function _before(\Codeception\TestInterface $test)
+  {
+    $meta = $test->getMetadata();
+    $name = $meta->getCurrent('name') ?? $meta->getName();
+    $filename = $meta->getCurrent('filename') ?? $meta->getFilename();
+    $feature = $meta->getCurrent('feature') ?? $meta->getFeature();
+    $index = $meta->getCurrent('index') ?? $meta->getIndex();
+    // $this->currentTest = $test;
+    $this->currentTest = $test;
+    // $this->env = $test->getScenario()->current('env');
+    /** @var AcceptanceTester */
+
+    $I = $this;
+    // var_dump(json_encode($this->currentTest));
+    // var_dump(json_encode($meta));
+    // exit;
+
+    // $I->setCustomTestsInformations(json_encode($this->currentTest));
+    // $info = "[$index] $filename $name $feature";
+    // $testFile = dirname($filename)."/".basename($filename);
+    // $testFile = implode("/", array_slice(explode("/", $filename), -2));
+    // $testFile = implode("/", array_slice(explode("/tests/", $filename), -1));
+    $testFile = implode("/", array_slice(explode("/e2e/", $filename), -1));
+    $info = "$testFile - $feature";
+    $I->setCustomTestsInformations("$info");
+    $this->debug('setCustomTestsInformations with : ' . $info);
+    $this->debug($this->testInfo);
+  }
+
+  // HOOK: after test
+  public function _after(\Codeception\TestInterface $test) {}
+
+  // HOOK: on fail
+  public function _failed(\Codeception\TestInterface $test, $fail)
+  {
+    // https://stackoverflow.com/questions/64006235/is-it-possible-to-get-the-filename-of-the-failed-test-in-the-failed-hook
+    // https://codeception.com/extensions#RunFailed
+    // $fullName = Descriptor::getTestFullName($test);
   }
 }
