@@ -19,6 +19,9 @@
   export let viewTemplate;
   export let inlineOpener = false;
   export let addOfferModal;
+
+  let cssClass;
+  export { cssClass as class };
   // let inlineOpener = false;
   let dropdown;
   let intro;
@@ -51,9 +54,9 @@
 
 <!-- <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700"> -->
 <nav
-  class="border-gray-200 dark:border-gray-700 w-full
-  rounded-e-lg 
-  "
+  class={`border-gray-200 dark:border-gray-700 w-full
+  rounded-e-lg mws-nav-bar ${cssClass ?? ''}
+  `}
 >
   <!-- // TIPS : max-h-[70dvh] have some meanings for md screen only since needed only if 
   // inside content size down instead of filling bottom ... -->
@@ -433,10 +436,18 @@
               _locale: locale ?? "fr",
             })}
             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-            >Logout out
+            >Se déconnecter
           </a>
+        {:else}
+        <a
+          href={Routing.generate("mws_user_login", {
+            _locale: locale ?? "fr",
+          })}
+          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+          >Se connecter
+        </a>
         {/if}
-        <div>
+          <div>
           [ {$state.packageName} v-{$state.packageVersion} ]
         </div>
       </div>
