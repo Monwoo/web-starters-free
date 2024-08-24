@@ -19,6 +19,7 @@ use Codeception\Util\Locator;
 
 use function Psy\debug;
 
+// UserSteps::initVars();
 class E2E_SaveReloadResetOkCest
 {
   public function _before(AcceptanceTester $I, UserSteps $userSteps)

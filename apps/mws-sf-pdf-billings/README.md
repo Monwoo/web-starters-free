@@ -615,12 +615,10 @@ php -S localhost:8000 -t public/ &
 codecept clean && codecept run 'e2e' --html
 open tests/_output/report.html
 
-codecept clean
-
-codecept run --html 'e2e.html' 'e2e' \
+codecept clean && codecept run --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
 
-codecept run --html 'e2e.html' 'e2e' \
+codecept clean && codecept run --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1-4]Test'
 
 # Clean and regenerate database for tests data to be re-generated from first test launch

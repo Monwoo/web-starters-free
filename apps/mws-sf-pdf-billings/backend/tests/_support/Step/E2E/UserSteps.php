@@ -213,3 +213,5 @@ class UserSteps extends \App\Tests\AcceptanceTester
     $I->dump("Did logout user");
   }
 }
+
+UserSteps::initVars();
