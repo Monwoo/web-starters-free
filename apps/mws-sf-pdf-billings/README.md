@@ -609,15 +609,14 @@ alias codecept="php '$PWD/vendor/codeception/codeception/codecept'"
 ./drivers/chromedriver --url-base=/wd/hub --port=9515 &
 php -S localhost:8000 -t public/ &
 
-codecept clean
+codecept clean && codecept run 'e2e' --html
+open tests/_output/report.html
 
-codecept run 'acceptance' --html && open tests/_output/report.html
+codecept run --html 'e2e.html' 'e2e' \
+'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
 
-codecept run --html 'acceptance.html' 'acceptance' \
-'tests/acceptance/E2E_v1_KpiCommercialCest.php:specification05Test'
-
-codecept run --html 'acceptance.html' 'acceptance' \
-'tests/acceptance/E2E_v1_KpiCommercialCest.php:specification0[1-4]Test'
+codecept run --html 'e2e.html' 'e2e' \
+'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1-4]Test'
 
 # Clean and regenerate database for tests data to be re-generated from first test launch
 # BE CARFULL if saved data in it, do a backup :

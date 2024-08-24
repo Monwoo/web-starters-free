@@ -37,7 +37,7 @@ class E2E_SaveReloadResetOkCest
       }
     }
 
-    // $userSteps->ensureUser(self::$userEmail, self::$userPass, self::$userInit);
+    $userSteps->ensureUser(UserSteps::$userAdminInit);
   }
 
   // public function _after(AcceptanceTester $I, HomePage $home)
@@ -46,8 +46,36 @@ class E2E_SaveReloadResetOkCest
 
   public function specification01Test(AcceptanceTester $I, UserSteps $userSteps): void
   {
-    $I->comment("🇫🇷🇫🇷 Se connecter / déconnecter");
+    $I->comment("🇫🇷🇫🇷 Sauvegarder un backup");
     $I->amOnPage("/");
-    $I->makeScreenshot('00-01-backup-save');
+    $I->makeScreenshot('01-01-backup-save');
+  }
+
+  public function specification02Test(AcceptanceTester $I, UserSteps $userSteps): void
+  {
+    $I->comment("🇫🇷🇫🇷 Test le reset GDPR");
+    $I->amOnPage("/");
+    $I->makeScreenshot('02-01-backup-reset');
+  }
+
+  public function specification03Test(AcceptanceTester $I, UserSteps $userSteps): void
+  {
+    $I->comment("🇫🇷🇫🇷 Recharger les modifications avant le reset GDPR");
+    $I->amOnPage("/");
+    $I->makeScreenshot('03-01-reload-before-reset-save');
+  }
+
+  public function specification04Test(AcceptanceTester $I, UserSteps $userSteps): void
+  {
+    $I->comment("🇫🇷🇫🇷 Télécharger un backup ZIP");
+    $I->amOnPage("/");
+    $I->makeScreenshot('04-01-backup-download');
+  }
+
+  public function specification05Test(AcceptanceTester $I, UserSteps $userSteps): void
+  {
+    $I->comment("🇫🇷🇫🇷 Remettre à jour avec un backup ZIP");
+    $I->amOnPage("/");
+    $I->makeScreenshot('05-01-backup-upload');
   }
 }
