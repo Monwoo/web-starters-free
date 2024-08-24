@@ -598,6 +598,9 @@ php bin/console mws:add-user -c 1
 
 ```bash
 alias symfony="~/.symfony5/bin/symfony"
+alias composer="php -d memory_limit=8G '$PWD/composer.phar'" 
+
+cd apps/mws-sf-pdf-billings/backend/
 alias codecept="php '$PWD/vendor/codeception/codeception/codecept'"
 
 # quick commands (unit test and dev) :
@@ -611,6 +614,8 @@ php -S localhost:8000 -t public/ &
 
 codecept clean && codecept run 'e2e' --html
 open tests/_output/report.html
+
+codecept clean
 
 codecept run --html 'e2e.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'

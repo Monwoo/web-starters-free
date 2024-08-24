@@ -19,17 +19,20 @@ modules:
       #         url: http://localhost:8000
       - WebDriver:
             browser: chrome
+            # url: "https://localhost:8000/"
             url: "http://localhost:8000/"
             window_size: 1200x1000
             port: 9515
             # port: 49957
             capabilities:
-                chromeOptions:
+                # chromeOptions:
+                # https://codeception.com/docs/modules/WebDriver
+                goog:chromeOptions:
                     # args: ["--headless", "--disable-gpu"] # Run Chrome in headless mode
                     args:
-                      # TODO : below options ignored ?
+                      # TIPS : below options might change, check last updated docs...
                       - --disable-search-engine-choice-screen
-                      - user-data-dir=./tests/_output/user-data
+                      # - user-data-dir=./tests/_output/user-data
                     prefs:
                         download.default_directory: ./tests/_output/chrome-download
       - Asserts
