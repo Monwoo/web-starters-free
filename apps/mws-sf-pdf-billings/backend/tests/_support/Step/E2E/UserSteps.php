@@ -14,9 +14,16 @@ use MWS\MoonManagerBundle\Entity\MwsUser;
 
 class UserSteps extends \App\Tests\AcceptanceTester
 {
+  // public static $loginURL = ''; // TODO : use app Router routes ?
   public static $userMenuSelector = '#dropdownNavbarLink';
+  public static $userLoginSubMenuSelector = 'a[href="/mws/fr/mws_user/login"]';
   public static $userLogoutSubMenuSelector = '#dropdownNavbarLink//TODO';
   public static $loggedOutIndicatorSelector = '#dropdownNavbarLink//TODO';
+
+  public static $loginUsernameField = '#username';
+  public static $loginPasswordField = '#password';
+  public static $formSubmitButton = '[type="submit"]';
+
   public static $userDefaultInit = null;
   public static $defaultInputs = [
     "listUserSubmenuSelector" => 'a[href="/mws/fr/mws_user/list"]',
@@ -68,11 +75,7 @@ class UserSteps extends \App\Tests\AcceptanceTester
         $username
       );
       if (!$I->testIfPresent($userMenuSelector)) {
-        $listUserSubmenuSelector = $config['listUserSubmenuSelector'] ?? null;
-
-        // $I->scrollTo(HomePage::$navBarUsersMenu, 0, -$navHeight);
-        $I->click($listUserSubmenuSelector);
-        $I->waitHumanDelay();
+        $I->connectTestUser($config);
       } else {
         // ensure logout
         // Force login
@@ -81,24 +84,33 @@ class UserSteps extends \App\Tests\AcceptanceTester
       }
     } else {
       $I->comment("🇫🇷🇫🇷 Ne pas être connecté");
+      // TODO : assert not connected...
     }
   }
   // 🇫🇷🇫🇷 Se connecter
   public function connectTestUser(
     $config
   ) {
-    // $I = $this->I;
-    // $I->comment("⟳ 🔐 Will try to connect test user : $userEmail");
-    // $I->dump("will connect user", $userEmail, $userPassword);
+    $username = $config['username'] ?? null;
+    $userPassword = $config['userpass'] ?? null;
+
+    $I = $this;
+    $I->comment("⟳ 🔐 Will try to connect test user : $username");
+    // $I->dump("will connect user", $username, $userPassword); // TODO :  need dump for advenced debugs
 
     // // TIPS : étude d'icones : ⟳✅❌🚪🔐🔓🔔🔕
-    // $I->amOnPage(self::$URL);
-    // $I->fillField(self::$emailField, $userEmail);
-    // $I->fillField(self::$passwordField, $userPassword);
-    // $I->scrollTo(self::$formSubmitButton);
-    // $I->waitHumanDelay();
-    // $I->click(self::$formSubmitButton);
-    // $I->waitHumanDelay();
+    $I->amOnPage('/');
+    $I->waitHumanDelay();
+    $I->click(self::$userMenuSelector);
+    $I->waitHumanDelay();
+    $I->click(self::$userLoginSubMenuSelector);
+    $I->waitHumanDelay();
+
+    $I->fillField(self::$loginUsernameField, $username);
+    $I->fillField(self::$loginPasswordField, $userPassword);
+    $I->scrollTo(self::$formSubmitButton);
+    $I->click(self::$formSubmitButton);
+    $I->waitHumanDelay();
 
     // // $email = $I->grabValueFrom(self::$emailField);
     // // $nav = $I->grabTextFrom(self::$navBar);
