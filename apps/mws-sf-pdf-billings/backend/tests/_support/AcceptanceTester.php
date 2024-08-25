@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Tests;
 
 use Symfony\Component\CssSelector\CssSelectorConverter;
@@ -18,19 +19,20 @@ use Symfony\Component\CssSelector\Exception\ParseException;
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = NULL)
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    /**
+     * Define custom actions here
+     */
 
     /**
      * Debug from tests :
      */
-    public function debug(...$datas) {
+    public function debug(...$datas)
+    {
         if (!\Codeception\Util\Debug::isEnabled()) {
             return; // Keep spped, nothing to do if not in debug state
         }
@@ -48,7 +50,7 @@ class AcceptanceTester extends \Codeception\Actor
         $len = count($datas);
         $strBulk = "";
         $idx = 0;
-        while($idx < $len && is_string($datas[0])) {
+        while ($idx < $len && is_string($datas[0])) {
             $strBulk .= array_shift($datas) . " ";
             $idx++;
         }
@@ -59,7 +61,7 @@ class AcceptanceTester extends \Codeception\Actor
         codecept_debug($strBulk);
         $len = count($datas);
         $idx = 0;
-        while($idx < $len) {
+        while ($idx < $len) {
             codecept_debug($datas[$idx]);
             $idx++;
         }
@@ -77,9 +79,14 @@ class AcceptanceTester extends \Codeception\Actor
             $I->scrollToWithNav($element);
             $I->seeElement($element);
             $isFound = true;
-        // } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
+            // } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
         } catch (\Exception $e) {
-            $I->debug('testIfPresent Fail. Not found. detail : ' . $e->getMessage());
+            $I->comment(
+                'testIfPresent Fail for : ' .
+                    json_encode($element) .
+                    '. Not found. detail : ' .
+                    $e->getMessage()
+            );
             $isFound = false;
         }
         return $isFound;
@@ -131,4 +138,40 @@ class AcceptanceTester extends \Codeception\Actor
         return $selector;
     }
 
+    public function scrollToWithNav($selector, ?int $offsetX = NULL, ?int $offsetY = NULL): void
+    {
+        $I = $this;
+        $navHeight = intval($I->executeJS("return parseInt($('#mainNavbar').outerHeight()) || 0;"));
+        $offsetY -= $navHeight;
+        $offsetYStr = str_pad($offsetY, 1, "0", STR_PAD_LEFT);
+        $offsetXStr = str_pad($offsetX, 1, "0", STR_PAD_LEFT);
+        $xPath = $I->convertToXPath($selector);
+        // $scrollScript = "
+        //     const t = $(\$x(\"$xPath\"));
+        //     t[0].scrollIntoView({ // Take for CSS props
+        //         behavior: 'instant', // WRONG, work with srollTo this way only
+        //     });
+        //     window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
+        //     return ! t.is(':offscreen');
+        // ";
+
+        // TODO : ensure scroll script : ? or keep with no scroll anims UX ?
+        // $scrollScript = "
+        //     const t = $(\$x(\"$xPath\"));
+        //     $('html').css('scroll-behavior', 'unset');
+        //     t[0].scrollIntoView();
+        //     window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
+        // ";
+        // $I->debug($scrollScript);
+        // $I->executeJS($scrollScript);
+
+        // try {
+        //     // $I->debug($waitScript, $I->executeJS($waitScript));
+        //     $I->waitForJs($scrollScript, 7);
+        // } catch (\Exception $e) {
+        //     $I->debug($e);
+        //     $I->comment("Scroll timeout reached... might break");
+        // }
+        // $I->waitHumanDelay();
+    }
 }

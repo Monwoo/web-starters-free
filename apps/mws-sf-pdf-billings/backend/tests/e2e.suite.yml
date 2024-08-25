@@ -36,12 +36,22 @@ modules:
                     prefs:
                         download.default_directory: ./tests/_output/chrome-download
       - Asserts
-      # - REST:
-      #     url: /wp-json
-      #     # url: /wp-json/wp/v2
-      #     # url: /wp-json/wp/v2/wa-mission
-      #     depends: PhpBrowser
-      #     part: Json
       - \App\Tests\Helper\Acceptance
-
+      # https://codeception.com/docs/modules/Symfony
+      - Symfony:
+            app_path: 'src'
+            part: SERVICES
+      # https://codeception.com/docs/modules/Doctrine2
+      - Doctrine2:
+            # 'ZF2' or 'Symfony'
+            depends: Symfony # Tells Doctrine to fetch the Entity Manager through Symfony
+            # You cannot use cleanup: true in an acceptance test, since Codeception and your app (i.e. browser) are using two different connections to the database, so Codeception can’t wrap changes made by the app into a transaction.
+            # cleanup: true # All doctrine queries will be wrapped in a transaction, which will be rolled back at the end of each test
+            purge_mode: 1 # 1: DELETE (=default), 2: TRUNCATE
+            # - REST:
+            #     url: /wp-json
+            #     # url: /wp-json/wp/v2
+            #     # url: /wp-json/wp/v2/wa-mission
+            #     depends: PhpBrowser
+            #     part: Json
 step_decorators: ~

@@ -623,10 +623,11 @@ codecept clean && codecept run --html 'report.html' 'e2e' \
 
 # Clean and regenerate database for tests data to be re-generated from first test launch
 # BE CARFULL if saved data in it, do a backup :
-cp var/data.sqlite var/data.bckup.db
-rm var/data.sqlite
+cp var/data.db.sqlite var/data.bckup.db
+rm var/data.db.sqlite
+# rebuild an empty database :
 php bin/console doctrine:migrations:migrate -n
-codecept run
+codecept clean && codecept run --html
 
 # Re-build Actor if you update test helpers :
 codecept build

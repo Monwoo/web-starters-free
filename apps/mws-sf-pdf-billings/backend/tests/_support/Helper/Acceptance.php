@@ -99,7 +99,7 @@ class Acceptance extends \Codeception\Module
     const initE2E = () => {
         $('.e2e-test-info').remove();
         $('body').append(window.$(`
-            <div class='e2e-test-info' style='position:fixed; z-index:999999; bottom:0px; right:0px; padding: 3px 7px; pointer-events: none; background: white; font-size:10pt; opacity: 0.7; text-align: right; '>
+            <div class='e2e-test-info' style='position:fixed; z-index:999999; bottom:0px; right:0px; padding: 3px 7px; pointer-events: none; background: white; font-size:8pt; opacity: 0.5; text-align: right; '>
             $tInfo<br/><strong>Copyright</strong> Monwoo<strong>. Confidentiel</strong>, merci de respecter le <strong>secret privé et professionnel</srong>.
             </div>
         `));

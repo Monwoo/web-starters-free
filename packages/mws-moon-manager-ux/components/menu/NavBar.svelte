@@ -286,6 +286,7 @@
             <span
               class="max-w-full md:max-w-[7rem] px-1
               whitespace-nowrap overflow-hidden text-ellipsis"
+              class:mws-user-connected={$state.user ?? false}
             >
               {$state.user?.userIdentifier ?? ``}
             </span>

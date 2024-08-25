@@ -4,6 +4,7 @@
 namespace MWS\MoonManagerBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use MWS\MoonManagerBundle\Entity\MwsUser;
@@ -24,8 +25,10 @@ class MwsUserRepository extends ServiceEntityRepository implements PasswordUpgra
     public $teamMemberschoiceLabelHandler = null;
     public $teamMembersQuery = null;
 
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        protected EntityManagerInterface $em,
+    ) {
         parent::__construct($registry, MwsUser::class);
         $repo = $this;
         $availableRoles = $repo->getAvailableRoles();
@@ -79,19 +82,19 @@ class MwsUserRepository extends ServiceEntityRepository implements PasswordUpgra
 
     public function add(MwsUser $entity, bool $flush = false): void
     {
-        $this->getObjectManager()->persist($entity);
+        $this->em->persist($entity);
 
         if ($flush) {
-            $this->getObjectManager()->flush();
+            $this->em->flush();
         }
     }
 
     public function remove(MwsUser $entity, bool $flush = false): void
     {
-        $this->getObjectManager()->remove($entity);
+        $this->em->remove($entity);
 
         if ($flush) {
-            $this->getObjectManager()->flush();
+            $this->em->flush();
         }
     }
 
