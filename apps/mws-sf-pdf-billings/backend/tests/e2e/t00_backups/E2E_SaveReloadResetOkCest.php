@@ -57,10 +57,21 @@ class E2E_SaveReloadResetOkCest
       $dataSteps->addOffer01();
     }
     $I->assertTrue($dataSteps->haveOffer01(), "Test offer 01 for backup not found");
+    $I->scrollToWithNav($dataSteps->locatorListOffer01());
+
+    $I->makeScreenshot('01-01-backup-add-test-offer');
     $dataSteps->haveOffer01();
     $adminSteps->doBackup();
+
+    // reload to see backup on screen :
+    $I->click(UserSteps::$userMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click(AdminSteps::$backupMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->scrollToWithNav(Locator::contains('h1', 'Liste des backups'));
+
     // TODO : get download file name
-    $I->makeScreenshot('01-01-backup-save');
+    $I->makeScreenshot('01-02-backup-save');
   }
 
   public function specification02Test(AcceptanceTester $I, UserSteps $userSteps): void

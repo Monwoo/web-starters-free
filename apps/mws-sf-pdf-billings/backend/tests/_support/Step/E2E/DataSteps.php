@@ -65,8 +65,12 @@ class DataSteps extends AcceptanceTester
     $I = $this;
     $I->click(DataSteps::$listOffersMenuSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    return count($I->grabMultiple($this->locatorListOffer01())) > 0;
+  }
+
+  public function locatorListOffer01() {
     $offer01ListTestSelector = 'a[href="/mws/fr/mws-offer/view/e2e-test"]';
-    return count($I->grabMultiple($offer01ListTestSelector)) > 0;
+    return $offer01ListTestSelector;
   }
 
   public function addOffer01()
