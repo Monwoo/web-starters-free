@@ -34,7 +34,10 @@ modules:
                       - --disable-search-engine-choice-screen
                       # - user-data-dir=./tests/_output/user-data
                     prefs:
-                        download.default_directory: ./tests/_output/chrome-download
+                        # download.default_directory: ./tests/_output/chrome-download
+                        # TODO : relative folder not working ? :
+                        # download.default_directory: "%PWD%/tests/_output/chrome-download"
+                        download.default_directory: /Users/miguel/goinfre/web-starters-free/apps/mws-sf-pdf-billings/backend/tests/_output/chrome-download
       - Asserts
       - \App\Tests\Helper\Acceptance
       # https://codeception.com/docs/modules/Symfony

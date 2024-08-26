@@ -70,7 +70,7 @@ class UserSteps extends \App\Tests\AcceptanceTester
 
     if ($username ?? false) {
       $I->comment("🇫🇷🇫🇷 Être connecté avec [$username]");
-      // $navHeight = $I->executeJS("return parseInt($('#mainNavbar').outerHeight()) || 0;");
+      // $navHeight = $I->executeJS("return parseInt($('.mws-nav-bar').outerHeight()) || 0;");
       // $userMenuLocator = Locator::contains(
       //   self::$userMenuSelector,
       //   $username // not working...

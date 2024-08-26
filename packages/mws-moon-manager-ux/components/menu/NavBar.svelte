@@ -79,7 +79,7 @@
           <span
             class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
           >
-            <button class="inline-flex flex-wrap justify-center items-center w-min px-4">
+            <button class="inline-flex flex-wrap justify-center items-center w-min px-4 mws-add-offer">
               <span class="w-full text-sm wide:text-xs">
                 Rechercher une offre
               </span>

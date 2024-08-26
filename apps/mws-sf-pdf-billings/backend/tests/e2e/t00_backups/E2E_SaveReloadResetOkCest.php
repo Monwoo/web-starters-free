@@ -14,6 +14,8 @@ namespace App\Tests\e2e\t00_backups;
 
 use App\Repository\UserRepository;
 use App\Tests\AcceptanceTester;
+use App\Tests\Step\E2E\AdminSteps;
+use App\Tests\Step\E2E\DataSteps;
 use App\Tests\Step\E2E\UserSteps;
 use Codeception\Util\Locator;
 
@@ -45,10 +47,15 @@ class E2E_SaveReloadResetOkCest
   // {
   // }
 
-  public function specification01Test(AcceptanceTester $I, UserSteps $userSteps): void
-  {
+  public function specification01Test(
+    AcceptanceTester $I,
+    AdminSteps $adminSteps,
+    DataSteps $dataSteps,
+  ): void {
     $I->comment("🇫🇷🇫🇷 Sauvegarder un backup");
-    $I->amOnPage("/");
+    // $dataSteps->addOffer01();
+    $adminSteps->doBackup();
+    // TODO : get download file name
     $I->makeScreenshot('01-01-backup-save');
   }
 

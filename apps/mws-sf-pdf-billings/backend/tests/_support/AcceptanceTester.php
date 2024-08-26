@@ -102,7 +102,7 @@ class AcceptanceTester extends \Codeception\Actor
         $I = $this;
         $isFound = true;
         try {
-            $navHeight = $I->executeJS("return parseInt($('#mainNavbar').outerHeight()) || 0;");
+            $navHeight = $I->executeJS("return parseInt($('.mws-nav-bar').outerHeight()) || 0;");
             $I->scrollToWithNav($locator);
             $I->seeElement($locator); // with WebDriver, MUST be VISIBLE at screen to work...
         } catch (\Exception $e) {
@@ -141,37 +141,38 @@ class AcceptanceTester extends \Codeception\Actor
     public function scrollToWithNav($selector, ?int $offsetX = NULL, ?int $offsetY = NULL): void
     {
         $I = $this;
-        $navHeight = intval($I->executeJS("return parseInt($('#mainNavbar').outerHeight()) || 0;"));
+        $navSelector = ".mws-nav-bar";
+        $navHeight = intval($I->executeJS("return parseInt($('" . $navSelector ."').outerHeight()) || 0;"));
         $offsetY -= $navHeight;
         $offsetYStr = str_pad($offsetY, 1, "0", STR_PAD_LEFT);
         $offsetXStr = str_pad($offsetX, 1, "0", STR_PAD_LEFT);
         $xPath = $I->convertToXPath($selector);
-        // $scrollScript = "
-        //     const t = $(\$x(\"$xPath\"));
-        //     t[0].scrollIntoView({ // Take for CSS props
-        //         behavior: 'instant', // WRONG, work with srollTo this way only
-        //     });
-        //     window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
-        //     return ! t.is(':offscreen');
-        // ";
+        $scrollScript = "
+            const t = $(\$x(\"$xPath\"));
+            t[0].scrollIntoView({ // Take for CSS props
+                behavior: 'instant', // WRONG, work with srollTo this way only
+            });
+            window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
+            return ! t.is(':offscreen');
+        ";
 
         // TODO : ensure scroll script : ? or keep with no scroll anims UX ?
-        // $scrollScript = "
-        //     const t = $(\$x(\"$xPath\"));
-        //     $('html').css('scroll-behavior', 'unset');
-        //     t[0].scrollIntoView();
-        //     window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
-        // ";
-        // $I->debug($scrollScript);
-        // $I->executeJS($scrollScript);
+        $scrollScript = "
+            const t = $(\$x(\"$xPath\"));
+            $('html').css('scroll-behavior', 'unset');
+            t[0].scrollIntoView();
+            window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
+        ";
+        $I->debug($scrollScript);
+        $I->executeJS($scrollScript);
 
-        // try {
-        //     // $I->debug($waitScript, $I->executeJS($waitScript));
-        //     $I->waitForJs($scrollScript, 7);
-        // } catch (\Exception $e) {
-        //     $I->debug($e);
-        //     $I->comment("Scroll timeout reached... might break");
-        // }
-        // $I->waitHumanDelay();
+        try {
+            // $I->debug($waitScript, $I->executeJS($waitScript));
+            $I->waitForJs($scrollScript, 7);
+        } catch (\Exception $e) {
+            $I->debug($e);
+            $I->comment("Scroll timeout reached... might break");
+        }
+        $I->waitHumanDelay();
     }
 }
