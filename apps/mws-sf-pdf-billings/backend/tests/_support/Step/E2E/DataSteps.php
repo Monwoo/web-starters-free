@@ -34,7 +34,7 @@ class DataSteps extends AcceptanceTester
   //   // $this->initVars(); // TIPS : will error : 
   //   // Codeception\Actor::$scenario must not be accessed before initialization
   // }
-  
+
   // public function wantTo(string $text): void {
   //   parent::wantTo($text);
   //   $this->initVars(); // Not called before test if not called manually...
@@ -48,19 +48,30 @@ class DataSteps extends AcceptanceTester
   public static $addOfferModalIdFieldSelector = null;
   public static $addOfferModalClientNameFieldSelector = null;
   public static $addOfferModalSubmitBtnSelector = '.mws-add-modal input.sd-navigation__complete-btn';
+  public static $listOffersMenuSelector = '.mws-nav-bar .mws-list-offers';
   public static function initVars()
   {
     // $registry = $I->grabService('doctrine'); // Get EntityManager
     // dd($registry);
     DataSteps::$addOfferModalIdFieldSelector =
-    Locator::elementAt('.mws-add-modal input', 2);
+      Locator::elementAt('.mws-add-modal input', 2);
     DataSteps::$addOfferModalClientNameFieldSelector =
-    Locator::elementAt('.mws-add-modal input', 4);
+      Locator::elementAt('.mws-add-modal input', 4);
+  }
+
+  // TODO : use DataProfider design pattern ?
+  public function haveOffer01()
+  {
+    $I = $this;
+    $I->click(DataSteps::$listOffersMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $offer01ListTestSelector = 'a[href="/mws/fr/mws-offer/view/e2e-test"]';
+    return count($I->grabMultiple($offer01ListTestSelector)) > 0;
   }
 
   public function addOffer01()
   {
-    $this->initVars();
+    // $this->initVars(); ok but too heavy to repeat... + DESIGN issue for I
     $I = $this;
     $I->comment("🇫🇷🇫🇷 Ajoute l'offre 01");
     $I->click(DataSteps::$addOfferMenuSelector);

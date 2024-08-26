@@ -73,7 +73,7 @@
             _locale: locale ?? "fr",
             viewTemplate: viewTemplate ?? null,
           })}
-          class="flex items-center pb-2"
+          class="flex items-center pb-2 mws-list-offers"
         >
           <img src={crmLogo} class="h-8 mr-3" alt="Flowbite Logo" />
           <span

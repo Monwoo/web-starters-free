@@ -53,7 +53,11 @@ class E2E_SaveReloadResetOkCest
     DataSteps $dataSteps,
   ): void {
     $I->comment("🇫🇷🇫🇷 Sauvegarder un backup");
-    $dataSteps->addOffer01();
+    if (!$dataSteps->haveOffer01()) {
+      $dataSteps->addOffer01();
+    }
+    $I->assertTrue($dataSteps->haveOffer01(), "Test offer 01 for backup not found");
+    $dataSteps->haveOffer01();
     $adminSteps->doBackup();
     // TODO : get download file name
     $I->makeScreenshot('01-01-backup-save');
