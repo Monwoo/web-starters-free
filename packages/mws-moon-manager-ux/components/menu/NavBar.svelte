@@ -79,7 +79,7 @@
           <span
             class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
           >
-            <button class="inline-flex flex-wrap justify-center items-center w-min px-4 mws-add-offer">
+            <button class="inline-flex flex-wrap justify-center items-center w-min px-4 mws-search-offers">
               <span class="w-full text-sm wide:text-xs">
                 Rechercher une offre
               </span>
@@ -100,6 +100,7 @@
         <!-- // TODO : else close ? lighter webservice open to add offers ONLY from outside ? (add email user field to track non connected user source as hints...) -->
         {#if $state.user}
           <EditOfferTrigger
+            class='mws-add-offer'
             syncOfferOk={async (o) => {
               alert(`Ajout de l'offre ok pour ${o.clientUsername}. [${o.slug}]`)
             }}

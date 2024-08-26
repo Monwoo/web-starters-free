@@ -53,7 +53,7 @@ class E2E_SaveReloadResetOkCest
     DataSteps $dataSteps,
   ): void {
     $I->comment("🇫🇷🇫🇷 Sauvegarder un backup");
-    // $dataSteps->addOffer01();
+    $dataSteps->addOffer01();
     $adminSteps->doBackup();
     // TODO : get download file name
     $I->makeScreenshot('01-01-backup-save');

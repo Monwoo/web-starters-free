@@ -35,12 +35,14 @@
   import { EditOutline } from "flowbite-svelte-icons";
   import { get } from "svelte/store";
 
+  let cssClass;
+  export { cssClass as class };
   export let locale;
   export let offer;
   // callback on sync offer ok for refresh :
-  export let syncOfferOk = (o) => null;
+  export let syncOfferOk = async (o) => null;
   // callback on sync offer fail (ko) for refresh :
-  export let syncOfferKo = (o, err) => null;
+  export let syncOfferKo = async (o, err) => null;
 
   // TODO : factorize, cf php controller :
   const tagSlugSep = " > ";
@@ -142,7 +144,7 @@
 </script>
 
 <button
-  class="m-2"
+  class="m-2 mws-edit-offer {cssClass}"
   on:click={() => {
     if (offer && $state.addOfferModal.surveyModel) {
       // TODO : factorize with offerExportSJDataNormalizer / offerImportSJDataNormalizer
