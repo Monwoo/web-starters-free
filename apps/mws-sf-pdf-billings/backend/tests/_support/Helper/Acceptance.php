@@ -246,6 +246,10 @@ class Acceptance extends \Codeception\Module
 
   public function _afterSuite() {
     // TODO : save to json
+    file_put_contents(
+      "tests/_output/mws-report.json",
+      json_encode(AcceptanceTester::getMwsReport())
+    );
     // dd(AcceptanceTester::getMwsReport());
   }
 
