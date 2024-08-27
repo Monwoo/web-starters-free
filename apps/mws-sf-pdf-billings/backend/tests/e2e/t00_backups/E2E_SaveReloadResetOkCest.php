@@ -93,7 +93,11 @@ class E2E_SaveReloadResetOkCest
 
   public function specification03Test(AcceptanceTester $I, UserSteps $userSteps): void
   {
-    $I->comment("🇫🇷🇫🇷 Recharger les modifications avant le reset GDPR");
+    $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
+    $I->assertTrue(count($lastDownloadFiles) > 0, 'Previous steps should have download some backups.');
+    $lastDownloadFile = $lastDownloadFiles[0];
+
+    $I->comment("🇫🇷🇫🇷 Recharger les modifications avant le reset GDP via $lastDownloadFile");
     $I->amOnPage("/");
     $I->makeScreenshot('03-01-reload-before-reset-save');
   }

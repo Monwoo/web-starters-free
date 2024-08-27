@@ -615,9 +615,15 @@ php -S localhost:8000 -t public/ &
 codecept clean && codecept run 'e2e' --html
 open tests/_output/report.html
 
+# Only 01
 codecept clean && codecept run --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
 
+# From 01 to 04
+codecept clean && codecept run --html 'report.html' 'e2e' \
+'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1-4]Test'
+
+# Only 01 and 03
 codecept clean && codecept run --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1-4]Test'
 

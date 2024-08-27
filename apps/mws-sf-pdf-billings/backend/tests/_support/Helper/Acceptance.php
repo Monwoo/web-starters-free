@@ -153,6 +153,8 @@ class Acceptance extends \Codeception\Module
     $finder->files()->in($path)
         ->ignoreDotFiles(true)
         ->ignoreUnreadableDirs()
+        ->sortByModifiedTime()
+        ->reverseSorting()
         ->depth(0);
     return array_map(function(SplFileInfo $f) {
       return $f->getFilename();

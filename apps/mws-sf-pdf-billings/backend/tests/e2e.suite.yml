@@ -32,7 +32,7 @@ modules:
                     args:
                       # TIPS : below options might change, check last updated docs...
                       - --disable-search-engine-choice-screen
-                      # - user-data-dir=./tests/_output/user-data
+                      - user-data-dir=./tests/_output/chrome-user-data
                     prefs:
                         # download.default_directory: ./tests/_output/chrome-download
                         # TODO : relative folder not working ? :
