@@ -640,6 +640,11 @@ codecept build
 
 # Clean cache
 php bin/console cache:clear
+
+# open custom report :
+php -S localhost:8015 -t ./tests/ &
+open http://localhost:8015/report
+
 ```
 
 ## Useful Links
