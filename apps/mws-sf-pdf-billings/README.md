@@ -623,9 +623,9 @@ codecept clean && codecept run --html 'report.html' 'e2e' \
 codecept clean && codecept run --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1-4]Test'
 
-# Only 01 and 03
+# Only 01, 03 and from 04 to 07
 codecept clean && codecept run --html 'report.html' 'e2e' \
-'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1-4]Test'
+'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1..3..4-7]Test'
 
 # Clean and regenerate database for tests data to be re-generated from first test launch
 # BE CARFULL if saved data in it, do a backup :

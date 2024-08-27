@@ -27,8 +27,9 @@ class E2E_SaveReloadResetOkCest
   public function _before(AcceptanceTester $I, UserSteps $userSteps)
   {
     // TIPS : reduce bottom debug bar :
-    $I->amOnPage("/");
+    // $I->amOnPage("/");
     $I->waitHumanDelay();
+
     $hideDebugButton = '//button[contains(@id, "sfToolbarHideButton")]';
     // if (count($I->grabMultiple($hideDebugButton)) === 1) {
     if (count($I->matchVisible($hideDebugButton)) === 1) {
@@ -52,11 +53,11 @@ class E2E_SaveReloadResetOkCest
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
   ): void {
-    $I->comment("🇫🇷🇫🇷 Sauvegarder une offre dans un backup");
+    $I->comment("🇫🇷🇫🇷 Sauvegarder une offre 01 dans un backup");
     if (!$dataSteps->haveOffer01()) {
       $dataSteps->addOffer01();
     }
-    $I->assertTrue($dataSteps->haveOffer01(), "Test offer 01 for backup not found");
+    $I->assertTrue($dataSteps->haveOffer01(), "Missing Test offer 01 for backup");
     $I->scrollToWithNav($dataSteps->locatorListOffer01());
     $I->makeScreenshot('01-01-backup-add-test-offer');
 
@@ -80,39 +81,56 @@ class E2E_SaveReloadResetOkCest
     [ $lastDownloadFile ] = $lastDownloadFile;
     $I->comment("🇫🇷🇫🇷 Backup OK at : $lastDownloadFile");
 
-    // TODO : get download file name
     $I->makeScreenshot('01-02-backup-save');
   }
 
-  public function specification02Test(AcceptanceTester $I, UserSteps $userSteps): void
-  {
-    $I->comment("🇫🇷🇫🇷 Test le reset GDPR");
-    $I->amOnPage("/");
-    $I->makeScreenshot('02-01-backup-reset');
+  public function specification02Test(AcceptanceTester $I,
+    AdminSteps $adminSteps,
+    DataSteps $dataSteps,
+  ): void {
+    $I->comment("🇫🇷🇫🇷 Sauvegarder une offre 02 avant reset GDPR");
+    if (!$dataSteps->haveOffer02()) {
+      $dataSteps->addOffer02();
+    }
+    $I->assertTrue($dataSteps->haveOffer02(), "Missing Test offer 02 before GDPR reset");
+    $I->scrollToWithNav($dataSteps->locatorListOffer02());
+    $I->makeScreenshot('02-01-GDPR-add-before-reset');
+
+    $I->comment("🇫🇷🇫🇷 GDPR Reset OK");
+
+    $I->makeScreenshot('02-02-GDPR-reset-ok');
   }
 
   public function specification03Test(AcceptanceTester $I, UserSteps $userSteps): void
+  {
+    $I->comment("🇫🇷🇫🇷 Rechargement du backup automatique avant reset GDPR");
+
+  }
+
+  public function specification04Test(AcceptanceTester $I, UserSteps $userSteps): void
   {
     $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
     $I->assertTrue(count($lastDownloadFiles) > 0, 'Previous steps should have download some backups.');
     $lastDownloadFile = $lastDownloadFiles[0];
 
-    $I->comment("🇫🇷🇫🇷 Recharger les modifications avant le reset GDP via $lastDownloadFile");
-    $I->amOnPage("/");
-    $I->makeScreenshot('03-01-reload-before-reset-save');
-  }
-
-  public function specification04Test(AcceptanceTester $I, UserSteps $userSteps): void
-  {
-    $I->comment("🇫🇷🇫🇷 Télécharger un backup ZIP");
-    $I->amOnPage("/");
-    $I->makeScreenshot('04-01-backup-download');
+    $I->comment("🇫🇷🇫🇷 Recharger le premier backup initial via $lastDownloadFile");
+    $I->makeScreenshot('03-04-reload-first-zip');
   }
 
   public function specification05Test(AcceptanceTester $I, UserSteps $userSteps): void
   {
-    $I->comment("🇫🇷🇫🇷 Remettre à jour avec un backup ZIP");
-    $I->amOnPage("/");
-    $I->makeScreenshot('05-01-backup-upload');
+    $I->comment("🇫🇷🇫🇷 Définir le reset GDPR sur un backup précédent");
   }
+
+  public function specification06Test(AcceptanceTester $I, UserSteps $userSteps): void
+  {
+    $I->comment("🇫🇷🇫🇷 Importer un backup depuis l'historique des backups");
+  }
+
+  public function specification07Test(AcceptanceTester $I, UserSteps $userSteps): void
+  {
+    $I->comment("🇫🇷🇫🇷 Télécharger un backup zip depuis l'historique des backups");
+    $I->comment("🇫🇷🇫🇷 Importer ce backup");
+  }
+
 }
