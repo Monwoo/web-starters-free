@@ -36,6 +36,20 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }
 
+  public function doGDPRReset()
+  {
+    $I = $this;
+    $I->comment("🇫🇷🇫🇷 Forcer un reset GDPR");
+    $urlGenerator = $I->grabService('router.default');
+    $gdprResetUrl = $urlGenerator->generate('app_factory_reset', [
+      'forceTimeout' => true
+    ]);
+    $I->amOnPage($gdprResetUrl);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+  }
+
+  // mws_config_backup_internal_use_as_gdpr_reset
+
 }
 
 AdminSteps::initVars();

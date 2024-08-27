@@ -27,8 +27,9 @@ class E2E_SaveReloadResetOkCest
   public function _before(AcceptanceTester $I, UserSteps $userSteps)
   {
     // TIPS : reduce bottom debug bar :
-    // $I->amOnPage("/");
-    $I->waitHumanDelay();
+    $I->waitHumanDelay(); // TODO : Wait for libs loads before injected JS
+    $I->amOnPage("/");
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
 
     $hideDebugButton = '//button[contains(@id, "sfToolbarHideButton")]';
     // if (count($I->grabMultiple($hideDebugButton)) === 1) {
@@ -61,9 +62,9 @@ class E2E_SaveReloadResetOkCest
     $I->scrollToWithNav($dataSteps->locatorListOffer01());
     $I->makeScreenshot('01-01-backup-add-test-offer');
 
+    // TIPS : save download list BEFORE doing any downloads to get the downloaded filename...
     $downloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
 
-    $dataSteps->haveOffer01();
     $adminSteps->doBackup();
 
     // reload to see backup on screen :
@@ -96,7 +97,7 @@ class E2E_SaveReloadResetOkCest
     $I->scrollToWithNav($dataSteps->locatorListOffer02());
     $I->makeScreenshot('02-01-GDPR-add-before-reset');
 
-    $I->comment("🇫🇷🇫🇷 GDPR Reset OK");
+    $adminSteps->doGDPRReset();
 
     $I->makeScreenshot('02-02-GDPR-reset-ok');
   }

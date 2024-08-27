@@ -95,6 +95,42 @@ class DataSteps extends AcceptanceTester
 
     // TODO : ensure offer did write ? 
   }
+
+  public function haveOffer02()
+  {
+    $I = $this;
+    $I->click(DataSteps::$listOffersMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    return count($I->grabMultiple($this->locatorListOffer02())) > 0;
+  }
+
+  public function locatorListOffer02() {
+    $offer01ListTestSelector = 'a[href="/mws/fr/mws-offer/view/e2e-test-02"]';
+    return $offer01ListTestSelector;
+  }
+
+  public function addOffer02()
+  {
+    // $this->initVars(); ok but too heavy to repeat... + DESIGN issue for I
+    $I = $this;
+    $I->comment("🇫🇷🇫🇷 Ajoute l'offre 02");
+    $I->click(DataSteps::$addOfferMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    $I->scrollToWithNav(DataSteps::$addOfferModalIdFieldSelector);
+    $I->fillField(DataSteps::$addOfferModalIdFieldSelector, "e2e-test-02");
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->scrollToWithNav(DataSteps::$addOfferModalClientNameFieldSelector);
+    $I->fillField(DataSteps::$addOfferModalClientNameFieldSelector, "T E2e 02");
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    $I->scrollToWithNav(DataSteps::$addOfferModalSubmitBtnSelector);
+    $I->click(DataSteps::$addOfferModalSubmitBtnSelector);
+    // $I->acceptPopup(); // TODO : no popup on 02 ? refactor to remove popup seen on 01 ?
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    // TODO : ensure offer did write ? 
+  }
 }
 
 DataSteps::initVars();
