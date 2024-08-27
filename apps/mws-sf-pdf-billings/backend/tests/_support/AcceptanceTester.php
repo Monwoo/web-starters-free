@@ -168,7 +168,8 @@ class AcceptanceTester extends \Codeception\Actor
 
         try {
             // $I->debug($waitScript, $I->executeJS($waitScript));
-            $I->waitForJs($scrollScript, 7);
+            // $I->waitForJs($scrollScript, 7);
+            $I->waitForJs($scrollScript, 1);
         } catch (\Exception $e) {
             $I->debug($e);
             $I->comment("Scroll timeout reached... might break");

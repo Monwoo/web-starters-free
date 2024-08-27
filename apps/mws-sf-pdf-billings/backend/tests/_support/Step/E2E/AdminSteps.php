@@ -9,15 +9,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Step\E2E;
 
-use Codeception\Util\HttpCode;
-use Codeception\Util\Locator;
-use MWS\MoonManagerBundle\Entity\MwsUser;
-
 class AdminSteps extends \App\Tests\AcceptanceTester
 {
   public static $backupMenuSelector = '#dropdownNavbar a[href="/mws/fr/mws-config/backup"]';
   public static $backupNameFieldSelector = 'form[name="mainBackup"] input[name="backupRawName"]';
   public static $backupDownloadClickSelector = 'form[name="mainBackup"] button[type="submit"]';
+  public static $downloadFolderPath = 'tests/_output/chrome-download';
 
   public static function initVars()
   {
@@ -38,6 +35,7 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->click(AdminSteps::$backupDownloadClickSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }
+
 }
 
 AdminSteps::initVars();

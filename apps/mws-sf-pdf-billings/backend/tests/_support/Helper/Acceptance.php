@@ -4,6 +4,9 @@ namespace App\Tests\Helper;
 
 use Codeception\Module\WebDriver;
 use ReflectionMethod;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
@@ -136,6 +139,24 @@ class Acceptance extends \Codeception\Module
       $I->wait(0.1); // TODO : load event listener with timeout...
       $this->appendInfoJs($I);
     }
+  }
+
+  public function grabFilenames($path)
+  {
+    $filesystem = new Filesystem();
+
+    if (!$filesystem->exists($path)) {
+      return [];
+    }
+
+    $finder = new Finder();
+    $finder->files()->in($path)
+        ->ignoreDotFiles(true)
+        ->ignoreUnreadableDirs()
+        ->depth(0);
+    return array_map(function(SplFileInfo $f) {
+      return $f->getFilename();
+    }, iterator_to_array($finder, false));
   }
 
   public function waitHumanDelay($minTime = 0.1)

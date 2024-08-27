@@ -52,14 +52,16 @@ class E2E_SaveReloadResetOkCest
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
   ): void {
-    $I->comment("🇫🇷🇫🇷 Sauvegarder un backup");
+    $I->comment("🇫🇷🇫🇷 Sauvegarder une offre dans un backup");
     if (!$dataSteps->haveOffer01()) {
       $dataSteps->addOffer01();
     }
     $I->assertTrue($dataSteps->haveOffer01(), "Test offer 01 for backup not found");
     $I->scrollToWithNav($dataSteps->locatorListOffer01());
-
     $I->makeScreenshot('01-01-backup-add-test-offer');
+
+    $downloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
+
     $dataSteps->haveOffer01();
     $adminSteps->doBackup();
 
@@ -69,6 +71,14 @@ class E2E_SaveReloadResetOkCest
     $I->click(AdminSteps::$backupMenuSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
     $I->scrollToWithNav(Locator::contains('h1', 'Liste des backups'));
+
+    // Ensure zip is present :
+    $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
+    $lastDownloadFile = array_diff($lastDownloadFiles, $downloadFiles);
+    $I->assertTrue(count($lastDownloadFile) === 1, 'Should have download last backup in download folder.');
+    // dd($lastDownloadFile);
+    [ $lastDownloadFile ] = $lastDownloadFile;
+    $I->comment("🇫🇷🇫🇷 Backup OK at : $lastDownloadFile");
 
     // TODO : get download file name
     $I->makeScreenshot('01-02-backup-save');
