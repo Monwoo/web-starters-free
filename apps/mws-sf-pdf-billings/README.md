@@ -10,6 +10,10 @@ Bonus : Basic controller ok for simple JWT authentification if needed.
 ## Demonstration
 [@demo mws.monwoo.com/demos/sf-pdf-billings/](https://mws.monwoo.com/demos/sf-pdf-billings/)
 
+** Custom test report example : **
+[https://mws.monwoo.com/demos/sf-pdf-billings/tests/report/
+](https://mws.monwoo.com/demos/sf-pdf-billings/tests/report/)
+
 ## TODO
  - clean the doc, remove useless cmd, narrow quick start / dev / tests / prod
 
@@ -643,7 +647,7 @@ php bin/console cache:clear
 
 # open custom report :
 php -S localhost:8015 -t ./tests/ &
-open http://localhost:8015/report
+open http://localhost:8015/report/
 
 ```
 
