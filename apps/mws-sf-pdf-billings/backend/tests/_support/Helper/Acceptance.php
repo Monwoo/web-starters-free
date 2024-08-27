@@ -2,6 +2,7 @@
 
 namespace App\Tests\Helper;
 
+use App\Tests\AcceptanceTester;
 use Codeception\Module\WebDriver;
 use ReflectionMethod;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,7 +14,8 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Acceptance extends \Codeception\Module
 {
-  protected $currentTest = null;
+  protected $mwsCurrentTest = null;
+  // public $mwsTestReport = []; Nop, need to be in actor class
   /**
    * @see \Codeception\Module\WebDriver::makeScreenshot()
    */
@@ -25,8 +27,29 @@ class Acceptance extends \Codeception\Module
     // $I->waitHumanDelay();
     $I->wait(0.1);
     $I->makeScreenshot($name);
+    AcceptanceTester::mwsAddToReport([ // TODO : actor not accessible....
+      'type' => 'screenshot',
+      'data' => [
+        'name' => $name,
+      ],
+    ]);
     // $this->getScenario()->runStep(new \Codeception\Step\Action('makeScreenshot', func_get_args()));
   }
+
+  // public function comment(string $description): void {
+  //   /** @var \Codeception\Module\WebDriver */
+  //   $I = $this->getModule('WebDriver');
+  //   $I->comment($description);
+  //   // $this->getScenario()->comment($description);
+  //   // parent::comment($description);
+
+  //   $this->mwsTestReport[] = [
+  //     'type' => 'comment',
+  //     'data' => [
+  //       'name' => $description,
+  //     ],
+  //   ];
+  // }
 
   // https://codeception.com/docs/ModulesAndHelpers
   // HOOK: used after configuration is loaded
@@ -141,6 +164,21 @@ class Acceptance extends \Codeception\Module
     }
   }
 
+  public function clickAndAcceptPopup($page, $waitForLoads = true): void
+  {
+    /** @var \Codeception\Module\WebDriver */
+    $I = $this->getModule('WebDriver');
+    
+    // $this->appendInfoJs($I); 
+    $this->appendInfoJs($I);
+    $I->click($page);
+    $I->acceptPopup();
+    if ($waitForLoads) {
+      $I->wait(0.1); // TODO : load event listener with timeout...
+      $this->appendInfoJs($I);
+    }
+  }
+
   public function grabFilenames($path)
   {
     $filesystem = new Filesystem();
@@ -179,17 +217,17 @@ class Acceptance extends \Codeception\Module
     $filename = $meta->getCurrent('filename') ?? $meta->getFilename();
     $feature = $meta->getCurrent('feature') ?? $meta->getFeature();
     $index = $meta->getCurrent('index') ?? $meta->getIndex();
-    // $this->currentTest = $test;
-    $this->currentTest = $test;
+    // $this->mwsCurrentTest = $test;
+    $this->mwsCurrentTest = $test;
     // $this->env = $test->getScenario()->current('env');
     /** @var AcceptanceTester */
 
     $I = $this;
-    // var_dump(json_encode($this->currentTest));
+    // var_dump(json_encode($this->mwsCurrentTest));
     // var_dump(json_encode($meta));
     // exit;
 
-    // $I->setCustomTestsInformations(json_encode($this->currentTest));
+    // $I->setCustomTestsInformations(json_encode($this->mwsCurrentTest));
     // $info = "[$index] $filename $name $feature";
     // $testFile = dirname($filename)."/".basename($filename);
     // $testFile = implode("/", array_slice(explode("/", $filename), -2));
@@ -202,7 +240,15 @@ class Acceptance extends \Codeception\Module
   }
 
   // HOOK: after test
-  public function _after(\Codeception\TestInterface $test) {}
+  public function _after(\Codeception\TestInterface $test) {
+    // dd('ok after tests');
+  }
+
+  public function _afterSuite() {
+    // TODO : save to json
+    // dd(AcceptanceTester::getMwsReport());
+  }
+
 
   // HOOK: on fail
   public function _failed(\Codeception\TestInterface $test, $fail)

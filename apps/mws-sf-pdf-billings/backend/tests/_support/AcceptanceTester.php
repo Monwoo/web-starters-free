@@ -24,6 +24,55 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
+    protected static $mwsTestReport = [];
+    public static function mwsAddToReport($reportItem) {
+        self::$mwsTestReport[] = $reportItem;
+    }
+
+    public static function getMwsReport() {
+        return self::$mwsTestReport;
+    }
+
+    public function comment(string $description): \Codeception\Actor
+    {
+        // dd(  $this->getScenario()->current('modules'));
+        /** @var \Codeception\Module\WebDriver */
+        // $I = $this->getModule('WebDriver');
+        // $I->comment($description);
+        // $this->getScenario()->comment($description);
+        parent::comment($description);
+
+        self::mwsAddToReport([
+            'type' => 'comment',
+            'data' => [
+                'name' => $description,
+            ],
+        ]);
+
+        return $this;
+    }
+
+    // public function makeScreenshot(?string $name = NULL): void
+    // {
+    // //   dd(  $this->getScenario()->current('modules'));
+    // //   dd(  $this->getScenario()->makeScreenshot('WebDriver'));
+
+    //   /** @var \Codeception\Module\WebDriver */
+    //   $I = $this->getModule('WebDriver'); // TODO : missing getModule...
+    //   $this->appendInfoJs($I);
+    //   // $I->waitHumanDelay();
+    //   $I->wait(0.1);
+    //   $I->makeScreenshot($name);
+    // //   $this->getScenario()->makeScreenshot($name);
+    //   $this->mwsAddToReport([
+    //     'type' => 'screenshot',
+    //     'data' => [
+    //       'name' => $name,
+    //     ],
+    //   ]);
+    //   // $this->getScenario()->runStep(new \Codeception\Step\Action('makeScreenshot', func_get_args()));
+    // }
+
     /**
      * Define custom actions here
      */
@@ -142,7 +191,7 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $I = $this;
         $navSelector = ".mws-nav-bar";
-        $navHeight = intval($I->executeJS("return parseInt($('" . $navSelector ."').outerHeight()) || 0;"));
+        $navHeight = intval($I->executeJS("return parseInt($('" . $navSelector . "').outerHeight()) || 0;"));
         $offsetY -= $navHeight;
         $offsetYStr = str_pad($offsetY, 1, "0", STR_PAD_LEFT);
         $offsetXStr = str_pad($offsetX, 1, "0", STR_PAD_LEFT);
@@ -176,4 +225,8 @@ class AcceptanceTester extends \Codeception\Actor
         }
         $I->waitHumanDelay();
     }
+
+    // public function _afterSuite() {
+    //     dd($this->getMwsReport()); // TODO : not called... use custom report for custom json generation for html reports...
+    // }   
 }

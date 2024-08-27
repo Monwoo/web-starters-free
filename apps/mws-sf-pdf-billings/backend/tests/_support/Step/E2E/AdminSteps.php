@@ -58,14 +58,21 @@ class AdminSteps extends \App\Tests\AcceptanceTester
 
   public function importInternalBackup($backupName) {
     $I = $this;
+    $I->comment("🇫🇷🇫🇷 Importer le backup $backupName");
     $I->click(UserSteps::$userMenuSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
     $I->click(AdminSteps::$backupMenuSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
 
-    $bkupImportSelector = "form:nth-child(2) input[value=\"$backupName\"]";
+    // https://tobiasahlin.com/blog/previous-sibling-css-has/
+    // .box:has(+ .circle) {
+
+    $bkupImportSelector = "form:nth-child(2) input[value=\"$backupName\"] + button";
     $I->scrollToWithNav($bkupImportSelector);
-    $I->click(AdminSteps::$backupMenuSelector);
+    // $I->scrollTo($bkupImportSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->clickAndAcceptPopup($bkupImportSelector);
+    // $I->acceptPopup();
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }
   // mws_config_backup_internal_use_as_gdpr_reset
