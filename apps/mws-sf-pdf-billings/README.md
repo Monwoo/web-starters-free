@@ -10,7 +10,7 @@ Bonus : Basic controller ok for simple JWT authentification if needed.
 ## Demonstration
 [@demo mws.monwoo.com/demos/sf-pdf-billings/](https://mws.monwoo.com/demos/sf-pdf-billings/)
 
-** Custom test report example : **
+**Custom test report example :**
 [https://mws.monwoo.com/demos/sf-pdf-billings/tests/report/
 ](https://mws.monwoo.com/demos/sf-pdf-billings/tests/report/)
 
