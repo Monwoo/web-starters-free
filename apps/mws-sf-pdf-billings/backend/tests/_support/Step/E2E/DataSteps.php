@@ -90,7 +90,7 @@ class DataSteps extends AcceptanceTester
 
     $I->scrollToWithNav(DataSteps::$addOfferModalSubmitBtnSelector);
     $I->click(DataSteps::$addOfferModalSubmitBtnSelector);
-    $I->acceptPopup();
+    // $I->acceptPopup(); // TODO : popup removed or saved config removing it ?...
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
 
     // TODO : ensure offer did write ? 

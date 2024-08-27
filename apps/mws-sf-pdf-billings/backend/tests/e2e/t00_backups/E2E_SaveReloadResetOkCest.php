@@ -98,14 +98,26 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('02-01-GDPR-add-before-reset');
 
     $adminSteps->doGDPRReset();
-
     $I->makeScreenshot('02-02-GDPR-reset-ok');
+
+    $I->assertFalse($dataSteps->haveOffer01(), "Should not have test offer 01");
+    $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
+
+    $I->makeScreenshot('02-03-GDPR-offers-ok');
   }
 
-  public function specification03Test(AcceptanceTester $I, UserSteps $userSteps): void
+  public function specification03Test(
+    AcceptanceTester $I, AdminSteps $adminSteps, DataSteps $dataSteps,
+  ): void
   {
     $I->comment("🇫🇷🇫🇷 Rechargement du backup automatique avant reset GDPR");
+    $backups = $adminSteps->grabInternalBackups();
+    $I->assertNotEmpty($backups, 'Missing backup list.');
+    $adminSteps->importInternalBackup($backups[0]);
+    $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
+    $I->assertTrue($dataSteps->haveOffer02(), "Missing expected test offer 02");
 
+    $I->makeScreenshot('03-01-reload-before-GDPR-reset-ok');
   }
 
   public function specification04Test(AcceptanceTester $I, UserSteps $userSteps): void
@@ -115,7 +127,7 @@ class E2E_SaveReloadResetOkCest
     $lastDownloadFile = $lastDownloadFiles[0];
 
     $I->comment("🇫🇷🇫🇷 Recharger le premier backup initial via $lastDownloadFile");
-    $I->makeScreenshot('03-04-reload-first-zip');
+    $I->makeScreenshot('04-01-reload-first-zip');
   }
 
   public function specification05Test(AcceptanceTester $I, UserSteps $userSteps): void

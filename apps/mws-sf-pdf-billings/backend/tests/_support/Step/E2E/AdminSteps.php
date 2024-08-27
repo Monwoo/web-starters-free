@@ -16,9 +16,7 @@ class AdminSteps extends \App\Tests\AcceptanceTester
   public static $backupDownloadClickSelector = 'form[name="mainBackup"] button[type="submit"]';
   public static $downloadFolderPath = 'tests/_output/chrome-download';
 
-  public static function initVars()
-  {
-  }
+  public static function initVars() {}
 
   public function doBackup()
   {
@@ -28,7 +26,7 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
     $I->click(AdminSteps::$backupMenuSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
-    
+
     $I->scrollToWithNav(AdminSteps::$backupNameFieldSelector);
     $I->fillField(AdminSteps::$backupNameFieldSelector, "e2e-test");
     $I->scrollToWithNav(AdminSteps::$backupDownloadClickSelector);
@@ -48,6 +46,28 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }
 
+  public function grabInternalBackups() {
+    $I = $this;
+    $I->click(UserSteps::$userMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click(AdminSteps::$backupMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    return $I->grabMultiple(".mws-local-backup-dir", "data-name");
+  }
+
+  public function importInternalBackup($backupName) {
+    $I = $this;
+    $I->click(UserSteps::$userMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click(AdminSteps::$backupMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    $bkupImportSelector = "form:nth-child(2) input[value=\"$backupName\"]";
+    $I->scrollToWithNav($bkupImportSelector);
+    $I->click(AdminSteps::$backupMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+  }
   // mws_config_backup_internal_use_as_gdpr_reset
 
 }

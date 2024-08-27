@@ -364,8 +364,9 @@
             </form>
           </div>
           <div
-            class="w-1/2
+            class="w-1/2 mws-local-backup-dir
           flex flex-wrap items-start justify-start"
+            data-name={internalName}
           >
             {backupDir}
           </div>
