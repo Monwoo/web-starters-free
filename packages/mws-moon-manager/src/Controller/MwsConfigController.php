@@ -367,6 +367,7 @@ class MwsConfigController extends AbstractController
             $finder = new Finder();
             $finder->files()->in($f);
             $nbFiles = $finder->count();
+            // return 'GMT ' . $f->getRelativePathname() . ' [Max ' // TODO : refactor, target data attribute instead of string spliting messing up functionality if syntax change...
             return $f->getRelativePathname() . ' [Max '
                 . $this->humanSize(
                     $this->mwsFileSize($f->getPathname())

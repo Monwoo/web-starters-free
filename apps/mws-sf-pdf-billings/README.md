@@ -623,6 +623,10 @@ open tests/_output/report.html
 codecept clean && codecept run --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
 
+# Only 01 with debugs
+codecept clean && codecept run  --debug --html 'report.html' 'e2e' \
+'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
+
 # From 01 to 04
 codecept clean && codecept run --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification0[1-4]Test'

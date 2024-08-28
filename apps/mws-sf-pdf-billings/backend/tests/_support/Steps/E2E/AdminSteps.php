@@ -95,11 +95,32 @@ class AdminSteps extends \App\Tests\AcceptanceTester
 
     $I->attachFile(AdminSteps::$backupUploadFieldSelector, $filename);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click(AdminSteps::$backupUploadSubmitSelector);
+    // $I->clickAndAcceptPopup(AdminSteps::$backupUploadSubmitSelector);
+    // $I->acceptPopup();
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+  }
+
+  public function doGdprSrcOnInternalBackup($backupName) {
+    $I = $this;
+    $I->comment("🇫🇷🇫🇷 Source GRPR via : $backupName");
+    $I->click(UserSteps::$userMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click(AdminSteps::$backupMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    // https://tobiasahlin.com/blog/previous-sibling-css-has/
+    // .box:has(+ .circle) {
+
+    $bkupImportSelector = "form:nth-child(4) input[value=\"$backupName\"] + button";
+    $I->scrollToWithNav($bkupImportSelector);
+    // $I->scrollTo($bkupImportSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
     $I->clickAndAcceptPopup($bkupImportSelector);
     // $I->acceptPopup();
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }
-  
+
 }
 
 AdminSteps::initVars();

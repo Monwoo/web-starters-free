@@ -295,6 +295,7 @@
     </div>
     <h1 class="w-full p-4">
       Liste des backups<br/> [Max {$state.config.backupsTotalSize ?? "--"}]
+      <br/> Heure GMT : {dayjs().utc().format('YYYY-MM-DD_HH:mm:ss')}
     </h1>
     <ul class="w-full">
       {#each backups ?? [] as backupDir, idx}

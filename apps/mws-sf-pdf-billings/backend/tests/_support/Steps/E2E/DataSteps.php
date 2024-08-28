@@ -131,6 +131,39 @@ class DataSteps extends AcceptanceTester
 
     // TODO : ensure offer did write ? 
   }
+
+  public function removeOffer02()
+  {
+    // $this->initVars(); ok but too heavy to repeat... + DESIGN issue for I
+    $I = $this;
+    $I->comment("🇫🇷🇫🇷 Nettoie l'offre 02");
+    $I->click(DataSteps::$listOffersMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    // $editLocator = 'tr:has(td:contains("T E2e 02")) td a[href*="/mws-offer/view/"]'; // TODO : update css parser ? :has not handled by current codeception...
+    // TIPS : XPath parser is more advanced, use it :
+    $editLocator = '//tr/' . Locator::contains('td', "T E2e 02")
+    // . '/parent::tr/' . $I->convertToXPath('a[href*="/mws-offer/view/"]') . '[1]'; // Err : not interactive + to view offer, not direct delete...
+    . '/parent::tr/' . $I->convertToXPath('button.mws-edit-offer');
+    $I->scrollToWithNav($editLocator);
+    $I->click($editLocator);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    // $deleteLocator = 'label:has(input[name="_shouldDelete"]) div:contains("Oui")'; // TODO : update css parser ? :has not handled by current codeception...
+    // TIPS : XPath parser is more advanced, use it :
+    $deleteLocator = '//label/' . $I->convertToXPath('input[name="_shouldDelete"]')
+    . '/parent::label/' . Locator::contains('div', "Oui");
+    $I->scrollTo($deleteLocator);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click($deleteLocator);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    $submitLocator = 'input[value="Enregistrer l\'offre"]';
+    $I->scrollTo($submitLocator);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click($submitLocator);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+  }
 }
 
 DataSteps::initVars();

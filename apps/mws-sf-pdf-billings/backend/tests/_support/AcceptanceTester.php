@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use Codeception\Util\Locator;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
 
@@ -179,6 +180,8 @@ class AcceptanceTester extends \Codeception\Actor
         try {
             return (new CssSelectorConverter())->toXPath($selector);
         } catch (ParseException $parseException) {
+            $this->comment('Fail xpath conversion for : ' . $selector);
+            $this->comment('Err : ' . $parseException->getMessage());
             // if (self::isXPath($selector)) {
             //     return $selector;
             // }
@@ -195,20 +198,29 @@ class AcceptanceTester extends \Codeception\Actor
         $offsetY -= $navHeight;
         $offsetYStr = str_pad($offsetY, 1, "0", STR_PAD_LEFT);
         $offsetXStr = str_pad($offsetX, 1, "0", STR_PAD_LEFT);
+        // $xPath = str_replace('"', '\"', $I->convertToXPath($selector));
+        // $xPath = str_replace('"', '\'', $I->convertToXPath($selector));
         $xPath = $I->convertToXPath($selector);
-        $scrollScript = "
-            const t = $(\$x(\"$xPath\"));
-            t[0].scrollIntoView({ // Take for CSS props
-                behavior: 'instant', // WRONG, work with srollTo this way only
-            });
-            window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
-            return ! t.is(':offscreen');
-        ";
+        $isXpath = Locator::isXPath($xPath);
+        $xPath = str_replace("'", "\\'", $xPath); // encode ' for js injection inside '' string
+        // $scrollScript = "
+        //     const t = $(\$x('$xPath'));
+        //     t[0].scrollIntoView({ // Take for CSS props
+        //         behavior: 'instant', // WRONG, work with srollTo this way only
+        //     });
+        //     window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
+        //     return ! t.is(':offscreen');
+        // ";
 
         // TODO : ensure scroll script : ? or keep with no scroll anims UX ?
         $scrollScript = "
-            const t = $(\$x(\"$xPath\"));
-            $('html').css('scroll-behavior', 'unset');
+            const t = $(" . (
+                $isXpath
+                ? "\$x('$xPath')"
+                : "'$xPath'"
+            ) .
+            ");" .
+            "$('html').css('scroll-behavior', 'unset');
             t[0].scrollIntoView();
             window.scroll(window.scrollX + $offsetXStr, window.scrollY + $offsetYStr);
         ";

@@ -69,7 +69,7 @@ class UserSteps extends \App\Tests\AcceptanceTester
     $username = $config['username'] ?? null;
 
     if ($username ?? false) {
-      $I->comment("🇫🇷🇫🇷 Être connecté avec [$username]");
+      $I->comment("🇫🇷🇫🇷 🔐 [$username]");
       // $navHeight = $I->executeJS("return parseInt($('.mws-nav-bar').outerHeight()) || 0;");
       // $userMenuLocator = Locator::contains(
       //   self::$userMenuSelector,
@@ -79,14 +79,14 @@ class UserSteps extends \App\Tests\AcceptanceTester
       if (!$I->testIfPresent($userMenuLocator)) {
         $I->connectTestUser($config, $userMenuLocator);
       } else {
-        $I->comment("✅ 🔓 User already connected as : $username");
+        $I->comment("✅ 🔐 User already connected as : $username");
         // ensure logout
         // Force login
         // $I->click($navBarUsersSubMenu);
         // $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
       }
     } else {
-      $I->comment("🇫🇷🇫🇷 Ne pas être connecté");
+      $I->comment("🇫🇷🇫🇷 🔓 Non connecté");
       // TODO : assert not connected...
     }
   }
@@ -130,14 +130,14 @@ class UserSteps extends \App\Tests\AcceptanceTester
       // Each failed assertion will be shown in the test results, but it won’t stop the test.
       // $I->canSeeInCurrentUrl($loginRedirectUrl);
       // $I->seeInCurrentUrl($loginRedirectUrl);
-      $I->comment("✅ 🔓 Did connect test user : $username");
+      $I->comment("✅ 🔐 Did connect test user : $username");
     } else {
       // Try to force user creation from DB, will work on local tests only 
       // or with db config to target other db from test device
-      $I->comment("❌ 🔐 Fail to connect test user : $username");
+      $I->comment("❌ 🔓 Fail to connect test user : $username");
       $I->comment("Missing : " . json_encode($userMenuLocator));
-      $I->comment("⟳ 🔐 Will try to create and connect test user : $username");
-      // $I->comment("⟳ 🔐 Will try to create and connect test user : $username / $userPassword");
+      $I->comment("⟳ 🔓 Will try to create and connect test user : $username");
+      // $I->comment("⟳ 🔓 Will try to create and connect test user : $username / $userPassword");
 
       // if (isset($this->kernel)) {
       //     return $this->kernel->getContainer()->get('doctrine');
@@ -212,7 +212,7 @@ class UserSteps extends \App\Tests\AcceptanceTester
       // Each failed assertion will be shown in the test results, but it won’t stop the test.
       // $I->canSeeInCurrentUrl($loginRedirectUrl);
       // $I->seeInCurrentUrl($loginRedirectUrl);
-      $I->comment("✅ 🔓 Did connect created test user : $username");
+      $I->comment("✅ 🔐 Did connect created test user : $username");
     }
   }
 
@@ -229,8 +229,8 @@ class UserSteps extends \App\Tests\AcceptanceTester
       $canLogout = $I->testIfPresent(self::$userLogoutSubMenuSelector);
       if ($canLogout) {
         $I->click(self::$userLogoutSubMenuSelector);
-        // $I->comment("✅ 🔐 Did disconnect test user.");
-        $I->comment("✅ 🔐 Did disconnect test user : $username");
+        // $I->comment("✅ 🔓 Did disconnect test user.");
+        $I->comment("✅ 🔓 Did disconnect test user : $username");
       } else {
         $I->comment("❌ 🔓 Wrong private page ? Missing logout link in user menu.");
       }

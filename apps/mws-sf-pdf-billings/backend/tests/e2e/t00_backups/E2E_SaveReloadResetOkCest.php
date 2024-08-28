@@ -56,6 +56,12 @@ class E2E_SaveReloadResetOkCest
   ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 01 - Sauvegarder un backup 🎯🎯");
     $I->comment("🇫🇷🇫🇷 Sauvegarde d'une offre 01 dans un backup");
+
+    if ($dataSteps->haveOffer02()) {
+      $dataSteps->removeOffer02();
+    }
+    $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
+
     if (!$dataSteps->haveOffer01()) {
       $dataSteps->addOffer01();
     }
@@ -68,6 +74,9 @@ class E2E_SaveReloadResetOkCest
 
     $adminSteps->doBackup();
 
+    $I->assertTrue($dataSteps->haveOffer01(), "Test offer 01 should exist after backup");
+    $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02 after backup");
+
     // reload to see backup on screen :
     $I->click(UserSteps::$userMenuSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
@@ -78,18 +87,13 @@ class E2E_SaveReloadResetOkCest
     // Ensure zip is present :
     $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
     $lastDownloadFile = array_diff($lastDownloadFiles, $downloadFiles);
-
-    if ($dataSteps->haveOffer02()) {
-      $dataSteps->removeOffer02();
-    }
-
-    $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
     $I->assertTrue(count($lastDownloadFile) === 1, 'Should have download last backup in download folder.');
+    $I->makeScreenshot('01-02-backup-save-ok');
+
     // dd($lastDownloadFile);
     [$lastDownloadFile] = $lastDownloadFile;
-    $I->comment("🇫🇷🇫🇷 Backup OK at : $lastDownloadFile");
 
-    $I->makeScreenshot('01-02-backup-save');
+    $I->comment("🇫🇷🇫🇷 Backup OK at : $lastDownloadFile");
   }
 
   public function specification02Test(
@@ -140,9 +144,9 @@ class E2E_SaveReloadResetOkCest
     $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
     $I->assertTrue(count($lastDownloadFiles) > 0, 'Previous steps should have download some backups.');
     $lastDownloadFile = $lastDownloadFiles[0];
-    $I->comment("🇫🇷🇫🇷 Recharge le premier backup initial via $lastDownloadFile");
+    $I->comment("🇫🇷🇫🇷 Backup initial : $lastDownloadFile");
 
-    $adminSteps->doUploadBackup($lastDownloadFile);
+    $adminSteps->doUploadBackup($lastDownloadFile, '../_output/chrome-download/');
 
     $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
@@ -150,19 +154,36 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('04-01-reload-first-zip-ok');
   }
 
-  public function specification05Test(AcceptanceTester $I, UserSteps $userSteps): void
-  {
-    $I->comment("🇫🇷🇫🇷 Définir le reset GDPR sur un backup précédent");
+  public function specification05Test(
+    AcceptanceTester $I,
+    AdminSteps $adminSteps,
+    DataSteps $dataSteps,
+  ): void {
+    $I->comment("🇫🇷🇫🇷 🎯🎯 05 - Définir le reset GDPR sur un backup précédent");
+
+    $backups = $adminSteps->grabInternalBackups();
+    $I->assertNotEmpty($backups, 'Missing backup list.');
+    // TIPS : last backup contains offer 01 and 02 
+    // since auto-save from previous test uploading zip backup....
+    $adminSteps->doGdprSrcOnInternalBackup($backups[0]);
+    $I->makeScreenshot('05-01-GDPR-on-internal-bckup-ok');
+
+    $adminSteps->doGDPRReset();
+
+    $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
+    $I->assertTrue($dataSteps->haveOffer02(), "Missing expected test offer 02");
+
+    $I->makeScreenshot('05-02-GDPR-reset-ok');
   }
 
   public function specification06Test(AcceptanceTester $I, UserSteps $userSteps): void
   {
-    $I->comment("🇫🇷🇫🇷 Importer un backup depuis l'historique des backups");
+    $I->comment("🇫🇷🇫🇷 🎯🎯 06 - Supprimer un backup depuis l'historique des backups");
   }
 
   public function specification07Test(AcceptanceTester $I, UserSteps $userSteps): void
   {
-    $I->comment("🇫🇷🇫🇷 Télécharger un backup zip depuis l'historique des backups");
-    $I->comment("🇫🇷🇫🇷 Importer ce backup");
+    $I->comment("🇫🇷🇫🇷 🎯🎯 07 - Télécharger un backup zip depuis l'historique des backups");
+    $I->comment("🇫🇷🇫🇷 Teste le backup téléchargé");
   }
 }
