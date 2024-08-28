@@ -84,7 +84,7 @@ class BackupCommand extends Command
             $stmt->executeStatement(); // DB still not in sync ? or db src issue rewrited db ? need debugs...
             // dd("VACUUM OK");
             // $this->em->flush();
-            $this->em->getConnection()->close();
+            $this->em->getConnection()->close();  // ensure db is flushed before bckup...
         }
 
         $projectDir = $this->params->get('kernel.project_dir');
