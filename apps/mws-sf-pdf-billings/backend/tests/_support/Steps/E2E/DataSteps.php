@@ -109,6 +109,7 @@ class DataSteps extends AcceptanceTester
       // $I->clickAndCancelPopup(DataSteps::$addOfferModalSubmitBtnSelector);
       $I->click(DataSteps::$addOfferModalSubmitBtnSelector, false);
       $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+      $I->waitHumanDelay(); // TODO : listen to load event to know when popup will comme (server + network latency...)
       $I->cancelPopup(); // sometime slow and need double accept ?
       // $I->acceptPopup(); // sometime slow and need double accept ?
       // $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
