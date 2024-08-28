@@ -241,6 +241,7 @@ class E2E_SaveReloadResetOkCest
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     UserSteps $userSteps,
+    DataSteps $dataSteps,
   ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 07 - Télécharger un backup zip depuis l'historique des backups");
 
@@ -269,6 +270,10 @@ class E2E_SaveReloadResetOkCest
     $newBackups = array_diff($backupsAfterZipImport, $backups);
     $I->debug("autosave one backup : ", $newBackups, $backups, $backupsAfterZipImport);
     $I->assertTrue(count($newBackups) === 1, 'Should have autosave one backup before zip import.');
+
+    $I->assertFalse($dataSteps->haveOffer01(), "Should not have test offer 01");
+    $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
+
     $I->makeScreenshot('07-03-internal-backup-download-verif-ok');
   }
 }

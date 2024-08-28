@@ -10,6 +10,10 @@ Bonus : Basic controller ok for simple JWT authentification if needed.
 ## Demonstration
 [@demo mws.monwoo.com/demos/sf-pdf-billings/](https://mws.monwoo.com/demos/sf-pdf-billings/)
 
+**Codeception PHP test report example :**
+[https://mws.monwoo.com/demos/sf-pdf-billings/tests/_output/report.html
+](https://mws.monwoo.com/demos/sf-pdf-billings/tests/_output/report.html)
+
 **Custom test report example :**
 [https://mws.monwoo.com/demos/sf-pdf-billings/tests/report/
 ](https://mws.monwoo.com/demos/sf-pdf-billings/tests/report/)
