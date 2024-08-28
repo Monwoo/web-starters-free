@@ -172,7 +172,8 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('04-02-reload-first-zip-backup-list');
 
     $backupsAfterZipImport = $adminSteps->grabInternalBackups();
-    $newBackups = array_diff($backups, $backupsAfterZipImport);
+    $newBackups = array_diff($backupsAfterZipImport, $backups);
+    $I->debug("autosave one backup : ", $newBackups, $backups, $backupsAfterZipImport);
     $I->assertTrue(count($newBackups) === 1, 'Should have autosave one backup after zip import.');
 
     $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");

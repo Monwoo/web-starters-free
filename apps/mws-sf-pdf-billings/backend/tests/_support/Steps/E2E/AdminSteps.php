@@ -102,7 +102,7 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     // $I->clickAndAcceptPopup(AdminSteps::$backupUploadSubmitSelector);
     // $I->acceptPopup();
     // TODO : event from backend to know when backup import done ok ?
-    $I->waitHumanDelay(3); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->waitHumanDelay(7); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }
 
   public function doGdprSrcOnInternalBackup($backupName) {
@@ -120,10 +120,11 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->scrollToWithNav($bkupImportSelector);
     // $I->scrollTo($bkupImportSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
-    $I->clickAndCancelPopup($bkupImportSelector);
-    // $I->clickAndAcceptPopup($bkupImportSelector);
+    // $I->clickAndCancelPopup($bkupImportSelector);
+    $I->clickAndAcceptPopup($bkupImportSelector);
     // $I->acceptPopup();
-    $I->waitHumanDelay(3); // TODO : know when imports shifts are ok...
+    $I->waitHumanDelay(7); // TODO : know when imports shifts are ok...
+    $I->acceptPopup();
   }
 
 }
