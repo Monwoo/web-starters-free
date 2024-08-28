@@ -116,7 +116,8 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->scrollToWithNav($bkupImportSelector);
     // $I->scrollTo($bkupImportSelector);
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
-    $I->clickAndAcceptPopup($bkupImportSelector);
+    $I->clickAndCancelPopup($bkupImportSelector);
+    // $I->clickAndAcceptPopup($bkupImportSelector);
     // $I->acceptPopup();
     $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }

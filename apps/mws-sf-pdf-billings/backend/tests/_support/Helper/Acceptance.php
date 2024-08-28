@@ -179,6 +179,21 @@ class Acceptance extends \Codeception\Module
     }
   }
 
+  public function clickAndCancelPopup($page, $waitForLoads = true): void
+  {
+    /** @var \Codeception\Module\WebDriver */
+    $I = $this->getModule('WebDriver');
+    
+    // $this->appendInfoJs($I); 
+    $this->appendInfoJs($I);
+    $I->click($page);
+    $I->cancelPopup();
+    if ($waitForLoads) {
+      $I->wait(0.1); // TODO : load event listener with timeout...
+      $this->appendInfoJs($I);
+    }
+  }
+
   public function grabFilenames($path)
   {
     $filesystem = new Filesystem();
