@@ -49,7 +49,7 @@ class E2E_SaveReloadResetOkCest
   // {
   // }
 
-  public function specification01Test(
+  public function specification01TestSaveBackup(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
@@ -96,7 +96,7 @@ class E2E_SaveReloadResetOkCest
     $I->comment("🇫🇷🇫🇷 Backup OK at : $lastDownloadFile");
   }
 
-  public function specification02Test(
+  public function specification02TestResetGdpr(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
@@ -126,7 +126,7 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('02-04-GDPR-offers-ok');
   }
 
-  public function specification03Test(
+  public function specification03TestReloadPreGdprResetData(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
@@ -149,7 +149,7 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('03-02-reload-before-GDPR-reset-ok');
   }
 
-  public function specification04Test(
+  public function specification04TestFirstZipReload(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
@@ -182,7 +182,7 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('04-03-reload-first-zip-ok');
   }
 
-  public function specification05Test(
+  public function specification05TestGdprSouceOnInternalBackup(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
@@ -216,7 +216,7 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('05-04-GDPR-on-internal-bckup-ok');
   }
 
-  public function specification06Test(
+  public function specification06TestInternalBackupDelete(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
   ): void {
@@ -237,7 +237,7 @@ class E2E_SaveReloadResetOkCest
     $I->assertTrue(count($missingBackups) === 1, 'Should have delete one backup after delete action.');
   }
 
-  public function specification07Test(
+  public function specification07TestInternalBackupDownload(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     UserSteps $userSteps,
