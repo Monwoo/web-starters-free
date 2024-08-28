@@ -21,15 +21,29 @@ $(async ()  => {
   for (let idx = 0; idx < mwsReport.length; idx++) {
     const reportItem = mwsReport[idx];
     reportBoard.append(`
-      <!-- <h1>${reportItem.type}</h1> -->
-      <p>${reportItem.data.name}</p>
-      ${reportItem.type == 'screenshot'
-        ? `<img
-        class="img-fluid"
-        src='../_output/debug/${reportItem.data.name}.png'
-        ></img>`
-        : ``
-      }
+      <div class="${
+        reportItem.type == 'screenshot'
+        ? 'border border-3 border-success rounded-1 m-1 p-1'
+        : ''
+      }">
+        <!-- <h1>${reportItem.type}</h1> -->
+        <p class="${
+          /🇫🇷🇫🇷/.test(reportItem.data?.name)
+          ? 'fs-3'
+          : ''
+        }${
+          reportItem.type == 'screenshot'
+          ? 'fs-4'
+          : ''
+        }">${reportItem.data.name}</p>
+        ${reportItem.type == 'screenshot'
+          ? `<img
+          class="img-fluid"
+          src='../_output/debug/${reportItem.data.name}.png'
+          ></img>`
+          : ``
+        }
+      </div>
     `);
   }
 })

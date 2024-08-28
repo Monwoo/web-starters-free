@@ -14,9 +14,9 @@ namespace App\Tests\e2e\t00_backups;
 
 use App\Repository\UserRepository;
 use App\Tests\AcceptanceTester;
-use App\Tests\Step\E2E\AdminSteps;
-use App\Tests\Step\E2E\DataSteps;
-use App\Tests\Step\E2E\UserSteps;
+use App\Tests\Steps\E2E\AdminSteps;
+use App\Tests\Steps\E2E\DataSteps;
+use App\Tests\Steps\E2E\UserSteps;
 use Codeception\Util\Locator;
 
 use function Psy\debug;
@@ -54,11 +54,12 @@ class E2E_SaveReloadResetOkCest
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
   ): void {
-    $I->comment("🇫🇷🇫🇷 Sauvegarder une offre 01 dans un backup");
+    $I->comment("🇫🇷🇫🇷 🎯🎯 01 - Sauvegarder un backup 🎯🎯");
+    $I->comment("🇫🇷🇫🇷 Sauvegarde d'une offre 01 dans un backup");
     if (!$dataSteps->haveOffer01()) {
       $dataSteps->addOffer01();
     }
-    $I->assertTrue($dataSteps->haveOffer01(), "Missing Test offer 01 for backup");
+    $I->assertTrue($dataSteps->haveOffer01(), "Test offer 01 should exist for backup");
     $I->scrollToWithNav($dataSteps->locatorListOffer01());
     $I->makeScreenshot('01-01-backup-add-test-offer');
 
@@ -77,23 +78,31 @@ class E2E_SaveReloadResetOkCest
     // Ensure zip is present :
     $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
     $lastDownloadFile = array_diff($lastDownloadFiles, $downloadFiles);
+
+    if ($dataSteps->haveOffer02()) {
+      $dataSteps->removeOffer02();
+    }
+
+    $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
     $I->assertTrue(count($lastDownloadFile) === 1, 'Should have download last backup in download folder.');
     // dd($lastDownloadFile);
-    [ $lastDownloadFile ] = $lastDownloadFile;
+    [$lastDownloadFile] = $lastDownloadFile;
     $I->comment("🇫🇷🇫🇷 Backup OK at : $lastDownloadFile");
 
     $I->makeScreenshot('01-02-backup-save');
   }
 
-  public function specification02Test(AcceptanceTester $I,
+  public function specification02Test(
+    AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
   ): void {
-    $I->comment("🇫🇷🇫🇷 Sauvegarder une offre 02 avant reset GDPR");
+    $I->comment("🇫🇷🇫🇷 🎯🎯 02 - Faire un reset GDPR 🎯🎯");
+    $I->comment("🇫🇷🇫🇷 Sauvegarde d'une offre 02 avant reset GDPR");
     if (!$dataSteps->haveOffer02()) {
       $dataSteps->addOffer02();
     }
-    $I->assertTrue($dataSteps->haveOffer02(), "Missing Test offer 02 before GDPR reset");
+    $I->assertTrue($dataSteps->haveOffer02(), "Test offer 02 should exist before GDPR reset");
     $I->scrollToWithNav($dataSteps->locatorListOffer02());
     $I->makeScreenshot('02-01-GDPR-add-before-reset');
 
@@ -107,27 +116,38 @@ class E2E_SaveReloadResetOkCest
   }
 
   public function specification03Test(
-    AcceptanceTester $I, AdminSteps $adminSteps, DataSteps $dataSteps,
-  ): void
-  {
+    AcceptanceTester $I,
+    AdminSteps $adminSteps,
+    DataSteps $dataSteps,
+  ): void {
+    $I->comment("🇫🇷🇫🇷 🎯🎯 03 - Recharger les données nettoyés par le reset GDPR 🎯🎯");
     $I->comment("🇫🇷🇫🇷 Rechargement du backup automatique avant reset GDPR");
     $backups = $adminSteps->grabInternalBackups();
     $I->assertNotEmpty($backups, 'Missing backup list.');
-    $adminSteps->importInternalBackup($backups[0]);
+    $adminSteps->doImportInternalBackup($backups[0]);
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
     $I->assertTrue($dataSteps->haveOffer02(), "Missing expected test offer 02");
 
     $I->makeScreenshot('03-01-reload-before-GDPR-reset-ok');
   }
 
-  public function specification04Test(AcceptanceTester $I, UserSteps $userSteps): void
-  {
+  public function specification04Test(
+    AcceptanceTester $I,
+    AdminSteps $adminSteps,
+    DataSteps $dataSteps
+  ): void {
+    $I->comment("🇫🇷🇫🇷 🎯🎯 04 - Recharger le premier backup initial 🎯🎯");
     $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
     $I->assertTrue(count($lastDownloadFiles) > 0, 'Previous steps should have download some backups.');
     $lastDownloadFile = $lastDownloadFiles[0];
+    $I->comment("🇫🇷🇫🇷 Recharge le premier backup initial via $lastDownloadFile");
 
-    $I->comment("🇫🇷🇫🇷 Recharger le premier backup initial via $lastDownloadFile");
-    $I->makeScreenshot('04-01-reload-first-zip');
+    $adminSteps->doUploadBackup($lastDownloadFile);
+
+    $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
+    $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
+
+    $I->makeScreenshot('04-01-reload-first-zip-ok');
   }
 
   public function specification05Test(AcceptanceTester $I, UserSteps $userSteps): void
@@ -145,5 +165,4 @@ class E2E_SaveReloadResetOkCest
     $I->comment("🇫🇷🇫🇷 Télécharger un backup zip depuis l'historique des backups");
     $I->comment("🇫🇷🇫🇷 Importer ce backup");
   }
-
 }

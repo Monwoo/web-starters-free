@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Step\E2E;
+namespace App\Tests\Steps\E2E;
 
 use Codeception\Util\HttpCode;
 use Codeception\Util\Locator;

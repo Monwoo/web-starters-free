@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Step\E2E;
+namespace App\Tests\Steps\E2E;
 
 use App\Tests\AcceptanceTester;
 use Codeception\Util\Locator;
