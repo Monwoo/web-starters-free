@@ -123,7 +123,7 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->clickAndCancelPopup($bkupImportSelector);
     // $I->clickAndAcceptPopup($bkupImportSelector);
     // $I->acceptPopup();
-    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->waitHumanDelay(3); // TODO : know when imports shifts are ok...
   }
 
 }
