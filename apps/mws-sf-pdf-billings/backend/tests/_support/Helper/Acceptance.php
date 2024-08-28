@@ -151,14 +151,18 @@ class Acceptance extends \Codeception\Module
     $this->appendInfoJs($I);
   }
 
-  public function click($page, $waitForLoads = true): void
+  public function click($page, $waitForLoads = true, $withInfo = true): void
   {
     /** @var \Codeception\Module\WebDriver */
     $I = $this->getModule('WebDriver');
-    // $this->appendInfoJs($I); 
-    $this->appendInfoJs($I);
+    // $this->appendInfoJs($I);
+    if ($withInfo) {
+      $this->appendInfoJs($I);
+    }
     $I->click($page);
-    $this->appendInfoJs($I);
+    if ($withInfo) {
+      $this->appendInfoJs($I);
+    }
     if ($waitForLoads) {
       $I->wait(0.1); // TODO : load event listener with timeout...
     }
@@ -168,7 +172,7 @@ class Acceptance extends \Codeception\Module
   {
     /** @var \Codeception\Module\WebDriver */
     $I = $this->getModule('WebDriver');
-    
+
     // $this->appendInfoJs($I); 
     $this->appendInfoJs($I);
     $I->click($page);
@@ -183,7 +187,7 @@ class Acceptance extends \Codeception\Module
   {
     /** @var \Codeception\Module\WebDriver */
     $I = $this->getModule('WebDriver');
-    
+
     // $this->appendInfoJs($I); 
     $this->appendInfoJs($I);
     $I->click($page);
@@ -204,12 +208,12 @@ class Acceptance extends \Codeception\Module
 
     $finder = new Finder();
     $finder->files()->in($path)
-        ->ignoreDotFiles(true)
-        ->ignoreUnreadableDirs()
-        ->sortByModifiedTime()
-        ->reverseSorting()
-        ->depth(0);
-    return array_map(function(SplFileInfo $f) {
+      ->ignoreDotFiles(true)
+      ->ignoreUnreadableDirs()
+      ->sortByModifiedTime()
+      ->reverseSorting()
+      ->depth(0);
+    return array_map(function (SplFileInfo $f) {
       return $f->getFilename();
     }, iterator_to_array($finder, false));
   }
@@ -255,11 +259,13 @@ class Acceptance extends \Codeception\Module
   }
 
   // HOOK: after test
-  public function _after(\Codeception\TestInterface $test) {
+  public function _after(\Codeception\TestInterface $test)
+  {
     // dd('ok after tests');
   }
 
-  public function _afterSuite() {
+  public function _afterSuite()
+  {
     // TODO : save to json
     file_put_contents(
       "tests/_output/mws-report.json",

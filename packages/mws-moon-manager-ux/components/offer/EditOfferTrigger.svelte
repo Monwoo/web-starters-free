@@ -46,6 +46,7 @@
 
   // TODO : factorize, cf php controller :
   const tagSlugSep = " > ";
+  window._e2e_offer_add_popup_confirm_open = false;
 
   // TODO : as module ? or inside Service manager component, param
   //        config component with all web services ?
@@ -54,6 +55,8 @@
     syncOfferOkCallback,
     syncOfferKoCallback
   ) => {
+    window._e2e_offer_add_popup_confirm_open = false;
+
     !offer && console.debug("WRONG syncOfferWithBackend, null offer");
     const data = {
       _csrf_token: stateGet(get(state), "csrfOfferSync"),
@@ -114,6 +117,7 @@
           stateUpdate(state, {
             csrfOfferSync: data.newCsrf,
           });
+          window._e2e_offer_add_popup_confirm_open = true;
           // Let component use callback to trigger the refresh
           syncOfferOk && (await syncOfferOk(offer));
           syncOfferOkCallback && (await syncOfferOkCallback(offer));

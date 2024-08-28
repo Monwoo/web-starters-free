@@ -107,9 +107,26 @@ class DataSteps extends AcceptanceTester
       $I->debug('will clickAndCancelPopup');
       // $I->clickAndAcceptPopup(DataSteps::$addOfferModalSubmitBtnSelector);
       // $I->clickAndCancelPopup(DataSteps::$addOfferModalSubmitBtnSelector);
-      $I->click(DataSteps::$addOfferModalSubmitBtnSelector, false);
-      $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
-      $I->waitHumanDelay(); // TODO : listen to load event to know when popup will comme (server + network latency...)
+      $I->click(DataSteps::$addOfferModalSubmitBtnSelector, false, false);
+      // $I->waitHumanDelay(0.00); // TODO : listen to load event to know when popup will comme (server + network latency...)
+
+      // * $I->performOn('.model', ActionSequence::build()
+      // *     ->see('Warning')
+      // *     ->see('Are you sure you want to delete this?')
+      // *     ->click('Yes')
+      // * );
+
+      // $I->waitForJS("
+      //   let confirm = window._e2e_offer_add_popup_confirm_open;
+      //   if (confirm) {
+      //     window._e2e_offer_add_popup_confirm_open = false;
+      //   }
+      //   return confirm;
+      // ");
+
+      // $I->cancelPopup(); // sometime slow and need double accept ?
+
+      $I->wait(0.25); // TODO : wait for event... (without JS Injection since popup block js run until accept...)
       $I->cancelPopup(); // sometime slow and need double accept ?
       // $I->acceptPopup(); // sometime slow and need double accept ?
       // $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...

@@ -620,21 +620,17 @@ php -S localhost:8015 -t ./tests/ &
 
 # BE CARFULL, WILL ERASE EXISTING DATABASE : 
 # Clean and run test routing :
-rm var/data.db.sqlite
+rm -rf var/data.db.sqlite var/cache var/log var/uploads 
 php bin/console doctrine:migrations:migrate -n
 codecept clean && codecept run 'e2e' --html
 open tests/_output/report.html
 open http://localhost:8015/report/
 
 # You can run separately, but tests dependencies might break, clean and run for proper tests
-# Only 01
-rm var/data.db.sqlite
+# Only 01 with debugs
+rm -rf var/data.db.sqlite var/cache var/log var/uploads 
 php bin/console doctrine:migrations:migrate -n
 codecept clean && codecept run --debug --html 'report.html' 'e2e' \
-'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
-
-# Only 01 with debugs
-codecept clean && codecept run  --debug --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
 
 # From 01 to 04
