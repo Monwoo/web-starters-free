@@ -113,12 +113,17 @@ class E2E_SaveReloadResetOkCest
 
     $adminSteps->doGDPRReset();
     $I->makeScreenshot('02-02-GDPR-reset-response');
+
     $userSteps->ensureUser(UserSteps::$userAdminInit);
+
+    $adminSteps->amOnBackupPage();
+    $I->scrollToWithNav(Locator::contains('h1', 'Liste des backups'));
+    $I->makeScreenshot('02-03-GDPR-backup-list');
 
     $I->assertFalse($dataSteps->haveOffer01(), "Should not have test offer 01");
     $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
 
-    $I->makeScreenshot('02-03-GDPR-offers-ok');
+    $I->makeScreenshot('02-04-GDPR-offers-ok');
   }
 
   public function specification03Test(
@@ -133,10 +138,15 @@ class E2E_SaveReloadResetOkCest
     $I->assertNotEmpty($backups, 'Missing backup list.');
     $adminSteps->doImportInternalBackup($backups[0]);
     $userSteps->ensureUser(UserSteps::$userAdminInit);
+
+    $adminSteps->amOnBackupPage();
+    $I->scrollToWithNav(Locator::contains('h1', 'Liste des backups'));
+    $I->makeScreenshot('03-01-reload-before-GDPR-backup-list');
+
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
     $I->assertTrue($dataSteps->haveOffer02(), "Missing expected test offer 02");
 
-    $I->makeScreenshot('03-01-reload-before-GDPR-reset-ok');
+    $I->makeScreenshot('03-02-reload-before-GDPR-reset-ok');
   }
 
   public function specification04Test(
@@ -153,17 +163,22 @@ class E2E_SaveReloadResetOkCest
 
     $backups = $adminSteps->grabInternalBackups();
     $adminSteps->doUploadBackup($lastDownloadFile, '../_output/chrome-download/');
-    $I->makeScreenshot('04-02-reload-first-zip-response');
+    $I->makeScreenshot('04-01-reload-first-zip-response');
+
+    $userSteps->ensureUser(UserSteps::$userAdminInit);
+
+    $adminSteps->amOnBackupPage();
+    $I->scrollToWithNav(Locator::contains('h1', 'Liste des backups'));
+    $I->makeScreenshot('04-02-reload-first-zip-backup-list');
+
     $backupsAfterZipImport = $adminSteps->grabInternalBackups();
     $newBackups = array_diff($backups, $backupsAfterZipImport);
     $I->assertTrue(count($newBackups) === 1, 'Should have autosave one backup after zip import.');
 
-    $userSteps->ensureUser(UserSteps::$userAdminInit);
-
     $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
 
-    $I->makeScreenshot('04-02-reload-first-zip-ok');
+    $I->makeScreenshot('04-03-reload-first-zip-ok');
   }
 
   public function specification05Test(
@@ -187,13 +202,17 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('05-01-GDPR-on-internal-bckup-ok');
 
     $adminSteps->doGDPRReset();
-    $I->makeScreenshot('05-02-GDPR-reset-response');
+    $I->makeScreenshot('05-02-GDPR-on-internal-bckup-reset-response');
     $userSteps->ensureUser(UserSteps::$userAdminInit);
+
+    $adminSteps->amOnBackupPage();
+    $I->scrollToWithNav(Locator::contains('h1', 'Liste des backups'));
+    $I->makeScreenshot('05-03-GDPR-on-internal-bckup-backup-list');
 
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
     $I->assertTrue($dataSteps->haveOffer02(), "Missing expected test offer 02");
 
-    $I->makeScreenshot('05-03-GDPR-reset-ok');
+    $I->makeScreenshot('05-04-GDPR-on-internal-bckup-ok');
   }
 
   public function specification06Test(AcceptanceTester $I, UserSteps $userSteps): void
