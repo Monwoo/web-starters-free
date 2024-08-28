@@ -170,9 +170,12 @@ class E2E_SaveReloadResetOkCest
 
     $backups = $adminSteps->grabInternalBackups();
     $I->assertNotEmpty($backups, 'Missing backup list.');
-    // TIPS : last backup contains offer 01 and 02 
+    // TIPS : $backups[0] contains GDPR data
+    //        (saved before last test zip upload)
+    //        $backups[1] backup contains offer 01 (from zip)
+    //        $backups[2] backup contains offer 01 and 02 (edits before zip import)
     // since auto-save from previous test uploading zip backup....
-    $adminSteps->doGdprSrcOnInternalBackup($backups[0]);
+    $adminSteps->doGdprSrcOnInternalBackup($backups[2]);
     $I->makeScreenshot('05-01-GDPR-on-internal-bckup-ok');
 
     $adminSteps->doGDPRReset();

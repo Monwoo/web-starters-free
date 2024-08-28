@@ -126,7 +126,7 @@ class DataSteps extends AcceptanceTester
 
       // $I->cancelPopup(); // sometime slow and need double accept ?
 
-      $I->wait(0.25); // TODO : wait for event... (without JS Injection since popup block js run until accept...)
+      $I->wait(0.35); // TODO : wait for event... (without JS Injection since popup block js run until accept...)
       $I->cancelPopup(); // sometime slow and need double accept ?
       // $I->acceptPopup(); // sometime slow and need double accept ?
       // $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...

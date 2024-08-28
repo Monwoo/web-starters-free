@@ -18,7 +18,7 @@ class UserSteps extends \App\Tests\AcceptanceTester
   // public static $loginURL = ''; // TODO : use app Router routes ?
   public static $userMenuSelector = '#dropdownNavbarLink';
   public static $userLoginSubMenuSelector = 'a[href="/mws/fr/mws_user/login"]';
-  public static $userLogoutSubMenuSelector = '#dropdownNavbarLink//TODO';
+  public static $userLogoutSubMenuSelector = 'a[href="/mws/fr/mws_user/logout"]';
   public static $loggedOutIndicatorSelector = '#dropdownNavbarLink//TODO';
 
   public static $loginUsernameField = '#username';
@@ -79,7 +79,10 @@ class UserSteps extends \App\Tests\AcceptanceTester
       if (!$I->testIfPresent($userMenuLocator)) {
         $I->connectTestUser($config, $userMenuLocator);
       } else {
-        $I->comment("✅ 🔐 User already connected as : $username");
+        // $I->comment("✅ 🔐 User already connected as : $username");
+        // SAFER to ensure csrf etc are ok by disconnecting before connecting back the user
+        $I->disconnectTestUser($config);
+        $I->connectTestUser($config, $userMenuLocator);
         // ensure logout
         // Force login
         // $I->click($navBarUsersSubMenu);
@@ -218,14 +221,15 @@ class UserSteps extends \App\Tests\AcceptanceTester
 
   // 🇫🇷🇫🇷 Se dé-connecter
   public function disconnectTestUser(
-    $username = "e2e-default@test.localhost"
+    $config
   ) {
+    $username = $config['username'] ?? null;
     $I = $this;
-    $I->amOnPage('/');
+    // $I->amOnPage('/');
+    $I->click(self::$userMenuSelector);
+    $I->waitHumanDelay();
     $canLogout = $I->testIfPresent(self::$userLogoutSubMenuSelector);
     if ($canLogout) {
-      $I->click(self::$userMenuSelector);
-      $I->waitHumanDelay();
       $canLogout = $I->testIfPresent(self::$userLogoutSubMenuSelector);
       if ($canLogout) {
         $I->click(self::$userLogoutSubMenuSelector);
@@ -235,11 +239,11 @@ class UserSteps extends \App\Tests\AcceptanceTester
         $I->comment("❌ 🔓 Wrong private page ? Missing logout link in user menu.");
       }
     } else {
-      $I->seeElement(self::$loggedOutIndicatorSelector);
+      // $I->seeElement(self::$loggedOutIndicatorSelector); // TODO : ensure disconnected ?
       $I->comment("✅ 🔓 Already logged out. No need to disconnect test user : $username");
     }
     // $I->dump("Did logout user", $userEmail);
-    $I->dump("Did logout user");
+    $I->debug("Did logout user");
   }
 }
 

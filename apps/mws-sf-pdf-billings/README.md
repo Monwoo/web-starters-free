@@ -618,9 +618,11 @@ php -S localhost:8000 -t public/ &
 # server for custom report :
 php -S localhost:8015 -t ./tests/ &
 
-# BE CARFULL, WILL ERASE EXISTING DATABASE : 
+# BE CARFULL, WILL ERASE EXISTING DATABASE, BACKUPS, etc : 
 # Clean and run test routing :
-rm -rf var/data.db.sqlite var/cache var/log var/uploads 
+rm -rf var/data.db.sqlite var/cache var/log var/uploads bckup/
+rm -rf var/data.gdpr-ok.db.sqlite var/uploads-gdpr-ok
+cp tests/_data/data.gdpr-ok.db.sqlite var/data.gdpr-ok.db.sqlite
 php bin/console doctrine:migrations:migrate -n
 codecept clean && codecept run 'e2e' --html
 open tests/_output/report.html
@@ -628,7 +630,9 @@ open http://localhost:8015/report/
 
 # You can run separately, but tests dependencies might break, clean and run for proper tests
 # Only 01 with debugs
-rm -rf var/data.db.sqlite var/cache var/log var/uploads 
+rm -rf var/data.db.sqlite var/cache var/log var/uploads bckup/
+rm -rf var/data.gdpr-ok.db.sqlite var/uploads-gdpr-ok
+cp tests/_data/data.gdpr-ok.db.sqlite var/data.gdpr-ok.db.sqlite
 php bin/console doctrine:migrations:migrate -n
 codecept clean && codecept run --debug --html 'report.html' 'e2e' \
 'tests/e2e/t00_backups/E2E_SaveReloadResetOkCest.php:specification01Test'
