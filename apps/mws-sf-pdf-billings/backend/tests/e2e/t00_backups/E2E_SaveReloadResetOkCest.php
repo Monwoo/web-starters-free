@@ -100,6 +100,7 @@ class E2E_SaveReloadResetOkCest
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
+    UserSteps $userSteps,
   ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 02 - Faire un reset GDPR 🎯🎯");
     $I->comment("🇫🇷🇫🇷 Sauvegarde d'une offre 02 avant reset GDPR");
@@ -112,6 +113,7 @@ class E2E_SaveReloadResetOkCest
 
     $adminSteps->doGDPRReset();
     $I->makeScreenshot('02-02-GDPR-reset-ok');
+    $userSteps->ensureUser(UserSteps::$userAdminInit);
 
     $I->assertFalse($dataSteps->haveOffer01(), "Should not have test offer 01");
     $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
@@ -123,12 +125,14 @@ class E2E_SaveReloadResetOkCest
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
+    UserSteps $userSteps,
   ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 03 - Recharger les données nettoyés par le reset GDPR 🎯🎯");
     $I->comment("🇫🇷🇫🇷 Rechargement du backup automatique avant reset GDPR");
     $backups = $adminSteps->grabInternalBackups();
     $I->assertNotEmpty($backups, 'Missing backup list.');
     $adminSteps->doImportInternalBackup($backups[0]);
+    $userSteps->ensureUser(UserSteps::$userAdminInit);
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
     $I->assertTrue($dataSteps->haveOffer02(), "Missing expected test offer 02");
 
@@ -138,7 +142,8 @@ class E2E_SaveReloadResetOkCest
   public function specification04Test(
     AcceptanceTester $I,
     AdminSteps $adminSteps,
-    DataSteps $dataSteps
+    DataSteps $dataSteps,
+    UserSteps $userSteps,
   ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 04 - Recharger le premier backup initial 🎯🎯");
     $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
@@ -147,6 +152,7 @@ class E2E_SaveReloadResetOkCest
     $I->comment("🇫🇷🇫🇷 Backup initial : $lastDownloadFile");
 
     $adminSteps->doUploadBackup($lastDownloadFile, '../_output/chrome-download/');
+    $userSteps->ensureUser(UserSteps::$userAdminInit);
 
     $I->assertFalse($dataSteps->haveOffer02(), "Should not have test offer 02");
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
@@ -158,6 +164,7 @@ class E2E_SaveReloadResetOkCest
     AcceptanceTester $I,
     AdminSteps $adminSteps,
     DataSteps $dataSteps,
+    UserSteps $userSteps,
   ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 05 - Définir le reset GDPR sur un backup précédent");
 
@@ -169,6 +176,7 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('05-01-GDPR-on-internal-bckup-ok');
 
     $adminSteps->doGDPRReset();
+    $userSteps->ensureUser(UserSteps::$userAdminInit);
 
     $I->assertTrue($dataSteps->haveOffer01(), "Missing expected test offer 01");
     $I->assertTrue($dataSteps->haveOffer02(), "Missing expected test offer 02");

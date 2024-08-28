@@ -158,9 +158,9 @@ class Acceptance extends \Codeception\Module
     // $this->appendInfoJs($I); 
     $this->appendInfoJs($I);
     $I->click($page);
+    $this->appendInfoJs($I);
     if ($waitForLoads) {
       $I->wait(0.1); // TODO : load event listener with timeout...
-      $this->appendInfoJs($I);
     }
   }
 

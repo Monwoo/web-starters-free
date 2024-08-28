@@ -98,15 +98,21 @@ class DataSteps extends AcceptanceTester
     $count = $I->grabTextFrom('.summary .count');
     $I->debug('hack on count : ', $count);
     if ($count === '[ 0 éléments]') {
+      $I->comment('Hack on count actif pour : ' . $count);
       $isOffersListPage = false; // Will alert when 0 offers for now... known bug
     }
 
     // TODO : sf router routes match ?
     if (!$isOffersListPage) {
       $I->debug('will clickAndCancelPopup');
+      // $I->clickAndAcceptPopup(DataSteps::$addOfferModalSubmitBtnSelector);
       // $I->clickAndCancelPopup(DataSteps::$addOfferModalSubmitBtnSelector);
-      $I->click(DataSteps::$addOfferModalSubmitBtnSelector);
-      $I->acceptPopup();
+      $I->click(DataSteps::$addOfferModalSubmitBtnSelector, false);
+      $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+      $I->cancelPopup(); // sometime slow and need double accept ?
+      // $I->acceptPopup(); // sometime slow and need double accept ?
+      // $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+      $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
     } else {
       $I->click(DataSteps::$addOfferModalSubmitBtnSelector);
     }

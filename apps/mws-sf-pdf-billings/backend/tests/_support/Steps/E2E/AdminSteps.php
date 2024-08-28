@@ -21,6 +21,9 @@ class AdminSteps extends \App\Tests\AcceptanceTester
 
   public static function initVars() {}
 
+  // public function __construct(protected UserSteps $userSteps) {
+  // } // will error : Typed property Codeception\Actor::$scenario must not be accessed before initialization
+
   public function amOnBackupPage() {
     $I = $this;
     $I->click(UserSteps::$userMenuSelector);
