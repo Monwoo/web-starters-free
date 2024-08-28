@@ -174,8 +174,10 @@ class E2E_SaveReloadResetOkCest
     //        (saved before last test zip upload)
     //        $backups[1] backup contains offer 01 (from zip)
     //        $backups[2] backup contains offer 01 and 02 (edits before zip import)
+    //        same as $backups[count($backups) - 2] backup contains offer 01 and 02 (edits before zip import)
     // since auto-save from previous test uploading zip backup....
-    $adminSteps->doGdprSrcOnInternalBackup($backups[2]);
+    // $adminSteps->doGdprSrcOnInternalBackup($backups[2]);
+    $adminSteps->doGdprSrcOnInternalBackup($backups[count($backups) - 2]);
     $I->makeScreenshot('05-01-GDPR-on-internal-bckup-ok');
 
     $adminSteps->doGDPRReset();

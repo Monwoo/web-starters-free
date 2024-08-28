@@ -101,7 +101,8 @@ class AdminSteps extends \App\Tests\AcceptanceTester
     $I->click(AdminSteps::$backupUploadSubmitSelector);
     // $I->clickAndAcceptPopup(AdminSteps::$backupUploadSubmitSelector);
     // $I->acceptPopup();
-    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    // TODO : event from backend to know when backup import done ok ?
+    $I->waitHumanDelay(3); // TODO : add interactionDelay ? only need to wait for js to scroll ...
   }
 
   public function doGdprSrcOnInternalBackup($backupName) {
