@@ -4,6 +4,7 @@
 namespace MWS\MoonManagerBundle\Command;
 
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,6 +29,7 @@ class BackupCommand extends Command
     public function __construct(
         protected ParameterBagInterface $params,
         protected SluggerInterface $slugger,
+        protected EntityManagerInterface $em,
         // TIPS : must be end of params to avoid error
         // Cannot autowire service "MWS\MoonManagerBundle\Command\BackupCommand": arg  
         // ument "$backupName" of method "__construct()" is type-hinted "string", you  
@@ -72,6 +74,19 @@ class BackupCommand extends Command
             ]);
             return $cmdStatus;
         }
+
+        // TIPS for SQLITE : sound like direct CP of DB do not flush all transactions, so vacum it before save :
+        if (starts_with($_SERVER['DATABASE_URL'] ?? '', 'sqlite://')) {
+            // https://stackoverflow.com/questions/2143800/change-sqlite-file-size-after-delete-from-table
+            // https://stackoverflow.com/questions/48894037/symfony4-sqlite3-connection
+            $stmt = $this->em->getConnection()->prepare("VACUUM");
+            // $stmt->execute();
+            $stmt->executeStatement(); // DB still not in sync ? or db src issue rewrited db ? need debugs...
+            // dd("VACUUM OK");
+            // $this->em->flush();
+            $this->em->getConnection()->close();
+        }
+
         $projectDir = $this->params->get('kernel.project_dir');
         $backupsDir = "$projectDir/bckup";
         $timestamp = time();
@@ -116,7 +131,8 @@ class BackupCommand extends Command
 
         $this->filesystem->mkdir($currentBackupDir);
 
-        $this->filesystem->copy($databaseFile, $backupDatabaseFile);
+        // $this->filesystem->copy($databaseFile, $backupDatabaseFile); // do after upload copy...
+        // // dd($databaseFile);
 
         // copy Messages medias
         // $finder = new Finder();
@@ -128,7 +144,12 @@ class BackupCommand extends Command
         $uploadSrc = "$projectDir/$subFolder";
         // dd($uploadSrc);
 
+        // TIPS : upload folder may contain db files etc... 
+        // COPY First to let real db overwrite possible upload file in upload folder...
         $this->recursive_copy($uploadSrc, "$currentBackupDir");
+
+        $this->filesystem->copy($databaseFile, $backupDatabaseFile);
+        // dd($databaseFile);
 
         // TODO : remove and clean copy olders than 60 days ? (to keep spaces...)
 

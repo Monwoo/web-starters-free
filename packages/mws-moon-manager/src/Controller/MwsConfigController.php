@@ -26,6 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -487,7 +488,7 @@ class MwsConfigController extends AbstractController
 
         $this->logger->debug("Will backup $backupName");
         $shouldBackup = $request->get('shouldBackup', true);
-        $shouldBackup && $this->backupInternalSave($backupName);
+        $shouldBackup && $this->backupInternalSave($backupName); 
 
         $respData = null;
         $contentType = 'application/vnd.sqlite3';
@@ -782,6 +783,8 @@ class MwsConfigController extends AbstractController
         }
 
         try {
+            // keep possible data updates done before importing data...
+            $this->backupInternalSave();
             // clean
             $uploadSubFolder = $this->getParameter('mws_moon_manager.uploadSubFolder') ?? '';
             $uploadSrc = "$projectDir/$uploadSubFolder";
@@ -1092,8 +1095,13 @@ class MwsConfigController extends AbstractController
             $args['backupName'] = $backupName;
         }
         $input = new ArrayInput($args);
-        $output = new NullOutput();
+        // $output = new NullOutput();
+        
+        ob_start();
+        $output = new StreamOutput(fopen('php://stdout', 'w'));
         $application->run($input, $output);
+        $outputTxt = ob_get_clean(); // TIPS : remove the failing header setup due to TCPDF echo
+        $this->logger->debug("bckup Answer :", [ $outputTxt ]);
     }
 
     #[Route(
