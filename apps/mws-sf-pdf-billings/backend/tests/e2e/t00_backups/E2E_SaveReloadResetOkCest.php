@@ -216,14 +216,59 @@ class E2E_SaveReloadResetOkCest
     $I->makeScreenshot('05-04-GDPR-on-internal-bckup-ok');
   }
 
-  public function specification06Test(AcceptanceTester $I, UserSteps $userSteps): void
-  {
+  public function specification06Test(
+    AcceptanceTester $I,
+    AdminSteps $adminSteps,
+  ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 06 - Supprimer un backup depuis l'historique des backups");
+    $backups = $adminSteps->grabInternalBackups();
+    $I->assertNotEmpty($backups, 'Missing backup list.');
+
+    $adminSteps->doInternalBackupDelete($backups[count($backups) - 2]);
+    $I->makeScreenshot('06-01-backup-delete-response');
+
+    $adminSteps->amOnBackupPage();
+    $I->scrollToWithNav(Locator::contains('h1', 'Liste des backups'));
+    $I->makeScreenshot('06-02-backup-delete-response-backup-list');
+
+    $backupsAfterZipImport = $adminSteps->grabInternalBackups();
+    $missingBackups = array_diff($backups, $backupsAfterZipImport);
+    $I->debug("delete one backup : ", $missingBackups, $backups, $backupsAfterZipImport);
+    $I->assertTrue(count($missingBackups) === 1, 'Should have delete one backup after delete action.');
   }
 
-  public function specification07Test(AcceptanceTester $I, UserSteps $userSteps): void
-  {
+  public function specification07Test(
+    AcceptanceTester $I,
+    AdminSteps $adminSteps,
+    UserSteps $userSteps,
+  ): void {
     $I->comment("🇫🇷🇫🇷 🎯🎯 07 - Télécharger un backup zip depuis l'historique des backups");
+
+    $downloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
+
+    $backups = $adminSteps->grabInternalBackups();
+    $I->assertNotEmpty($backups, 'Missing backup list.');
+    // We did remove custom one, this one is backup of initial gdpr db data :
+    $adminSteps->doInternalBackupDownload($backups[count($backups) - 2]);
+
+    // Ensure zip is present :
+    $lastDownloadFiles = $I->grabFilenames(AdminSteps::$downloadFolderPath);
+    $newDownloadFiles = array_diff($lastDownloadFiles, $downloadFiles);
+    $I->assertTrue(count($newDownloadFiles) === 1, 'Should have download internal backup in download folder.');
+    $I->makeScreenshot('07-01-internal-backup-download-ok');
+
     $I->comment("🇫🇷🇫🇷 Teste le backup téléchargé");
+
+    $lastDownloadFile = $newDownloadFiles[0];
+    $I->comment("🇫🇷🇫🇷 Backup à tester : $lastDownloadFile");
+    $adminSteps->doUploadBackup($lastDownloadFile, '../_output/chrome-download/');
+    $I->makeScreenshot('07-02-internal-backup-download-verif-response');
+    $userSteps->ensureUser(UserSteps::$userAdminInit);
+
+    $backupsAfterZipImport = $adminSteps->grabInternalBackups();
+    $newBackups = array_diff($backupsAfterZipImport, $backups);
+    $I->debug("autosave one backup : ", $newBackups, $backups, $backupsAfterZipImport);
+    $I->assertTrue(count($newBackups) === 1, 'Should have autosave one backup before zip import.');
+    $I->makeScreenshot('07-03-internal-backup-download-verif-ok');
   }
 }

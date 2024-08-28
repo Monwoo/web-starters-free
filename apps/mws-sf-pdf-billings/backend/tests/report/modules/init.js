@@ -29,7 +29,9 @@ $(async ()  => {
         <!-- <h1>${reportItem.type}</h1> -->
         <p class="${
           /🇫🇷🇫🇷/.test(reportItem.data?.name)
-          ? 'fs-3'
+          ? ( /🇫🇷🇫🇷 🎯🎯/.test(reportItem.data?.name)
+            ? 'fs-1' : 'fs-3'
+          )
           : ''
         }${
           reportItem.type == 'screenshot'

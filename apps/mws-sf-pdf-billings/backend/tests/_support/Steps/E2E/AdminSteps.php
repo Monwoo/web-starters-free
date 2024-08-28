@@ -134,6 +134,45 @@ class AdminSteps extends \App\Tests\AcceptanceTester
 
   }
 
+  public function doInternalBackupDelete($backupName) {
+    $I = $this;
+    $I->comment("🇫🇷🇫🇷 Supprime le backup $backupName");
+    $I->click(UserSteps::$userMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click(AdminSteps::$backupMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    // https://tobiasahlin.com/blog/previous-sibling-css-has/
+    // .box:has(+ .circle) {
+
+    $bkupDeleteSelector = "form:nth-child(3) input[value=\"$backupName\"] + button";
+    $I->scrollToWithNav($bkupDeleteSelector);
+    // $I->scrollTo($bkupImportSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->clickAndAcceptPopup($bkupDeleteSelector);
+    // $I->acceptPopup();
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+  }
+
+  public function doInternalBackupDownload($backupName) {
+    $I = $this;
+    $I->comment("🇫🇷🇫🇷 Télécharge le backup $backupName");
+    $I->click(UserSteps::$userMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click(AdminSteps::$backupMenuSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+
+    // https://tobiasahlin.com/blog/previous-sibling-css-has/
+    // .box:has(+ .circle) {
+
+    $bkupDownloadSelector = "form:nth-child(1) input[value=\"$backupName\"] + button";
+    $I->scrollToWithNav($bkupDownloadSelector);
+    // $I->scrollTo($bkupImportSelector);
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+    $I->click($bkupDownloadSelector);
+    // $I->acceptPopup();
+    $I->waitHumanDelay(); // TODO : add interactionDelay ? only need to wait for js to scroll ...
+  }
 }
 
 AdminSteps::initVars();
