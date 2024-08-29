@@ -218,7 +218,7 @@ class Acceptance extends \Codeception\Module
     }, iterator_to_array($finder, false));
   }
 
-  public function waitHumanDelay($minTime = 0.1)
+  public function waitHumanDelay($minTime = 0.142)
   {
     /** @var \Codeception\Module\WebDriver */
     $I = $this->getModule('WebDriver');
