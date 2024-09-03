@@ -1,6 +1,6 @@
 {
   "name": "monwoo/mws-moon-manager-ux-bundle",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Open Source Monwoo MoonManager time tracking UX Svelte frontend components (No PHP, for assets re-builds only)",
   "type": "symfony-bundle",
   "license": "Apache-2.0_monwoo",
