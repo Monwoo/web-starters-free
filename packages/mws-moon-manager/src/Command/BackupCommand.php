@@ -148,7 +148,8 @@ class BackupCommand extends Command
         // COPY First to let real db overwrite possible upload file in upload folder...
         $this->recursive_copy($uploadSrc, "$currentBackupDir");
 
-        $this->filesystem->copy($databaseFile, $backupDatabaseFile);
+        // TODO : make backup db test fail if miss overwite after upload with same db name ?
+        $this->filesystem->copy($databaseFile, $backupDatabaseFile, true);
         // dd($databaseFile);
 
         // TODO : remove and clean copy olders than 60 days ? (to keep spaces...)

@@ -611,6 +611,9 @@ alias composer="php -d memory_limit=8G '$PWD/composer.phar'"
 cd apps/mws-sf-pdf-billings/backend/
 alias codecept="php '$PWD/vendor/codeception/codeception/codecept'"
 
+# if wrong chrome driver, update with bdi tool :
+vendor/bin/bdi detect drivers
+
 # quick commands (unit test and dev) :
 # ./drivers/chromedriver --url-base=/wd/hub &
 # php -S localhost:8000 -t public/ &
@@ -618,6 +621,7 @@ alias codecept="php '$PWD/vendor/codeception/codeception/codecept'"
 # # (APP_ENV NEED to be 'dev' in your .env file to be launched) :
 # php bin/console server:dump
 ./drivers/chromedriver --url-base=/wd/hub --port=9515 &
+
 php -S localhost:8000 -t public/ &
 # server for custom report :
 php -S localhost:8015 -t ./tests/ &

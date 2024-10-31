@@ -94,8 +94,6 @@ class GdprSentinelListener
     // For our aim, empty database is ok, since we can add billings informations quickly
     // by HTML get form or POST request with CSRF
     $safeGdprDatabase = $this->projectDir . '/var/data.gdpr-ok.db.sqlite';
-    // TODO : generic process for doctrine ORM instead of going at lower db implementation ? (dependent of sqlite techno for now)
-    $database = $this->projectDir . '/var/data.db.sqlite';
 
     if (file_exists($safeGdprDatabase)) {
       // // https://stackoverflow.com/questions/13386082/filemtime-warning-stat-failed-for
