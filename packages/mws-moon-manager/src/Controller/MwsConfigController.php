@@ -572,8 +572,9 @@ class MwsConfigController extends AbstractController
                 $zipFile
                     ->outputAsAttachment($zipFilename); // output to the browser without saving to a file
                 // TIPS : noting will run after exit of previous call...
-                dd('Strange, this code should not run...');
-            } catch (ZipException $e) {
+                exit(); // BUT sometime, outputAsAttachment will not die...
+                // dd('Strange, this code should not run... Missing files in ZIP ?');
+        } catch (ZipException $e) {
                 // handle exception
                 $this->logger->error(
                     "Backup Zip error " . $e->getMessage()

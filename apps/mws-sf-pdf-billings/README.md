@@ -685,6 +685,8 @@ Learn more about the power of pdf billings:
 - [Symfony debug forms errors](https://symfonycasts.com/blog/symfony-debugging-form-errors)
 - [Style css borders](https://developer.mozilla.org/fr/docs/Web/CSS/border)
 - [Tuto for Terms of sales](https://www.mbaskool.com/business-concepts/marketing-and-strategy-terms/10858-term-of-sale.html)
+- [Fast, Smart Flex Recipe Upgrades with recipes:update](https://symfony.com/blog/fast-smart-flex-recipe-upgrades-with-recipes-update)
+
 
 ## Supports
 
