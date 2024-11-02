@@ -764,7 +764,24 @@ class MwsTimingController extends AbstractController
         }
 
         $response = new Response($respData);
-        $response->headers->set('Content-Type', 'image/jpg');
+
+        // $format = strtolower(array_slice(explode('.', $url), -1)[0] ?? '');
+        // $mime = [
+        //     'pdf' => 'application/pdf',
+        //     'png' => 'image/png',
+        //     'jpg' => 'image/jpeg',
+        //     'jpge' => 'image/jpeg',
+        //     'svg' => 'image/svg+xml',
+        //     'csv' => 'text/comma-separated-values',
+        //     'xml' => 'application/xml',
+        //     'yaml' => 'application/yaml',
+        // ][$format] ?? 'text/plain';
+        // if ($mime) {
+        //     $response->headers->set('Content-Type', $mime);
+        //     // dd($mime);
+        // }
+
+        $response->headers->set('Content-Type', 'image/png');
         // https://symfony.com/doc/6.2/the-fast-track/en/21-cache.html
         $maxAge = 3600 * 5;
         $response->setSharedMaxAge($maxAge);

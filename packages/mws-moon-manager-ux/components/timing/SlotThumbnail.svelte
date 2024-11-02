@@ -273,14 +273,17 @@ overflow-visible border-solid border-4"
         : ""}
     />
   {:else}
-    <!-- type="image/png" -->
+    <!-- type="image/png" 
+    TODO : buggy, not having type inject html instead of scalable image...
+    type={timingSlot?.source?.metas?.mimeType ?? "image/png"}
+    -->
     <object
       on:load
       on:error
       loading="lazy"
       class="object-contain w-full h-full"
       data={"screenshot" == timingSlot?.source?.type ? slotPath : ("//=::NotAnUrlForPurposeFail**%%" + timingSlot?.source?.type)}
-      type={timingSlot?.source?.metas?.mimeType ?? "image/png"}
+      type={"image/png"}
       role="presentation"
       title={thumbtitle}
     >
