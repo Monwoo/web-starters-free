@@ -1504,6 +1504,10 @@
         loading="lazy"
                 type="image/png"
 
+        TODO : Need image type to be able to layout right spaces
+        type={timingSlot?.source?.metas?.mimeType ?? "image/png"}
+
+
         // TODO : load handlers for list of objects and imgs to trigger at end of all loads
       // https://svelte.dev/repl/d7680b8f5aee4d86846b0982e6c0c01d?version=3.31.0 -->
       {#key timingSlot}
@@ -1519,8 +1523,8 @@
         draggable="false"
         class:border-gray-600={!timingSlot?.tags?.length}
         class:border-green-400={timingSlot?.tags?.length}
-        data={"screenshot" == timingSlot?.source?.type ? slotPath : ("//=::NotAnUrlForPurposeFail**%%" + timingSlot?.source?.type)}
-        type={timingSlot?.source?.metas?.mimeType ?? "image/png"}
+        data={("screenshot" == timingSlot?.source?.type) ? slotPath : ("//=::NotAnUrlForPurposeFail**%%" + timingSlot?.source?.type)}
+        type="image/png"
         title={ viewtitle }
         style={`
         ${
