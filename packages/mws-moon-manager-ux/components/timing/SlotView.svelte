@@ -1364,6 +1364,10 @@
         </button>  
       </div>
       {#key timingSlot}
+
+      <!--
+        type={timingSlot?.source?.metas?.mimeType ?? "image/png"}
+      -->
       <object
         use:pan="{{delay:imagePanDelayMs}}"
         on:pan="{imagePanHandler}"  
@@ -1377,7 +1381,7 @@
         class:border-gray-600={!timingSlot?.tags?.length}
         class:border-green-400={timingSlot?.tags?.length}
         data={"screenshot" == timingSlot?.source?.type ? slotPath : ("//=::NotAnUrlForPurposeFail**%%" + timingSlot?.source?.type)}
-        type={timingSlot?.source?.metas?.mimeType ?? "image/png"}
+        type={"image/png"}
         title={ viewtitle }
         style={`
         ${
