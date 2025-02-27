@@ -93,7 +93,7 @@ class MwsTimeSlotRepository extends ServiceEntityRepository
         }
         if ($searchEnd && strlen($searchEnd)) {
             // dd($searchStart);
-            $searchStart = (new DateTime($searchEnd));
+            $searchEnd = (new DateTime($searchEnd));
             // dd($searchStart);
             $qb->andWhere("$slotName.sourceTimeGMT < :searchEnd")
                 ->setParameter('searchEnd', $searchEnd);

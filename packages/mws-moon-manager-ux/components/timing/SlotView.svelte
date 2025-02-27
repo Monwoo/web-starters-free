@@ -921,10 +921,13 @@
       }
       e.preventDefault();
     }
-    if (isKey.qualifShortcut(e)) {
-      await isKey.qualifShortcut(e)(); // TODO : should not block event flow ? no await ?
-      e.preventDefault();
-    }
+    // TODO : need better ux to avoid fake qualif
+    // when hitting keys inside form fields etc... or misslead touch keybord...
+    // => did disable shortcut feature for now to avoid misleadings qualifs and not knowing which key do stuffs...
+    // if (isKey.qualifShortcut(e)) {
+    //   await isKey.qualifShortcut(e)(); // TODO : should not block event flow ? no await ?
+    //   e.preventDefault();
+    // }
   };
 
   let moveResp = moveSelectedIndex(0);

@@ -258,7 +258,7 @@ class MwsOfferRepository extends ServiceEntityRepository
                 ->setParameter('searchStart', $searchStart);
         }
         if ($searchEnd && strlen($searchEnd)) {
-            $searchStart = (new DateTime($searchEnd));
+            $searchEnd = (new DateTime($searchEnd));
             $qb->andWhere("$slotName.leadStart < :searchEnd")
                 ->setParameter('searchEnd', $searchEnd);
         }
