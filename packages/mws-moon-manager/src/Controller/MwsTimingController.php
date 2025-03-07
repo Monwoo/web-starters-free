@@ -2016,6 +2016,8 @@ class MwsTimingController extends AbstractController
         // $tagData = get_object_vars($tagData);
         // TODO : use serializer deserialize ?
         $tagData = json_decode($tagData, true);
+        $checkForNewTagOnly = count($tagData) === 1 && ($tagData['label'] ?? false);
+        // var_dump($checkForNewTagOnly);exit;
         if (!($tagData['slug'] ?? false)) {
             if ($tagData['label'] ?? false) {
                 $slugger = new AsciiSlugger();
@@ -2036,49 +2038,54 @@ class MwsTimingController extends AbstractController
         $tag = count($criteria)
             ? $mwsTimeTagRepository->findOneBy($criteria)
             : null;
-        if (!$tag) {
-            $tag = new MwsTimeTag();
-        }
 
-        $sync = function ($path) use (&$tag, &$tagData) {
-            $set = 'set' . ucfirst($path);
-            // $get = 'get' . ucfirst($path);
-            // if(!method_exists($tag, $get)) {
-            //     $get = 'is' . ucfirst($path);
-            // }
-            // $v =  $tag->$get();
-            $v =  $tagData[$path] ?? null;
-            if (null !== $v) {
-                $tag->$set($v);
+        if ($checkForNewTagOnly && $tag) {
+            // Nothing to do, tag already exist for this label...
+        } else {
+            if (!$tag) {
+                $tag = new MwsTimeTag();
             }
-        };
 
-        $sync('slug');
-        $sync('label');
-        $sync('description');
-        if ($tagData['category'] ?? false) {
-            $categorySlug = $tagData['category'];
-            $category = $mwsTimeTagRepository->findOneBy([
-                "slug" => $categorySlug,
-            ]);
-            $tagData['category'] = $category;
-        }
-        $sync('category');
-        $sync('pricePerHr');
-        $pPerRules = &$tagData['pricePerHrRules'];
-        foreach ($pPerRules ?? [] as $ruleIdx => &$rule) {
-            // dd($rule);
-            $pPerRules[$ruleIdx]['price'] = floatval($rule['price'] ?? 0);
-            // $rule['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
-            $pPerRules[$ruleIdx]['maxLimitPriority'] = floatval($rule['maxLimitPriority'] ?? 0);
-        }
-        $tag->setPricePerHrRules([]);
-        $sync('pricePerHrRules');
-        // $tag->addTag($tag);
-        // dd($tagData);
+            $sync = function ($path) use (&$tag, &$tagData) {
+                $set = 'set' . ucfirst($path);
+                // $get = 'get' . ucfirst($path);
+                // if(!method_exists($tag, $get)) {
+                //     $get = 'is' . ucfirst($path);
+                // }
+                // $v =  $tag->$get();
+                $v =  $tagData[$path] ?? null;
+                if (null !== $v) {
+                    $tag->$set($v);
+                }
+            };
 
-        $this->em->persist($tag);
-        $this->em->flush();
+            $sync('slug');
+            $sync('label');
+            $sync('description');
+            if ($tagData['category'] ?? false) {
+                $categorySlug = $tagData['category'];
+                $category = $mwsTimeTagRepository->findOneBy([
+                    "slug" => $categorySlug,
+                ]);
+                $tagData['category'] = $category;
+            }
+            $sync('category');
+            $sync('pricePerHr');
+            $pPerRules = &$tagData['pricePerHrRules'];
+            foreach ($pPerRules ?? [] as $ruleIdx => &$rule) {
+                // dd($rule);
+                $pPerRules[$ruleIdx]['price'] = floatval($rule['price'] ?? 0);
+                // $rule['maxLimitPriority'] = floatval($rule['maxLimitPriority']);
+                $pPerRules[$ruleIdx]['maxLimitPriority'] = floatval($rule['maxLimitPriority'] ?? 0);
+            }
+            $tag->setPricePerHrRules([]);
+            $sync('pricePerHrRules');
+            // $tag->addTag($tag);
+            // dd($tagData);
+
+            $this->em->persist($tag);
+            $this->em->flush();
+        }
 
         return $this->json([
             'updatedTag' => $tag,
