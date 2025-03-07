@@ -142,7 +142,7 @@
   };
 
   export let thumbSize;
-  $: thumbSize = (50 * (100 / zoomStartBaseSize) * listZoomRange) / 100;
+  $: thumbSize = (100 * (100 / zoomStartBaseSize) * listZoomRange) / 100;
   // TODO : opti, only for tooltips reloads...
   $: listZoomRange,
     debounce(async () => {
