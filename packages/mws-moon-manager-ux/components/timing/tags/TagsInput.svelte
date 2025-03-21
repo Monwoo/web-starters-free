@@ -172,9 +172,10 @@
     }
 
     async addTagExtended(timingTarget, tag, comment = null) {
+      // console.debug('Will add tag for ', timingTarget);
       const data = {
         _csrf_token: stateGet(get(state), "csrfTimingTagAdd"),
-        timeSlotId: timingTarget.id,
+        timeSlotId: timingTarget?.id,
         tagSlug: tag.slug,
         comment, // TODO : allow optional comment on status switch ?
       };
