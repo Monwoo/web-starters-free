@@ -325,6 +325,17 @@ class:font-extrabold={summary.usedForTotal || summary.usedForDeepTotal}
       )
       : (summary.sumOfBookedHrs?.toPrettyNum(2, 5) ?? '-')} hr
     </span>
+    <span class="p-1 bg-white rounded-md rounded-b-none"
+    class:border-2={summary.usedForTotal}
+    class:border-green-400={summary.usedForTotal}
+    >
+      {(summary.sumOfBookedHrs ?? null) === null
+      ?  (summary.usedForTotal
+        ? (2 * 10/60).toPrettyNum(2)
+        : '-'
+      )
+      : ((2 * (summary.sumOfBookedHrs ?? 0)).toPrettyNum(2, 5) ?? '-')} demi-hr
+    </span>
 
     <!-- <br /> -->
     <span class="text-gray-400 p-1 bg-white rounded-md rounded-t-none">
