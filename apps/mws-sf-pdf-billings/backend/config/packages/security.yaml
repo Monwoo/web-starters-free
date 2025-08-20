@@ -105,7 +105,7 @@ security:
             form_login:
                 login_path: mws_login
                 check_path: mws_login
-                enable_csrf: true
+                enable_csrf: false
                 # TIPS : provider: mws_user_provide will not transit connected user from one area to another,
                 # user more exposed pattern instead or multiple firewall
                 # main:
