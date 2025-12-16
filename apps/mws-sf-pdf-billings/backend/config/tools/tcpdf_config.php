@@ -2,6 +2,7 @@
 // https://stackoverflow.com/questions/28700659/how-to-configure-tcpdf-when-installing-with-composer
 define('K_TCPDF_EXTERNAL_CONFIG', true);
 
+
 //============================================================+
 // File name   : tcpdf_config.php
 // Begin       : 2004-06-11
@@ -82,7 +83,9 @@ define('K_TCPDF_EXTERNAL_CONFIG', true);
 /**
  * Cache directory for temporary files (full path).
  */
-//define ('K_PATH_CACHE', '/tmp/');
+// https://stackoverflow.com/questions/68249628/image-not-showing-with-tcpdf-on-server
+// Needed for b64 images, Still not loading stamp anymore, was working before, due to some dev upgrades ? relace with .jpg will work
+define ('K_PATH_CACHE', '/tmp/');
 
 /**
  * Generic name for a blank image.

@@ -76,7 +76,7 @@ class BackupCommand extends Command
         }
 
         // TIPS for SQLITE : sound like direct CP of DB do not flush all transactions, so vacum it before save :
-        if (starts_with($_SERVER['DATABASE_URL'] ?? '', 'sqlite://')) {
+        if (str_starts_with($_SERVER['DATABASE_URL'] ?? '', 'sqlite://')) {
             // https://stackoverflow.com/questions/2143800/change-sqlite-file-size-after-delete-from-table
             // https://stackoverflow.com/questions/48894037/symfony4-sqlite3-connection
             $stmt = $this->em->getConnection()->prepare("VACUUM");
