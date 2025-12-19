@@ -87,7 +87,7 @@ class CleanThumbnailsCommand extends Command
             $thumb = $s->getThumbnailJpeg();
             // dump($thumb);
 
-            if (starts_with($thumb ?? '', '/')) {
+            if (str_starts_with($thumb ?? '', '/')) {
                 $thumbParts = explode('/', $thumb);
                 $upload = $this->mwsTimeSlotUploadRepository->findOneBy([
                     // TODO : getMediaOriginalName might be null if using ReplacingFile instead of uploader...
@@ -109,7 +109,7 @@ class CleanThumbnailsCommand extends Command
         // SQlite will not downsize with simple delete,
         // so need to use sqlite vacuum command to clean inDb thumb spaces :
         // (will use twice db size...)
-        if (starts_with($_SERVER['DATABASE_URL'] ?? '', 'sqlite://')) {
+        if (str_starts_with($_SERVER['DATABASE_URL'] ?? '', 'sqlite://')) {
             // https://stackoverflow.com/questions/2143800/change-sqlite-file-size-after-delete-from-table
             // https://stackoverflow.com/questions/48894037/symfony4-sqlite3-connection
             $stmt = $this->em->getConnection()->prepare("VACUUM");

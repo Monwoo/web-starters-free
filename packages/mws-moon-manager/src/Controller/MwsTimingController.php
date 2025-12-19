@@ -745,7 +745,7 @@ class MwsTimingController extends AbstractController
                     'id' => $timingId
                 ]);
                 $thumb = $s?->getThumbnailJpeg() ?? '';
-                if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
+                if (str_starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
                     // TODO : or use 'file://' system instead of '/' system ?
                     $respData = file_get_contents($tUrl, false, $curlContext);
                 } else {
@@ -1013,7 +1013,7 @@ class MwsTimingController extends AbstractController
                                 try {
                                     $imagick = new \Imagick();
                                     $thumb = $outerObject->getThumbnailJpeg() ?? '';
-                                    if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
+                                    if (str_starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
                                         $respData = file_get_contents($this->getThumbPath($request, $thumb), false, $curlContext);
                                         $imagick->readImageBlob($respData);
                                     } else {
@@ -1092,7 +1092,7 @@ class MwsTimingController extends AbstractController
                                     $data = null;
                                     if ($innerObject) {
                                         // dd($thumb);                                   
-                                        if (starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
+                                        if (str_starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))) {
                                             // $respData = file_get_contents($tUrl, false, $curlContext);
                                             // $imagick->readImageBlob($respData);
                                             // TODO : need $context = stream_context_create([ etc... to transfert auth credentials
@@ -1244,7 +1244,7 @@ class MwsTimingController extends AbstractController
                             // dd($thumb);
                             $type  = 'jpeg';
 
-                            $newThumb = starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))
+                            $newThumb = str_starts_with($thumb, '/') && file_exists($tUrl = $this->getThumbPath($request, $thumb))
                                 ? 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($tUrl, false, $curlContext))
                                 : $outerObject->getThumbnailJpeg();
                             // dd($newThumb);
@@ -1639,7 +1639,7 @@ class MwsTimingController extends AbstractController
                     //     } else {
                     //         // TODO : code factorisation with export
                     //         $data = $newThumb;
-                    //         if (starts_with($data, 'data:image')) {
+                    //         if (str_starts_with($data, 'data:image')) {
                     //             $b64Parts = explode(';base64,', $data);
                     //             $data = base64_decode($b64Parts[1]) ?? null;
 
@@ -1787,7 +1787,7 @@ class MwsTimingController extends AbstractController
             } else {
                 // TODO : code factorisation with export
                 $data = $newThumb ?? "";
-                if (starts_with($data, 'data:image')) {
+                if (str_starts_with($data, 'data:image')) {
                     $b64Parts = explode(';base64,', $data);
                     $data = base64_decode($b64Parts[1]) ?? null;
 

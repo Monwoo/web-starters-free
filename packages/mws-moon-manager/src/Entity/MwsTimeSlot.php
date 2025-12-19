@@ -239,7 +239,7 @@ class MwsTimeSlot
         // //        custom behaviors inside trait (use trait getter/setter
         // //        instead of raw entity setter/getter ? => more readable than
         // //        PLAYING with entity protected var and getter/setters... ?)
-        // if ($this->thumbnailJpeg && starts_with($this->thumbnailJpeg, '/')) {
+        // if ($this->thumbnailJpeg && str_starts_with($this->thumbnailJpeg, '/')) {
         //     // cleanup :
         //     $thumbUpload = 
         //     $duplicats = $mwsTimeSlotRepository->findBy([
@@ -287,7 +287,7 @@ class MwsTimeSlot
         $thumbChange = $changeSet[ 'thumbnailJpeg' ] ?? null;
         if ($thumbChange) {
             [$was, $is] = $thumbChange;
-            if ($was && starts_with($was, '/') && $was !== $is) {
+            if ($was && str_starts_with($was, '/') && $was !== $is) {
                 // file_get_contents($request->getSchemeAndHttpHost() . $request->getBaseURL() . $thumb)
 
                 $ghost = $mwsMessageTchatUpload->findOneBy([

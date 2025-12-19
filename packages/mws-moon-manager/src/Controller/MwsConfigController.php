@@ -213,8 +213,8 @@ class MwsConfigController extends AbstractController
                             if(!count(array_filter($files, function ($f)
                             use ($dbTestPath, $zipBckupName) {
                                 return $f === $dbTestPath
-                                || starts_with($f, "$zipBckupName/messages/tchats/")
-                                || starts_with($f, "$zipBckupName/timings/thumbs/"); // TODO : factorize, centralize, configurable... ?
+                                || str_starts_with($f, "$zipBckupName/messages/tchats/")
+                                || str_starts_with($f, "$zipBckupName/timings/thumbs/"); // TODO : factorize, centralize, configurable... ?
                             }))) {
                                 throw new ZipException('Only "/messages/tchats/" or "/timings/thumbs/" extra folder is allowed');
                             }
@@ -682,7 +682,7 @@ class MwsConfigController extends AbstractController
             throw $this->createNotFoundException("Internal backup $internalName not found");
         }
         $projPath = realpath($projectDir);
-        if (!starts_with($path, $projPath)) {
+        if (!str_starts_with($path, $projPath)) {
             // dd('// TODO TESTs : Do not allow other folders like "../../" ? Browser check it, testable ?');
             // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
             throw $this->createNotFoundException("Internal backup $internalName not found");
@@ -776,7 +776,7 @@ class MwsConfigController extends AbstractController
             throw $this->createNotFoundException("Internal backup $internalName not found");
         }
         $projPath = realpath($projectDir);
-        if (!starts_with($path, $projPath)) {
+        if (!str_starts_with($path, $projPath)) {
             // dd('// TODO TESTs : Do not allow other folders like "../../" ? Browser check it, testable ?');
             // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
             throw $this->createNotFoundException("Internal backup $internalName not found");
@@ -869,7 +869,7 @@ class MwsConfigController extends AbstractController
             throw $this->createNotFoundException("Internal backup $internalName not found");
         }
         $projPath = realpath($projectDir);
-        if (!starts_with($path, $projPath)) {
+        if (!str_starts_with($path, $projPath)) {
             throw $this->createNotFoundException("Internal backup $internalName not found");
         }
 
@@ -935,7 +935,7 @@ class MwsConfigController extends AbstractController
                 throw $this->createNotFoundException("Internal backup $internalName not found");
             }
             $projPath = realpath($projectDir);
-            if (!starts_with($path, $projPath)) {
+            if (!str_starts_with($path, $projPath)) {
                 throw $this->createNotFoundException("Internal backup $internalName not found");
             }
 
@@ -1057,7 +1057,7 @@ class MwsConfigController extends AbstractController
             throw $this->createNotFoundException("Media path $pathRaw not found");
         }
         $projPath = realpath($projectDir);
-        if (!starts_with($path, $projPath)) {
+        if (!str_starts_with($path, $projPath)) {
             // dd('// TODO TESTs : Do not allow other folders like "../../" ? Browser check it, testable ?');
             // Please, check apps/mws-sf-pdf-billings/backend/config/packages/mws_moon_manager.yaml:mws_moon_manager.uploadSubFolder etc...
             throw $this->createNotFoundException("Media path $pathRaw not found");
